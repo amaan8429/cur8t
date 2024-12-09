@@ -7,7 +7,7 @@ export const usersTable = pgTable("users_table", {
 });
 
 // listGroup table with id, name, user_id
-export const listGroup = pgTable("list_group", {
+export const linkCollection = pgTable("link_collection", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   userId: integer("user_id")
@@ -21,7 +21,7 @@ export const listGroup = pgTable("list_group", {
 });
 
 // single link with id, title, url , user_id, created_at, updated_at
-export const linkTable = pgTable("link_table", {
+export const link = pgTable("link", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   url: text("url").notNull(),
@@ -29,19 +29,19 @@ export const linkTable = pgTable("link_table", {
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdate(() => new Date()),
-  linkgroupId: integer("link_group_id")
-    .references(() => listGroup.id)
+  linkCollectionId: integer("link_group_id")
+    .references(() => linkCollection.id)
     .notNull(),
 });
 
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
 
-export type InsertPost = typeof linkTable.$inferInsert;
-export type SelectPost = typeof linkTable.$inferSelect;
+export type InsertPost = typeof linkCollection.$inferInsert;
+export type SelectPost = typeof linkCollection.$inferSelect;
 
-export type InsertListGroup = typeof listGroup.$inferInsert;
-export type SelectListGroup = typeof listGroup.$inferSelect;
+export type InsertListGroup = typeof link.$inferInsert;
+export type SelectListGroup = typeof link.$inferSelect;
 
 // //amaan
 
