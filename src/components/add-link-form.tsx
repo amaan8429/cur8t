@@ -40,7 +40,7 @@ export function AddLinkForm({ onLinkAdded }: AddLinkFormProps) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     onLinkAdded({
-      id: Math.random().toString(36).substr(2, 9),
+      id: Math.random().toString(36).slice(2, 9),
       ...values,
     });
     form.reset();

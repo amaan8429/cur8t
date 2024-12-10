@@ -26,6 +26,7 @@ export function ContentArea({
         </div>
       )}
       {activeItem === "Add Bukmarks" && <AddBukmarkPage />}
+
       {activeItem === "Ask AI" && (
         <div>
           <p>How can I assist you today? Ask me anything!</p>

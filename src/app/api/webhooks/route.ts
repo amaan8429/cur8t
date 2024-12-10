@@ -71,6 +71,7 @@ export async function POST(req: Request) {
 
       // Insert the user into the database
       await db.insert(usersTable).values({
+        id: userData.id,
         name: `${userData.first_name || ""} ${userData.last_name || ""}`.trim(),
         email: primaryEmail,
       });

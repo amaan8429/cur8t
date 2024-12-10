@@ -15,17 +15,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { createCollection } from "@/actions/createCollection";
 
 export function CreateLinkCollection() {
   const [collectionName, setCollectionName] = React.useState("");
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (collectionName.trim()) {
-      // In a real application, you would save the new collection to your backend here
-      const newCollectionId = Math.random().toString(36).substr(2, 9);
-      router.push(`/collection/${newCollectionId}`);
+      const collectionCreated = await createCollection(collectionName);
+      if (collectionCreated) {
+        router.push(`?list=${encodeURIComponent(collectionName)}`);
+      }
+      console.log("Creating new collection:", collectionName);
     }
   };
 
