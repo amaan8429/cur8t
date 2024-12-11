@@ -1,7 +1,9 @@
 "use server";
 
 import { db } from "@/db";
+import { linkTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
+import { and, eq } from "drizzle-orm";
 
 export async function getLinks(linkCollectionId: string) {
   const { userId } = await auth();
@@ -10,12 +12,18 @@ export async function getLinks(linkCollectionId: string) {
     throw new Error("User not found");
   }
 
-  const links = await db.query.linkTable.findMany({
-    with: {
-      linkCollectionId,
-      userId,
-    },
-  });
+  if (!linkCollectionId) {
+    throw new Error("Link collection ID is required");
+  }
 
+  const links = await db
+    .select()
+    .from(linkTable)
+    .where(
+      and(
+        eq(linkTable.linkCollectionId, linkCollectionId),
+        eq(linkTable.userId, userId)
+      )
+    );
   return links;
 }

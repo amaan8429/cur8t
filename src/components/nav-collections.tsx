@@ -25,40 +25,51 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { getCollections } from "@/actions/getCollections";
+import { useEffect, useState } from "react";
 
 interface NavCollectionProps {
   activeCollection?: string;
 }
 
+interface Collection {
+  id: string;
+  name: string;
+  userId: string;
+  url: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export function NavCollection({ activeCollection }: NavCollectionProps) {
   const { isMobile } = useSidebar();
 
-  //sample data
-  //fetch collections from the database here
+  const [collections, setCollections] = useState<Collection[] | null>(null);
 
-  // add loader until the data is fetched
-  const collections = [
-    {
-      name: "Bookmarks",
-      emoji: "🔖",
-    },
-    {
-      name: "Favorites",
-      emoji: "⭐️",
-    },
-    {
-      name: "Reading List",
-      emoji: "📚",
-    },
-    {
-      name: "Shopping",
-      emoji: "🛍",
-    },
-    {
-      name: "Travel",
-      emoji: "✈️",
-    },
-  ];
+  useEffect(() => {
+    async function fetchCollections() {
+      const data = await getCollections();
+      console.log(data);
+      setCollections(data);
+    }
+    fetchCollections();
+  }, []);
+
+  if (!collections) {
+    return (
+      <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+        <SidebarGroupLabel>Collections</SidebarGroupLabel>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton className="text-sidebar-foreground/70">
+              <MoreHorizontal />
+              <span>Loading...</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
+    );
+  }
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -74,7 +85,6 @@ export function NavCollection({ activeCollection }: NavCollectionProps) {
                 href={`?list=${encodeURIComponent(item.name)}`}
                 title={item.name}
               >
-                <span>{item.emoji}</span>
                 <span>{item.name}</span>
               </Link>
             </SidebarMenuButton>

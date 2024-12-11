@@ -2,6 +2,8 @@
 
 import { db } from "@/db";
 import { auth } from "@clerk/nextjs/server";
+import { linkCollectionTable } from "@/schema";
+import { and, eq } from "drizzle-orm";
 
 export async function getCollections() {
   const { userId } = await auth();
@@ -10,11 +12,12 @@ export async function getCollections() {
     throw new Error("User not found");
   }
 
-  const collections = await db.query.linkCollectionTable.findMany({
-    with: {
-      userId,
-    },
-  });
+  const collections = await db
+    .select()
+    .from(linkCollectionTable)
+    .where(and(eq(linkCollectionTable.userId, userId)));
+
+  console.log(collections);
 
   return collections;
 }
