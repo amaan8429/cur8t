@@ -2,13 +2,13 @@ import { AddBukmarkPage } from "./add-bukmark";
 
 interface ContentAreaProps {
   activeItem: string;
-  activeFavorite?: string;
+  activeCollection?: string;
   activeSecondary?: string;
 }
 
 export function ContentArea({
   activeItem,
-  activeFavorite,
+  activeCollection,
   activeSecondary,
 }: ContentAreaProps) {
   return (
@@ -42,12 +42,12 @@ export function ContentArea({
           </ul>
         </div>
       )}
-      {activeFavorite && (
+      {activeCollection && (
         <div>
           <h3 className="text-xl font-semibold mb-2">
-            Favorite: {activeFavorite}
+            Collection: {activeCollection}
           </h3>
-          <p>This is the content for your favorite item: {activeFavorite}</p>
+          <p>This is the content for your favorite item: {activeCollection}</p>
         </div>
       )}
       {activeSecondary && (

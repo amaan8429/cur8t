@@ -27,19 +27,38 @@ import {
 import Link from "next/link";
 
 interface NavCollectionProps {
-  collections: {
-    name: string;
-    url: string;
-    emoji: string;
-  }[];
   activeCollection?: string;
 }
 
-export function NavCollection({
-  collections,
-  activeCollection,
-}: NavCollectionProps) {
+export function NavCollection({ activeCollection }: NavCollectionProps) {
   const { isMobile } = useSidebar();
+
+  //sample data
+  //fetch collections from the database here
+
+  // add loader until the data is fetched
+  const collections = [
+    {
+      name: "Bookmarks",
+      emoji: "🔖",
+    },
+    {
+      name: "Favorites",
+      emoji: "⭐️",
+    },
+    {
+      name: "Reading List",
+      emoji: "📚",
+    },
+    {
+      name: "Shopping",
+      emoji: "🛍",
+    },
+    {
+      name: "Travel",
+      emoji: "✈️",
+    },
+  ];
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">

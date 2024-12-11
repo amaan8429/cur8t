@@ -4,7 +4,7 @@ import { NavActions } from "@/components/nav-actions";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbList,
+  BreadcrumbLink,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
@@ -20,14 +20,14 @@ export default function Page({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const activeItem = searchParams.item as string;
-  const activeList = searchParams.list as string;
+  const activeCollection = searchParams.collection as string;
   const activeSecondary = searchParams.secondary as string;
 
   return (
     <SidebarProvider>
       <AppSidebar
         activeItem={activeItem}
-        activeList={activeList}
+        activeCollection={activeCollection}
         activeSecondary={activeSecondary}
       />
       <SidebarInset>
@@ -36,13 +36,13 @@ export default function Page({
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
-              <BreadcrumbList>
+              <BreadcrumbLink>
                 <BreadcrumbItem>
                   <BreadcrumbPage className="line-clamp-1">
-                    {activeItem || activeList || activeSecondary}
+                    {activeItem || activeCollection || activeSecondary}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
-              </BreadcrumbList>
+              </BreadcrumbLink>
             </Breadcrumb>
           </div>
           <div className="ml-auto px-3">
@@ -51,7 +51,7 @@ export default function Page({
         </header>
         <ContentArea
           activeItem={activeItem}
-          activeFavorite={activeList}
+          activeCollection={activeCollection}
           activeSecondary={activeSecondary}
         />
       </SidebarInset>

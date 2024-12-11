@@ -15,7 +15,7 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { NavLists } from "@/components/nav-collections";
+import { NavCollection } from "@/components/nav-collections";
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
 import { LogoNameDisplay } from "@/components/logo-name-display";
@@ -128,13 +128,13 @@ const data = {
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   activeItem: string;
-  activeList?: string;
+  activeCollection?: string;
   activeSecondary?: string;
 }
 
 export function AppSidebar({
   activeItem,
-  activeList,
+  activeCollection,
   activeSecondary,
   ...props
 }: AppSidebarProps) {
@@ -148,7 +148,7 @@ export function AppSidebar({
         <NavMain items={data.navMain} activeItem={activeItem} />
       </SidebarHeader>
       <SidebarContent>
-        <NavLists lists={data.lists} activeList={activeList} />
+        <NavCollection activeCollection={activeCollection} />
         <NavSecondary
           items={data.navSecondary}
           className="mt-auto"
