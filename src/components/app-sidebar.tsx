@@ -15,7 +15,7 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { NavLists } from "@/components/nav-lists";
+import { NavLists } from "@/components/nav-collections";
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
 import { LogoNameDisplay } from "@/components/logo-name-display";

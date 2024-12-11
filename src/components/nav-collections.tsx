@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  ArrowUpRight,
+  // ArrowUpRight,
   Link as LinkIcon,
   MoreHorizontal,
   StarOff,
@@ -26,25 +26,31 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 
-interface NavListsProps {
-  lists: {
+interface NavCollectionProps {
+  collections: {
     name: string;
     url: string;
     emoji: string;
   }[];
-  activeList?: string;
+  activeCollection?: string;
 }
 
-export function NavLists({ lists, activeList }: NavListsProps) {
+export function NavCollection({
+  collections,
+  activeCollection,
+}: NavCollectionProps) {
   const { isMobile } = useSidebar();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Lists</SidebarGroupLabel>
+      <SidebarGroupLabel>Collections</SidebarGroupLabel>
       <SidebarMenu>
-        {lists.map((item) => (
+        {collections.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild isActive={item.name === activeList}>
+            <SidebarMenuButton
+              asChild
+              isActive={item.name === activeCollection}
+            >
               <Link
                 href={`?list=${encodeURIComponent(item.name)}`}
                 title={item.name}
@@ -67,16 +73,12 @@ export function NavLists({ lists, activeList }: NavListsProps) {
               >
                 <DropdownMenuItem>
                   <StarOff className="text-muted-foreground" />
-                  <span>Remove from Favorites</span>
+                  <span>Send to Trash</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <LinkIcon className="text-muted-foreground" />
                   <span>Copy Link</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <ArrowUpRight className="text-muted-foreground" />
-                  <span>Open in New Tab</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
