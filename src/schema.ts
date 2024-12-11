@@ -29,6 +29,9 @@ export const linkTable = pgTable("link", {
   linkCollectionId: uuid("link_collection_id")
     .references(() => linkCollectionTable.id)
     .notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => usersTable.id),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")
     .notNull()

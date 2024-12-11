@@ -10,6 +10,11 @@ export async function createLink(
   linkUrl: string
 ) {
   const { userId } = await auth();
+
+  if (!userId) {
+    throw new Error("User not found");
+  }
+
   if (!linkCollectionId) {
     throw new Error("Collection ID is required");
   }
@@ -25,6 +30,7 @@ export async function createLink(
     title: linkName,
     url: linkUrl,
     linkCollectionId,
+    userId,
   });
 
   console.log("Link created:", linkName);

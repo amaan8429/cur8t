@@ -13,6 +13,7 @@ export async function getLinks(linkCollectionId: string) {
   const links = await db.query.linkTable.findMany({
     with: {
       linkCollectionId,
+      userId,
     },
   });
 
