@@ -14,14 +14,15 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-export default function Page({
+export default async function Page({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const activeItem = searchParams.item as string;
-  const activeCollection = searchParams.collection as string;
-  const activeSecondary = searchParams.secondary as string;
+  const searchParamsData = await searchParams;
+  const activeItem = searchParamsData.item as string;
+  const activeCollection = searchParamsData.collection as string;
+  const activeSecondary = searchParamsData.secondary as string;
 
   return (
     <SidebarProvider>
