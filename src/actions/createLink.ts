@@ -12,18 +12,18 @@ export async function createLink(
   const { userId } = await auth();
 
   if (!userId) {
-    throw new Error("User not found");
+    return { error: "User not found" };
   }
 
   if (!linkCollectionId) {
-    throw new Error("Collection ID is required");
+    return { error: "Link collection ID is required" };
   }
   if (!linkName) {
-    throw new Error("Link name is required");
+    return { error: "Link name is required" };
   }
 
   if (!linkUrl) {
-    throw new Error("Link URL is required");
+    return { error: "Link URL is required" };
   }
 
   await db.insert(linkTable).values({
@@ -35,5 +35,5 @@ export async function createLink(
 
   console.log("Link created:", linkName);
 
-  return true;
+  return { success: true };
 }

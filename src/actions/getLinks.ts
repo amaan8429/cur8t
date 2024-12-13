@@ -9,11 +9,11 @@ export async function getLinks(linkCollectionId: string) {
   const { userId } = await auth();
 
   if (!userId) {
-    throw new Error("User not found");
+    return { error: "User not found" };
   }
 
   if (!linkCollectionId) {
-    throw new Error("Link collection ID is required");
+    return { error: "Link collection ID is required" };
   }
 
   const links = await db
@@ -25,5 +25,6 @@ export async function getLinks(linkCollectionId: string) {
         eq(linkTable.userId, userId)
       )
     );
+
   return links;
 }

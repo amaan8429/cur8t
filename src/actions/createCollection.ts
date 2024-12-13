@@ -8,11 +8,11 @@ export async function createCollection(collectionName: string) {
   const { userId } = await auth();
 
   if (!userId) {
-    throw new Error("User not found");
+    return { error: "User not found" };
   }
 
   if (!collectionName) {
-    throw new Error("Collection name is required");
+    return { error: "Collection name is required" };
   }
 
   await db.insert(linkCollectionTable).values({
@@ -23,5 +23,5 @@ export async function createCollection(collectionName: string) {
 
   console.log("Collection created:", collectionName);
 
-  return true;
+  return { success: true };
 }
