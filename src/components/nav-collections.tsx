@@ -82,7 +82,7 @@ export function NavCollection({ activeCollection }: NavCollectionProps) {
               isActive={item.name === activeCollection}
             >
               <Link
-                href={`?list=${encodeURIComponent(item.name)}`}
+                href={`?collection=${encodeURIComponent(item.name)}`}
                 title={item.name}
               >
                 <span>{item.name}</span>

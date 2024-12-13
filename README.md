@@ -20,3 +20,12 @@ Miscs
 [ ] add a theme changer down below
 [ ] make buttons and themes better
 [ ] private and public collections
+
+Things i have to work on :
+
+1. Finish this bukmarks project --> make extension for it --> make whatsapp service for it
+2. Portfolio website
+3. Finish web3 project issue-tracker
+4. 4 projects for web3 hackathon
+5. learn and build something using tailwind css and next.js and framer motion
+6. web3 cohort by harkirat

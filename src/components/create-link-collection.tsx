@@ -26,7 +26,7 @@ export function CreateLinkCollection() {
     if (collectionName.trim()) {
       const collectionCreated = await createCollection(collectionName);
       if (collectionCreated) {
-        router.push(`?list=${encodeURIComponent(collectionName)}`);
+        router.push(`?collection=${encodeURIComponent(collectionName)}`);
       }
       console.log("Creating new collection:", collectionName);
     }
