@@ -29,7 +29,10 @@ export function CreateLinkCollection() {
       if (collectionCreated.success) {
         //dispatch event part
         dispatchEvent("collectionAdded", { detail: collectionCreated.data });
-        router.push(`?collection=${encodeURIComponent(collectionName)}`);
+        router.push(
+          `?collection=${encodeURIComponent(collectionCreated.data[0].id)}`
+        );
+        console.log("Collection created:", collectionCreated.data);
       }
       console.log("Creating new collection:", collectionName);
     }

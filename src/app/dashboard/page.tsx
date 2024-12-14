@@ -21,14 +21,14 @@ export default async function Page({
 }) {
   const searchParamsData = await searchParams;
   const activeItem = searchParamsData.item as string;
-  const activeCollection = searchParamsData.collection as string;
+  const activeCollectionId = searchParamsData.collectionId as string;
   const activeSecondary = searchParamsData.secondary as string;
 
   return (
     <SidebarProvider>
       <AppSidebar
         activeItem={activeItem}
-        activeCollection={activeCollection}
+        activeCollectionId={activeCollectionId}
         activeSecondary={activeSecondary}
       />
       <SidebarInset>
@@ -40,7 +40,7 @@ export default async function Page({
               <BreadcrumbLink>
                 <BreadcrumbItem>
                   <BreadcrumbPage className="line-clamp-1">
-                    {activeItem || activeCollection || activeSecondary}
+                    {activeItem || activeCollectionId || activeSecondary}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbLink>
@@ -52,7 +52,7 @@ export default async function Page({
         </header>
         <ContentArea
           activeItem={activeItem}
-          activeCollection={activeCollection}
+          activeCollectionId={activeCollectionId}
           activeSecondary={activeSecondary}
         />
       </SidebarInset>

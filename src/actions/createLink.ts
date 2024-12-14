@@ -33,7 +33,7 @@ export async function createLink(
     userId,
   };
 
-  const createdLink = await db.insert(linkTable).values(link);
+  const createdLink = await db.insert(linkTable).values(link).returning();
 
   console.log("Link created:", createdLink);
 

@@ -30,7 +30,7 @@ import { useEffect, useState } from "react";
 import { listenEvent } from "@/hooks/add-collection-event";
 
 interface NavCollectionProps {
-  activeCollection?: string;
+  activeCollectionId?: string;
 }
 
 interface Collection {
@@ -42,7 +42,7 @@ interface Collection {
   updatedAt: Date;
 }
 
-export function NavCollection({ activeCollection }: NavCollectionProps) {
+export function NavCollection({ activeCollectionId }: NavCollectionProps) {
   const { isMobile } = useSidebar();
 
   const [collections, setCollections] = useState<Collection[] | null>(null);
@@ -98,10 +98,10 @@ export function NavCollection({ activeCollection }: NavCollectionProps) {
           <SidebarMenuItem key={item.id}>
             <SidebarMenuButton
               asChild
-              isActive={item.name === activeCollection}
+              isActive={item.id === activeCollectionId}
             >
               <Link
-                href={`?collection=${encodeURIComponent(item.name)}`}
+                href={`?collection=${encodeURIComponent(item.id)}`}
                 title={item.name}
               >
                 <span>{item.name}</span>

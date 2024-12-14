@@ -128,13 +128,13 @@ const data = {
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   activeItem: string;
-  activeCollection?: string;
+  activeCollectionId?: string;
   activeSecondary?: string;
 }
 
 export function AppSidebar({
   activeItem,
-  activeCollection,
+  activeCollectionId,
   activeSecondary,
   ...props
 }: AppSidebarProps) {
@@ -148,7 +148,7 @@ export function AppSidebar({
         <NavMain items={data.navMain} activeItem={activeItem} />
       </SidebarHeader>
       <SidebarContent>
-        <NavCollection activeCollection={activeCollection} />
+        <NavCollection activeCollectionId={activeCollectionId} />
         <NavSecondary
           items={data.navSecondary}
           className="mt-auto"

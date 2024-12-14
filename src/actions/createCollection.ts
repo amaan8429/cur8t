@@ -15,15 +15,14 @@ export async function createCollection(collectionName: string) {
     return { error: "Collection name is required" };
   }
 
-  const collection = {
-    name: collectionName,
-    userId: userId,
-    url: "",
-  };
-
   const createdCollection = await db
     .insert(linkCollectionTable)
-    .values(collection);
+    .values({
+      name: collectionName,
+      userId: userId,
+      url: "",
+    })
+    .returning();
 
   console.log("Collection created:", createdCollection);
 
