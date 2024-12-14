@@ -16,15 +16,16 @@ export async function createCollection(collectionName: string) {
   }
 
   const collection = {
-    id: Date.now().toString(),
     name: collectionName,
     userId: userId,
     url: "",
   };
 
-  await db.insert(linkCollectionTable).values(collection);
+  const createdCollection = await db
+    .insert(linkCollectionTable)
+    .values(collection);
 
-  console.log("Collection created:", collection);
+  console.log("Collection created:", createdCollection);
 
-  return { success: true, data: collection };
+  return { success: true, data: createdCollection };
 }

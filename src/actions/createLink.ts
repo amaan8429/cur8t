@@ -26,14 +26,16 @@ export async function createLink(
     return { error: "Link URL is required" };
   }
 
-  await db.insert(linkTable).values({
+  const link = {
     title: linkName,
     url: linkUrl,
     linkCollectionId,
     userId,
-  });
+  };
 
-  console.log("Link created:", linkName);
+  const createdLink = await db.insert(linkTable).values(link);
 
-  return { success: true };
+  console.log("Link created:", createdLink);
+
+  return { success: true, data: createdLink };
 }
