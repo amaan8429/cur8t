@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { createCollection } from "@/actions/createCollection";
+import { dispatchEvent } from "@/hooks/add-collection-event";
 
 export function CreateLinkCollection() {
   const [collectionName, setCollectionName] = React.useState("");
@@ -26,6 +27,8 @@ export function CreateLinkCollection() {
     if (collectionName.trim()) {
       const collectionCreated = await createCollection(collectionName);
       if (collectionCreated.success) {
+        //dispatch event part
+        dispatchEvent("collectionAdded", { detail: collectionCreated.data });
         router.push(`?collection=${encodeURIComponent(collectionName)}`);
       }
       console.log("Creating new collection:", collectionName);

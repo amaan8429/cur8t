@@ -27,6 +27,7 @@ import {
 import Link from "next/link";
 import { getCollections } from "@/actions/getCollections";
 import { useEffect, useState } from "react";
+import { listenEvent } from "@/hooks/add-collection-event";
 
 interface NavCollectionProps {
   activeCollection?: string;
@@ -46,6 +47,7 @@ export function NavCollection({ activeCollection }: NavCollectionProps) {
 
   const [collections, setCollections] = useState<Collection[] | null>(null);
 
+  //mounting useEffect
   useEffect(() => {
     async function fetchCollections() {
       const data = await getCollections();
@@ -58,6 +60,18 @@ export function NavCollection({ activeCollection }: NavCollectionProps) {
       }
     }
     fetchCollections();
+  }, []);
+
+  //listen for collection creation
+  useEffect(() => {
+    const cleanup = listenEvent<Collection>(
+      "collectionAdded",
+      (newCollection) => {
+        setCollections((prev) => [...(prev || []), newCollection]);
+      }
+    );
+
+    return cleanup; // Cleanup listener on unmount
   }, []);
 
   if (!collections) {
@@ -81,7 +95,7 @@ export function NavCollection({ activeCollection }: NavCollectionProps) {
       <SidebarGroupLabel>Collections</SidebarGroupLabel>
       <SidebarMenu>
         {collections.map((item) => (
-          <SidebarMenuItem key={item.name}>
+          <SidebarMenuItem key={item.id}>
             <SidebarMenuButton
               asChild
               isActive={item.name === activeCollection}
