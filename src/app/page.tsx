@@ -1,11 +1,17 @@
-import { Navbar } from "@/components/navbar";
+// import { Navbar } from "@/components/navbar";
+import Hero from "@/components/hero";
+import Tweets from "@/components/Tweets";
 import React from "react";
 
 const Home = () => {
   return (
-    <>
-      <Navbar />
-    </>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+      <Hero />
+      <Tweets />
+      {/* <Logos />
+      <Features />
+      <PricingTable /> */}
+    </div>
   );
 };
 
