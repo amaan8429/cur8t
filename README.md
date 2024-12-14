@@ -4,6 +4,11 @@ Tasks
 - [x] add loader there
 - [ ] add emoji to the collection
 - [ ] manage data on the other components so when a new collection is added , it is shown on the navigation area
+- [ ] hero section made
+- [ ] custum theme and font setup
+- [ ] add a tweet section
+- [ ] add a usage section
+- [ ] add a footer
 - [ ] cache the data on the navCollection
 - [ ] add error handling on there to reload or fetch again
 - [ ] do something with more button - 2 more button are there
