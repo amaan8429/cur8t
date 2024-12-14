@@ -50,7 +50,12 @@ export function NavCollection({ activeCollection }: NavCollectionProps) {
     async function fetchCollections() {
       const data = await getCollections();
       console.log(data);
-      setCollections(data);
+      if ("error" in data) {
+        console.error(data.error);
+        setCollections([]);
+      } else {
+        setCollections(data.data);
+      }
     }
     fetchCollections();
   }, []);

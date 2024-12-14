@@ -26,5 +26,8 @@ export async function getLinks(linkCollectionId: string) {
       )
     );
 
-  return links;
+  return {
+    success: true,
+    data: links,
+  };
 }
