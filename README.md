@@ -14,6 +14,22 @@ Tasks
 - [ ] do something with more button - 2 more button are there
 - [x] collection page setup on the content area
 - [ ] collection page ui make better
+- [ ] integrate zod
+
+UI to add and change in the collection page
+
+- [ ] toasters and loader - see below
+- [ ] add link button location
+- [ ] update the collection name
+- [ ] delete the collection
+- [ ] dialog box to delete the link
+- [ ] dialog box to delete the collection
+- [ ] make the ui better using suspense and stuff
+- [ ] edit the name of links and urls
+- [ ] table format for the links
+- [ ] export the collection in different formats - json , csv , pdf
+- [ ] sharable link for the collection
+- [ ] public , private and protected collection
 
 tosters and loaders
 
