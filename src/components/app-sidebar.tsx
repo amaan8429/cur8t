@@ -25,6 +25,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { Separator } from "./ui/separator";
 
 // This is sample data.
 const data = {
@@ -147,8 +148,10 @@ export function AppSidebar({
         />
         <NavMain items={data.navMain} activeItem={activeItem} />
       </SidebarHeader>
+      <Separator />
       <SidebarContent>
         <NavCollection activeCollectionId={activeCollectionId} />
+        <Separator />
         <NavSecondary
           items={data.navSecondary}
           className="mt-auto"

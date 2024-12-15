@@ -4,16 +4,27 @@ Tasks
 - [x] add loader there
 - [ ] add emoji to the collection
 - [ ] manage data on the other components so when a new collection is added , it is shown on the navigation area
-- [ ] hero section made
-- [ ] custum theme and font setup
+- [x] hero section made
+- [x] custum theme and font setup
 - [ ] add a tweet section
 - [ ] add a usage section
 - [ ] add a footer
 - [ ] cache the data on the navCollection
 - [ ] add error handling on there to reload or fetch again
 - [ ] do something with more button - 2 more button are there
-- [ ] collection page setup on the content area
+- [x] collection page setup on the content area
 - [ ] collection page ui make better
+
+tosters and loaders
+
+- [ ] add a toast on the collection page when a new collection is added
+- [ ] add a toast on the collection page when a new bookmark is added
+- [ ] add a toast on the collection page when a new bookmark is deleted
+- [ ] add a toast on the collection page when a new collection is deleted
+- [ ] add a loader on the collection page when the data is being fetched
+- [ ] add a loader on the collection page when the data is being deleted
+- [ ] add a loader on the collection page when the data is being added
+- [ ] add a loader on the collection page when the data is being updated
 
 Miscs
 

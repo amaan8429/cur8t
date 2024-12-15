@@ -1,4 +1,5 @@
 import { AddBukmarkPage } from "./add-bukmark";
+import { AddLinksToCollection } from "./add-links-in-collection";
 
 interface ContentAreaProps {
   activeItem: string;
@@ -43,14 +44,7 @@ export function ContentArea({
         </div>
       )}
       {activeCollectionId && (
-        <div>
-          <h3 className="text-xl font-semibold mb-2">
-            Collection: {activeCollectionId}
-          </h3>
-          <p>
-            This is the content for your favorite item: {activeCollectionId}
-          </p>
-        </div>
+        <AddLinksToCollection collectionId={activeCollectionId} />
       )}
       {activeSecondary && (
         <div>

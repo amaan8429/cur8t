@@ -64,10 +64,10 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
 
   //listen for collection creation
   useEffect(() => {
-    const cleanup = listenEvent<Collection>(
+    const cleanup = listenEvent(
       "collectionAdded",
-      (newCollection) => {
-        setCollections((prev) => [...(prev || []), newCollection]);
+      (newCollection: { detail: Collection }) => {
+        setCollections((prev) => [...(prev || []), newCollection.detail]);
       }
     );
 
@@ -94,17 +94,17 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Collections</SidebarGroupLabel>
       <SidebarMenu>
-        {collections.map((item) => (
-          <SidebarMenuItem key={item.id}>
+        {collections.map((collection) => (
+          <SidebarMenuItem key={collection.id}>
             <SidebarMenuButton
               asChild
-              isActive={item.id === activeCollectionId}
+              isActive={collection.id === activeCollectionId}
             >
               <Link
-                href={`?collection=${encodeURIComponent(item.id)}`}
-                title={item.name}
+                href={`?collectionId=${encodeURIComponent(collection.id)}`}
+                title={collection.name}
               >
-                <span>{item.name}</span>
+                <span>{collection.name}</span>
               </Link>
             </SidebarMenuButton>
             <DropdownMenu>
@@ -137,12 +137,6 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
             </DropdownMenu>
           </SidebarMenuItem>
         ))}
-        <SidebarMenuItem>
-          <SidebarMenuButton className="text-sidebar-foreground/70">
-            <MoreHorizontal />
-            <span>More</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
       </SidebarMenu>
     </SidebarGroup>
   );

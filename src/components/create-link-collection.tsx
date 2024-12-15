@@ -28,9 +28,10 @@ export function CreateLinkCollection() {
       const collectionCreated = await createCollection(collectionName);
       if (collectionCreated.success) {
         //dispatch event part
-        dispatchEvent("collectionAdded", { detail: collectionCreated.data });
+        console.log("Dispatching event data" + collectionCreated.data);
+        dispatchEvent("collectionAdded", { detail: collectionCreated.data[0] });
         router.push(
-          `?collection=${encodeURIComponent(collectionCreated.data[0].id)}`
+          `?collectionId=${encodeURIComponent(collectionCreated.data[0].id)}`
         );
         console.log("Collection created:", collectionCreated.data);
       }

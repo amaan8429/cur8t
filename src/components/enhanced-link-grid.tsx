@@ -15,13 +15,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface Link {
   id: string;
-  title: string;
+  userId: string;
   url: string;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  linkCollectionId: string;
 }
 
 interface EnhancedLinkGridProps {
-  initialLinks: Link[];
-  refreshLinks: () => void;
+  links: Link[];
   onDeleteLink: (id: string) => void;
 }
 
@@ -31,19 +34,16 @@ function truncateUrl(url: string, maxLength: number = 30): string {
 }
 
 export function EnhancedLinkGrid({
-  initialLinks,
-  refreshLinks,
+  links,
   onDeleteLink,
 }: EnhancedLinkGridProps) {
-  const [links, setLinks] = React.useState<Link[]>(initialLinks);
+  if (!links) {
+    return <div>Loading...</div>;
+  }
 
-  React.useEffect(() => {
-    setLinks(initialLinks);
-  }, [initialLinks]);
-
-  const handleDelete = (id: string) => {
-    onDeleteLink(id);
-  };
+  if (links.length === 0) {
+    return <div>No links found</div>;
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -84,7 +84,7 @@ export function EnhancedLinkGrid({
             <Button
               variant="destructive"
               size="sm"
-              onClick={() => handleDelete(link.id)}
+              onClick={() => onDeleteLink(link.id)}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
