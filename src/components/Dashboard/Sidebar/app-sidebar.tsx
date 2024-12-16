@@ -15,17 +15,17 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { NavCollection } from "@/components/nav-collections";
-import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
-import { LogoNameDisplay } from "@/components/logo-name-display";
+import { NavCollection } from "@/components/Dashboard/Sidebar/nav-collections";
+import { NavMain } from "@/components/Dashboard/Sidebar/nav-main";
+import { NavSecondary } from "@/components/Dashboard/Sidebar/nav-secondary";
+import { LogoNameDisplay } from "@/components/Dashboard/Sidebar/logo-name-display";
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Separator } from "./ui/separator";
+import { Separator } from "../../ui/separator";
 
 // This is sample data.
 const data = {

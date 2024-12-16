@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { AddLinkForm } from "@/components/add-link-form";
-import { EnhancedLinkGrid } from "@/components/enhanced-link-grid";
+import { EnhancedLinkGrid } from "@/components/SingleCollection/enhanced-link-grid";
 import { addLink, deleteLink } from "@/actions/link-actions";
 import { getLinks } from "@/actions/getLinks";
 import { useState, useEffect } from "react";

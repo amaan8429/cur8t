@@ -1,5 +1,5 @@
-import { AppSidebar } from "@/components/app-sidebar";
-import { ContentArea } from "@/components/content-area";
+import { AppSidebar } from "@/components/Dashboard/Sidebar/app-sidebar";
+import { ContentArea } from "@/components/Dashboard/content-area";
 import { NavActions } from "@/components/nav-actions";
 import {
   Breadcrumb,

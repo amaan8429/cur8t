@@ -1,5 +1,5 @@
-import { AddBukmarkPage } from "./add-bukmark";
-import { AddLinksToCollection } from "./add-links-in-collection";
+import { AddBukmarkPage } from "./CollectionCreation/add-bukmark";
+import { AddLinksToCollection } from "../SingleCollection/add-links-in-collection";
 
 interface ContentAreaProps {
   activeItem: string;

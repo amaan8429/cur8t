@@ -1,6 +1,6 @@
 // import { Navbar } from "@/components/navbar";
-import Hero from "@/components/hero";
-import Tweets from "@/components/Tweets";
+import Hero from "@/components/LandingPage/hero";
+import Tweets from "@/components/LandingPage/tweets";
 import React from "react";
 
 const Home = () => {

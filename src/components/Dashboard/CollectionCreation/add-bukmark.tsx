@@ -1,4 +1,4 @@
-import { CreateLinkCollection } from "@/components/create-link-collection";
+import { CreateLinkCollection } from "@/components/Dashboard/CollectionCreation/create-link-collection";
 
 export function AddBukmarkPage() {
   return (

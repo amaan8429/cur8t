@@ -19,10 +19,10 @@ Tasks
 UI to add and change in the collection page
 
 - [ ] toasters and loader - see below
-- [ ] add link button location
+- [ ] add link button location change karo
 - [ ] update the collection name
 - [ ] delete the collection
-- [ ] dialog box to delete the link
+- [x] dialog box to delete the link
 - [ ] dialog box to delete the collection
 - [ ] make the ui better using suspense and stuff
 - [ ] edit the name of links and urls
