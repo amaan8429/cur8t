@@ -1,6 +1,6 @@
 "use client";
 
-import { LinkIcon, MoreHorizontal, StarOff, Trash2 } from "lucide-react";
+import { LinkIcon, MoreHorizontal } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -18,22 +18,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+
 import Link from "next/link";
 import { getCollections } from "@/actions/getCollections";
 import { useEffect, useState } from "react";
 import { listenEvent } from "@/hooks/add-collection-event";
 import { DeleteCollection } from "@/actions/deleteCollection";
+import ChangeVisiblity from "./change-visiblity";
+import DeleteCollectionOption from "./delete-collection";
 
 interface NavCollectionProps {
   activeCollectionId?: string;
@@ -170,56 +162,24 @@ export function NavCollection({
                   </SidebarMenuAction>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-32 rounded-sm"
+                  className="w-56 rounded-lg"
                   side={isMobile ? "bottom" : "right"}
                   align={isMobile ? "end" : "start"}
                 >
-                  <AlertDialog>
-                    <DropdownMenuItem
-                      onSelect={(e) => {
-                        e.preventDefault();
-                        setCollectionToDelete(collection.id);
-                      }}
-                    >
-                      <AlertDialogTrigger asChild>
-                        <div className="flex items-center">
-                          <Trash2 className="mr-2 text-muted-foreground" />
-                          <span>Delete</span>
-                        </div>
-                      </AlertDialogTrigger>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onSelect={(e) => {
-                        e.preventDefault();
-                        setCollectionToDelete(collection.id);
-                      }}
-                    >
-                      <AlertDialogTrigger asChild>
-                        <div className="flex items-center">
-                          <Trash2 className="mr-2 text-muted-foreground" />
-                          <span>Delete</span>
-                        </div>
-                      </AlertDialogTrigger>
-                    </DropdownMenuItem>
-
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Collection</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you sure you want to delete the collection &quot;
-                          {collection.name}&quot;? This action cannot be undone
-                          and will remove all links in this collection.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDeleteCollection}>
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <ChangeVisiblity />
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <div className="flex items-center">
+                      <LinkIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <span>Copy Link</span>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DeleteCollectionOption
+                    collection={collection}
+                    setCollectionToDelete={setCollectionToDelete}
+                    handleDeleteCollection={handleDeleteCollection}
+                  />
                 </DropdownMenuContent>
               </DropdownMenu>
             </SidebarMenuItem>
