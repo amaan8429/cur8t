@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { AddLinkForm } from "@/components/add-link-form";
 import { EnhancedLinkGrid } from "@/components/SingleCollection/enhanced-link-grid";
-import { addLink, deleteLink } from "@/actions/link-actions";
+import { addLink, deleteLink, updateLink } from "@/actions/link-actions";
 import { getLinks } from "@/actions/getLinks";
 import { useState, useEffect } from "react";
 
@@ -44,9 +44,9 @@ export function AddLinksToCollection({
       const data = await getLinks(collectionId);
       if ("error" in data) {
         console.error(data.error);
-        setLinks([]); // Clear links if there’s an error
+        setLinks([]);
       } else {
-        setLinks(data.data); // Update state with the new list of links
+        setLinks(data.data);
       }
     } catch (error) {
       console.error("Failed to refresh links:", error);
@@ -54,7 +54,7 @@ export function AddLinksToCollection({
   };
 
   useEffect(() => {
-    refreshLinks(); // Load links when the component mounts
+    refreshLinks();
   }, [collectionId]);
 
   interface handleLinkProps {
@@ -64,22 +64,35 @@ export function AddLinksToCollection({
 
   const handleLinkAdded = async (newLink: handleLinkProps) => {
     try {
-      await addLink(newLink, collectionId); // Add link to the database
-      refreshLinks(); // Refresh the links in the grid
-      setIsOpen(false); // Close the dialog
+      await addLink(newLink, collectionId);
+      refreshLinks();
+      setIsOpen(false);
     } catch (error) {
       console.error("Failed to add link:", error);
-      alert("Could not add the link. Please try again."); // Notify the user
+      alert("Could not add the link. Please try again.");
     }
   };
 
   const handleDeleteLink = async (id: string) => {
     try {
-      await deleteLink(id); // Delete the link from the database
-      refreshLinks(); // Refresh the links in the grid
+      await deleteLink(id);
+      refreshLinks();
     } catch (error) {
       console.error("Failed to delete link:", error);
       alert("Could not delete the link. Please try again.");
+    }
+  };
+
+  const handleUpdateLink = async (
+    id: string,
+    data: { title?: string; url?: string }
+  ) => {
+    try {
+      await updateLink(id, data);
+      refreshLinks();
+    } catch (error) {
+      console.error("Failed to update link:", error);
+      alert("Could not update the link. Please try again.");
     }
   };
 
@@ -102,7 +115,11 @@ export function AddLinksToCollection({
             <AddLinkForm onLinkAdded={handleLinkAdded} />
           </DialogContent>
         </Dialog>
-        <EnhancedLinkGrid links={links} onDeleteLink={handleDeleteLink} />
+        <EnhancedLinkGrid
+          links={links}
+          onDeleteLink={handleDeleteLink}
+          onUpdateLink={handleUpdateLink}
+        />
       </div>
     </main>
   );

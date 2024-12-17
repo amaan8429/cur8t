@@ -3,7 +3,11 @@ Tasks
 - [x] fetch data on the navCollection
 - [x] add loader there
 - [ ] add emoji to the collection
-- [ ] manage data on the other components so when a new collection is added , it is shown on the navigation area
+- [x] manage data on the other components so when a new collection is added , it is shown on the navigation area
+- [ ] when dashboard is directly opened to the collection page , the data is not fetched on the navCollection
+- [ ] add a loader on the collection page until the data is being fetched
+- [ ] sequence should not change when a link is edited
+- [ ] new collections or edited collections should be at the top
 - [x] hero section made
 - [x] custum theme and font setup
 - [ ] add a tweet section
@@ -25,7 +29,7 @@ UI to add and change in the collection page
 - [x] dialog box to delete the link
 - [x] dialog box to delete the collection
 - [ ] make the ui better using suspense and stuff
-- [ ] edit the name of links and urls
+- [x] edit the name of links and urls
 - [ ] table format for the links
 - [ ] export the collection in different formats - json , csv , pdf
 - [x] sharable link for the collection

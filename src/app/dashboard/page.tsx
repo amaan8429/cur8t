@@ -1,3 +1,4 @@
+import { getSingleCollectionName } from "@/actions/getSingleCollectionName";
 import { AppSidebar } from "@/components/Dashboard/Sidebar/app-sidebar";
 import { ContentArea } from "@/components/Dashboard/content-area";
 import { NavActions } from "@/components/nav-actions";
@@ -24,6 +25,10 @@ export default async function Page({
   const activeCollectionId = searchParamsData.collectionId as string;
   const activeSecondary = searchParamsData.secondary as string;
 
+  const activeCollectionName = await getSingleCollectionName(
+    activeCollectionId
+  );
+
   return (
     <SidebarProvider>
       <AppSidebar
@@ -40,7 +45,7 @@ export default async function Page({
               <BreadcrumbLink>
                 <BreadcrumbItem>
                   <BreadcrumbPage className="line-clamp-1">
-                    {activeItem || activeCollectionId || activeSecondary}
+                    {activeItem || activeCollectionName || activeSecondary}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbLink>

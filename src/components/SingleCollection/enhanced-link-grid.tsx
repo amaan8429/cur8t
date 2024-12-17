@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Trash2, Globe } from "lucide-react";
-
+import { Trash2, Globe, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -23,6 +23,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
 
 interface Link {
   id: string;
@@ -37,6 +46,7 @@ interface Link {
 interface EnhancedLinkGridProps {
   links: Link[];
   onDeleteLink: (id: string) => void;
+  onUpdateLink: (id: string, data: { title?: string; url?: string }) => void;
 }
 
 function truncateUrl(url: string, maxLength: number = 30): string {
@@ -47,8 +57,13 @@ function truncateUrl(url: string, maxLength: number = 30): string {
 export function EnhancedLinkGrid({
   links,
   onDeleteLink,
+  onUpdateLink,
 }: EnhancedLinkGridProps) {
   const [linkToDelete, setLinkToDelete] = React.useState<string | null>(null);
+  const [editingLink, setEditingLink] = React.useState<Link | null>(null);
+  const [newTitle, setNewTitle] = React.useState("");
+  const [newUrl, setNewUrl] = React.useState("");
+  const [open, setOpen] = React.useState(false);
 
   if (!links) {
     return <div>Loading...</div>;
@@ -62,6 +77,26 @@ export function EnhancedLinkGrid({
     if (linkToDelete) {
       onDeleteLink(linkToDelete);
       setLinkToDelete(null);
+    }
+  };
+
+  const handleEditClick = (link: Link) => {
+    setEditingLink(link);
+    setNewTitle(link.title);
+    setNewUrl(link.url);
+  };
+
+  const handleUpdateConfirm = () => {
+    if (editingLink) {
+      const updates: { title?: string; url?: string } = {};
+      if (newTitle !== editingLink.title) updates.title = newTitle;
+      if (newUrl !== editingLink.url) updates.url = newUrl;
+
+      if (Object.keys(updates).length > 0) {
+        onUpdateLink(editingLink.id, updates);
+      }
+      setEditingLink(null);
+      setOpen(false);
     }
   };
 
@@ -95,13 +130,57 @@ export function EnhancedLinkGrid({
               </a>
             </CardContent>
             <CardFooter className="justify-between">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => window.open(link.url, "_blank")}
-              >
-                Visit
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.open(link.url, "_blank")}
+                >
+                  Visit
+                </Button>
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEditClick(link)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Edit Link</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid gap-2">
+                        <label htmlFor="title">Title</label>
+                        <Input
+                          id="title"
+                          value={newTitle}
+                          onChange={(e) => setNewTitle(e.target.value)}
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <label htmlFor="url">URL</label>
+                        <Input
+                          id="url"
+                          value={newUrl}
+                          onChange={(e) => setNewUrl(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                      <Button onClick={handleUpdateConfirm}>
+                        Save Changes
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button

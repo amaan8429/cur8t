@@ -58,3 +58,41 @@ export async function deleteLink(id: string) {
 
   return { success: true };
 }
+
+export async function updateLink(
+  id: string,
+  data: {
+    title?: string;
+    url?: string;
+  }
+) {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return { error: "User not found" };
+  }
+
+  if (!id) {
+    return { error: "Link ID is required" };
+  }
+
+  try {
+    const updatedLink = await db
+      .update(linkTable)
+      .set({
+        title: data.title,
+        url: data.url,
+      })
+      .where(and(eq(linkTable.id, id), eq(linkTable.userId, userId)))
+      .returning();
+
+    console.log("Link updated:", updatedLink);
+
+    revalidatePath("/dashboard");
+
+    return { success: true, data: updatedLink };
+  } catch (error) {
+    console.error("Failed to update link:", error);
+    return { error: "Failed to update" };
+  }
+}
