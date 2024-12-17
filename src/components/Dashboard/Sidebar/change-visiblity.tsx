@@ -31,9 +31,16 @@ import {
 } from "@/components/ui/form";
 import { StarOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ChangeCollectionVisiblity } from "@/actions/changeCollectionVisi";
+import { dispatchCollectionUpdatedEvent } from "@/hooks/collection-visiblity-chang-event";
 
-const ChangeVisibility = () => {
-  // Define the form schema
+const ChangeVisibility = ({
+  collectionId,
+  collectionVisiblity,
+}: {
+  collectionId: string;
+  collectionVisiblity: string;
+}) => {
   const FormSchema = z.object({
     visibility: z.string().nonempty({
       message: "Please select a visibility option",
@@ -44,14 +51,40 @@ const ChangeVisibility = () => {
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      visibility: "",
+      visibility: collectionVisiblity,
     },
   });
 
+  interface data {
+    visibility: string;
+  }
+
   // Handle form submission
-  const onSubmit = (data) => {
-    // TODO: Implement actual visibility change logic
-    console.log("Visibility changed:", data.visibility);
+  const onSubmit = async (data: data) => {
+    console.log("Form data:", data);
+    console.log("Visibility change req to:", data.visibility);
+    console.log("CollectionVisiblty currently:", collectionVisiblity);
+    try {
+      if (collectionVisiblity === data.visibility) {
+        console.log("Visibility is already set to this value");
+        alert("Visibility is already set to this value");
+        return;
+      }
+      const response = await ChangeCollectionVisiblity(
+        collectionId,
+        data.visibility
+      );
+
+      if (response.success) {
+        dispatchCollectionUpdatedEvent(collectionId, {
+          visiblity: data.visibility,
+        });
+        alert("Visibility changed successfully");
+      }
+    } catch (error) {
+      console.error("Error changing visibility:", error);
+      alert("Error changing visibility");
+    }
   };
 
   return (

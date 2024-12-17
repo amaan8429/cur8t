@@ -19,6 +19,7 @@ export const linkCollectionTable = pgTable("link_collection", {
   updatedAt: timestamp("updated_at")
     .notNull()
     .$onUpdate(() => new Date()),
+  visiblity: text("visibility").notNull().default("private"),
 });
 
 // Define the link table (single link)

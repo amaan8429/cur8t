@@ -26,6 +26,7 @@ import { listenEvent } from "@/hooks/add-collection-event";
 import { DeleteCollection } from "@/actions/deleteCollection";
 import ChangeVisiblity from "./change-visiblity";
 import DeleteCollectionOption from "./delete-collection";
+import { useCollectionEvent } from "@/hooks/collection-visiblity-chang-event";
 
 interface NavCollectionProps {
   activeCollectionId?: string;
@@ -39,6 +40,7 @@ interface Collection {
   url: string;
   createdAt: Date;
   updatedAt: Date;
+  visiblity: string;
 }
 
 export function NavCollection({
@@ -78,6 +80,19 @@ export function NavCollection({
 
     return cleanup; // Cleanup listener on unmount
   }, []);
+
+  useCollectionEvent("collectionUpdated", (event) => {
+    const updatedCollection = event.detail;
+    setCollections((prev) =>
+      prev
+        ? prev.map((collection) =>
+            collection.id === updatedCollection.id
+              ? { ...collection, ...updatedCollection }
+              : collection
+          )
+        : []
+    );
+  });
 
   const handleDeleteCollection = async () => {
     if (!collectionToDelete) return;
@@ -166,7 +181,10 @@ export function NavCollection({
                   side={isMobile ? "bottom" : "right"}
                   align={isMobile ? "end" : "start"}
                 >
-                  <ChangeVisiblity />
+                  <ChangeVisiblity
+                    collectionId={collection.id}
+                    collectionVisiblity={collection.visiblity}
+                  />
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <div className="flex items-center">
