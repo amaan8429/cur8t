@@ -27,6 +27,7 @@ import { DeleteCollection } from "@/actions/deleteCollection";
 import ChangeVisiblity from "./change-visiblity";
 import DeleteCollectionOption from "./delete-collection";
 import { useCollectionEvent } from "@/hooks/collection-visiblity-chang-event";
+import CopyCollectionLink from "./copy-collection-link";
 
 interface NavCollectionProps {
   activeCollectionId?: string;
@@ -186,12 +187,7 @@ export function NavCollection({
                     collectionVisiblity={collection.visiblity}
                   />
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <div className="flex items-center">
-                      <LinkIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-                      <span>Copy Link</span>
-                    </div>
-                  </DropdownMenuItem>
+                  <CopyCollectionLink collectionId={collection.id} />
                   <DropdownMenuSeparator />
                   <DeleteCollectionOption
                     collection={collection}

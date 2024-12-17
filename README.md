@@ -21,15 +21,17 @@ UI to add and change in the collection page
 - [ ] toasters and loader - see below
 - [ ] add link button location change karo
 - [ ] update the collection name
-- [ ] delete the collection
+- [x] delete the collection
 - [x] dialog box to delete the link
-- [ ] dialog box to delete the collection
+- [x] dialog box to delete the collection
 - [ ] make the ui better using suspense and stuff
 - [ ] edit the name of links and urls
 - [ ] table format for the links
 - [ ] export the collection in different formats - json , csv , pdf
-- [ ] sharable link for the collection
+- [x] sharable link for the collection
 - [ ] public , private and protected collection
+- [ ] remove the url from the schema
+- [ ] adding people to protected collection
 
 tosters and loaders
 
