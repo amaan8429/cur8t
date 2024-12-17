@@ -28,6 +28,7 @@ import ChangeVisiblity from "./change-visiblity";
 import DeleteCollectionOption from "./delete-collection";
 import { useCollectionEvent } from "@/hooks/collection-visiblity-chang-event";
 import CopyCollectionLink from "./copy-collection-link";
+import ChangeCollectionName from "./change-collection-name";
 
 interface NavCollectionProps {
   activeCollectionId?: string;
@@ -188,6 +189,8 @@ export function NavCollection({
                   />
                   <DropdownMenuSeparator />
                   <CopyCollectionLink collectionId={collection.id} />
+                  <DropdownMenuSeparator />
+                  <ChangeCollectionName />
                   <DropdownMenuSeparator />
                   <DeleteCollectionOption
                     collection={collection}
