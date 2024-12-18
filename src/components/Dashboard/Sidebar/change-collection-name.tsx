@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { dispatchCollectionNameChangedEvent } from "@/hooks/change-collection-name";
 import { EditIcon } from "lucide-react";
 import React from "react";
 
@@ -33,6 +34,7 @@ const ChangeCollectionName = ({
       const response = await ChangeCollection(collectionId, data.title);
 
       if (response.success) {
+        dispatchCollectionNameChangedEvent(collectionId, data.title); // Dispatch event
         setOpen(false);
       }
     } catch (error) {

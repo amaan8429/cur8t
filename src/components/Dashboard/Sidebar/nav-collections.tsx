@@ -29,6 +29,7 @@ import DeleteCollectionOption from "./delete-collection";
 import { useCollectionEvent } from "@/hooks/collection-visiblity-chang-event";
 import CopyCollectionLink from "./copy-collection-link";
 import ChangeCollectionName from "./change-collection-name";
+import { useCollectionNameChangeEvent } from "@/hooks/change-collection-name";
 
 interface NavCollectionProps {
   activeCollectionId?: string;
@@ -91,6 +92,17 @@ export function NavCollection({
             collection.id === updatedCollection.id
               ? { ...collection, ...updatedCollection }
               : collection
+          )
+        : []
+    );
+  });
+
+  useCollectionNameChangeEvent((event) => {
+    const { id, name } = event.detail;
+    setCollections((prev) =>
+      prev
+        ? prev.map((collection) =>
+            collection.id === id ? { ...collection, name } : collection
           )
         : []
     );

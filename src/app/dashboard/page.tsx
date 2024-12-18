@@ -14,6 +14,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useCollectionNameChangeEvent } from "@/hooks/change-collection-name";
 
 export default async function Page({
   searchParams,
