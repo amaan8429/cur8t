@@ -10,5 +10,7 @@ export async function getSingleCollectionName(collectionId: string) {
     .from(linkCollectionTable)
     .where(eq(linkCollectionTable.id, collectionId));
 
+  console.log("Collection name:", collection[0].name);
+
   return collection[0].name;
 }

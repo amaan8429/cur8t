@@ -25,9 +25,11 @@ export default async function Page({
   const activeCollectionId = searchParamsData.collectionId as string;
   const activeSecondary = searchParamsData.secondary as string;
 
-  const activeCollectionName = await getSingleCollectionName(
-    activeCollectionId
-  );
+  let activeCollectionName = "";
+
+  if (activeCollectionId) {
+    activeCollectionName = await getSingleCollectionName(activeCollectionId);
+  }
 
   return (
     <SidebarProvider>

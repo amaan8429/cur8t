@@ -190,7 +190,10 @@ export function NavCollection({
                   <DropdownMenuSeparator />
                   <CopyCollectionLink collectionId={collection.id} />
                   <DropdownMenuSeparator />
-                  <ChangeCollectionName />
+                  <ChangeCollectionName
+                    collectionId={collection.id}
+                    collectionName={collection.name}
+                  />
                   <DropdownMenuSeparator />
                   <DeleteCollectionOption
                     collection={collection}
