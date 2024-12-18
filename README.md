@@ -24,7 +24,8 @@ UI to add and change in the collection page
 
 - [ ] toasters and loader - see below
 - [ ] add link button location change karo
-- [ ] update the collection name
+- [x] update the collection name
+- [x] event handler for the collection name being updated at the nav collection and the breadcrumb
 - [x] delete the collection
 - [x] dialog box to delete the link
 - [x] dialog box to delete the collection
@@ -33,7 +34,8 @@ UI to add and change in the collection page
 - [ ] table format for the links
 - [ ] export the collection in different formats - json , csv , pdf
 - [x] sharable link for the collection
-- [ ] public , private and protected collection
+- [x] public , private and protected collection
+- [ ] protected collection - add people to the collection and they can only view it - how to do this ///
 - [ ] remove the url from the schema
 - [ ] adding people to protected collection
 
