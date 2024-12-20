@@ -33,32 +33,16 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
-interface Link {
-  id: string;
-  userId: string;
-  url: string;
-  createdAt: Date;
-  updatedAt: Date;
-  title: string;
-  linkCollectionId: string;
-}
+import { Link } from "@/types/link";
+import { truncateUrl } from "@/lib/truncate";
 
-interface EnhancedLinkGridProps {
+interface LinkGridProps {
   links: Link[];
   onDeleteLink: (id: string) => void;
   onUpdateLink: (id: string, data: { title?: string; url?: string }) => void;
 }
 
-function truncateUrl(url: string, maxLength: number = 30): string {
-  if (url.length <= maxLength) return url;
-  return url.substring(0, maxLength - 3) + "...";
-}
-
-export function EnhancedLinkGrid({
-  links,
-  onDeleteLink,
-  onUpdateLink,
-}: EnhancedLinkGridProps) {
+export function LinkGrid({ links, onDeleteLink, onUpdateLink }: LinkGridProps) {
   const [linkToDelete, setLinkToDelete] = React.useState<string | null>(null);
   const [editingLink, setEditingLink] = React.useState<Link | null>(null);
   const [newTitle, setNewTitle] = React.useState("");

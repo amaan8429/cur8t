@@ -34,6 +34,7 @@ UI to add and change in the collection page
 - [ ] table format for the links
 - [ ] export the collection in different formats - json , csv , pdf
 - [x] sharable link for the collection
+- [ ] custom url for the collection
 - [x] public , private and protected collection
 - [ ] protected collection - add people to the collection and they can only view it - how to do this ///
 - [ ] remove the url from the schema

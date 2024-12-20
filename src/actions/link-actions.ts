@@ -36,7 +36,7 @@ export async function addLink(data: AddLinkData, collectionId: string) {
     })
     .returning();
 
-  return { success: true, data: newLink };
+  return { success: true, data: newLink[0] };
 }
 
 export async function deleteLink(id: string) {
