@@ -5,7 +5,7 @@ import { linkCollectionTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 
-export async function ChangeCollectionVisiblity(
+export async function ChangeCollectionVisibility(
   collectionId: string,
   visibility: string
 ) {
@@ -22,7 +22,7 @@ export async function ChangeCollectionVisiblity(
   const targetCollection = await db
     .update(linkCollectionTable)
     .set({
-      visiblity: visibility,
+      visibility: visibility,
     })
     .where(
       and(

@@ -19,8 +19,5 @@ export async function getCollections() {
 
   console.log(collections);
 
-  return {
-    success: true,
-    data: collections,
-  };
+  return { data: collections };
 }

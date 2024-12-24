@@ -11,13 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { dispatchCollectionNameChangedEvent } from "@/hooks/change-collection-name";
+import { useCollectionStore } from "@/store/collection-store";
 import { EditIcon } from "lucide-react";
 import React from "react";
-
-interface Data {
-  title: string;
-}
 
 const ChangeCollectionName = ({
   collectionId,
@@ -28,18 +24,11 @@ const ChangeCollectionName = ({
 }) => {
   const [newTitle, setNewTitle] = React.useState(collectionName);
   const [open, setOpen] = React.useState(false);
+  const { updateCollectionName } = useCollectionStore();
 
-  const handleUpdateConfirm = async (data: Data) => {
-    try {
-      const response = await ChangeCollection(collectionId, data.title);
-
-      if (response.success) {
-        dispatchCollectionNameChangedEvent(collectionId, data.title); // Dispatch event
-        setOpen(false);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const handleUpdateConfirm = async (data: { title: string }) => {
+    await updateCollectionName(collectionId, data.title);
+    setOpen(false);
   };
 
   return (

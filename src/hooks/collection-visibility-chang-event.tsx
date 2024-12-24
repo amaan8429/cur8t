@@ -7,7 +7,7 @@ interface Collection {
   url: string;
   createdAt: Date;
   updatedAt: Date;
-  visiblity: string;
+  visibility: string;
 }
 
 // Dispatch a collection added event

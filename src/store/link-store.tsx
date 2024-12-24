@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { FrontendLink, Link } from "@/types/link";
+import { Link } from "@/types/link";
 import { getLinks } from "@/actions/getLinks";
 import { addLink, deleteLink, updateLink } from "@/actions/link-actions";
 

@@ -1,0 +1,102 @@
+import { create } from "zustand";
+import { getCollections } from "@/actions/getCollections";
+import { DeleteCollection } from "@/actions/deleteCollection";
+import { ChangeCollection } from "@/actions/changeCollectionName";
+import { Collection } from "@/types/link";
+import { ChangeCollectionVisibility } from "@/actions/changeCollectionVisi";
+
+interface CollectionStore {
+  collections: Collection[] | null;
+  fetchCollections: () => Promise<void>;
+  updateCollectionVisibility: (
+    collectionId: string,
+    visibility: string
+  ) => Promise<void>;
+  deleteCollection: (collectionId: string) => Promise<void>;
+  updateCollectionName: (
+    collectionId: string,
+    newName: string
+  ) => Promise<void>;
+}
+
+export const useCollectionStore = create<CollectionStore>((set) => ({
+  collections: null,
+
+  // Fetch all collections
+  fetchCollections: async () => {
+    try {
+      const data = await getCollections();
+      if ("error" in data) {
+        console.error(data.error);
+        set({ collections: [] });
+      } else {
+        set({ collections: data.data });
+      }
+    } catch (error) {
+      console.error("Failed to fetch collections:", error);
+      set({ collections: [] });
+    }
+  },
+
+  // Update collection visibility
+  updateCollectionVisibility: async (collectionId, visibility) => {
+    try {
+      const response = await ChangeCollectionVisibility(
+        collectionId,
+        visibility
+      );
+
+      if (response.success) {
+        set((state) => ({
+          collections:
+            state.collections?.map((collection) =>
+              collection.id === collectionId
+                ? { ...collection, visibility }
+                : collection
+            ) || [],
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to update collection visibility:", error);
+    }
+  },
+
+  // Delete a collection
+  deleteCollection: async (collectionId) => {
+    try {
+      const result = await DeleteCollection(collectionId);
+      if ("error" in result) {
+        alert(result.error); // Replace with toast or notification if needed
+        return;
+      }
+      set((state) => ({
+        collections:
+          state.collections?.filter(
+            (collection) => collection.id !== collectionId
+          ) || [],
+      }));
+      alert("Collection deleted successfully");
+    } catch (error) {
+      alert("Failed to delete collection");
+    }
+  },
+
+  // Update collection name
+  updateCollectionName: async (collectionId, newName) => {
+    try {
+      const response = await ChangeCollection(collectionId, newName);
+      if (response.success) {
+        set((state) => ({
+          collections:
+            state.collections?.map((collection) =>
+              collection.id === collectionId
+                ? { ...collection, name: newName }
+                : collection
+            ) || [],
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to update collection name:", error);
+    }
+  },
+}));

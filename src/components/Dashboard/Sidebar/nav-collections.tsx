@@ -1,14 +1,9 @@
 "use client";
 
-import { LinkIcon, MoreHorizontal } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { MoreHorizontal } from "lucide-react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -19,139 +14,46 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-import Link from "next/link";
-import { getCollections } from "@/actions/getCollections";
-import { useEffect, useState } from "react";
-import { listenEvent } from "@/hooks/add-collection-event";
-import { DeleteCollection } from "@/actions/deleteCollection";
-import ChangeVisiblity from "./change-visiblity";
-import DeleteCollectionOption from "./delete-collection";
-import { useCollectionEvent } from "@/hooks/collection-visiblity-chang-event";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import ChangeVisibility from "./change-visibility";
 import CopyCollectionLink from "./copy-collection-link";
+import DeleteCollectionOption from "./delete-collection";
 import ChangeCollectionName from "./change-collection-name";
-import { useCollectionNameChangeEvent } from "@/hooks/change-collection-name";
+import { useCollectionStore } from "@/store/collection-store";
 
 interface NavCollectionProps {
   activeCollectionId?: string;
-  onCollectionDelete?: (collectionId: string) => void;
 }
 
-interface Collection {
-  id: string;
-  name: string;
-  userId: string;
-  url: string;
-  createdAt: Date;
-  updatedAt: Date;
-  visiblity: string;
-}
-
-export function NavCollection({
-  activeCollectionId,
-  onCollectionDelete,
-}: NavCollectionProps) {
+export function NavCollection({ activeCollectionId }: NavCollectionProps) {
   const { isMobile } = useSidebar();
-
-  const [collections, setCollections] = useState<Collection[] | null>(null);
+  const { collections, fetchCollections, deleteCollection } =
+    useCollectionStore();
   const [collectionToDelete, setCollectionToDelete] = useState<string | null>(
     null
   );
 
-  //mounting useEffect
+  // Fetch collections on mount
   useEffect(() => {
-    async function fetchCollections() {
-      const data = await getCollections();
-      console.log(data);
-      if ("error" in data) {
-        console.error(data.error);
-        setCollections([]);
-      } else {
-        setCollections(data.data);
-      }
-    }
     fetchCollections();
-  }, []);
-
-  //listen for collection creation
-  useEffect(() => {
-    const cleanup = listenEvent(
-      "collectionAdded",
-      (newCollection: { detail: Collection }) => {
-        setCollections((prev) => [...(prev || []), newCollection.detail]);
-      }
-    );
-
-    return cleanup; // Cleanup listener on unmount
-  }, []);
-
-  useCollectionEvent("collectionUpdated", (event) => {
-    const updatedCollection = event.detail;
-    setCollections((prev) =>
-      prev
-        ? prev.map((collection) =>
-            collection.id === updatedCollection.id
-              ? { ...collection, ...updatedCollection }
-              : collection
-          )
-        : []
-    );
-  });
-
-  useCollectionNameChangeEvent((event) => {
-    const { id, name } = event.detail;
-    setCollections((prev) =>
-      prev
-        ? prev.map((collection) =>
-            collection.id === id ? { ...collection, name } : collection
-          )
-        : []
-    );
-  });
+  }, [fetchCollections]);
 
   const handleDeleteCollection = async () => {
     if (!collectionToDelete) return;
 
-    try {
-      const result = await DeleteCollection(collectionToDelete);
-
-      if ("error" in result) {
-        // toast({
-        //   title: "Error",
-        //   description: result.error,
-        //   variant: "destructive",
-        // });
-        alert(result.error);
-        return;
-      }
-
-      // Remove the collection from the state
-      setCollections((prev) =>
-        prev
-          ? prev.filter((collection) => collection.id !== collectionToDelete)
-          : []
-      );
-
-      // Call the optional callback if provided
-      onCollectionDelete?.(collectionToDelete);
-
-      //
-
-      alert("Collection deleted successfully");
-    } catch (error) {
-      // toast({
-      //   title: "Error",
-      //   description: "Failed to delete collection",
-      //   variant: "destructive",
-      // });
-      alert("Failed to delete collection");
-    } finally {
-      setCollectionToDelete(null);
-    }
+    await deleteCollection(collectionToDelete);
+    setCollectionToDelete(null); // Reset state after deletion
   };
 
   if (!collections) {
     return (
-      <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+      <SidebarGroup>
         <SidebarGroupLabel>Collections</SidebarGroupLabel>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -167,7 +69,7 @@ export function NavCollection({
 
   return (
     <>
-      <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+      <SidebarGroup>
         <SidebarGroupLabel>Collections</SidebarGroupLabel>
         <SidebarMenu>
           {collections.map((collection) => (
@@ -195,18 +97,22 @@ export function NavCollection({
                   side={isMobile ? "bottom" : "right"}
                   align={isMobile ? "end" : "start"}
                 >
-                  <ChangeVisiblity
+                  {/* Change visibility */}
+                  <ChangeVisibility
                     collectionId={collection.id}
-                    collectionVisiblity={collection.visiblity}
+                    collectionVisibility={collection.visibility}
                   />
                   <DropdownMenuSeparator />
+                  {/* Copy collection link */}
                   <CopyCollectionLink collectionId={collection.id} />
                   <DropdownMenuSeparator />
+                  {/* Change collection name */}
                   <ChangeCollectionName
                     collectionId={collection.id}
                     collectionName={collection.name}
                   />
                   <DropdownMenuSeparator />
+                  {/* Delete collection */}
                   <DeleteCollectionOption
                     collection={collection}
                     setCollectionToDelete={setCollectionToDelete}

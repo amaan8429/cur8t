@@ -12,15 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-
-interface Collection {
-  id: string;
-  name: string;
-  userId: string;
-  url: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { Collection } from "@/types/link";
 
 interface DeleteCollectionOptionProps {
   collection: Collection;

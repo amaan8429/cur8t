@@ -31,16 +31,17 @@ import {
 } from "@/components/ui/form";
 import { StarOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ChangeCollectionVisiblity } from "@/actions/changeCollectionVisi";
-import { dispatchCollectionUpdatedEvent } from "@/hooks/collection-visiblity-chang-event";
+import { useCollectionStore } from "@/store/collection-store";
 
 const ChangeVisibility = ({
   collectionId,
-  collectionVisiblity,
+  collectionVisibility,
 }: {
   collectionId: string;
-  collectionVisiblity: string;
+  collectionVisibility: string;
 }) => {
+  const { updateCollectionVisibility } = useCollectionStore();
+  const [open, setOpen] = React.useState(false);
   const FormSchema = z.object({
     visibility: z.string().nonempty({
       message: "Please select a visibility option",
@@ -51,44 +52,32 @@ const ChangeVisibility = ({
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      visibility: collectionVisiblity,
+      visibility: collectionVisibility,
     },
   });
 
-  interface data {
-    visibility: string;
-  }
-
   // Handle form submission
-  const onSubmit = async (data: data) => {
+  const onSubmit = async (data: { visibility: string }) => {
     console.log("Form data:", data);
     console.log("Visibility change req to:", data.visibility);
-    console.log("CollectionVisiblty currently:", collectionVisiblity);
+    console.log("CollectionVisiblty currently:", collectionVisibility);
     try {
-      if (collectionVisiblity === data.visibility) {
+      if (collectionVisibility === data.visibility) {
         console.log("Visibility is already set to this value");
-        alert("Visibility is already set to this value");
         return;
       }
-      const response = await ChangeCollectionVisiblity(
-        collectionId,
-        data.visibility
-      );
-
-      if (response.success) {
-        dispatchCollectionUpdatedEvent(collectionId, {
-          visiblity: data.visibility,
-        });
-        alert("Visibility changed successfully");
-      }
+      //call store
+      await updateCollectionVisibility(collectionId, data.visibility);
+      setOpen(false);
+      console.log("Visibility changed successfully");
+      return;
     } catch (error) {
       console.error("Error changing visibility:", error);
-      alert("Error changing visibility");
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
         <DialogTrigger asChild>
           <div className="flex items-center">
