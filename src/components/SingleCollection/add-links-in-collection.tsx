@@ -32,6 +32,7 @@ export function AddLinksToCollection({
     addLink,
     deleteLink,
     updateLink,
+    isLoading,
   } = useLinkStore();
 
   React.useEffect(() => {
@@ -41,6 +42,7 @@ export function AddLinksToCollection({
   const handleLinkAdded = async (newLink: { title: string; url: string }) => {
     try {
       await addLink(newLink, collectionId);
+      setIsOpen(false);
     } catch (error) {
       console.error("Failed to add link:", error);
     }
@@ -89,6 +91,7 @@ export function AddLinksToCollection({
           links={links}
           onDeleteLink={handleDeleteLink}
           onUpdateLink={handleUpdateLink}
+          isLoading={isLoading}
         />
       </div>
     </main>

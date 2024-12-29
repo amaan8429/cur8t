@@ -1,6 +1,6 @@
 import { getSingleCollectionName } from "@/actions/getSingleCollectionName";
 import { AppSidebar } from "@/components/Dashboard/Sidebar/app-sidebar";
-import { ContentArea } from "@/components/Dashboard/content-area";
+import { ContentArea } from "@/components/Dashboard/ContentArea/content-area";
 import { NavActions } from "@/components/nav-actions";
 import {
   Breadcrumb,
@@ -14,7 +14,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useCollectionNameChangeEvent } from "@/hooks/change-collection-name";
 
 export default async function Page({
   searchParams,

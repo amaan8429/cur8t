@@ -1,4 +1,4 @@
-Tasks
+# Tasks
 
 - [x] fetch data on the navCollection
 - [x] add loader there
@@ -19,6 +19,18 @@ Tasks
 - [x] collection page setup on the content area
 - [ ] collection page ui make better
 - [ ] integrate zod
+- [ ] CLAUDE LINK ADD option to a custum collection
+- [ ] Chatgpt LINK add option to a custum collection
+- [ ] BOOKMARKS IMPORT AND EXPORT
+- [ ] AUTO GROUP THEM USING OPENAI
+- [ ] CLI tool for the entire app
+- [ ] vs code EXTENSIONS SHARE KARNE KA TARIKA WHERE ALL EXTENSIONS CAN BE COLLECTED IN A COLLECTION api key or something
+- [ ] add a search bar on the collection page
+- [ ] youtube playlist collection where a small icon should be present near the default "add to playlists" on the yt playlist page
+- [ ] add movies to the collection
+- [ ] like the collection
+- [ ] copy the collection
+- [ ] donate to the guy who made the collection
 
 UI to add and change in the collection page
 

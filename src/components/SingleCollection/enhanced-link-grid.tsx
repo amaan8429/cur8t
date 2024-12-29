@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Trash2, Globe, Pencil } from "lucide-react";
+import { Trash2, Globe, Pencil, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 import {
   Card,
   CardContent,
@@ -35,26 +36,55 @@ import {
 
 import { Link } from "@/types/link";
 import { truncateUrl } from "@/lib/truncate";
+import LoadingLinks from "./loading";
+import Nolinks from "./no-links";
 
 interface LinkGridProps {
   links: Link[];
   onDeleteLink: (id: string) => void;
   onUpdateLink: (id: string, data: { title?: string; url?: string }) => void;
+  isLoading?: boolean;
 }
 
-export function LinkGrid({ links, onDeleteLink, onUpdateLink }: LinkGridProps) {
+export function LinkGrid({
+  links,
+  onDeleteLink,
+  onUpdateLink,
+  isLoading = false,
+}: LinkGridProps) {
   const [linkToDelete, setLinkToDelete] = React.useState<string | null>(null);
   const [editingLink, setEditingLink] = React.useState<Link | null>(null);
   const [newTitle, setNewTitle] = React.useState("");
   const [newUrl, setNewUrl] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [progress, setProgress] = React.useState(0);
 
-  if (!links) {
-    return <div>Loading...</div>;
+  React.useEffect(() => {
+    if (isLoading) {
+      setProgress(0);
+      const timer = setInterval(() => {
+        setProgress((prevProgress) => {
+          if (prevProgress >= 90) {
+            clearInterval(timer);
+            return 90;
+          }
+          return prevProgress + 10;
+        });
+      }, 400);
+
+      return () => {
+        clearInterval(timer);
+        setProgress(100);
+      };
+    }
+  }, [isLoading]);
+
+  if (isLoading) {
+    return <LoadingLinks progress={progress} />;
   }
 
   if (links.length === 0) {
-    return <div>No links found</div>;
+    return <Nolinks />;
   }
 
   const handleDeleteConfirm = () => {
@@ -85,118 +115,115 @@ export function LinkGrid({ links, onDeleteLink, onUpdateLink }: LinkGridProps) {
   };
 
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {links.map((link) => (
-          <Card key={link.id} className="flex flex-col">
-            <CardHeader className="flex-grow">
-              <div className="flex items-center space-x-4">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage
-                    src={`https://www.google.com/s2/favicons?domain=${link.url}&sz=64`}
-                    alt={link.title}
-                  />
-                  <AvatarFallback>
-                    <Globe className="h-6 w-6" />
-                  </AvatarFallback>
-                </Avatar>
-                <CardTitle className="truncate">{link.title}</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline text-sm"
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {links.map((link) => (
+        <Card
+          key={link.id}
+          className="flex flex-col hover:shadow-md transition-shadow"
+        >
+          <CardHeader className="flex-grow">
+            <div className="flex items-center space-x-4">
+              <Avatar className="h-10 w-10">
+                <AvatarImage
+                  src={`https://www.google.com/s2/favicons?domain=${link.url}&sz=64`}
+                  alt={link.title}
+                />
+                <AvatarFallback>
+                  <Globe className="h-6 w-6" />
+                </AvatarFallback>
+              </Avatar>
+              <CardTitle className="truncate">{link.title}</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline text-sm"
+            >
+              {truncateUrl(link.url)}
+            </a>
+          </CardContent>
+          <CardFooter className="justify-between">
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open(link.url, "_blank")}
               >
-                {truncateUrl(link.url)}
-              </a>
-            </CardContent>
-            <CardFooter className="justify-between">
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => window.open(link.url, "_blank")}
-                >
-                  Visit
-                </Button>
-                <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEditClick(link)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Edit Link</DialogTitle>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid gap-2">
-                        <label htmlFor="title">Title</label>
-                        <Input
-                          id="title"
-                          value={newTitle}
-                          onChange={(e) => setNewTitle(e.target.value)}
-                        />
-                      </div>
-                      <div className="grid gap-2">
-                        <label htmlFor="url">URL</label>
-                        <Input
-                          id="url"
-                          value={newUrl}
-                          onChange={(e) => setNewUrl(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                      </DialogClose>
-                      <Button onClick={handleUpdateConfirm}>
-                        Save Changes
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
+                Visit
+              </Button>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
                   <Button
-                    variant="destructive"
+                    variant="outline"
                     size="sm"
-                    onClick={() => setLinkToDelete(link.id)}
+                    onClick={() => handleEditClick(link)}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Pencil className="h-4 w-4" />
                   </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      the link from your collection.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeleteConfirm}>
-                      Continue
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    </>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Edit Link</DialogTitle>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid gap-2">
+                      <label htmlFor="title">Title</label>
+                      <Input
+                        id="title"
+                        value={newTitle}
+                        onChange={(e) => setNewTitle(e.target.value)}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <label htmlFor="url">URL</label>
+                      <Input
+                        id="url"
+                        value={newUrl}
+                        onChange={(e) => setNewUrl(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button onClick={handleUpdateConfirm}>Save Changes</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setLinkToDelete(link.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Link</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete this link? This action
+                    cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteConfirm}>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
   );
 }

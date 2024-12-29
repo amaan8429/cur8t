@@ -4,10 +4,12 @@ import { DeleteCollection } from "@/actions/deleteCollection";
 import { ChangeCollection } from "@/actions/changeCollectionName";
 import { Collection } from "@/types/link";
 import { ChangeCollectionVisibility } from "@/actions/changeCollectionVisi";
+import { createCollection } from "@/actions/createCollection";
 
 interface CollectionStore {
   collections: Collection[] | null;
   fetchCollections: () => Promise<void>;
+  createACollection: (collectionData: Collection) => Promise<void>;
   updateCollectionVisibility: (
     collectionId: string,
     visibility: string
@@ -21,6 +23,17 @@ interface CollectionStore {
 
 export const useCollectionStore = create<CollectionStore>((set) => ({
   collections: null,
+  createACollection: async (collectionData) => {
+    try {
+      set((state) => ({
+        collections: state.collections
+          ? [...state.collections, collectionData]
+          : [collectionData],
+      }));
+    } catch (error) {
+      console.error("Failed to create collection:", error);
+    }
+  },
 
   // Fetch all collections
   fetchCollections: async () => {

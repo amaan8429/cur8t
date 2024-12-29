@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Folder, FolderOpen } from "lucide-react";
 
 import {
   SidebarGroup,
@@ -17,7 +17,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -26,6 +25,8 @@ import CopyCollectionLink from "./copy-collection-link";
 import DeleteCollectionOption from "./delete-collection";
 import ChangeCollectionName from "./change-collection-name";
 import { useCollectionStore } from "@/store/collection-store";
+import LoadingCollections from "./loading";
+import NoCollections from "./no-collections";
 
 interface NavCollectionProps {
   activeCollectionId?: string;
@@ -38,58 +39,72 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
   const [collectionToDelete, setCollectionToDelete] = useState<string | null>(
     null
   );
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch collections on mount
+  // Fetch collections on mount with loading state
   useEffect(() => {
-    fetchCollections();
+    const loadCollections = async () => {
+      setIsLoading(true);
+      await fetchCollections();
+      setIsLoading(false);
+    };
+    loadCollections();
   }, [fetchCollections]);
 
   const handleDeleteCollection = async () => {
     if (!collectionToDelete) return;
 
     await deleteCollection(collectionToDelete);
-    setCollectionToDelete(null); // Reset state after deletion
+    setCollectionToDelete(null);
   };
 
-  if (!collections) {
-    return (
-      <SidebarGroup>
-        <SidebarGroupLabel>Collections</SidebarGroupLabel>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton className="text-sidebar-foreground/70">
-              <MoreHorizontal />
-              <span>Loading...</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarGroup>
-    );
+  // Loading state
+  if (isLoading) {
+    return <LoadingCollections />;
+  }
+
+  // Empty state
+  if (!collections || collections.length === 0) {
+    return <NoCollections />;
   }
 
   return (
-    <>
-      <SidebarGroup>
-        <SidebarGroupLabel>Collections</SidebarGroupLabel>
-        <SidebarMenu>
-          {collections.map((collection) => (
+    <SidebarGroup>
+      <SidebarGroupLabel>Collections</SidebarGroupLabel>
+      <SidebarMenu>
+        {collections.map((collection) => {
+          const isActive = collection.id === activeCollectionId;
+          <NoCollections />;
+          return (
             <SidebarMenuItem key={collection.id}>
               <SidebarMenuButton
                 asChild
-                isActive={collection.id === activeCollectionId}
+                isActive={isActive}
+                className="group hover:bg-accent/50 transition-colors"
               >
                 <Link
                   href={`?collectionId=${encodeURIComponent(collection.id)}`}
                   title={collection.name}
+                  className="flex items-center"
                 >
-                  <span>{collection.name}</span>
+                  {isActive ? (
+                    <FolderOpen className="h-4 w-4 mr-2 shrink-0" />
+                  ) : (
+                    <Folder className="h-4 w-4 mr-2 shrink-0" />
+                  )}
+                  <span className="truncate">{collection.name}</span>
                 </Link>
               </SidebarMenuButton>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <SidebarMenuAction showOnHover>
-                    <MoreHorizontal />
-                    <span className="sr-only">More</span>
+                  <SidebarMenuAction
+                    showOnHover
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                    <span className="sr-only">
+                      More options for {collection.name}
+                    </span>
                   </SidebarMenuAction>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -97,22 +112,18 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
                   side={isMobile ? "bottom" : "right"}
                   align={isMobile ? "end" : "start"}
                 >
-                  {/* Change visibility */}
                   <ChangeVisibility
                     collectionId={collection.id}
                     collectionVisibility={collection.visibility}
                   />
                   <DropdownMenuSeparator />
-                  {/* Copy collection link */}
                   <CopyCollectionLink collectionId={collection.id} />
                   <DropdownMenuSeparator />
-                  {/* Change collection name */}
                   <ChangeCollectionName
                     collectionId={collection.id}
                     collectionName={collection.name}
                   />
                   <DropdownMenuSeparator />
-                  {/* Delete collection */}
                   <DeleteCollectionOption
                     collection={collection}
                     setCollectionToDelete={setCollectionToDelete}
@@ -121,9 +132,9 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
             </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroup>
-    </>
+          );
+        })}
+      </SidebarMenu>
+    </SidebarGroup>
   );
 }

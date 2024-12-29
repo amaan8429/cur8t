@@ -26,5 +26,5 @@ export async function createCollection(collectionName: string) {
 
   console.log("Collection created:", createdCollection);
 
-  return { success: true, data: createdCollection };
+  return { success: true, data: createdCollection[0] };
 }

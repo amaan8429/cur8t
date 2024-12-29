@@ -1,5 +1,6 @@
-import { AddBukmarkPage } from "./CollectionCreation/add-bukmark";
-import { AddLinksToCollection } from "../SingleCollection/add-links-in-collection";
+import React from "react";
+import { AddLinksToCollection } from "@/components/SingleCollection/add-links-in-collection";
+import { CreateCollectionComponent } from "../CollectionCreation/add-collection";
 
 interface ContentAreaProps {
   activeItem: string;
@@ -26,7 +27,7 @@ export function ContentArea({
           </ul>
         </div>
       )}
-      {activeItem === "Add Bukmarks" && <AddBukmarkPage />}
+      {activeItem === "Add Collection" && <CreateCollectionComponent />}
 
       {activeItem === "Ask AI" && (
         <div>

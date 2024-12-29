@@ -15,7 +15,7 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { NavCollection } from "@/components/Dashboard/Sidebar/nav-collections";
+import { NavCollection } from "@/components/Dashboard/Sidebar/NavCollection/nav-collections";
 import { NavMain } from "@/components/Dashboard/Sidebar/nav-main";
 import { NavSecondary } from "@/components/Dashboard/Sidebar/nav-secondary";
 import { LogoNameDisplay } from "@/components/Dashboard/Sidebar/logo-name-display";
@@ -30,12 +30,12 @@ import { Separator } from "../../ui/separator";
 // This is sample data.
 const data = {
   LogoAndName: {
-    name: "Storer",
+    name: "Bukmarks",
     logo: Command,
   },
   navMain: [
     {
-      title: "Add Bukmarks",
+      title: "Add Collection",
       url: "#",
       icon: Search,
     },
