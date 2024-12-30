@@ -13,53 +13,65 @@ import {
 } from "@/components/ui/alert-dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Collection } from "@/types/link";
+import { useCollectionStore } from "@/store/collection-store";
+import { useToast } from "@/hooks/use-toast";
 
-interface DeleteCollectionOptionProps {
-  collection: Collection;
-  setCollectionToDelete: (collectionId: string) => void;
-  handleDeleteCollection: () => void;
-}
+const DeleteCollectionOption = ({ collection }: { collection: Collection }) => {
+  const [loading, setLoading] = React.useState(false);
+  const { deleteCollection } = useCollectionStore();
+  const { toast } = useToast();
 
-const DeleteCollectionOption: React.FC<DeleteCollectionOptionProps> = ({
-  collection,
-  setCollectionToDelete,
-  handleDeleteCollection,
-}) => {
+  const handleDeleteCollection = async () => {
+    try {
+      setLoading(true);
+      await deleteCollection(collection.id);
+      toast({
+        title: "Collection deleted successfully",
+        description: `The collection "${collection.name}" has been deleted.`,
+      });
+    } catch (error) {
+      console.error("Failed to delete collection: ", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete collection. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
-      <AlertDialog>
-        <DropdownMenuItem
-          onSelect={(e) => {
-            e.preventDefault();
-            setCollectionToDelete(collection.id);
-          }}
-        >
-          <AlertDialogTrigger asChild>
-            <div className="flex items-center">
-              <Trash2 className="h-4 w-4 mr-2 text-muted-foreground" />
-              <span>Delete</span>
-            </div>
-          </AlertDialogTrigger>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <DropdownMenuItem onSelect={(e: Event) => e.preventDefault()}>
+          <div className="flex items-center">
+            <Trash2 className="h-4 w-4 mr-2 text-muted-foreground" />
+            <span>Delete</span>
+          </div>
         </DropdownMenuItem>
+      </AlertDialogTrigger>
 
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Collection</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete the collection &quot;
-              {collection.name}&quot;? This action cannot be undone and will
-              remove all links in this collection.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteCollection}>
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Collection</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete the collection &quot;
+            {collection.name}&quot;? This action cannot be undone and will
+            remove all links in this collection.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleDeleteCollection}
+            disabled={loading}
+          >
+            {loading ? "Deleting..." : "Delete"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

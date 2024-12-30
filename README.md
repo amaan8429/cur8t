@@ -2,10 +2,10 @@
 
 - [x] fetch data on the navCollection
 - [x] add loader there
-- [ ] add emoji to the collection
+- [x] add emoji to the collection
 - [x] manage data on the other components so when a new collection is added , it is shown on the navigation area
 - [ ] when dashboard is directly opened to the collection page , the data is not fetched on the navCollection
-- [ ] add a loader on the collection page until the data is being fetched
+- [x] add a loader on the collection page until the data is being fetched
 - [ ] sequence should not change when a link is edited
 - [ ] new collections or edited collections should be at the top
 - [x] hero section made
@@ -14,10 +14,10 @@
 - [ ] add a usage section
 - [ ] add a footer
 - [ ] cache the data on the navCollection
-- [ ] add error handling on there to reload or fetch again
+- [x] add error handling on there to reload or fetch again
 - [ ] do something with more button - 2 more button are there
 - [x] collection page setup on the content area
-- [ ] collection page ui make better
+- [x] collection page ui make better
 - [ ] integrate zod
 - [ ] CLAUDE LINK ADD option to a custum collection
 - [ ] Chatgpt LINK add option to a custum collection
@@ -54,19 +54,21 @@ UI to add and change in the collection page
 
 tosters and loaders
 
-- [ ] add a toast on the collection page when a new collection is added
-- [ ] add a toast on the collection page when a new bookmark is added
-- [ ] add a toast on the collection page when a new bookmark is deleted
-- [ ] add a toast on the collection page when a new collection is deleted
-- [ ] add a loader on the collection page when the data is being fetched
-- [ ] add a loader on the collection page when the data is being deleted
-- [ ] add a loader on the collection page when the data is being added
-- [ ] add a loader on the collection page when the data is being updated
+- [x] add a loader on the collection page when the data is being fetched
+- [x] add a loader on the collection page when the data is being deleted
+- [x] add a loader on the collection page when the data is being added
+- [x] add a loader on the collection page when the data is being updated
+
+- [x] add a toast on the collection page when a new collection is added
+- [x] add a toast on the collection page when a new collection is deleted and it should have a undo button. learn how to implement a undo button in the toast itself
+- [x] add a toast on the collection page when collection name is updated
+- [x] add a toast on the collection paage when visibliity is changed
+- [x] add a toast on the collection page when a link is copied
 
 Miscs
 
 - [ ] trash the collection db setup
-- [ ] add zod validation on both sides
+- [ ] add zod validation on both sidesl
 - [ ] / page design
 - [ ] github backup
 - [ ] settings page - clerk something
@@ -82,3 +84,5 @@ Things i have to work on :
 4. 4 projects for web3 hackathon
 5. learn and build something using tailwind css and next.js and framer motion
 6. web3 cohort by harkirat
+
+## 30th Dec tasks

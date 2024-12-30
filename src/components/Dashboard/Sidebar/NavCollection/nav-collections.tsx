@@ -34,11 +34,8 @@ interface NavCollectionProps {
 
 export function NavCollection({ activeCollectionId }: NavCollectionProps) {
   const { isMobile } = useSidebar();
-  const { collections, fetchCollections, deleteCollection } =
-    useCollectionStore();
-  const [collectionToDelete, setCollectionToDelete] = useState<string | null>(
-    null
-  );
+  const { collections, fetchCollections } = useCollectionStore();
+
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch collections on mount with loading state
@@ -50,13 +47,6 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
     };
     loadCollections();
   }, [fetchCollections]);
-
-  const handleDeleteCollection = async () => {
-    if (!collectionToDelete) return;
-
-    await deleteCollection(collectionToDelete);
-    setCollectionToDelete(null);
-  };
 
   // Loading state
   if (isLoading) {
@@ -124,11 +114,7 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
                     collectionName={collection.name}
                   />
                   <DropdownMenuSeparator />
-                  <DeleteCollectionOption
-                    collection={collection}
-                    setCollectionToDelete={setCollectionToDelete}
-                    handleDeleteCollection={handleDeleteCollection}
-                  />
+                  <DeleteCollectionOption collection={collection} />
                 </DropdownMenuContent>
               </DropdownMenu>
             </SidebarMenuItem>

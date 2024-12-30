@@ -1,4 +1,3 @@
-import { ChangeCollection } from "@/actions/changeCollectionName";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { useCollectionStore } from "@/store/collection-store";
 import { EditIcon } from "lucide-react";
 import React from "react";
@@ -25,9 +25,32 @@ const ChangeCollectionName = ({
   const [newTitle, setNewTitle] = React.useState(collectionName);
   const [open, setOpen] = React.useState(false);
   const { updateCollectionName } = useCollectionStore();
+  const [loading, setLoading] = React.useState(false);
+  const { toast } = useToast();
 
   const handleUpdateConfirm = async (data: { title: string }) => {
-    await updateCollectionName(collectionId, data.title);
+    if (!data.title.trim()) {
+      toast({
+        title: "Title cannot be empty",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await updateCollectionName(collectionId, data.title);
+      setLoading(false);
+      toast({
+        title: "Collection name updated successfully",
+      });
+    } catch (error) {
+      setLoading(false);
+      toast({
+        title: "Failed to update collection name",
+        variant: "destructive",
+      });
+    }
+
     setOpen(false);
   };
 
@@ -61,8 +84,13 @@ const ChangeCollectionName = ({
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button onClick={() => handleUpdateConfirm({ title: newTitle })}>
-              Save Changes
+            <Button
+              onClick={() => handleUpdateConfirm({ title: newTitle })}
+              disabled={
+                !newTitle.trim() || newTitle === collectionName || loading
+              }
+            >
+              {loading ? "Saving" : "Save Changes"}
             </Button>
           </DialogFooter>
         </DialogContent>

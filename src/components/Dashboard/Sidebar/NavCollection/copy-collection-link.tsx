@@ -15,19 +15,28 @@ import {
 } from "@/components/ui/dialog";
 import { LinkIcon, Check, Twitter, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
 
 const CopyCollectionLink = ({ collectionId }: { collectionId: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const shareLink = `https://bukmarks.com/collection/${collectionId}`;
+  const { toast } = useToast();
 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(shareLink);
       setIsCopied(true);
+      toast({
+        title: "Link copied to clipboard",
+      });
       setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
+      toast({
+        title: "Failed to copy link to clipboard",
+        variant: "destructive",
+      });
     }
   };
 

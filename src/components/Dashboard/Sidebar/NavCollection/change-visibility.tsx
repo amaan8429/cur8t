@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { set, z } from "zod";
 import {
   Dialog,
   DialogClose,
@@ -32,6 +32,7 @@ import {
 import { StarOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCollectionStore } from "@/store/collection-store";
+import { useToast } from "@/hooks/use-toast";
 
 const ChangeVisibility = ({
   collectionId,
@@ -47,6 +48,7 @@ const ChangeVisibility = ({
       message: "Please select a visibility option",
     }),
   });
+  const { toast } = useToast();
 
   // Initialize the form
   const form = useForm({
@@ -58,22 +60,25 @@ const ChangeVisibility = ({
 
   // Handle form submission
   const onSubmit = async (data: { visibility: string }) => {
-    console.log("Form data:", data);
-    console.log("Visibility change req to:", data.visibility);
-    console.log("CollectionVisiblty currently:", collectionVisibility);
     try {
       if (collectionVisibility === data.visibility) {
-        console.log("Visibility is already set to this value");
+        toast({
+          title: "No changes made",
+        });
         return;
       }
-      //call store
       await updateCollectionVisibility(collectionId, data.visibility);
-      setOpen(false);
-      console.log("Visibility changed successfully");
-      return;
+      toast({
+        title: "Collection visibility updated",
+      });
     } catch (error) {
-      console.error("Error changing visibility:", error);
+      console.error(error);
+      toast({
+        title: "An error occurred",
+        variant: "destructive",
+      });
     }
+    setOpen(false);
   };
 
   return (
@@ -134,7 +139,17 @@ const ChangeVisibility = ({
                   Close
                 </Button>
               </DialogClose>
-              <Button type="submit">Confirm</Button>
+              <Button
+                type="submit"
+                disabled={
+                  !form.formState.isValid ||
+                  form.formState.isSubmitting ||
+                  form.formState.defaultValues?.visibility ===
+                    form.getValues("visibility")
+                }
+              >
+                {form.formState.isSubmitting ? "Updating..." : "Update"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

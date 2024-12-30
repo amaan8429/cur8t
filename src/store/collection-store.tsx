@@ -79,7 +79,6 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
     try {
       const result = await DeleteCollection(collectionId);
       if ("error" in result) {
-        alert(result.error); // Replace with toast or notification if needed
         return;
       }
       set((state) => ({
@@ -88,9 +87,8 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
             (collection) => collection.id !== collectionId
           ) || [],
       }));
-      alert("Collection deleted successfully");
     } catch (error) {
-      alert("Failed to delete collection");
+      console.error("Failed to delete collection:", error);
     }
   },
 
