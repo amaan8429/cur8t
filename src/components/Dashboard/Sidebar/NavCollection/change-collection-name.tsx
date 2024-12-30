@@ -36,22 +36,37 @@ const ChangeCollectionName = ({
       return;
     }
 
+    if (data.title === collectionName) {
+      toast({
+        title: "Collection name is the same",
+      });
+      return;
+    }
+
+    if (data.title.length > 50) {
+      toast({
+        title: "Title is too long",
+        description: "Please enter a title with 50 characters or less",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setLoading(true);
       await updateCollectionName(collectionId, data.title);
-      setLoading(false);
       toast({
         title: "Collection name updated successfully",
       });
     } catch (error) {
-      setLoading(false);
       toast({
         title: "Failed to update collection name",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
+      setOpen(false);
     }
-
-    setOpen(false);
   };
 
   return (

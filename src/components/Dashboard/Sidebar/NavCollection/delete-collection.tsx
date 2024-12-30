@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Collection } from "@/types/link";
+import { Collection } from "@/types/types";
 import { useCollectionStore } from "@/store/collection-store";
 import { useToast } from "@/hooks/use-toast";
 

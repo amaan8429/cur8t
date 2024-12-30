@@ -34,7 +34,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
-import { Link } from "@/types/link";
+import { Link } from "@/types/types";
 import { truncateUrl } from "@/lib/truncate";
 import LoadingLinks from "./loading";
 import Nolinks from "./no-links";

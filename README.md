@@ -85,4 +85,13 @@ Things i have to work on :
 5. learn and build something using tailwind css and next.js and framer motion
 6. web3 cohort by harkirat
 
-## 30th Dec tasks
+## 31st Dec tasks
+
+- [ ] add a zod parser to the link schema on the client side while adding a new link
+- [ ] add a zod parser to the link schema on the client side while updating a collection
+- [ ] add a zod parser to the link schema on the server side while creating a new link
+- [ ] add a zod parser to the link schema on the server side while updating a link
+- [ ] add strict validation on server side for everything
+- [ ] learn react query
+- [ ] implement tanstack/react-query on the project
+- [ ] useOptimistic implementation

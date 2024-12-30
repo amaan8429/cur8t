@@ -2,9 +2,8 @@ import { create } from "zustand";
 import { getCollections } from "@/actions/getCollections";
 import { DeleteCollection } from "@/actions/deleteCollection";
 import { ChangeCollection } from "@/actions/changeCollectionName";
-import { Collection } from "@/types/link";
+import { Collection } from "@/types/types";
 import { ChangeCollectionVisibility } from "@/actions/changeCollectionVisi";
-import { createCollection } from "@/actions/createCollection";
 
 interface CollectionStore {
   collections: Collection[] | null;

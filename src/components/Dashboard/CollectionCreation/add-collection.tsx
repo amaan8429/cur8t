@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { createCollection } from "@/actions/createCollection";
 import { useCollectionStore } from "@/store/collection-store";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useToast } from "@/hooks/use-toast";
 
 export function CreateCollectionComponent() {
   const [collectionName, setCollectionName] = React.useState("");
@@ -25,6 +26,7 @@ export function CreateCollectionComponent() {
   const [error, setError] = React.useState("");
   const router = useRouter();
   const { createACollection } = useCollectionStore();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,8 +37,18 @@ export function CreateCollectionComponent() {
       return;
     }
 
-    setIsLoading(true);
+    if (collectionName.length > 50) {
+      toast({
+        title: "Collection name is too long",
+        description:
+          "Please enter a collection name with 50 characters or less",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
+      setIsLoading(true);
       const collectionCreated = await createCollection(collectionName);
       if (collectionCreated.success) {
         createACollection(collectionCreated.data);

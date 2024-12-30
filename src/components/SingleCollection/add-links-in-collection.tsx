@@ -16,14 +16,13 @@ import {
 import { AddLinkForm } from "@/components/add-link-form";
 import { LinkGrid } from "@/components/SingleCollection/enhanced-link-grid";
 import { useLinkStore } from "@/store/link-store";
+import { useToast } from "@/hooks/use-toast";
 
 export function AddLinksToCollection({
   collectionId,
 }: {
   collectionId: string;
 }) {
-  const searchParams = useSearchParams();
-  const pageId = searchParams.get("page");
   const {
     links,
     isOpen,
@@ -35,11 +34,20 @@ export function AddLinksToCollection({
     isLoading,
   } = useLinkStore();
 
+  const { toast } = useToast();
+
   React.useEffect(() => {
     refreshLinks(collectionId);
   }, [collectionId, refreshLinks]);
 
   const handleLinkAdded = async (newLink: { title: string; url: string }) => {
+    if (!newLink.title.trim() || !newLink.url.trim()) {
+      toast({
+        title: "Title and URL cannot be empty",
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       await addLink(newLink, collectionId);
       setIsOpen(false);
