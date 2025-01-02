@@ -1,4 +1,4 @@
-import { getSingleCollectionName } from "@/actions/collection/getSingleCollectionName";
+import { getSingleCollectionNameAction } from "@/actions/collection/getSingleCollectionName";
 import { AppSidebar } from "@/components/Dashboard/Sidebar/app-sidebar";
 import { ContentArea } from "@/components/Dashboard/ContentArea/content-area";
 import { NavActions } from "@/components/nav-actions";
@@ -28,7 +28,8 @@ export default async function Page({
   let activeCollectionName = "";
 
   if (activeCollectionId) {
-    activeCollectionName = await getSingleCollectionName(activeCollectionId);
+    activeCollectionName =
+      await getSingleCollectionNameAction(activeCollectionId);
   }
 
   return (

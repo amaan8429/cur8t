@@ -73,8 +73,6 @@ export function AddLinksToCollection({
     id: string,
     data: { title?: string; url?: string }
   ) => {
-    if (!id) return;
-    if (!data.title || !data.url) return;
     try {
       await updateLink(id, data);
       refreshLinks(collectionId);
