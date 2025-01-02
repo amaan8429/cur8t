@@ -13,7 +13,9 @@ interface CollectionStore {
     collectionId: string,
     visibility: string
   ) => Promise<void>;
-  deleteCollection: (collectionId: string) => Promise<void>;
+  deleteCollection: (
+    collectionId: string
+  ) => Promise<{ error?: string; success?: boolean } | undefined>;
   updateCollectionName: (
     collectionId: string,
     newName: string
@@ -78,7 +80,8 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
     try {
       const result = await DeleteCollectionAction(collectionId);
       if ("error" in result) {
-        return;
+        console.log(result.error);
+        return { error: result.error };
       }
       set((state) => ({
         collections:
@@ -86,8 +89,10 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
             (collection) => collection.id !== collectionId
           ) || [],
       }));
+      return { success: true };
     } catch (error) {
       console.error("Failed to delete collection:", error);
+      return;
     }
   },
 

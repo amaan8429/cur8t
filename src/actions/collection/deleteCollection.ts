@@ -26,11 +26,8 @@ export async function DeleteCollectionAction(collectionId: string) {
         )
       );
 
-    console.log("Collection deleted:", deletedCollection);
-
     return { success: true };
   } catch (error) {
-    console.error("Failed to delete collection:", error);
     return { error: "Failed to delete collection" };
   }
 }

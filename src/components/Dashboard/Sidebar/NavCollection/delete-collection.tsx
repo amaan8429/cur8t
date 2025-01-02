@@ -24,10 +24,19 @@ const DeleteCollectionOption = ({ collection }: { collection: Collection }) => {
   const handleDeleteCollection = async () => {
     try {
       setLoading(true);
-      await deleteCollection(collection.id);
+      const result = await deleteCollection(collection.id);
+      if (result?.error) {
+        console.log(result.error);
+        toast({
+          title: "Error",
+          description: "Failed to delete collection. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
       toast({
-        title: "Collection deleted successfully",
-        description: `The collection "${collection.name}" has been deleted.`,
+        title: "Success",
+        description: "Collection deleted successfully.",
       });
     } catch (error) {
       console.error("Failed to delete collection: ", error);
