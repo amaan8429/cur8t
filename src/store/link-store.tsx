@@ -1,7 +1,11 @@
 import { create } from "zustand";
 import { Link } from "@/types/types";
 import { getLinksAction } from "@/actions/linkActions/getLinks";
-import { addLinkAction, deleteLink, updateLink } from "@/actions/link-actions";
+import {
+  addLinkAction,
+  deleteLinkAction,
+  updateLinkAction,
+} from "@/actions/linkActions/link-actions";
 
 interface LinkStore {
   links: Link[];
@@ -75,7 +79,7 @@ export const useLinkStore = create<LinkStore>((set) => ({
   deleteLink: async (id) => {
     try {
       set({ isLoading: true });
-      await deleteLink(id);
+      await deleteLinkAction(id);
       set((state) => ({
         links: state.links.filter((link) => link.id !== id),
       }));
@@ -87,8 +91,8 @@ export const useLinkStore = create<LinkStore>((set) => ({
   },
   updateLink: async (id, data) => {
     try {
-      set({ isLoading: true });
-      await updateLink(id, data);
+      // set({ isLoading: true });
+      await updateLinkAction(id, data);
       set((state) => ({
         links: state.links.map((link) =>
           link.id === id ? { ...link, ...data, updatedAt: new Date() } : link
@@ -97,7 +101,7 @@ export const useLinkStore = create<LinkStore>((set) => ({
     } catch (error) {
       console.error("Failed to update link:", error);
     } finally {
-      set({ isLoading: false });
+      // set({ isLoading: false });
     }
   },
 }));

@@ -39,7 +39,7 @@ export async function addLinkAction(data: AddLinkData, collectionId: string) {
   return { success: true, data: newLink[0] };
 }
 
-export async function deleteLink(id: string) {
+export async function deleteLinkAction(id: string) {
   const { userId } = await auth();
 
   if (!userId) {
@@ -59,7 +59,7 @@ export async function deleteLink(id: string) {
   return { success: true };
 }
 
-export async function updateLink(
+export async function updateLinkAction(
   id: string,
   data: {
     title?: string;

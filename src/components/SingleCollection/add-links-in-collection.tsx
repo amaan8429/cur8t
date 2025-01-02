@@ -78,7 +78,6 @@ export function ManageCollectionLinks({
   ) => {
     try {
       await updateLink(id, data);
-      refreshLinks(collectionId);
     } catch (error) {
       console.error("Failed to update link:", error);
     }
