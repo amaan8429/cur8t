@@ -2,9 +2,10 @@
 
 import { db } from "@/db";
 import { linkTable } from "@/schema";
+import { FrontendLinkSchema } from "@/types/types";
 import { auth } from "@clerk/nextjs/server";
 
-export async function createLink(
+export async function createLinkAction(
   linkCollectionId: string,
   linkName: string,
   linkUrl: string
@@ -18,17 +19,21 @@ export async function createLink(
   if (!linkCollectionId) {
     return { error: "Link collection ID is required" };
   }
-  if (!linkName) {
-    return { error: "Link name is required" };
-  }
 
-  if (!linkUrl) {
-    return { error: "Link URL is required" };
+  const parsedLink = FrontendLinkSchema.safeParse({
+    title: linkName,
+    url: linkUrl,
+  });
+
+  if (!parsedLink.success) {
+    return {
+      error: "Invalid link data",
+    };
   }
 
   const link = {
-    title: linkName,
-    url: linkUrl,
+    title: parsedLink.data.title,
+    url: parsedLink.data.url,
     linkCollectionId,
     userId,
   };

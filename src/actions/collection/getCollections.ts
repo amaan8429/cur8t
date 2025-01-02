@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { linkCollectionTable } from "@/schema";
 import { and, eq } from "drizzle-orm";
 
-export async function getCollections() {
+export async function getCollectionsAction() {
   const { userId } = await auth();
 
   if (!userId) {

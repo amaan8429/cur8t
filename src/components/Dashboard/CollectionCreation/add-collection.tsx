@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { createCollection } from "@/actions/createCollection";
+import { createCollectionAction } from "@/actions/collection/createCollection";
 import { useCollectionStore } from "@/store/collection-store";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
@@ -49,7 +49,7 @@ export function CreateCollectionComponent() {
 
     try {
       setIsLoading(true);
-      const collectionCreated = await createCollection(collectionName);
+      const collectionCreated = await createCollectionAction(collectionName);
       if (collectionCreated.success) {
         createACollection(collectionCreated.data);
         router.push(

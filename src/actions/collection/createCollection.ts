@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { linkCollectionTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 
-export async function createCollection(collectionName: string) {
+export async function createCollectionAction(collectionName: string) {
   const { userId } = await auth();
 
   if (!userId) {

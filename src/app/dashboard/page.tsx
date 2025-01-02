@@ -1,4 +1,4 @@
-import { getSingleCollectionName } from "@/actions/getSingleCollectionName";
+import { getSingleCollectionName } from "@/actions/collection/getSingleCollectionName";
 import { AppSidebar } from "@/components/Dashboard/Sidebar/app-sidebar";
 import { ContentArea } from "@/components/Dashboard/ContentArea/content-area";
 import { NavActions } from "@/components/nav-actions";

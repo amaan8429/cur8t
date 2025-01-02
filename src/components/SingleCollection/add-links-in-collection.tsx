@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams } from "next/navigation";
 import { PlusCircle } from "lucide-react";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 
@@ -13,10 +12,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { AddLinkForm } from "@/components/add-link-form";
 import { LinkGrid } from "@/components/SingleCollection/enhanced-link-grid";
 import { useLinkStore } from "@/store/link-store";
 import { useToast } from "@/hooks/use-toast";
+import { FrontendLink, FrontendLinkSchema } from "@/types/types";
+import { AddLinkForm } from "./add-link-form";
 
 export function AddLinksToCollection({
   collectionId,
@@ -40,23 +40,28 @@ export function AddLinksToCollection({
     refreshLinks(collectionId);
   }, [collectionId, refreshLinks]);
 
-  const handleLinkAdded = async (newLink: { title: string; url: string }) => {
-    if (!newLink.title.trim() || !newLink.url.trim()) {
-      toast({
-        title: "Title and URL cannot be empty",
-        variant: "destructive",
+  const handleLinkAdded = async (newLink: FrontendLink) => {
+    const parsedLink = FrontendLinkSchema.safeParse(newLink);
+    if (!parsedLink.success) {
+      return toast({
+        title: "Failed to add link",
+        description:
+          parsedLink.error.errors.length > 0
+            ? parsedLink.error.errors[0].message
+            : "Unknown error",
       });
-      return;
     }
     try {
-      await addLink(newLink, collectionId);
-      setIsOpen(false);
+      await addLink(parsedLink.data, collectionId);
     } catch (error) {
       console.error("Failed to add link:", error);
+    } finally {
+      setIsOpen(false);
     }
   };
 
   const handleDeleteLink = async (id: string) => {
+    if (!id) return;
     try {
       await deleteLink(id);
     } catch (error) {
@@ -68,6 +73,8 @@ export function AddLinksToCollection({
     id: string,
     data: { title?: string; url?: string }
   ) => {
+    if (!id) return;
+    if (!data.title || !data.url) return;
     try {
       await updateLink(id, data);
       refreshLinks(collectionId);

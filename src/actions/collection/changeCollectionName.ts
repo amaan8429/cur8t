@@ -5,7 +5,10 @@ import { linkCollectionTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 
-export async function ChangeCollection(collectionId: string, newName: string) {
+export async function ChangeCollectionAction(
+  collectionId: string,
+  newName: string
+) {
   const { userId } = await auth();
 
   if (!userId) {

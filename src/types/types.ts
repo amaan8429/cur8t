@@ -20,9 +20,17 @@ const CollectionSchema = z.object({
   visibility: z.string(),
 });
 
-const FrontendLinkSchema = z.object({
-  title: z.string(),
-  url: z.string(),
+export const FrontendLinkSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(1, {
+      message: "Title must be at least 1 character long",
+    })
+    .max(100, {
+      message: "Title must be at most 50 characters long",
+    }),
+  url: z.string().trim().url(),
 });
 
 export type Link = z.infer<typeof LinkSchema>;

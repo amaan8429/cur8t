@@ -5,7 +5,7 @@ import { linkCollectionTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 
-export async function ChangeCollectionVisibility(
+export async function ChangeCollectionVisibilityAction(
   collectionId: string,
   visibility: string
 ) {

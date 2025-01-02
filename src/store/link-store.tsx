@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Link } from "@/types/types";
-import { getLinks } from "@/actions/getLinks";
+import { getLinksAction } from "@/actions/linkActions/getLinks";
 import { addLink, deleteLink, updateLink } from "@/actions/link-actions";
 
 interface LinkStore {
@@ -31,7 +31,7 @@ export const useLinkStore = create<LinkStore>((set) => ({
   refreshLinks: async (collectionId) => {
     try {
       set({ isLoading: true });
-      const data = await getLinks(collectionId);
+      const data = await getLinksAction(collectionId);
       if ("error" in data) {
         console.error(data.error);
         set({ links: [] });

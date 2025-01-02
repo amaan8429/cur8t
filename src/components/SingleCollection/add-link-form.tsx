@@ -15,30 +15,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-const formSchema = z.object({
-  title: z.string().min(2, {
-    message: "Title must be at least 2 characters.",
-  }),
-  url: z.string().url({
-    message: "Please enter a valid URL.",
-  }),
-});
+import { FrontendLinkSchema, FrontendLink } from "@/types/types";
 
 interface AddLinkFormProps {
   onLinkAdded: (link: { id: string; title: string; url: string }) => void;
 }
 
 export function AddLinkForm({ onLinkAdded }: AddLinkFormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<FrontendLink>({
+    resolver: zodResolver(FrontendLinkSchema),
     defaultValues: {
       title: "",
       url: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: FrontendLink) {
     onLinkAdded({
       id: Math.random().toString(36).slice(2, 9),
       ...values,
@@ -75,7 +67,16 @@ export function AddLinkForm({ onLinkAdded }: AddLinkFormProps) {
             </FormItem>
           )}
         />
-        <Button type="submit">Add Link</Button>
+        <Button
+          type="submit"
+          disabled={
+            !form.formState.isValid ||
+            form.formState.isSubmitting ||
+            form.formState.isSubmitted
+          }
+        >
+          Add Link
+        </Button>
       </form>
     </Form>
   );

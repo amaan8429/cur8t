@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Trash2, Globe, Pencil, Link2 } from "lucide-react";
+import { Trash2, Globe, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import {
   Card,
   CardContent,
@@ -190,7 +189,17 @@ export function LinkGrid({
                     <DialogClose asChild>
                       <Button variant="outline">Cancel</Button>
                     </DialogClose>
-                    <Button onClick={handleUpdateConfirm}>Save Changes</Button>
+                    <Button
+                      disabled={
+                        !newTitle ||
+                        !newUrl ||
+                        newTitle === link.title ||
+                        newUrl === link.url
+                      }
+                      onClick={handleUpdateConfirm}
+                    >
+                      Save Changes
+                    </Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>

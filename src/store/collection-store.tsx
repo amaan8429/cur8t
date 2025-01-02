@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { getCollections } from "@/actions/getCollections";
-import { DeleteCollection } from "@/actions/deleteCollection";
-import { ChangeCollection } from "@/actions/changeCollectionName";
+import { getCollectionsAction } from "@/actions/collection/getCollections";
+import { DeleteCollectionAction } from "@/actions/collection/deleteCollection";
+import { ChangeCollectionAction } from "@/actions/collection/changeCollectionName";
 import { Collection } from "@/types/types";
-import { ChangeCollectionVisibility } from "@/actions/changeCollectionVisi";
+import { ChangeCollectionVisibilityAction } from "@/actions/collection/changeCollectionVisi";
 
 interface CollectionStore {
   collections: Collection[] | null;
@@ -37,7 +37,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
   // Fetch all collections
   fetchCollections: async () => {
     try {
-      const data = await getCollections();
+      const data = await getCollectionsAction();
       if ("error" in data) {
         console.error(data.error);
         set({ collections: [] });
@@ -53,7 +53,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
   // Update collection visibility
   updateCollectionVisibility: async (collectionId, visibility) => {
     try {
-      const response = await ChangeCollectionVisibility(
+      const response = await ChangeCollectionVisibilityAction(
         collectionId,
         visibility
       );
@@ -76,7 +76,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
   // Delete a collection
   deleteCollection: async (collectionId) => {
     try {
-      const result = await DeleteCollection(collectionId);
+      const result = await DeleteCollectionAction(collectionId);
       if ("error" in result) {
         return;
       }
@@ -94,7 +94,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
   // Update collection name
   updateCollectionName: async (collectionId, newName) => {
     try {
-      const response = await ChangeCollection(collectionId, newName);
+      const response = await ChangeCollectionAction(collectionId, newName);
       if (response.success) {
         set((state) => ({
           collections:

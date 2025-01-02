@@ -87,11 +87,11 @@ Things i have to work on :
 
 ## 31st Dec tasks
 
-- [ ] add a zod parser to the link schema on the client side while adding a new link
-- [ ] add a zod parser to the link schema on the client side while updating a collection
-- [ ] add a zod parser to the link schema on the server side while creating a new link
-- [ ] add a zod parser to the link schema on the server side while updating a link
-- [ ] add strict validation on server side for everything
+- [x] add a zod parser to the link schema on the client side while adding a new link
+- [x] add a zod parser to the link schema on the client side while updating a collection
+- [x] add a zod parser to the link schema on the server side while creating a new link
+- [x] add a zod parser to the link schema on the server side while updating a link
+- [x] add strict validation on server side for everything
 - [ ] learn react query
 - [ ] implement tanstack/react-query on the project
 - [ ] useOptimistic implementation

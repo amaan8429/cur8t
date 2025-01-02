@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { linkCollectionTable } from "@/schema";
 import { eq } from "drizzle-orm";
 
-export async function getSingleCollectionName(collectionId: string) {
+export async function getSingleCollectionNameAction(collectionId: string) {
   const collection = await db
     .select()
     .from(linkCollectionTable)
