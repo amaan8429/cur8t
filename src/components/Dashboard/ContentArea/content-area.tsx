@@ -1,5 +1,5 @@
 import React from "react";
-import { AddLinksToCollection } from "@/components/SingleCollection/add-links-in-collection";
+import { ManageCollectionLinks } from "@/components/SingleCollection/add-links-in-collection";
 import { CreateCollectionComponent } from "../CollectionCreation/add-collection";
 
 interface ContentAreaProps {
@@ -45,7 +45,7 @@ export function ContentArea({
         </div>
       )}
       {activeCollectionId && (
-        <AddLinksToCollection collectionId={activeCollectionId} />
+        <ManageCollectionLinks collectionId={activeCollectionId} />
       )}
       {activeSecondary && (
         <div>

@@ -11,7 +11,7 @@ interface AddLinkData {
   url: string;
 }
 
-export async function addLink(data: AddLinkData, collectionId: string) {
+export async function addLinkAction(data: AddLinkData, collectionId: string) {
   const { userId } = await auth();
 
   if (!userId) {

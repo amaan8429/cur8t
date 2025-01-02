@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { Link } from "@/types/types";
 import { getLinksAction } from "@/actions/linkActions/getLinks";
-import { addLink, deleteLink, updateLink } from "@/actions/link-actions";
+import { addLinkAction, deleteLink, updateLink } from "@/actions/link-actions";
 
 interface LinkStore {
   links: Link[];
@@ -34,9 +34,15 @@ export const useLinkStore = create<LinkStore>((set) => ({
       const data = await getLinksAction(collectionId);
       if ("error" in data) {
         console.error(data.error);
-        set({ links: [] });
       } else {
-        set({ links: data.data });
+        set((state) => ({
+          links: [
+            ...state.links.filter(
+              (link) => link.linkCollectionId !== collectionId
+            ),
+            ...data.data,
+          ],
+        }));
       }
     } catch (error) {
       console.error("Failed to refresh links:", error);
@@ -47,14 +53,18 @@ export const useLinkStore = create<LinkStore>((set) => ({
   addLink: async (newLink, collectionId) => {
     try {
       set({ isLoading: true });
-      const createdLink = await addLink(newLink, collectionId);
+      const createdLink = await addLinkAction(newLink, collectionId);
       if ("error" in createdLink) {
         console.error(createdLink.error);
       }
       if (createdLink.success) {
-        set((state) => ({
-          links: [...state.links, createdLink.data],
-        }));
+        set((state) => {
+          const links = [...state.links, createdLink.data].length;
+          console.log("Links:", links);
+          return {
+            links: [...state.links, createdLink.data],
+          };
+        });
       }
     } catch (error) {
       console.error("Failed to add link:", error);

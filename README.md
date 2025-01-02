@@ -68,7 +68,7 @@ tosters and loaders
 Miscs
 
 - [ ] trash the collection db setup
-- [ ] add zod validation on both sidesl
+- [x] add zod validation on both sidesl
 - [ ] / page design
 - [ ] github backup
 - [ ] settings page - clerk something

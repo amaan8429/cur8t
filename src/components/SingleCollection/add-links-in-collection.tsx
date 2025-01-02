@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { PlusCircle } from "lucide-react";
+import React from "react";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 
 import { Button } from "@/components/ui/button";
@@ -18,13 +18,12 @@ import { useToast } from "@/hooks/use-toast";
 import { FrontendLink, FrontendLinkSchema } from "@/types/types";
 import { AddLinkForm } from "./add-link-form";
 
-export function AddLinksToCollection({
+export function ManageCollectionLinks({
   collectionId,
 }: {
   collectionId: string;
 }) {
   const {
-    links,
     isOpen,
     setIsOpen,
     refreshLinks,
@@ -36,9 +35,13 @@ export function AddLinksToCollection({
 
   const { toast } = useToast();
 
+  const fetchedLinks = React.useRef(new Set<string>());
+
   React.useEffect(() => {
+    if (fetchedLinks.current.has(collectionId)) return;
     refreshLinks(collectionId);
-  }, [collectionId, refreshLinks]);
+    fetchedLinks.current.add(collectionId);
+  }, [collectionId]);
 
   const handleLinkAdded = async (newLink: FrontendLink) => {
     const parsedLink = FrontendLinkSchema.safeParse(newLink);
@@ -101,7 +104,7 @@ export function AddLinksToCollection({
           </DialogContent>
         </Dialog>
         <LinkGrid
-          links={links}
+          collectionId={collectionId}
           onDeleteLink={handleDeleteLink}
           onUpdateLink={handleUpdateLink}
           isLoading={isLoading}
