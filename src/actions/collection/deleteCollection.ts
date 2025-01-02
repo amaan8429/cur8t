@@ -5,7 +5,7 @@ import { linkCollectionTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 
-export async function DeleteCollectionAction(collectionId: string) {
+export async function deleteCollectionAction(collectionId: string) {
   const { userId } = await auth();
 
   if (!userId) {
@@ -28,6 +28,6 @@ export async function DeleteCollectionAction(collectionId: string) {
 
     return { success: true };
   } catch (error) {
-    return { error: "Failed to delete collection" };
+    return { error: error };
   }
 }

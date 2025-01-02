@@ -1,13 +1,11 @@
 import React from "react";
-import { Progress } from "../ui/progress";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 
-const LoadingLinks = (progress: { progress: number }) => {
+const LoadingLinks = () => {
   return (
     <div className="space-y-4">
-      <Progress value={progress.progress} className="w-full" />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {[1, 2, 3].map((i) => (
+        {[1, 2, 3, 4, 5, 6].map((i) => (
           <Card key={i} className="flex flex-col animate-pulse">
             <CardHeader className="flex-grow">
               <div className="flex items-center space-x-4">

@@ -88,8 +88,6 @@ export async function updateLinkAction(
 
     console.log("Link updated:", updatedLink);
 
-    revalidatePath("/dashboard");
-
     return { success: true, data: updatedLink };
   } catch (error) {
     console.error("Failed to update link:", error);

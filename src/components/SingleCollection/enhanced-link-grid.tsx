@@ -61,7 +61,7 @@ export function LinkGrid({
   const { links } = useLinkStore();
 
   if (isLoading) {
-    return <div>Loading....</div>;
+    return <LoadingLinks />;
   }
 
   if (links.length === 0) {
@@ -92,6 +92,8 @@ export function LinkGrid({
       }
       setEditingLink(null);
       setOpen(false);
+      setNewTitle("");
+      setNewUrl("");
     }
   };
 
@@ -175,12 +177,7 @@ export function LinkGrid({
                           <Button variant="outline">Cancel</Button>
                         </DialogClose>
                         <Button
-                          disabled={
-                            !newTitle ||
-                            !newUrl ||
-                            newTitle === link.title ||
-                            newUrl === link.url
-                          }
+                          disabled={!newTitle || !newUrl}
                           onClick={handleUpdateConfirm}
                         >
                           Save Changes

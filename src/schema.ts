@@ -13,7 +13,7 @@ export const linkCollectionTable = pgTable("link_collection", {
   name: text("name").notNull(),
   userId: text("user_id")
     .notNull()
-    .references(() => usersTable.id),
+    .references(() => usersTable.id, { onDelete: "cascade" }),
   url: text("url").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")
@@ -28,11 +28,11 @@ export const linkTable = pgTable("link", {
   title: text("title").notNull(),
   url: text("url").notNull(),
   linkCollectionId: uuid("link_collection_id")
-    .references(() => linkCollectionTable.id)
+    .references(() => linkCollectionTable.id, { onDelete: "cascade" })
     .notNull(),
   userId: text("user_id")
     .notNull()
-    .references(() => usersTable.id),
+    .references(() => usersTable.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at")
     .notNull()

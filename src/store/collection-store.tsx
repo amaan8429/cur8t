@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { getCollectionsAction } from "@/actions/collection/getCollections";
-import { DeleteCollectionAction } from "@/actions/collection/deleteCollection";
+import { deleteCollectionAction } from "@/actions/collection/deleteCollection";
 import { ChangeCollectionAction } from "@/actions/collection/changeCollectionName";
 import { Collection } from "@/types/types";
 import { ChangeCollectionVisibilityAction } from "@/actions/collection/changeCollectionVisi";
@@ -78,10 +78,10 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
   // Delete a collection
   deleteCollection: async (collectionId) => {
     try {
-      const result = await DeleteCollectionAction(collectionId);
+      const result = await deleteCollectionAction(collectionId);
       if ("error" in result) {
         console.log(result.error);
-        return { error: result.error };
+        return { error: result.error as string };
       }
       set((state) => ({
         collections:
