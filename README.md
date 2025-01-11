@@ -93,6 +93,8 @@ Things i have to work on :
 ## 12rd Jan tasks
 
 - [x] make buttons and themes better
-- [ ] add a theme changer down below
+- [ ] add a theme changer in the settings
 - [ ] table format for the links
+- [ ] github backup
 - [ ] new collections or edited collections should be at the top
+- [ ] resend mail when creation of account.
