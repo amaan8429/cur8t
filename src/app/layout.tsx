@@ -2,20 +2,16 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import localFont from "next/font/local";
+import { JetBrains_Mono } from "next/font/google";
 
 export const metadata = {
   title: "Bukmarks",
   description: "a way to share links faster and optmize your workflow",
 };
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
+const jetBrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
 });
 
 export default function RootLayout({
@@ -26,7 +22,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${geistSans.className} ${geistMono.className}`}>
+        <body
+          className={`${jetBrainsMono.className} ${jetBrainsMono.className}`}
+        >
           <ThemeProvider attribute="class" defaultTheme="system">
             <main>{children}</main>
             <Toaster />

@@ -1,6 +1,7 @@
 import React from "react";
 import { ManageCollectionLinks } from "@/components/SingleCollection/add-links-in-collection";
 import { CreateCollectionComponent } from "../CollectionCreation/add-collection";
+import SecondaryPage from "@/components/Secondary/secondary-page";
 
 interface ContentAreaProps {
   activeItem: string;
@@ -47,14 +48,7 @@ export function ContentArea({
       {activeCollectionId && (
         <ManageCollectionLinks collectionId={activeCollectionId} />
       )}
-      {activeSecondary && (
-        <div>
-          <h3 className="text-xl font-semibold mb-2">
-            Secondary: {activeSecondary}
-          </h3>
-          <p>This is the content for your secondary item: {activeSecondary}</p>
-        </div>
-      )}
+      {activeSecondary && <SecondaryPage activeSecondary={activeSecondary} />}
     </div>
   );
 }

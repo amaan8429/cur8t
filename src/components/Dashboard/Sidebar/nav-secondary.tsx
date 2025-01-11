@@ -10,11 +10,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { ModeToggle } from "@/components/mode-toggle";
 
 interface NavSecondaryProps {
   items: {
     title: string;
-    url: string;
     icon: LucideIcon;
     badge?: React.ReactNode;
   }[];

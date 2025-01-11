@@ -4,21 +4,20 @@
 - [x] add loader there
 - [x] add emoji to the collection
 - [x] manage data on the other components so when a new collection is added , it is shown on the navigation area
-- [ ] when dashboard is directly opened to the collection page , the data is not fetched on the navCollection
+- [x] when dashboard is directly opened to the collection page , the data is not fetched on the navCollection
 - [x] add a loader on the collection page until the data is being fetched
 - [ ] sequence should not change when a link is edited
-- [ ] new collections or edited collections should be at the top
 - [x] hero section made
 - [x] custum theme and font setup
 - [ ] add a tweet section
 - [ ] add a usage section
 - [ ] add a footer
-- [ ] cache the data on the navCollection
+- [x] cache the data on the navCollection
 - [x] add error handling on there to reload or fetch again
 - [ ] do something with more button - 2 more button are there
 - [x] collection page setup on the content area
 - [x] collection page ui make better
-- [ ] integrate zod
+- [x] integrate zod
 - [ ] CLAUDE LINK ADD option to a custum collection
 - [ ] Chatgpt LINK add option to a custum collection
 - [ ] BOOKMARKS IMPORT AND EXPORT
@@ -43,7 +42,6 @@ UI to add and change in the collection page
 - [x] dialog box to delete the collection
 - [ ] make the ui better using suspense and stuff
 - [x] edit the name of links and urls
-- [ ] table format for the links
 - [ ] export the collection in different formats - json , csv , pdf
 - [x] sharable link for the collection
 - [ ] custom url for the collection
@@ -72,8 +70,6 @@ Miscs
 - [ ] / page design
 - [ ] github backup
 - [ ] settings page - clerk something
-- [ ] add a theme changer down below
-- [ ] make buttons and themes better
 - [ ] private and public collections
 
 Things i have to work on :
@@ -85,13 +81,18 @@ Things i have to work on :
 5. learn and build something using tailwind css and next.js and framer motion
 6. web3 cohort by harkirat
 
-## 31st Dec tasks
-
 - [x] add a zod parser to the link schema on the client side while adding a new link
 - [x] add a zod parser to the link schema on the client side while updating a collection
 - [x] add a zod parser to the link schema on the server side while creating a new link
 - [x] add a zod parser to the link schema on the server side while updating a link
 - [x] add strict validation on server side for everything
-- [ ] learn react query
-- [ ] implement tanstack/react-query on the project
-- [ ] useOptimistic implementation
+- [x] learn react query
+- [x] implement tanstack/react-query on the project
+- [x] useOptimistic implementation
+
+## 12rd Jan tasks
+
+- [x] make buttons and themes better
+- [ ] add a theme changer down below
+- [ ] table format for the links
+- [ ] new collections or edited collections should be at the top

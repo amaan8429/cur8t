@@ -9,8 +9,10 @@ import {
   Home,
   // Inbox,
   MessageCircleQuestion,
+  SunMoon,
   Search,
   Settings2,
+  Workflow,
   // Sparkles,
   Trash2,
 } from "lucide-react";
@@ -48,28 +50,19 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Calendar",
-      url: "#",
-      icon: Calendar,
+      title: "Integrations",
+      icon: Workflow,
     },
     {
       title: "Settings",
-      url: "#",
       icon: Settings2,
     },
     {
-      title: "Templates",
-      url: "#",
-      icon: Blocks,
-    },
-    {
       title: "Trash",
-      url: "#",
       icon: Trash2,
     },
     {
       title: "Help",
-      url: "#",
       icon: MessageCircleQuestion,
     },
   ],
