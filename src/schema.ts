@@ -5,6 +5,20 @@ export const usersTable = pgTable("users", {
   id: text("id").primaryKey().notNull(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
+  githubConnected: text("github_connected").notNull().default("false"),
+});
+
+export const GitHubSettingsTable = pgTable("github_settings", {
+  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
+  repoName: text("repo_name").default("bukmarksCollection"),
+  githubAccessToken: text("github_access_token").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 // Define the link_collection table (list group)
