@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { GitHubSettingsTable } from "@/schema";
+import { GitHubSettingsTable, usersTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
 
 export async function GET(request: Request) {
   try {
@@ -52,6 +53,10 @@ export async function GET(request: Request) {
       githubAccessToken: access_token,
       userId,
     });
+    await db
+      .update(usersTable)
+      .set({ githubConnected: true })
+      .where(eq(usersTable.id, userId));
 
     return NextResponse.redirect(
       `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard?secondary=Integrations`

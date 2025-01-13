@@ -15,9 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const GitHubIntegrationComponent = () => {
-  const [githubConnected, setGithubConnected] = React.useState<boolean | null>(
-    null
-  );
+  const [githubConnected, setGithubConnected] = React.useState(false);
   const [isSyncing, setIsSyncing] = React.useState(false);
   const { toast } = useToast();
   const { user } = useUser();
@@ -88,7 +86,7 @@ const GitHubIntegrationComponent = () => {
       const data = await response.json();
       setGithubConnected(data.githubConnected);
     } catch (error) {
-      console.error("Error checking GitHub status:", error);
+      console.log("Error checking GitHub status:", error);
       toast({
         title: "Error",
         description: "Failed to check GitHub connection status",
