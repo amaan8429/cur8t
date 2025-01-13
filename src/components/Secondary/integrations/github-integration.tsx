@@ -127,7 +127,7 @@ const GitHubIntegrationComponent = () => {
           </ul>
           {githubConnected ? (
             <Button
-              variant={"destructive"}
+              variant={"default"}
               onClick={async () => {
                 if (!user || !user.id) {
                   return toast({
