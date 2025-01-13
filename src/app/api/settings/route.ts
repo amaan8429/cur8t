@@ -4,7 +4,7 @@ import { db } from "@/db";
 import { usersTable } from "@/schema";
 import { eq } from "drizzle-orm";
 
-export async function upsertUserProfile(
+async function upsertUserProfile(
   userId: string,
   data: {
     firstName: string;
