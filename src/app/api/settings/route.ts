@@ -35,7 +35,7 @@ export async function PUT(req: Request) {
     }
 
     const body = await req.json();
-    const { firstName, lastName, avatar } = body;
+    const { firstName, lastName } = body;
 
     const updatedUser = await upsertUserProfile(userId, {
       firstName,

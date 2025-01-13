@@ -1,11 +1,11 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 // Define the users table
 export const usersTable = pgTable("users", {
   id: text("id").primaryKey().notNull(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  githubConnected: text("github_connected").notNull().default("false"),
+  githubConnected: boolean("github_connected").notNull().default(false),
 });
 
 export const GitHubSettingsTable = pgTable("github_settings", {
