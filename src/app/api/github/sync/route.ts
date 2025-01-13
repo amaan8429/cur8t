@@ -5,8 +5,8 @@ import { db } from "@/db";
 import { GitHubSettingsTable, linkCollectionTable, linkTable } from "@/schema";
 import { Collection, Link } from "@/types/types";
 import { auth } from "@clerk/nextjs/server";
+import { RequestError } from "@octokit/request-error";
 
-// Utility function to convert collection and links to markdown
 function convertToMarkdown(collection: Collection, links: Link[]) {
   let markdown = `# ${collection.name}\n\n`;
   markdown += `Created: ${collection.createdAt.toISOString()}\n`;
@@ -20,25 +20,44 @@ function convertToMarkdown(collection: Collection, links: Link[]) {
   return markdown;
 }
 
+async function getCurrentContent(
+  octokit: Octokit,
+  owner: string,
+  path: string
+): Promise<string | null> {
+  try {
+    const { data } = await octokit.repos.getContent({
+      owner,
+      repo: "bookmarksCollection",
+      path,
+    });
+
+    if ("content" in data && typeof data.content === "string") {
+      return Buffer.from(data.content, "base64").toString("utf-8");
+    }
+    return null;
+  } catch (error) {
+    if (error instanceof RequestError && error.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
 async function ensureRepoExists(octokit: Octokit, owner: string) {
   try {
-    // Try to get the repo first
     await octokit.repos.get({
       owner,
       repo: "bookmarksCollection",
     });
   } catch (error) {
-    // If repo doesn't exist, create it
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((error as any).status === 404) {
+    if (error instanceof RequestError && error.status === 404) {
       await octokit.repos.createForAuthenticatedUser({
         name: "bookmarksCollection",
         description: "Collection of bookmarked links synced from my app",
         private: true,
-        auto_init: true, // Creates with a README
+        auto_init: true,
       });
-
-      // Wait a short moment to ensure the repo is ready
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } else {
       throw error;
@@ -49,122 +68,172 @@ async function ensureRepoExists(octokit: Octokit, owner: string) {
 const getUserInfo = async (githubToken: string) => {
   const octokit = new Octokit({ auth: githubToken });
   const { data } = await octokit.users.getAuthenticated();
-  return data.login; // This is the username/owner
+  return data.login;
 };
 
 export async function POST(req: Request) {
   try {
-    console.log("REQ", req);
     const { id } = await req.json();
 
     if (!id) {
-      return NextResponse.json({ error: "Missing UserId" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing UserId", showToast: true },
+        { status: 400 }
+      );
     }
 
     const { userId } = await auth();
 
     if (!userId) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "User not found", showToast: true },
+        { status: 404 }
+      );
     }
 
     if (id !== userId) {
       return NextResponse.json(
-        { error: "User does not match request" },
+        { error: "User does not match request", showToast: true },
         { status: 403 }
       );
     }
 
-    // Get GitHub token for user
     const githubSettings = await db.query.GitHubSettingsTable.findFirst({
       where: eq(GitHubSettingsTable.userId, userId),
     });
 
     if (!githubSettings) {
       return NextResponse.json(
-        { error: "GitHub not connected" },
+        { error: "GitHub not connected", showToast: true },
         { status: 400 }
       );
     }
 
     const { githubAccessToken: githubToken } = githubSettings;
-
-    // Initialize GitHub client
     const octokit = new Octokit({ auth: githubToken });
-
-    // Get username for the owner
     const owner = await getUserInfo(githubToken);
-
-    // Ensure repository exists
     await ensureRepoExists(octokit, owner);
 
-    // Get all collections for the user
+    // Get all collections and their links
     const collections = await db.query.linkCollectionTable.findMany({
       where: eq(linkCollectionTable.userId, userId),
       orderBy: [desc(linkCollectionTable.updatedAt)],
     });
 
-    const syncResults = await Promise.all(
+    if (collections.length === 0) {
+      return NextResponse.json({
+        message: "No collections to sync",
+        showToast: true,
+        status: "info",
+      });
+    }
+
+    // Prepare all files content and check for changes
+    const files = await Promise.all(
       collections.map(async (collection) => {
-        // Get all links for this collection
         const links = await db.query.linkTable.findMany({
           where: eq(linkTable.linkCollectionId, collection.id),
         });
-
         const content = convertToMarkdown(collection, links);
-        const fileName = `${collection.name
-          .toLowerCase()
-          .replace(/\s+/g, "-")}.md`;
+        const path = `${collection.name.toLowerCase().replace(/\s+/g, "-")}.md`;
+        const currentContent = await getCurrentContent(octokit, owner, path);
 
-        try {
-          // Check if file exists
-          let sha: string | undefined;
-          try {
-            const { data } = await octokit.repos.getContent({
-              owner,
-              repo: "bookmarksCollection",
-              path: fileName,
-            });
-
-            if (!Array.isArray(data)) {
-              sha = data.sha;
-            }
-          } catch (error) {
-            // File doesn't exist yet, that's okay
-          }
-
-          // Create or update file
-          await octokit.repos.createOrUpdateFileContents({
-            owner,
-            repo: "bookmarksCollection",
-            path: fileName,
-            message: `Update ${collection.name} collection`,
-            content: Buffer.from(content).toString("base64"),
-            sha,
-          });
-
-          return {
-            collection: collection.name,
-            status: "success",
-          };
-        } catch (error) {
-          console.error(`Error syncing ${collection.name}:`, error);
-          return {
-            collection: collection.name,
-            status: "error",
-            error: error instanceof Error ? error.message : "Unknown error",
-          };
-        }
+        return {
+          path,
+          content,
+          collection: collection.name,
+          hasChanged: content !== currentContent,
+        };
       })
     );
 
+    // Check if any files have changed
+    const changedFiles = files.filter((file) => file.hasChanged);
+
+    if (changedFiles.length === 0) {
+      return NextResponse.json({
+        message: "All collections are already in sync",
+        showToast: true,
+        status: "success",
+      });
+    }
+
+    // Get the latest commit SHA
+    const { data: ref } = await octokit.git.getRef({
+      owner,
+      repo: "bookmarksCollection",
+      ref: "heads/main",
+    });
+    const latestCommitSha = ref.object.sha;
+
+    // Get the base tree
+    const { data: commit } = await octokit.git.getCommit({
+      owner,
+      repo: "bookmarksCollection",
+      commit_sha: latestCommitSha,
+    });
+    const baseTreeSha = commit.tree.sha;
+
+    // Create blobs only for changed files
+    const blobs = await Promise.all(
+      changedFiles.map(async (file) => {
+        const { data } = await octokit.git.createBlob({
+          owner,
+          repo: "bookmarksCollection",
+          content: file.content,
+          encoding: "utf-8",
+        });
+        return {
+          path: file.path,
+          mode: "100644" as const,
+          type: "blob" as const,
+          sha: data.sha,
+        };
+      })
+    );
+
+    // Create a new tree
+    const { data: newTree } = await octokit.git.createTree({
+      owner,
+      repo: "bookmarksCollection",
+      base_tree: baseTreeSha,
+      tree: blobs,
+    });
+
+    // Create a commit
+    const { data: newCommit } = await octokit.git.createCommit({
+      owner,
+      repo: "bookmarksCollection",
+      message: `Sync updated collections (${changedFiles.length} changed)`,
+      tree: newTree.sha,
+      parents: [latestCommitSha],
+    });
+
+    // Update the reference
+    await octokit.git.updateRef({
+      owner,
+      repo: "bookmarksCollection",
+      ref: "heads/main",
+      sha: newCommit.sha,
+    });
+
     return NextResponse.json({
-      message: "Sync completed",
-      results: syncResults,
+      message: `Successfully synced ${changedFiles.length} updated collections`,
+      showToast: true,
+      status: "success",
+      results: changedFiles.map((file) => ({
+        collection: file.collection,
+        status: "success",
+      })),
     });
   } catch (error) {
     console.error("Sync error:", error);
     return NextResponse.json(
-      { error: "Failed to sync with GitHub" },
+      {
+        error: "Failed to sync with GitHub",
+        showToast: true,
+        status: "error",
+      },
       { status: 500 }
     );
   }

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-
 import {
   Card,
   CardContent,
@@ -10,52 +9,72 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Github } from "lucide-react";
+import { Github, Loader2 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { useToast } from "@/hooks/use-toast";
 
 const GitHubIntegrationComponent = () => {
   const [githubConnected, setGithubConnected] = React.useState(false);
+  const [isSyncing, setIsSyncing] = React.useState(false);
   const { toast } = useToast();
-
   const { user } = useUser();
 
   const handleConnectGitHub = () => {
-    console.log("Connect GitHub");
     window.location.href = "/api/github/connect";
   };
 
   const syncToGithub = async (id: string) => {
-    console.log("userId", id);
-    const response = await fetch("/api/github/sync", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-      }),
+    setIsSyncing(true);
+    toast({
+      title: "Syncing",
+      description: "Syncing your collections to GitHub...",
     });
 
-    const data = await response.json();
-    if (data.error) {
+    try {
+      const response = await fetch("/api/github/sync", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast({
+          title: "Error",
+          description: data.error || "Failed to sync with GitHub",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Handle different response types
+      if (data.status === "info") {
+        toast({
+          title: "Info",
+          description: data.message,
+        });
+      } else if (data.status === "success") {
+        toast({
+          title: "Success",
+          description: data.message,
+          variant: "default",
+        });
+      }
+
+      return data;
+    } catch (error) {
       toast({
         title: "Error",
-        description: data.error,
+        description: "Failed to sync with GitHub",
         variant: "destructive",
       });
+    } finally {
+      setIsSyncing(false);
     }
-
-    if (data.success) {
-      toast({
-        title: "Success",
-        description: "Synced to GitHub",
-        variant: "default",
-      });
-    }
-
-    return data;
   };
 
   const checkGithubStatus = async () => {
@@ -64,7 +83,12 @@ const GitHubIntegrationComponent = () => {
       const data = await response.json();
       setGithubConnected(data.githubConnected);
     } catch (error) {
-      console.log("Error checking GitHub status:", error);
+      console.error("Error checking GitHub status:", error);
+      toast({
+        title: "Error",
+        description: "Failed to check GitHub connection status",
+        variant: "destructive",
+      });
     }
   };
 
@@ -103,6 +127,7 @@ const GitHubIntegrationComponent = () => {
           </ul>
           {githubConnected ? (
             <Button
+              variant={"destructive"}
               onClick={async () => {
                 if (!user || !user.id) {
                   return toast({
@@ -111,12 +136,19 @@ const GitHubIntegrationComponent = () => {
                     variant: "destructive",
                   });
                 }
-                const data = await syncToGithub(user.id);
-                console.log("Sync to GitHub:", data);
+                await syncToGithub(user.id);
               }}
               className="w-full"
+              disabled={isSyncing}
             >
-              Sync GitHub
+              {isSyncing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Syncing...
+                </>
+              ) : (
+                "Sync GitHub"
+              )}
             </Button>
           ) : (
             <Button onClick={handleConnectGitHub} className="w-full">
