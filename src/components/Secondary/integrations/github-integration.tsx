@@ -12,9 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Github, Loader2 } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const GitHubIntegrationComponent = () => {
-  const [githubConnected, setGithubConnected] = React.useState(false);
+  const [githubConnected, setGithubConnected] = React.useState<boolean | null>(
+    null
+  );
   const [isSyncing, setIsSyncing] = React.useState(false);
   const { toast } = useToast();
   const { user } = useUser();
@@ -51,7 +54,6 @@ const GitHubIntegrationComponent = () => {
         return;
       }
 
-      // Handle different response types
       if (data.status === "info") {
         toast({
           title: "Info",
@@ -80,6 +82,9 @@ const GitHubIntegrationComponent = () => {
   const checkGithubStatus = async () => {
     try {
       const response = await fetch("/api/github/status");
+      if (!response.ok) {
+        throw new Error("Failed to fetch GitHub status");
+      }
       const data = await response.json();
       setGithubConnected(data.githubConnected);
     } catch (error) {
@@ -89,12 +94,42 @@ const GitHubIntegrationComponent = () => {
         description: "Failed to check GitHub connection status",
         variant: "destructive",
       });
+      setGithubConnected(false);
     }
   };
 
   React.useEffect(() => {
     checkGithubStatus();
   }, []);
+
+  if (githubConnected === null) {
+    return (
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <Skeleton className="h-6 w-6 rounded" />
+            <div className="space-y-2">
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-4 w-64" />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <Skeleton className="h-1.5 w-1.5 rounded-full" />
+                  <Skeleton className="h-4 w-32" />
+                </div>
+              ))}
+            </div>
+            <Skeleton className="h-10 w-full" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -127,9 +162,9 @@ const GitHubIntegrationComponent = () => {
           </ul>
           {githubConnected ? (
             <Button
-              variant={"default"}
+              variant="default"
               onClick={async () => {
-                if (!user || !user.id) {
+                if (!user?.id) {
                   return toast({
                     title: "Error",
                     description: "User ID not found",
