@@ -31,7 +31,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/types/types";
-import { useLinkStore } from "@/store/link-store";
 import { truncateUrl } from "@/lib/truncate";
 import LoadingStates from "./loading";
 import EmptyStates from "./no-links";
@@ -84,28 +83,10 @@ const LinkTable = ({
   };
 
   if (isLoading) {
-    return (
-      <div className="w-full h-32 flex items-center justify-center">
-        <p className="text-muted-foreground">Loading links...</p>
-      </div>
-    );
-  }
-
-  if (!filteredLinks.length) {
-    return (
-      <div className="w-full h-32 flex items-center justify-center">
-        <p className="text-muted-foreground">
-          No links found in this collection
-        </p>
-      </div>
-    );
-  }
-
-  if (isLoading) {
     return <LoadingStates view="table" />;
   }
 
-  if (links.length === 0) {
+  if (filteredLinks.length === 0) {
     return <EmptyStates view="table" />;
   }
 
