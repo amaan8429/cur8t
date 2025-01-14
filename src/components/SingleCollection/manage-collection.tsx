@@ -1,9 +1,7 @@
 "use client";
 
-import { PlusCircle } from "lucide-react";
 import React from "react";
-import { VisuallyHidden } from "@/components/ui/visually-hidden";
-
+import { PlusCircle, LayoutGrid, Table } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,11 +10,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { LinkGrid } from "@/components/SingleCollection/enhanced-link-grid";
 import { useLinkStore } from "@/store/link-store";
 import { useToast } from "@/hooks/use-toast";
 import { FrontendLink, FrontendLinkSchema } from "@/types/types";
 import { AddLinkForm } from "./add-link-form";
+import { LinkGrid } from "./link-grid";
+import { LinkTable } from "./link-table";
 
 export function ManageCollectionLinks({
   collectionId,
@@ -32,10 +31,10 @@ export function ManageCollectionLinks({
     updateLink,
     isLoading,
   } = useLinkStore();
-
   const { toast } = useToast();
+  const [view, setView] = React.useState<"grid" | "table">("grid"); // State for toggling views
 
-  const fetchedLinks = React.useRef(new Set<string>());
+  const fetchedLinks = React.useRef(new Set());
 
   React.useEffect(() => {
     if (fetchedLinks.current.has(collectionId)) return;
@@ -84,31 +83,57 @@ export function ManageCollectionLinks({
   };
 
   return (
-    <main className="min-h-screen bg-background p-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="space-y-4">
+      {/* Header Section */}
+      <div className="flex items-center justify-between">
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setView("grid")}
+            disabled={view === "grid"}
+          >
+            <LayoutGrid className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setView("table")}
+            disabled={view === "table"}
+          >
+            <Table className="h-5 w-5" />
+          </Button>
+        </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="mb-8">
-              <PlusCircle className="mr-2 h-4 w-4" />
+            <Button>
+              <PlusCircle className="h-5 w-5 mr-2" />
               Add New Link
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <VisuallyHidden>
-                <DialogTitle>Add New Link</DialogTitle>
-              </VisuallyHidden>
+              <DialogTitle>Add New Link</DialogTitle>
             </DialogHeader>
             <AddLinkForm onLinkAdded={handleLinkAdded} />
           </DialogContent>
         </Dialog>
+      </div>
+
+      {/* View Section */}
+      {view === "grid" ? (
         <LinkGrid
           collectionId={collectionId}
           onDeleteLink={handleDeleteLink}
           onUpdateLink={handleUpdateLink}
           isLoading={isLoading}
         />
-      </div>
-    </main>
+      ) : (
+        <LinkTable
+          collectionId={collectionId}
+          onDeleteLink={handleDeleteLink}
+          onUpdateLink={handleUpdateLink}
+          isLoading={isLoading}
+        />
+      )}
+    </div>
   );
 }

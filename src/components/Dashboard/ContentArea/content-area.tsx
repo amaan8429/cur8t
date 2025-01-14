@@ -1,5 +1,5 @@
 import React from "react";
-import { ManageCollectionLinks } from "@/components/SingleCollection/add-links-in-collection";
+import { ManageCollectionLinks } from "@/components/SingleCollection/manage-collection";
 import { CreateCollectionComponent } from "../CollectionCreation/add-collection";
 import SecondaryPage from "@/components/Secondary/secondary-page";
 
