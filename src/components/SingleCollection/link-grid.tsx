@@ -35,15 +35,16 @@ import {
 
 import { Link } from "@/types/types";
 import { truncateUrl } from "@/lib/truncate";
-import LoadingLinks from "./loading";
-import Nolinks from "./no-links";
 import { useLinkStore } from "@/store/link-store";
+import LoadingStates from "./loading";
+import EmptyStates from "./no-links";
 
 interface LinkGridProps {
   collectionId: string;
   onDeleteLink: (id: string) => void;
   onUpdateLink: (id: string, data: { title?: string; url?: string }) => void;
   isLoading?: boolean;
+  links: Link[];
 }
 
 export function LinkGrid({
@@ -51,6 +52,7 @@ export function LinkGrid({
   onDeleteLink,
   onUpdateLink,
   isLoading = false,
+  links,
 }: LinkGridProps) {
   const [linkToDelete, setLinkToDelete] = React.useState<string | null>(null);
   const [editingLink, setEditingLink] = React.useState<Link | null>(null);
@@ -58,14 +60,12 @@ export function LinkGrid({
   const [newUrl, setNewUrl] = React.useState("");
   const [open, setOpen] = React.useState(false);
 
-  const { links } = useLinkStore();
-
   if (isLoading) {
-    return <LoadingLinks />;
+    return <LoadingStates view="grid" />;
   }
 
   if (links.length === 0) {
-    return <Nolinks />;
+    return <EmptyStates view="grid" />;
   }
 
   const handleDeleteConfirm = () => {

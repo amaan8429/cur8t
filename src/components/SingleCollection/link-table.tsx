@@ -1,13 +1,21 @@
-import React, { useState } from "react";
-import { Trash2, Pencil } from "lucide-react";
+/* eslint-disable react/no-unescaped-entities */
+import React from "react";
+import { Trash2, Pencil, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
 import {
@@ -24,169 +32,196 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link } from "@/types/types";
 import { useLinkStore } from "@/store/link-store";
+import { truncateUrl } from "@/lib/truncate";
+import LoadingStates from "./loading";
+import EmptyStates from "./no-links";
 
 interface LinkTableProps {
   collectionId: string;
   onDeleteLink: (id: string) => void;
   onUpdateLink: (id: string, data: { title?: string; url?: string }) => void;
   isLoading?: boolean;
+  links: Link[];
 }
 
-export function LinkTable({
+const LinkTable = ({
   collectionId,
   onDeleteLink,
   onUpdateLink,
   isLoading = false,
-}: LinkTableProps) {
-  const { links } = useLinkStore();
+  links,
+}: LinkTableProps) => {
+  const [editingLink, setEditingLink] = React.useState<Link | null>(null);
+  const [newTitle, setNewTitle] = React.useState("");
+  const [newUrl, setNewUrl] = React.useState("");
+  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
 
-  // State for editing links
-  const [editingLink, setEditingLink] = useState<Link | null>(null);
-  const [newTitle, setNewTitle] = useState("");
-  const [newUrl, setNewUrl] = useState("");
+  const filteredLinks = links.filter(
+    (link) => link.linkCollectionId === collectionId
+  );
 
-  // State for confirming delete
-  const [linkToDelete, setLinkToDelete] = useState<string | null>(null);
-
-  // Handlers
   const handleEditClick = (link: Link) => {
     setEditingLink(link);
     setNewTitle(link.title);
     setNewUrl(link.url);
+    setIsEditDialogOpen(true);
   };
 
   const handleUpdateConfirm = () => {
-    if (editingLink) {
+    if (
+      editingLink &&
+      (newTitle !== editingLink.title || newUrl !== editingLink.url)
+    ) {
       const updates: { title?: string; url?: string } = {};
       if (newTitle !== editingLink.title) updates.title = newTitle;
       if (newUrl !== editingLink.url) updates.url = newUrl;
-
-      if (Object.keys(updates).length > 0) {
-        onUpdateLink(editingLink.id, updates);
-      }
-      setEditingLink(null); // Reset the editing state
-      setNewTitle("");
-      setNewUrl("");
+      onUpdateLink(editingLink.id, updates);
     }
+    setIsEditDialogOpen(false);
+    setEditingLink(null);
+    setNewTitle("");
+    setNewUrl("");
   };
 
-  const handleDeleteConfirm = () => {
-    if (linkToDelete) {
-      onDeleteLink(linkToDelete);
-      setLinkToDelete(null);
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="w-full h-32 flex items-center justify-center">
+        <p className="text-muted-foreground">Loading links...</p>
+      </div>
+    );
+  }
 
-  if (isLoading) return <p>Loading...</p>;
-  if (links.length === 0) return <p>No links found</p>;
+  if (!filteredLinks.length) {
+    return (
+      <div className="w-full h-32 flex items-center justify-center">
+        <p className="text-muted-foreground">
+          No links found in this collection
+        </p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return <LoadingStates view="table" />;
+  }
+
+  if (links.length === 0) {
+    return <EmptyStates view="table" />;
+  }
 
   return (
-    <table className="table-auto w-full text-left border">
-      <thead>
-        <tr>
-          <th className="border px-4 py-2">Title</th>
-          <th className="border px-4 py-2">URL</th>
-          <th className="border px-4 py-2">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {links
-          .filter((link) => link.linkCollectionId === collectionId)
-          .map((link) => (
-            <tr key={link.id}>
-              <td className="border px-4 py-2">{link.title}</td>
-              <td className="border px-4 py-2">
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  {link.url}
-                </a>
-              </td>
-              <td className="border px-4 py-2 flex gap-2">
-                {/* Edit Button */}
-                <Dialog
-                  open={editingLink?.id === link.id}
-                  onOpenChange={() => setEditingLink(null)}
-                >
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEditClick(link)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Edit Link</DialogTitle>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid gap-2">
-                        <label htmlFor="title">Title</label>
-                        <Input
-                          id="title"
-                          value={newTitle}
-                          onChange={(e) => setNewTitle(e.target.value)}
-                        />
-                      </div>
-                      <div className="grid gap-2">
-                        <label htmlFor="url">URL</label>
-                        <Input
-                          id="url"
-                          value={newUrl}
-                          onChange={(e) => setNewUrl(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                      </DialogClose>
-                      <Button
-                        disabled={!newTitle || !newUrl}
-                        onClick={handleUpdateConfirm}
-                      >
-                        Save Changes
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[300px]">Title</TableHead>
+            <TableHead>URL</TableHead>
+            <TableHead className="w-[150px] text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredLinks.map((link) => (
+            <TableRow key={link.id}>
+              <TableCell className="font-medium">{link.title}</TableCell>
+              <TableCell>
+                <div className="flex items-center space-x-2">
+                  <span className="text-muted-foreground">
+                    {truncateUrl(link.url)}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => window.open(link.url, "_blank")}
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </div>
+              </TableCell>
+              <TableCell className="text-right">
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleEditClick(link)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-
-                {/* Delete Button */}
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => setLinkToDelete(link.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete Link</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to delete this link? This action
-                        cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDeleteConfirm}>
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </td>
-            </tr>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Link</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete "{link.title}"? This
+                          action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => onDeleteLink(link.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </TableCell>
+            </TableRow>
           ))}
-      </tbody>
-    </table>
+        </TableBody>
+      </Table>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Link</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <label htmlFor="title" className="text-sm font-medium">
+                Title
+              </label>
+              <Input
+                id="title"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder="Enter link title"
+              />
+            </div>
+            <div className="grid gap-2">
+              <label htmlFor="url" className="text-sm font-medium">
+                URL
+              </label>
+              <Input
+                id="url"
+                value={newUrl}
+                onChange={(e) => setNewUrl(e.target.value)}
+                placeholder="Enter URL"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button
+              onClick={handleUpdateConfirm}
+              disabled={!newTitle || !newUrl}
+            >
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
-}
+};
+
+export default LinkTable;
