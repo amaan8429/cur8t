@@ -1,4 +1,11 @@
-import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 // Define the users table
 export const usersTable = pgTable("users", {
@@ -6,6 +13,20 @@ export const usersTable = pgTable("users", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   githubConnected: boolean("github_connected").notNull().default(false),
+  APIKeysCount: integer("api_keys_count").notNull().default(0),
+});
+
+export const APIKeysTable = pgTable("api_keys", {
+  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  key: text("key").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const GitHubSettingsTable = pgTable("github_settings", {

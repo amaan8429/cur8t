@@ -137,7 +137,7 @@ const GitHubIntegrationComponent = () => {
           <div>
             <CardTitle>Connect GitHub</CardTitle>
             <CardDescription>
-              Connect your GitHub account to manage your repositories.
+              Connect your GitHub account to sync your collections
             </CardDescription>
           </div>
         </div>
@@ -147,15 +147,15 @@ const GitHubIntegrationComponent = () => {
           <ul className="space-y-2">
             <li className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-              Auto-sync repositories
+              Sync collections to GitHub
             </li>
             <li className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-              Track changes
+              Github repository updates every 24 hours
             </li>
             <li className="flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-              Manage permissions
+              <div className="h-1.5 w-1.5 rounded-full bg-primary" />2 way sync
+              feature
             </li>
           </ul>
           {githubConnected ? (

@@ -68,9 +68,11 @@ Miscs
 - [ ] trash the collection db setup
 - [x] add zod validation on both sidesl
 - [ ] / page design
-- [ ] github backup
+- [x] github backup
 - [ ] settings page - clerk something
-- [ ] private and public collections
+- [x] private and public collections
+- [ ] add a search bar on the collection page
+- [ ] add all the private collections problem to the settings section
 
 Things i have to work on :
 
@@ -93,8 +95,10 @@ Things i have to work on :
 ## 12rd Jan tasks
 
 - [x] make buttons and themes better
-- [ ] add a theme changer in the settings
+- [x] add a theme changer in the settings
 - [ ] table format for the links
-- [ ] github backup
+- [x] github backup
+- [ ] 2 way sync with github
+- [ ] api key generation for the connection
 - [ ] new collections or edited collections should be at the top
 - [ ] resend mail when creation of account.
