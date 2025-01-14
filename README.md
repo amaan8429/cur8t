@@ -1,5 +1,14 @@
 # Tasks
 
+Things i have to work on :
+
+1. Finish this bukmarks project --> make extension for it --> make whatsapp service for it
+2. Portfolio website
+3. Finish web3 project issue-tracker
+4. 4 projects for web3 hackathon
+5. learn and build something using tailwind css and next.js and framer motion
+6. web3 cohort by harkirat
+
 - [x] fetch data on the navCollection
 - [x] add loader there
 - [x] add emoji to the collection
@@ -24,7 +33,7 @@
 - [ ] AUTO GROUP THEM USING OPENAI
 - [ ] CLI tool for the entire app
 - [ ] vs code EXTENSIONS SHARE KARNE KA TARIKA WHERE ALL EXTENSIONS CAN BE COLLECTED IN A COLLECTION api key or something
-- [ ] add a search bar on the collection page
+- [x] add a search bar on the collection page
 - [ ] youtube playlist collection where a small icon should be present near the default "add to playlists" on the yt playlist page
 - [ ] add movies to the collection
 - [ ] like the collection
@@ -33,7 +42,7 @@
 
 UI to add and change in the collection page
 
-- [ ] toasters and loader - see below
+- [x] toasters and loader - see below
 - [ ] add link button location change karo
 - [x] update the collection name
 - [x] event handler for the collection name being updated at the nav collection and the breadcrumb
@@ -71,18 +80,8 @@ Miscs
 - [x] github backup
 - [ ] settings page - clerk something
 - [x] private and public collections
-- [ ] add a search bar on the collection page
+- [x] add a search bar on the collection page
 - [ ] add all the private collections problem to the settings section
-
-Things i have to work on :
-
-1. Finish this bukmarks project --> make extension for it --> make whatsapp service for it
-2. Portfolio website
-3. Finish web3 project issue-tracker
-4. 4 projects for web3 hackathon
-5. learn and build something using tailwind css and next.js and framer motion
-6. web3 cohort by harkirat
-
 - [x] add a zod parser to the link schema on the client side while adding a new link
 - [x] add a zod parser to the link schema on the client side while updating a collection
 - [x] add a zod parser to the link schema on the server side while creating a new link

@@ -28,7 +28,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
     try {
       set((state) => ({
         collections: state.collections
-          ? [...state.collections, collectionData]
+          ? [collectionData, ...state.collections]
           : [collectionData],
       }));
     } catch (error) {
@@ -44,7 +44,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
         console.error(data.error);
         set({ collections: [] });
       } else {
-        set({ collections: data.data });
+        set({ collections: data.data.reverse() });
       }
     } catch (error) {
       console.error("Failed to fetch collections:", error);
