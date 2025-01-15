@@ -11,7 +11,8 @@ interface CollectionStore {
   createACollection: (collectionData: Collection) => Promise<void>;
   updateCollectionVisibility: (
     collectionId: string,
-    visibility: string
+    visibility: string,
+    sharedEmails?: string[]
   ) => Promise<void>;
   deleteCollection: (
     collectionId: string
@@ -44,7 +45,14 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
         console.error(data.error);
         set({ collections: [] });
       } else {
-        set({ collections: data.data.reverse() });
+        set({
+          collections: data.data
+            .map((item) => ({
+              ...item,
+              sharedEmails: item.sharedEmails || [],
+            }))
+            .reverse(),
+        });
       }
     } catch (error) {
       console.error("Failed to fetch collections:", error);
@@ -53,11 +61,16 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
   },
 
   // Update collection visibility
-  updateCollectionVisibility: async (collectionId, visibility) => {
+  updateCollectionVisibility: async (
+    collectionId,
+    visibility,
+    sharedEmails
+  ) => {
     try {
       const response = await ChangeCollectionVisibilityAction(
         collectionId,
-        visibility
+        visibility,
+        sharedEmails
       );
 
       if (response.success) {
@@ -65,13 +78,19 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
           collections:
             state.collections?.map((collection) =>
               collection.id === collectionId
-                ? { ...collection, visibility }
+                ? {
+                    ...collection,
+                    visibility,
+                    sharedEmails:
+                      visibility === "protected" ? sharedEmails || [] : [],
+                  }
                 : collection
             ) || [],
         }));
       }
     } catch (error) {
       console.error("Failed to update collection visibility:", error);
+      throw error;
     }
   },
 

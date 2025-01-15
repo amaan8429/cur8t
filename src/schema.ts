@@ -55,6 +55,7 @@ export const linkCollectionTable = pgTable("link_collection", {
     .notNull()
     .$onUpdate(() => new Date()),
   visibility: text("visibility").notNull().default("private"),
+  sharedEmails: text("shared_emails").array().default([]).notNull(),
 });
 
 // Define the link table (single link)

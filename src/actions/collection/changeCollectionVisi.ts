@@ -7,7 +7,8 @@ import { and, eq } from "drizzle-orm";
 
 export async function ChangeCollectionVisibilityAction(
   collectionId: string,
-  visibility: string
+  visibility: string,
+  sharedEmails?: string[]
 ) {
   const { userId } = await auth();
 
@@ -23,6 +24,7 @@ export async function ChangeCollectionVisibilityAction(
     .update(linkCollectionTable)
     .set({
       visibility: visibility,
+      sharedEmails: visibility === "protected" ? sharedEmails : [],
     })
     .where(
       and(

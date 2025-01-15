@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { set, z } from "zod";
+import { PlusIcon, StarOff, X } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -29,48 +28,83 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { StarOff } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useCollectionStore } from "@/store/collection-store";
 import { useToast } from "@/hooks/use-toast";
 
 const ChangeVisibility = ({
   collectionId,
   collectionVisibility,
+  sharedEmails = [],
 }: {
   collectionId: string;
   collectionVisibility: string;
+  sharedEmails?: string[];
 }) => {
   const { updateCollectionVisibility } = useCollectionStore();
   const [open, setOpen] = React.useState(false);
-  const FormSchema = z.object({
-    visibility: z.string().nonempty({
-      message: "Please select a visibility option",
-    }),
-  });
+  const [emails, setEmails] = React.useState(sharedEmails);
+  const [newEmail, setNewEmail] = React.useState("");
   const { toast } = useToast();
 
-  // Initialize the form
   const form = useForm({
-    resolver: zodResolver(FormSchema),
     defaultValues: {
       visibility: collectionVisibility,
     },
   });
 
-  // Handle form submission
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const addEmail = () => {
+    if (!isValidEmail(newEmail)) {
+      toast({
+        title: "Invalid email format",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (emails.includes(newEmail)) {
+      toast({
+        title: "Email already added",
+        variant: "destructive",
+      });
+      return;
+    }
+    setEmails([...emails, newEmail]);
+    setNewEmail("");
+  };
+
+  const removeEmail = (emailToRemove: string) => {
+    setEmails(emails.filter((email) => email !== emailToRemove));
+  };
+
   const onSubmit = async (data: { visibility: string }) => {
     try {
-      if (collectionVisibility === data.visibility) {
+      if (
+        collectionVisibility === data.visibility &&
+        data.visibility !== "protected"
+      ) {
         toast({
           title: "No changes made",
         });
         return;
       }
-      await updateCollectionVisibility(collectionId, data.visibility);
+
+      // Include emails array when updating to protected visibility
+      await updateCollectionVisibility(
+        collectionId,
+        data.visibility,
+        data.visibility === "protected" ? emails : []
+      );
+
       toast({
         title: "Collection visibility updated",
       });
+      setOpen(false);
     } catch (error) {
       console.error(error);
       toast({
@@ -78,7 +112,6 @@ const ChangeVisibility = ({
         variant: "destructive",
       });
     }
-    setOpen(false);
   };
 
   return (
@@ -92,7 +125,7 @@ const ChangeVisibility = ({
         </DialogTrigger>
       </DropdownMenuItem>
 
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>
             Want to change the visibility of your collection?
@@ -133,6 +166,54 @@ const ChangeVisibility = ({
               )}
             />
 
+            {form.watch("visibility") === "protected" && (
+              <div className="space-y-4">
+                <FormLabel>Shared With</FormLabel>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter email address"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    size="icon"
+                    onClick={addEmail}
+                    disabled={!newEmail}
+                  >
+                    <PlusIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {emails.map((email) => (
+                    <Badge
+                      key={email}
+                      variant="secondary"
+                      className="flex items-center gap-1"
+                    >
+                      {email}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-4 w-4 p-0 hover:bg-transparent"
+                        onClick={() => removeEmail(email)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </Badge>
+                  ))}
+                </div>
+                {emails.length === 0 && (
+                  <FormDescription>
+                    Add email addresses to share this collection with specific
+                    people
+                  </FormDescription>
+                )}
+              </div>
+            )}
+
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
@@ -142,10 +223,11 @@ const ChangeVisibility = ({
               <Button
                 type="submit"
                 disabled={
-                  !form.formState.isValid ||
                   form.formState.isSubmitting ||
-                  form.formState.defaultValues?.visibility ===
-                    form.getValues("visibility")
+                  (form.watch("visibility") === "protected" &&
+                    emails.length === 0) ||
+                  (form.watch("visibility") === collectionVisibility &&
+                    form.watch("visibility") !== "protected")
                 }
               >
                 {form.formState.isSubmitting ? "Updating..." : "Update"}

@@ -78,7 +78,7 @@ Miscs
 - [x] add zod validation on both sidesl
 - [ ] / page design
 - [x] github backup
-- [ ] settings page - clerk something
+- [x] settings page - clerk something
 - [x] private and public collections
 - [x] add a search bar on the collection page
 - [ ] add all the private collections problem to the settings section
@@ -98,6 +98,6 @@ Miscs
 - [ ] table format for the links
 - [x] github backup
 - [ ] 2 way sync with github
-- [ ] api key generation for the connection
-- [ ] new collections or edited collections should be at the top
+- [x] api key generation for the connection
+- [x] new collections or edited collections should be at the top
 - [ ] resend mail when creation of account.

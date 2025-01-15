@@ -18,6 +18,7 @@ const CollectionSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   visibility: z.string(),
+  sharedEmails: z.array(z.string()).default([]),
 });
 
 export const FrontendLinkSchema = z.object({
