@@ -66,7 +66,7 @@ const DeleteCollectionOption = ({ collection }: { collection: Collection }) => {
           <AlertDialogTitle>Delete Collection</AlertDialogTitle>
           <AlertDialogDescription>
             Are you sure you want to delete the collection &quot;
-            {collection.name}&quot;? This action cannot be undone and will
+            {collection.title}&quot;? This action cannot be undone and will
             remove all links in this collection.
           </AlertDialogDescription>
         </AlertDialogHeader>

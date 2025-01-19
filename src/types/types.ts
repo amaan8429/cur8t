@@ -12,13 +12,17 @@ const LinkSchema = z.object({
 
 const CollectionSchema = z.object({
   id: z.string(),
-  name: z.string(),
+  title: z.string(),
+  author: z.string(),
+  likes: z.number(),
+  description: z.string(),
   userId: z.string(),
   url: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
   visibility: z.string(),
   sharedEmails: z.array(z.string()).default([]),
+  totalLinks: z.number(),
 });
 
 export const FrontendLinkSchema = z.object({

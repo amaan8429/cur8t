@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { linkCollectionTable } from "@/schema";
+import { CollectionsTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 
@@ -24,12 +24,12 @@ export async function ChangeCollectionAction(
   }
 
   const collection = await db
-    .update(linkCollectionTable)
+    .update(CollectionsTable)
     .set({
-      name: newName,
+      title: newName,
     })
-    .where(eq(linkCollectionTable.id, collectionId))
+    .where(eq(CollectionsTable.id, collectionId))
     .returning();
 
-  return { success: true, data: collection[0].name };
+  return { success: true, data: collection[0].title };
 }

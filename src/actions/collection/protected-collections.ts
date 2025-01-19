@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { linkCollectionTable } from "@/schema";
+import { CollectionsTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 
@@ -14,11 +14,11 @@ export async function getProtectedCollectionsAction() {
 
   const collections = await db
     .select()
-    .from(linkCollectionTable)
+    .from(CollectionsTable)
     .where(
       and(
-        eq(linkCollectionTable.userId, userId),
-        eq(linkCollectionTable.visibility, "protected")
+        eq(CollectionsTable.userId, userId),
+        eq(CollectionsTable.visibility, "protected")
       )
     );
 

@@ -1,7 +1,10 @@
 import React from "react";
 import { ManageCollectionLinks } from "@/components/SingleCollection/manage-collection";
-import { CreateCollectionComponent } from "../CollectionCreation/add-collection";
 import SecondaryPage from "@/components/Secondary/secondary-page";
+import { CreateCollectionComponent } from "../TopSection/create-collection";
+import ExploreCollections from "../TopSection/explore-collections";
+import Home from "../TopSection/home";
+import SavedCollections from "../TopSection/saved-collections";
 
 interface ContentAreaProps {
   activeItem: string;
@@ -16,19 +19,10 @@ export function ContentArea({
 }: ContentAreaProps) {
   return (
     <div className="p-6">
-      {activeItem === "Home" && (
-        <div>
-          <p className="mb-4">
-            Welcome to your dashboard! Here&apos;s a quick overview:
-          </p>
-          <ul className="list-disc pl-5 space-y-2">
-            <li>You have 5 tasks due today</li>
-            <li>3 new messages in your inbox</li>
-            <li>Your team meeting is scheduled for 2:00 PM</li>
-          </ul>
-        </div>
-      )}
-      {activeItem === "Add Collection" && <CreateCollectionComponent />}
+      {activeItem === "Home" && <Home />}
+      {activeItem === "New Collection" && <CreateCollectionComponent />}
+      {activeItem === "Explore Collections" && <ExploreCollections />}
+      {activeItem === "Saved Collections" && <SavedCollections />}
 
       {activeItem === "Ask AI" && (
         <div>

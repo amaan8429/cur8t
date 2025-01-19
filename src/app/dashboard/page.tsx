@@ -1,7 +1,7 @@
 import { getSingleCollectionNameAction } from "@/actions/collection/getSingleCollectionName";
 import { AppSidebar } from "@/components/Dashboard/Sidebar/app-sidebar";
 import { ContentArea } from "@/components/Dashboard/ContentArea/content-area";
-import { NavActions } from "@/components/nav-actions";
+import { NavActions } from "@/components/Dashboard/NavActions/nav-actions";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -28,8 +28,9 @@ export default async function Page({
   let activeCollectionName = "";
 
   if (activeCollectionId) {
-    activeCollectionName =
-      await getSingleCollectionNameAction(activeCollectionId);
+    activeCollectionName = await getSingleCollectionNameAction(
+      activeCollectionId
+    );
   }
 
   return (
@@ -54,9 +55,9 @@ export default async function Page({
               </BreadcrumbLink>
             </Breadcrumb>
           </div>
-          <div className="ml-auto px-3">
-            <NavActions />
-          </div>
+          {activeCollectionId && (
+            <NavActions collectionId={activeCollectionId} />
+          )}
         </header>
         <ContentArea
           activeItem={activeItem}

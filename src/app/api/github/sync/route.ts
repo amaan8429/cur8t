@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { GitHubSettingsTable, linkCollectionTable, linkTable } from "@/schema";
+import { GitHubSettingsTable, CollectionsTable, LinksTable } from "@/schema";
 import { Collection, Link } from "@/types/types";
 import { auth } from "@clerk/nextjs/server";
 import { RequestError } from "@octokit/request-error";
 
 function convertToMarkdown(collection: Collection, links: Link[]) {
-  let markdown = `# ${collection.name}\n\n`;
+  let markdown = `# ${collection.title}\n\n`;
   markdown += `Created: ${collection.createdAt.toISOString()}\n`;
   markdown += `Last Updated: ${collection.updatedAt.toISOString()}\n\n`;
   markdown += `## Links\n\n`;
@@ -115,9 +115,9 @@ export async function POST(req: Request) {
     await ensureRepoExists(octokit, owner);
 
     // Get all collections and their links
-    const collections = await db.query.linkCollectionTable.findMany({
-      where: eq(linkCollectionTable.userId, userId),
-      orderBy: [desc(linkCollectionTable.updatedAt)],
+    const collections = await db.query.CollectionsTable.findMany({
+      where: eq(CollectionsTable.userId, userId),
+      orderBy: [desc(CollectionsTable.updatedAt)],
     });
 
     if (collections.length === 0) {
@@ -131,17 +131,19 @@ export async function POST(req: Request) {
     // Prepare all files content and check for changes
     const files = await Promise.all(
       collections.map(async (collection) => {
-        const links = await db.query.linkTable.findMany({
-          where: eq(linkTable.linkCollectionId, collection.id),
+        const links = await db.query.LinksTable.findMany({
+          where: eq(LinksTable.linkCollectionId, collection.id),
         });
         const content = convertToMarkdown(collection, links);
-        const path = `${collection.name.toLowerCase().replace(/\s+/g, "-")}.md`;
+        const path = `${collection.title
+          .toLowerCase()
+          .replace(/\s+/g, "-")}.md`;
         const currentContent = await getCurrentContent(octokit, owner, path);
 
         return {
           path,
           content,
-          collection: collection.name,
+          collection: collection.title,
           hasChanged: content !== currentContent,
         };
       })

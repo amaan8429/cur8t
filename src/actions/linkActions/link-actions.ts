@@ -1,7 +1,8 @@
 "use server";
 
 import { db } from "@/db";
-import { linkTable } from "@/schema";
+import { totalLinksCount } from "@/lib/totalLinksCount";
+import { CollectionsTable, LinksTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -27,7 +28,7 @@ export async function addLinkAction(data: AddLinkData, collectionId: string) {
   }
 
   const newLink = await db
-    .insert(linkTable)
+    .insert(LinksTable)
     .values({
       title: data.title,
       url: data.url,
@@ -35,6 +36,23 @@ export async function addLinkAction(data: AddLinkData, collectionId: string) {
       userId,
     })
     .returning();
+
+  const totalLinks = await totalLinksCount({
+    userId,
+    collectionId,
+  });
+
+  await db
+    .update(CollectionsTable)
+    .set({
+      totalLinks: totalLinks + 1,
+    })
+    .where(
+      and(
+        eq(CollectionsTable.userId, userId),
+        eq(CollectionsTable.id, collectionId)
+      )
+    );
 
   return { success: true, data: newLink[0] };
 }
@@ -51,8 +69,22 @@ export async function deleteLinkAction(id: string) {
   }
 
   const deletedLink = await db
-    .delete(linkTable)
-    .where(and(eq(linkTable.id, id), eq(linkTable.userId, userId)));
+    .delete(LinksTable)
+    .where(and(eq(LinksTable.id, id), eq(LinksTable.userId, userId)));
+
+  const totalLinks = await totalLinksCount({
+    userId,
+    collectionId: id,
+  });
+
+  await db
+    .update(CollectionsTable)
+    .set({
+      totalLinks: totalLinks - 1,
+    })
+    .where(
+      and(eq(CollectionsTable.userId, userId), eq(CollectionsTable.id, id))
+    );
 
   console.log("Link deleted:", deletedLink);
 
@@ -78,12 +110,12 @@ export async function updateLinkAction(
 
   try {
     const updatedLink = await db
-      .update(linkTable)
+      .update(LinksTable)
       .set({
         title: data.title,
         url: data.url,
       })
-      .where(and(eq(linkTable.id, id), eq(linkTable.userId, userId)))
+      .where(and(eq(LinksTable.id, id), eq(LinksTable.userId, userId)))
       .returning();
 
     console.log("Link updated:", updatedLink);

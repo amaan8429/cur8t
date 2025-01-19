@@ -2,7 +2,7 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { usersTable } from "@/schema";
+import { UsersTable } from "@/schema";
 
 export async function POST(req: Request) {
   const SIGNING_SECRET = process.env.SIGNING_SECRET;
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
       }
 
       // Insert the user into the database
-      await db.insert(usersTable).values({
+      await db.insert(UsersTable).values({
         id: userData.id,
         name: `${userData.first_name || ""} ${userData.last_name || ""}`.trim(),
         email: primaryEmail,

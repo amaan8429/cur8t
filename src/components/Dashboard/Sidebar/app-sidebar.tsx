@@ -15,6 +15,10 @@ import {
   Workflow,
   // Sparkles,
   Trash2,
+  Plus,
+  Wallpaper,
+  Save,
+  PlusCircle,
 } from "lucide-react";
 
 import { NavCollection } from "@/components/Dashboard/Sidebar/NavCollection/nav-collections";
@@ -37,15 +41,26 @@ const data = {
   },
   navMain: [
     {
-      title: "Add Collection",
-      url: "#",
-      icon: Search,
-    },
-    {
       title: "Home",
       url: "#",
       icon: Home,
       isActive: true,
+    },
+    {
+      title: "New Collection",
+      url: "#",
+      icon: PlusCircle,
+    },
+
+    {
+      title: "Explore Collections",
+      url: "#",
+      icon: Wallpaper,
+    },
+    {
+      title: "Saved Collections",
+      url: "#",
+      icon: Save,
     },
   ],
   navSecondary: [

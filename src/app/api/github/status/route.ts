@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { usersTable } from "@/schema";
+import { UsersTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -20,10 +20,10 @@ export async function GET() {
     // Fetch the user's GitHub connection status from the database
     const userStatus = await db
       .select({
-        githubConnected: usersTable.githubConnected,
+        githubConnected: UsersTable.githubConnected,
       })
-      .from(usersTable)
-      .where(eq(usersTable.id, userId));
+      .from(UsersTable)
+      .where(eq(UsersTable.id, userId));
 
     // Check if the user exists in the database
     if (!userStatus || userStatus.length === 0) {

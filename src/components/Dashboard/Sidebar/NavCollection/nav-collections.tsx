@@ -74,7 +74,7 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
               >
                 <Link
                   href={`?collectionId=${encodeURIComponent(collection.id)}`}
-                  title={collection.name}
+                  title={collection.title}
                   className="flex items-center"
                 >
                   {isActive ? (
@@ -82,7 +82,7 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
                   ) : (
                     <Folder className="h-4 w-4 mr-2 shrink-0" />
                   )}
-                  <span className="truncate">{collection.name}</span>
+                  <span className="truncate">{collection.title}</span>
                 </Link>
               </SidebarMenuButton>
               <DropdownMenu>
@@ -93,7 +93,7 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
                   >
                     <MoreHorizontal className="h-4 w-4" />
                     <span className="sr-only">
-                      More options for {collection.name}
+                      More options for {collection.title}
                     </span>
                   </SidebarMenuAction>
                 </DropdownMenuTrigger>
@@ -111,7 +111,7 @@ export function NavCollection({ activeCollectionId }: NavCollectionProps) {
                   <DropdownMenuSeparator />
                   <ChangeCollectionName
                     collectionId={collection.id}
-                    collectionName={collection.name}
+                    collectionName={collection.title}
                   />
                   <DropdownMenuSeparator />
                   <DeleteCollectionOption collection={collection} />

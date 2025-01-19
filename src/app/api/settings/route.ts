@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { usersTable } from "@/schema";
+import { UsersTable } from "@/schema";
 import { eq } from "drizzle-orm";
 
 async function upsertUserProfile(
@@ -13,11 +13,11 @@ async function upsertUserProfile(
 ) {
   try {
     const result = db
-      .update(usersTable)
+      .update(UsersTable)
       .set({
         name: `${data.firstName} ${data.lastName}`,
       })
-      .where(eq(usersTable.id, userId));
+      .where(eq(UsersTable.id, userId));
 
     return result;
   } catch (error) {

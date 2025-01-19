@@ -1,9 +1,11 @@
 "use server";
 
 import { db } from "@/db";
-import { linkTable } from "@/schema";
+import { totalLinksCount } from "@/lib/totalLinksCount";
+import { CollectionsTable, LinksTable } from "@/schema";
 import { FrontendLinkSchema } from "@/types/types";
 import { auth } from "@clerk/nextjs/server";
+import { and, eq } from "drizzle-orm";
 
 export async function createLinkAction(
   linkCollectionId: string,
@@ -38,7 +40,24 @@ export async function createLinkAction(
     userId,
   };
 
-  const createdLink = await db.insert(linkTable).values(link).returning();
+  const createdLink = await db.insert(LinksTable).values(link).returning();
+
+  const totalLinks = await totalLinksCount({
+    userId,
+    collectionId: linkCollectionId,
+  });
+
+  await db
+    .update(CollectionsTable)
+    .set({
+      totalLinks: totalLinks + 1,
+    })
+    .where(
+      and(
+        eq(CollectionsTable.userId, userId),
+        eq(CollectionsTable.id, linkCollectionId)
+      )
+    );
 
   console.log("Link created:", createdLink);
 

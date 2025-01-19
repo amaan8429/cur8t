@@ -15,7 +15,7 @@ Things i have to work on :
 - [x] manage data on the other components so when a new collection is added , it is shown on the navigation area
 - [x] when dashboard is directly opened to the collection page , the data is not fetched on the navCollection
 - [x] add a loader on the collection page until the data is being fetched
-- [ ] sequence should not change when a link is edited
+- [x] sequence should not change when a link is edited
 - [x] hero section made
 - [x] custum theme and font setup
 - [ ] add a tweet section
@@ -51,13 +51,11 @@ UI to add and change in the collection page
 - [x] dialog box to delete the collection
 - [ ] make the ui better using suspense and stuff
 - [x] edit the name of links and urls
-- [ ] export the collection in different formats - json , csv , pdf
 - [x] sharable link for the collection
-- [ ] custom url for the collection
 - [x] public , private and protected collection
-- [ ] protected collection - add people to the collection and they can only view it - how to do this ///
+- [x] protected collection - add people to the collection and they can only view it - how to do this ///
 - [ ] remove the url from the schema
-- [ ] adding people to protected collection
+- [x] adding people to protected collection
 
 tosters and loaders
 
@@ -81,7 +79,7 @@ Miscs
 - [x] settings page - clerk something
 - [x] private and public collections
 - [x] add a search bar on the collection page
-- [ ] add all the private collections problem to the settings section
+- [x] add all the private collections problem to the settings section
 - [x] add a zod parser to the link schema on the client side while adding a new link
 - [x] add a zod parser to the link schema on the client side while updating a collection
 - [x] add a zod parser to the link schema on the server side while creating a new link
@@ -95,9 +93,20 @@ Miscs
 
 - [x] make buttons and themes better
 - [x] add a theme changer in the settings
-- [ ] table format for the links
+- [x] table format for the links
 - [x] github backup
 - [ ] 2 way sync with github
 - [x] api key generation for the connection
 - [x] new collections or edited collections should be at the top
 - [ ] resend mail when creation of account.
+
+- [ ] export the collection in different formats - json , csv , pdf
+- [ ] link you metamask account in the settings
+- [ ] import bookmarks from the browser
+- [ ] build the collection page
+- [ ] add a like button on the collection page
+- [ ] add a save the collection button on the collection page
+- [ ] add a share the collection button on the collection page
+- [ ] add a copy the collection button on the collection page
+- [ ] explore collections page
+- [ ] custom url for the collection

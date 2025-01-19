@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { linkCollectionTable } from "@/schema";
+import { CollectionsTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 
@@ -21,15 +21,15 @@ export async function ChangeCollectionVisibilityAction(
   }
 
   const targetCollection = await db
-    .update(linkCollectionTable)
+    .update(CollectionsTable)
     .set({
       visibility: visibility,
       sharedEmails: visibility === "protected" ? sharedEmails : [],
     })
     .where(
       and(
-        eq(linkCollectionTable.userId, userId),
-        eq(linkCollectionTable.id, collectionId)
+        eq(CollectionsTable.userId, userId),
+        eq(CollectionsTable.id, collectionId)
       )
     );
 

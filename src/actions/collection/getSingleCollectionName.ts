@@ -1,16 +1,16 @@
 "use server";
 
 import { db } from "@/db";
-import { linkCollectionTable } from "@/schema";
+import { CollectionsTable } from "@/schema";
 import { eq } from "drizzle-orm";
 
 export async function getSingleCollectionNameAction(collectionId: string) {
   const collection = await db
     .select()
-    .from(linkCollectionTable)
-    .where(eq(linkCollectionTable.id, collectionId));
+    .from(CollectionsTable)
+    .where(eq(CollectionsTable.id, collectionId));
 
-  console.log("Collection name:", collection[0].name);
+  console.log("Collection name:", collection[0].title);
 
-  return collection[0].name;
+  return collection[0].title;
 }

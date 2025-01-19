@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { APIKeysTable, usersTable } from "@/schema";
+import { APIKeysTable, UsersTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 
@@ -26,10 +26,10 @@ export async function CreateApiKey(name: string) {
 
   const userAPICount = await db
     .select({
-      APIKeysCount: usersTable.APIKeysCount,
+      APIKeysCount: UsersTable.APIKeysCount,
     })
-    .from(usersTable)
-    .where(eq(usersTable.id, userId));
+    .from(UsersTable)
+    .where(eq(UsersTable.id, userId));
 
   if (userAPICount[0].APIKeysCount >= 3) {
     return { error: "You have reached the maximum number of API keys" };
@@ -45,11 +45,11 @@ export async function CreateApiKey(name: string) {
     .returning();
 
   await db
-    .update(usersTable)
+    .update(UsersTable)
     .set({
       APIKeysCount: userAPICount[0].APIKeysCount + 1,
     })
-    .where(eq(usersTable.id, userId));
+    .where(eq(UsersTable.id, userId));
 
   return { success: true, data: key[0] };
 }
@@ -67,10 +67,10 @@ export async function DeleteApiKey(key: string) {
 
   const userAPICount = await db
     .select({
-      APIKeysCount: usersTable.APIKeysCount,
+      APIKeysCount: UsersTable.APIKeysCount,
     })
-    .from(usersTable)
-    .where(eq(usersTable.id, userId));
+    .from(UsersTable)
+    .where(eq(UsersTable.id, userId));
 
   if (userAPICount[0].APIKeysCount <= 0) {
     return { error: "You do not have any API keys" };
@@ -78,11 +78,11 @@ export async function DeleteApiKey(key: string) {
 
   await db.delete(APIKeysTable).where(eq(APIKeysTable.key, key)).returning();
   await db
-    .update(usersTable)
+    .update(UsersTable)
     .set({
       APIKeysCount: userAPICount[0].APIKeysCount - 1,
     })
-    .where(eq(usersTable.id, userId));
+    .where(eq(UsersTable.id, userId));
 
   return { success: true };
 }

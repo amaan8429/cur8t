@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { linkTable } from "@/schema";
+import { LinksTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 
@@ -18,11 +18,11 @@ export async function getLinksAction(linkCollectionId: string) {
 
   const links = await db
     .select()
-    .from(linkTable)
+    .from(LinksTable)
     .where(
       and(
-        eq(linkTable.linkCollectionId, linkCollectionId),
-        eq(linkTable.userId, userId)
+        eq(LinksTable.linkCollectionId, linkCollectionId),
+        eq(LinksTable.userId, userId)
       )
     );
 

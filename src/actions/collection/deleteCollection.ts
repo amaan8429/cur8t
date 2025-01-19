@@ -1,7 +1,8 @@
 "use server";
 
 import { db } from "@/db";
-import { linkCollectionTable } from "@/schema";
+import { totalCollectionsCount } from "@/lib/totalCollectionCount";
+import { CollectionsTable, UsersTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 
@@ -16,15 +17,24 @@ export async function deleteCollectionAction(collectionId: string) {
     return { error: "Collection ID is required" };
   }
 
+  const totalCollections = await totalCollectionsCount({ userId });
+
   try {
-    const deletedCollection = await db
-      .delete(linkCollectionTable)
+    await db
+      .delete(CollectionsTable)
       .where(
         and(
-          eq(linkCollectionTable.id, collectionId),
-          eq(linkCollectionTable.userId, userId)
+          eq(CollectionsTable.id, collectionId),
+          eq(CollectionsTable.userId, userId)
         )
       );
+
+    await db
+      .update(UsersTable)
+      .set({
+        totalCollections: totalCollections - 1,
+      })
+      .where(eq(UsersTable.id, userId));
 
     return { success: true };
   } catch (error) {

@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { auth } from "@clerk/nextjs/server";
-import { linkCollectionTable } from "@/schema";
+import { CollectionsTable } from "@/schema";
 import { and, eq } from "drizzle-orm";
 
 export async function getCollectionsAction() {
@@ -14,8 +14,8 @@ export async function getCollectionsAction() {
 
   const collections = await db
     .select()
-    .from(linkCollectionTable)
-    .where(and(eq(linkCollectionTable.userId, userId)));
+    .from(CollectionsTable)
+    .where(and(eq(CollectionsTable.userId, userId)));
 
   console.log(collections);
 

@@ -1,16 +1,16 @@
 "use server";
 
 import { db } from "@/db";
-import { linkCollectionTable } from "@/schema";
+import { CollectionsTable } from "@/schema";
 import { eq } from "drizzle-orm";
 
 async function getExistingEmails(collectionId: string) {
   const data = await db
     .select({
-      sharedEmails: linkCollectionTable.sharedEmails,
+      sharedEmails: CollectionsTable.sharedEmails,
     })
-    .from(linkCollectionTable)
-    .where(eq(linkCollectionTable.id, collectionId));
+    .from(CollectionsTable)
+    .where(eq(CollectionsTable.id, collectionId));
 
   const existingEmails = data[0]?.sharedEmails;
 
@@ -30,11 +30,11 @@ export async function addEmails(collectionId: string, newEmail: string) {
   const existingEmails = await getExistingEmails(collectionId);
 
   await db
-    .update(linkCollectionTable)
+    .update(CollectionsTable)
     .set({
       sharedEmails: [...existingEmails, newEmail],
     })
-    .where(eq(linkCollectionTable.id, collectionId));
+    .where(eq(CollectionsTable.id, collectionId));
 }
 
 // function to remove emails from a collection
@@ -50,11 +50,11 @@ export async function removeEmails(
   const existingEmails = await getExistingEmails(collectionId);
 
   await db
-    .update(linkCollectionTable)
+    .update(CollectionsTable)
     .set({
       sharedEmails: existingEmails.filter((email) => email !== emailToRemove),
     })
-    .where(eq(linkCollectionTable.id, collectionId));
+    .where(eq(CollectionsTable.id, collectionId));
 
   return { success: true, message: "Email removed successfully" };
 }
@@ -62,10 +62,10 @@ export async function removeEmails(
 async function fetchSharedEmails(collectionId: string) {
   const data = await db
     .select({
-      sharedEmails: linkCollectionTable.sharedEmails,
+      sharedEmails: CollectionsTable.sharedEmails,
     })
-    .from(linkCollectionTable)
-    .where(eq(linkCollectionTable.id, collectionId));
+    .from(CollectionsTable)
+    .where(eq(CollectionsTable.id, collectionId));
 
   const sharedEmailsEmails = data[0]?.sharedEmails;
 
