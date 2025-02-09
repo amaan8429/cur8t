@@ -8,7 +8,8 @@ import {
   TrendingUp,
   Clock,
   Star,
-  Filter,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,26 +27,47 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { fetchPublicCollections } from "@/actions/collection/fetchPublicCollections";
 import { Collection } from "@/types/types";
 
 const ExploreCollections = () => {
   const [isGridView, setIsGridView] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("trending");
+  const [sortBy, setSortBy] = useState<"trending" | "recent" | "likes">(
+    "trending"
+  );
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const ITEMS_PER_PAGE = 9;
+
+  const loadCollections = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetchPublicCollections({
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        sortBy,
+      });
+      setCollections(response.data);
+      setTotalPages(response.pagination.totalPages);
+    } catch (error) {
+      console.error("Failed to fetch collections:", error);
+    }
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    fetchPublicCollections().then((data) => {
-      setCollections(data.data);
-    });
-  }, []);
+    loadCollections();
+  }, [currentPage, sortBy]);
+
+  const filteredCollections = collections.filter(
+    (collection) =>
+      collection.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      collection.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -53,6 +75,11 @@ const ExploreCollections = () => {
       month: "short",
       day: "numeric",
     });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const CollectionCard = ({ collection }: { collection: Collection }) => (
@@ -107,15 +134,32 @@ const ExploreCollections = () => {
     </div>
   );
 
+  const Pagination = () => (
+    <div className="flex justify-center items-center gap-2 mt-8">
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1 || isLoading}
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
+      <span className="text-sm">
+        Page {currentPage} of {totalPages}
+      </span>
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages || isLoading}
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+
   return (
     <div className="container mx-auto py-4 px-4">
-      {/* Header */}
-      {/* <div className="flex flex-col gap-2 mb-8">
-        <h1 className="text-3xl font-bold">Explore Collections</h1>
-        <p className="text-muted-foreground">
-          Discover public collections shared by the community
-        </p>
-      </div> */}
       <div className="mb-8">
         <h3 className="text-3xl font-bold">
           Discover public collections shared by the community
@@ -129,12 +173,20 @@ const ExploreCollections = () => {
           <Input
             placeholder="Search collections..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1); // Reset to first page when searching
+            }}
             className="pl-10"
           />
         </div>
         <div className="flex gap-2">
-          <Select value={sortBy} onValueChange={setSortBy}>
+          <Select
+            value={sortBy}
+            onValueChange={(value) =>
+              setSortBy(value as "trending" | "recent" | "likes")
+            }
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -174,26 +226,43 @@ const ExploreCollections = () => {
         </div>
       </div>
 
-      {/* Collections Grid/List */}
-      {isGridView ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {collections.map((collection) => (
-            <CollectionCard key={collection.id} collection={collection} />
-          ))}
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {collections.map((collection) => (
-            <CollectionListItem key={collection.id} collection={collection} />
-          ))}
+      {/* Loading State */}
+      {isLoading && (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Loading collections...</p>
         </div>
       )}
 
-      {/* Empty State */}
-      {collections.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">No collections found</p>
-        </div>
+      {/* Collections Grid/List */}
+      {!isLoading && (
+        <>
+          {isGridView ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredCollections.map((collection: Collection) => (
+                <CollectionCard key={collection.id} collection={collection} />
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {filteredCollections.map((collection) => (
+                <CollectionListItem
+                  key={collection.id}
+                  collection={collection}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Empty State */}
+          {filteredCollections.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No collections found</p>
+            </div>
+          )}
+
+          {/* Pagination */}
+          {filteredCollections.length > 0 && <Pagination />}
+        </>
       )}
     </div>
   );
