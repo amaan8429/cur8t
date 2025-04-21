@@ -58,7 +58,9 @@ export default async function Page({
               </BreadcrumbLink>
             </Breadcrumb>
           </div>
-          {activeCollectionId && <NavActions />}
+          {activeCollectionId && (
+            <NavActions activeCollectionId={activeCollectionId} />
+          )}
         </header>
         <ContentArea />
       </SidebarInset>
