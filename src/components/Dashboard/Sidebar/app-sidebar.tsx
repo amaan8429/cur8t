@@ -135,18 +135,7 @@ const data = {
   ],
 };
 
-interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  activeItem: string;
-  activeCollectionId?: string;
-  activeSecondary?: string;
-}
-
-export function AppSidebar({
-  activeItem,
-  activeCollectionId,
-  activeSecondary,
-  ...props
-}: AppSidebarProps) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar className="border-r-0" {...props}>
       <SidebarHeader>
@@ -154,17 +143,13 @@ export function AppSidebar({
           Logo={data.LogoAndName.logo}
           name={data.LogoAndName.name}
         />
-        <NavMain items={data.navMain} activeItem={activeItem} />
+        <NavMain items={data.navMain} />
       </SidebarHeader>
       <Separator />
       <SidebarContent>
-        <NavCollection activeCollectionId={activeCollectionId} />
+        <NavCollection />
         <Separator />
-        <NavSecondary
-          items={data.navSecondary}
-          className="mt-auto"
-          activeSecondary={activeSecondary}
-        />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

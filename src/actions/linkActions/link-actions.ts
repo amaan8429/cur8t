@@ -87,7 +87,6 @@ export async function deleteLinkAction(id: string) {
     .delete(LinksTable)
     .where(and(eq(LinksTable.id, id), eq(LinksTable.userId, userId)));
 
-  // Update the totalLinksCount
   const totalLinks = await totalLinksCount({
     userId,
     collectionId,

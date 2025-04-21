@@ -9,6 +9,14 @@ export async function totalLinksCount({
   userId: string;
   collectionId: string;
 }): Promise<number> {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  if (!collectionId) {
+    throw new Error("Collection ID is required");
+  }
+
   const totalLinks = await db
     .select({
       totalLinksCount: CollectionsTable.totalLinks,
@@ -21,8 +29,5 @@ export async function totalLinksCount({
       )
     );
 
-  console.log("Total links count:", totalLinks);
-
-  // Return 0 if no records are found
   return totalLinks.length > 0 ? totalLinks[0].totalLinksCount : 0;
 }

@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { ModeToggle } from "@/components/mode-toggle";
+import { useActiveState } from "@/store/activeStateStore";
 
 interface NavSecondaryProps {
   items: {
@@ -18,14 +18,14 @@ interface NavSecondaryProps {
     icon: LucideIcon;
     badge?: React.ReactNode;
   }[];
-  activeSecondary?: string;
 }
 
 export function NavSecondary({
   items,
-  activeSecondary,
   ...props
 }: NavSecondaryProps & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+  const { activeSecondary } = useActiveState();
+
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>

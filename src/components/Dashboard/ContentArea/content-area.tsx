@@ -5,18 +5,13 @@ import { CreateCollectionComponent } from "../TopSection/create-collection";
 import ExploreCollections from "../TopSection/explore-collections";
 import Home from "../TopSection/home";
 import SavedCollections from "../TopSection/saved-collections";
+import { useActiveState } from "@/store/activeStateStore";
 
-interface ContentAreaProps {
-  activeItem: string;
-  activeCollectionId?: string;
-  activeSecondary?: string;
-}
+export function ContentArea() {
+  const activeItem = useActiveState.getState().activeItem;
+  const activeCollectionId = useActiveState.getState().activeCollectionId;
+  const activeSecondary = useActiveState.getState().activeSecondary;
 
-export function ContentArea({
-  activeItem,
-  activeCollectionId,
-  activeSecondary,
-}: ContentAreaProps) {
   return (
     <div className="p-6">
       {activeItem === "Home" && <Home />}
@@ -42,7 +37,7 @@ export function ContentArea({
       {activeCollectionId && (
         <ManageCollectionLinks collectionId={activeCollectionId} />
       )}
-      {activeSecondary && <SecondaryPage activeSecondary={activeSecondary} />}
+      {activeSecondary && <SecondaryPage />}
     </div>
   );
 }

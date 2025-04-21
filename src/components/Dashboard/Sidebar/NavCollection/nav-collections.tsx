@@ -27,14 +27,12 @@ import ChangeCollectionName from "./change-collection-name";
 import { useCollectionStore } from "@/store/collection-store";
 import LoadingCollections from "./loading";
 import NoCollections from "./no-collections";
+import { useActiveState } from "@/store/activeStateStore";
 
-interface NavCollectionProps {
-  activeCollectionId?: string;
-}
-
-export function NavCollection({ activeCollectionId }: NavCollectionProps) {
+export function NavCollection() {
   const { isMobile } = useSidebar();
   const { collections, fetchCollections } = useCollectionStore();
+  const { activeCollectionId } = useActiveState();
 
   const [isLoading, setIsLoading] = useState(true);
 

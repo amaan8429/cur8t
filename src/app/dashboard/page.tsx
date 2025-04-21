@@ -14,7 +14,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-
+import { useActiveState } from "@/store/activeStateStore";
 export default async function Page({
   searchParams,
 }: {
@@ -28,18 +28,21 @@ export default async function Page({
   let activeCollectionName = "";
 
   if (activeCollectionId) {
-    activeCollectionName = await getSingleCollectionNameAction(
-      activeCollectionId
-    );
+    activeCollectionName =
+      await getSingleCollectionNameAction(activeCollectionId);
   }
+
+  const setActiveItem = useActiveState.getState().setActiveItem;
+  const setActiveCollectionId = useActiveState.getState().setActiveCollectionId;
+  const setActiveSecondary = useActiveState.getState().setActiveSecondary;
+
+  setActiveItem(activeItem || "");
+  setActiveCollectionId(activeCollectionId || "");
+  setActiveSecondary(activeSecondary || "");
 
   return (
     <SidebarProvider>
-      <AppSidebar
-        activeItem={activeItem}
-        activeCollectionId={activeCollectionId}
-        activeSecondary={activeSecondary}
-      />
+      <AppSidebar />
       <SidebarInset>
         <header className="flex h-14 shrink-0 items-center gap-2">
           <div className="flex flex-1 items-center gap-2 px-3">
@@ -55,15 +58,9 @@ export default async function Page({
               </BreadcrumbLink>
             </Breadcrumb>
           </div>
-          {activeCollectionId && (
-            <NavActions collectionId={activeCollectionId} />
-          )}
+          {activeCollectionId && <NavActions />}
         </header>
-        <ContentArea
-          activeItem={activeItem}
-          activeCollectionId={activeCollectionId}
-          activeSecondary={activeSecondary}
-        />
+        <ContentArea />
       </SidebarInset>
     </SidebarProvider>
   );

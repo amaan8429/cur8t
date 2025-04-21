@@ -8,6 +8,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { useActiveState } from "@/store/activeStateStore";
 
 interface NavMainProps {
   items: {
@@ -16,10 +17,11 @@ interface NavMainProps {
     icon: LucideIcon;
     isActive?: boolean;
   }[];
-  activeItem: string;
 }
 
-export function NavMain({ items, activeItem }: NavMainProps) {
+export function NavMain({ items }: NavMainProps) {
+  const { activeItem } = useActiveState();
+
   return (
     <SidebarMenu>
       {items.map((item) => (
