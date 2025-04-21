@@ -21,5 +21,8 @@ export async function totalLinksCount({
       )
     );
 
-  return totalLinks[0].totalLinksCount;
+  console.log("Total links count:", totalLinks);
+
+  // Return 0 if no records are found
+  return totalLinks.length > 0 ? totalLinks[0].totalLinksCount : 0;
 }

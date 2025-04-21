@@ -68,13 +68,29 @@ export async function deleteLinkAction(id: string) {
     return { error: "Link ID is required" };
   }
 
+  // Retrieve the link's collectionId before deleting it
+  const link = await db
+    .select({ linkCollectionId: LinksTable.linkCollectionId })
+    .from(LinksTable)
+    .where(and(eq(LinksTable.id, id), eq(LinksTable.userId, userId)))
+    .limit(1);
+
+  if (!link || !link[0]?.linkCollectionId) {
+    console.error("Invalid collectionId for link:", id);
+    return { error: "Invalid collectionId" };
+  }
+
+  const collectionId = link[0].linkCollectionId;
+
+  // Delete the link
   const deletedLink = await db
     .delete(LinksTable)
     .where(and(eq(LinksTable.id, id), eq(LinksTable.userId, userId)));
 
+  // Update the totalLinksCount
   const totalLinks = await totalLinksCount({
     userId,
-    collectionId: id,
+    collectionId,
   });
 
   await db
@@ -83,7 +99,10 @@ export async function deleteLinkAction(id: string) {
       totalLinks: totalLinks - 1,
     })
     .where(
-      and(eq(CollectionsTable.userId, userId), eq(CollectionsTable.id, id))
+      and(
+        eq(CollectionsTable.userId, userId),
+        eq(CollectionsTable.id, collectionId)
+      )
     );
 
   console.log("Link deleted:", deletedLink);

@@ -1,0 +1,20 @@
+import { create } from "zustand";
+
+interface ActiveState {
+  activeItem: string;
+  activeCollectionId: string;
+  activeSecondary: string;
+  setActiveItem: (item: string) => void;
+  setActiveCollectionId: (collectionId: string) => void;
+  setActiveSecondary: (secondary: string) => void;
+}
+
+export const useActiveState = create<ActiveState>((set) => ({
+  activeItem: "",
+  activeCollectionId: "",
+  activeSecondary: "",
+  setActiveItem: (item) => set({ activeItem: item }),
+  setActiveCollectionId: (collectionId) =>
+    set({ activeCollectionId: collectionId }),
+  setActiveSecondary: (secondary) => set({ activeSecondary: secondary }),
+}));
