@@ -24,10 +24,10 @@ const Hero = () => {
         </div>
         <nav className="hidden md:flex md:justify-end md:space-x-4">
           <ModeToggle />
-          <SignInButton signUpForceRedirectUrl={"/dashboard"} mode="modal">
+          <SignInButton forceRedirectUrl={"/dashboard"} mode="modal">
             <Button variant={"secondary"}>Sign In</Button>
           </SignInButton>
-          <SignUpButton signInForceRedirectUrl={"/dashboard"} mode="modal">
+          <SignUpButton forceRedirectUrl={"/dashboard"} mode="modal">
             <Button>Sign Up</Button>
           </SignUpButton>
         </nav>
