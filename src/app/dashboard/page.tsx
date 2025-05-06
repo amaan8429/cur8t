@@ -35,10 +35,13 @@ export default async function Page({
   const setActiveItem = useActiveState.getState().setActiveItem;
   const setActiveCollectionId = useActiveState.getState().setActiveCollectionId;
   const setActiveSecondary = useActiveState.getState().setActiveSecondary;
+  const setActiveCollectionName =
+    useActiveState.getState().setActiveCollectionName;
 
   setActiveItem(activeItem || "");
   setActiveCollectionId(activeCollectionId || "");
   setActiveSecondary(activeSecondary || "");
+  setActiveCollectionName(activeCollectionName || "");
 
   return (
     <SidebarProvider>
