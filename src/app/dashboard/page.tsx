@@ -14,7 +14,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useActiveState } from "@/store/activeStateStore";
+import { ClientStateManager } from "@/components/Dashboard/Sidebar/client-state-manager";
+
 export default async function Page({
   searchParams,
 }: {
@@ -32,19 +33,14 @@ export default async function Page({
       await getSingleCollectionNameAction(activeCollectionId);
   }
 
-  const setActiveItem = useActiveState.getState().setActiveItem;
-  const setActiveCollectionId = useActiveState.getState().setActiveCollectionId;
-  const setActiveSecondary = useActiveState.getState().setActiveSecondary;
-  const setActiveCollectionName =
-    useActiveState.getState().setActiveCollectionName;
-
-  setActiveItem(activeItem || "");
-  setActiveCollectionId(activeCollectionId || "");
-  setActiveSecondary(activeSecondary || "");
-  setActiveCollectionName(activeCollectionName || "");
-
   return (
     <SidebarProvider>
+      <ClientStateManager
+        activeItem={activeItem}
+        activeCollectionId={activeCollectionId}
+        activeSecondary={activeSecondary}
+        activeCollectionName={activeCollectionName}
+      />
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-14 shrink-0 items-center gap-2">

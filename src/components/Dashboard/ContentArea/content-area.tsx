@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { ManageCollectionLinks } from "@/components/SingleCollection/manage-collection";
 import SecondaryPage from "@/components/Secondary/secondary-page";
@@ -8,9 +10,12 @@ import SavedCollections from "../TopSection/saved-collections";
 import { useActiveState } from "@/store/activeStateStore";
 
 export function ContentArea() {
-  const activeItem = useActiveState.getState().activeItem;
-  const activeCollectionId = useActiveState.getState().activeCollectionId;
-  const activeSecondary = useActiveState.getState().activeSecondary;
+  // Use the hook to subscribe to state changes, not .getState()
+  const activeItem = useActiveState((state) => state.activeItem);
+  const activeCollectionId = useActiveState(
+    (state) => state.activeCollectionId
+  );
+  const activeSecondary = useActiveState((state) => state.activeSecondary);
 
   return (
     <div className="p-6">
