@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, PlusIcon, X } from "lucide-react";
+import { MoreHorizontal, PlusIcon, X, Info } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -52,6 +52,15 @@ import { Badge } from "@/components/ui/badge";
 import { useCollectionStore } from "@/store/collection-store";
 import { useActiveState } from "@/store/activeStateStore";
 import { useToast } from "@/hooks/use-toast";
+import { createCollectionAction } from "@/actions/collection/createCollection";
+import { getLinksAction } from "@/actions/linkActions/getLinks";
+import { createLinkAction } from "@/actions/linkActions/createLink";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // Interface for the ActionItem
 export interface ActionItem {
@@ -73,6 +82,10 @@ const ActionItems: React.FC = () => {
   const [visibilityOption, setVisibilityOption] = React.useState("public");
   const [emails, setEmails] = React.useState<string[]>([]);
   const [newEmail, setNewEmail] = React.useState("");
+  const [duplicateName, setDuplicateName] = React.useState("");
+  const [includeContents, setIncludeContents] = React.useState(true);
+  const [copyPermissions, setCopyPermissions] = React.useState(false);
+  const [isDuplicating, setIsDuplicating] = React.useState(false);
   const [copyLink, setCopyLink] = React.useState(
     "https://example.com/your-page"
   );
@@ -81,8 +94,12 @@ const ActionItems: React.FC = () => {
   const [includeImages, setIncludeImages] = React.useState(true);
   const [includeComments, setIncludeComments] = React.useState(false);
 
-  const { updateCollectionName, updateCollectionVisibility, collections } =
-    useCollectionStore();
+  const {
+    updateCollectionName,
+    updateCollectionVisibility,
+    collections,
+    createACollection,
+  } = useCollectionStore();
   const { setActiveCollectionName, activeCollectionId } = useActiveState();
   const { toast } = useToast();
 
@@ -150,6 +167,13 @@ const ActionItems: React.FC = () => {
         `https://bukmarks.vercel.app/collection/${activeCollectionId}`
       );
     }
+    if (item.type === "duplicate") {
+      // Set initial duplicate name
+      const active = getActiveCollection();
+      setDuplicateName(`Copy of ${active?.title || "Collection"}`);
+      setIncludeContents(true);
+      setCopyPermissions(false);
+    }
     setDialogOpen(true);
   };
 
@@ -201,10 +225,96 @@ const ActionItems: React.FC = () => {
         navigator.clipboard.writeText(copyLink);
         console.log("Copied link to clipboard");
         break;
-      case "duplicate":
-        console.log("Duplicating page");
-        setConfirmDialogOpen(true);
-        return; // Don't close dialog yet
+      case "duplicate": {
+        if (!activeCollectionId || !duplicateName.trim()) {
+          toast({
+            title: "Collection name is required",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        setIsDuplicating(true);
+        try {
+          const active = getActiveCollection();
+          if (!active) {
+            toast({
+              title: "Original collection not found",
+              variant: "destructive",
+            });
+            return;
+          }
+
+          // Determine visibility and emails for the duplicate
+          let duplicateVisibility = "private";
+          let duplicateEmails: string[] = [];
+
+          if (copyPermissions) {
+            duplicateVisibility = active.visibility;
+            duplicateEmails = active.sharedEmails || [];
+          }
+
+          // Create the duplicate collection
+          const result = await createCollectionAction(
+            duplicateName,
+            duplicateVisibility
+          );
+
+          if (!result.success) {
+            toast({
+              title: "Failed to duplicate collection",
+              variant: "destructive",
+            });
+            return;
+          }
+
+          const newCollection = result.data;
+
+          // Update the collection store with the new collection
+          await createACollection(newCollection);
+
+          // Copy links if includeContents is true
+          if (includeContents) {
+            const linksResult = await getLinksAction(activeCollectionId);
+            if (linksResult.success && linksResult.data) {
+              // Copy each link to the new collection
+              for (const link of linksResult.data) {
+                await createLinkAction(newCollection.id, link.title, link.url);
+              }
+            }
+          }
+
+          // Update visibility with emails if needed (for protected collections)
+          if (
+            copyPermissions &&
+            duplicateVisibility === "protected" &&
+            duplicateEmails.length > 0
+          ) {
+            await updateCollectionVisibility(
+              newCollection.id,
+              duplicateVisibility,
+              duplicateEmails
+            );
+          }
+
+          toast({
+            title: "Collection duplicated successfully",
+          });
+
+          // Don't trigger confirmation dialog for duplicate
+          setDialogOpen(false);
+          return;
+        } catch (error) {
+          console.error(error);
+          toast({
+            title: "An error occurred while duplicating",
+            variant: "destructive",
+          });
+          return;
+        } finally {
+          setIsDuplicating(false);
+        }
+      }
       case "analytics":
         console.log("Analytics tab selected:", analyticsTab);
         break;
@@ -377,39 +487,86 @@ const ActionItems: React.FC = () => {
                 </Label>
                 <Input
                   id="duplicate-name"
-                  defaultValue="Copy of Current Page"
+                  value={duplicateName}
+                  onChange={(e) => setDuplicateName(e.target.value)}
                   className="col-span-3"
+                  placeholder="Enter collection name"
+                  disabled={isDuplicating}
                 />
               </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="duplicate-location" className="text-right">
-                  Location
-                </Label>
-                <Select defaultValue="same">
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Select location" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="same">Same folder</SelectItem>
-                    <SelectItem value="root">Root folder</SelectItem>
-                    <SelectItem value="other">Other location...</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-center space-x-2 mt-2">
-                <Checkbox id="duplicate-contents" defaultChecked />
-                <Label htmlFor="duplicate-contents">Include all contents</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox id="duplicate-permissions" />
-                <Label htmlFor="duplicate-permissions">Copy permissions</Label>
+              <div className="space-y-3">
+                <TooltipProvider>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="duplicate-contents"
+                      checked={includeContents}
+                      onCheckedChange={(checked) =>
+                        setIncludeContents(checked === true)
+                      }
+                      disabled={isDuplicating}
+                    />
+                    <Label
+                      htmlFor="duplicate-contents"
+                      className="flex items-center gap-1"
+                    >
+                      Include all contents
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            Copy all links and bookmarks from the original
+                            collection
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="duplicate-permissions"
+                      checked={copyPermissions}
+                      onCheckedChange={(checked) =>
+                        setCopyPermissions(checked === true)
+                      }
+                      disabled={isDuplicating}
+                    />
+                    <Label
+                      htmlFor="duplicate-permissions"
+                      className="flex items-center gap-1"
+                    >
+                      Copy permissions
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            Copy visibility settings and shared email addresses
+                            from the original collection
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </Label>
+                  </div>
+                </TooltipProvider>
               </div>
             </div>
             <DialogFooter>
-              <Button variant="secondary" onClick={() => setDialogOpen(false)}>
+              <Button
+                variant="secondary"
+                onClick={() => setDialogOpen(false)}
+                disabled={isDuplicating}
+              >
                 Cancel
               </Button>
-              <Button onClick={handleConfirm}>Duplicate</Button>
+              <Button
+                onClick={handleConfirm}
+                disabled={!duplicateName.trim() || isDuplicating}
+              >
+                {isDuplicating ? "Duplicating..." : "Duplicate"}
+              </Button>
             </DialogFooter>
           </>
         );
