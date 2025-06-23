@@ -358,7 +358,7 @@ const ActionItems: React.FC = () => {
               author: active.author,
               visibility: active.visibility,
               createdAt: active.createdAt,
-              totalLinks: active.totalLinks,
+              totalLinks: links.length,
             },
             links: links.map((link) => ({
               title: link.title,
@@ -393,7 +393,7 @@ const ActionItems: React.FC = () => {
             case "txt":
               fileContent = `${active.title}\n${"=".repeat(active.title.length)}\n\n`;
               fileContent += `Description: ${active.description}\n`;
-              fileContent += `Total Links: ${active.totalLinks}\n`;
+              fileContent += `Total Links: ${links.length}\n`;
               fileContent += `Created: ${active.createdAt}\n\n`;
               fileContent += "Links:\n";
               fileContent += links
