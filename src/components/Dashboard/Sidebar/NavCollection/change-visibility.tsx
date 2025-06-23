@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { PlusIcon, StarOff, X } from "lucide-react";
+import { PlusIcon, StarOff, X, Link as LinkIcon } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -47,6 +47,9 @@ const ChangeVisibility = ({
   const [open, setOpen] = React.useState(false);
   const [emails, setEmails] = React.useState(sharedEmails);
   const [newEmail, setNewEmail] = React.useState("");
+  const [collectionLink] = React.useState(
+    `https://bukmarks.vercel.app/collection/${collectionId}`
+  );
   const { toast } = useToast();
 
   const form = useForm({
@@ -80,6 +83,13 @@ const ChangeVisibility = ({
 
   const removeEmail = (emailToRemove: string) => {
     setEmails(emails.filter((email) => email !== emailToRemove));
+  };
+
+  const copyCollectionLink = () => {
+    navigator.clipboard.writeText(collectionLink);
+    toast({
+      title: "Collection link copied to clipboard!",
+    });
   };
 
   const onSubmit = async (data: { visibility: string }) => {
@@ -213,6 +223,22 @@ const ChangeVisibility = ({
                 )}
               </div>
             )}
+
+            <div className="space-y-4">
+              <FormLabel className="flex items-center gap-2">
+                <LinkIcon className="h-4 w-4" />
+                Collection Link
+              </FormLabel>
+              <div className="flex space-x-2">
+                <Input value={collectionLink} readOnly className="flex-1" />
+                <Button type="button" onClick={copyCollectionLink}>
+                  Copy
+                </Button>
+              </div>
+              <FormDescription>
+                Share this link to give others access to your collection
+              </FormDescription>
+            </div>
 
             <DialogFooter>
               <DialogClose asChild>

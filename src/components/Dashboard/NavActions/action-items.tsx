@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, PlusIcon, X } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -48,8 +48,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { actionsData as data, ActionType } from "./actions-data";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { useCollectionStore } from "@/store/collection-store";
 import { useActiveState } from "@/store/activeStateStore";
+import { useToast } from "@/hooks/use-toast";
 
 // Interface for the ActionItem
 export interface ActionItem {
@@ -69,6 +71,8 @@ const ActionItems: React.FC = () => {
   // Form states for different dialogs
   const [pageTitle, setPageTitle] = React.useState("");
   const [visibilityOption, setVisibilityOption] = React.useState("public");
+  const [emails, setEmails] = React.useState<string[]>([]);
+  const [newEmail, setNewEmail] = React.useState("");
   const [copyLink, setCopyLink] = React.useState(
     "https://example.com/your-page"
   );
@@ -77,8 +81,40 @@ const ActionItems: React.FC = () => {
   const [includeImages, setIncludeImages] = React.useState(true);
   const [includeComments, setIncludeComments] = React.useState(false);
 
-  const { updateCollectionName } = useCollectionStore();
+  const { updateCollectionName, updateCollectionVisibility, collections } =
+    useCollectionStore();
   const { setActiveCollectionName, activeCollectionId } = useActiveState();
+  const { toast } = useToast();
+
+  const getActiveCollection = () =>
+    collections?.find((c) => c.id === activeCollectionId);
+
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const addEmail = () => {
+    if (!isValidEmail(newEmail)) {
+      toast({
+        title: "Invalid email format",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (emails.includes(newEmail)) {
+      toast({
+        title: "Email already added",
+        variant: "destructive",
+      });
+      return;
+    }
+    setEmails([...emails, newEmail]);
+    setNewEmail("");
+  };
+
+  const removeEmail = (emailToRemove: string) => {
+    setEmails(emails.filter((email) => email !== emailToRemove));
+  };
 
   const handleUpdateCollectionName = () => {
     if (!pageTitle) {
@@ -102,20 +138,65 @@ const ActionItems: React.FC = () => {
   const handleActionClick = (item: ActionItem) => {
     setIsOpen(false);
     setSelectedAction(item);
+    if (item.type === "visibility") {
+      // Set initial visibility to current collection's visibility
+      const active = getActiveCollection();
+      setVisibilityOption(active?.visibility || "public");
+      setEmails(active?.sharedEmails || []);
+    }
+    if (item.type === "copy-link") {
+      // Generate the collection link
+      setCopyLink(
+        `https://bukmarks.vercel.app/collection/${activeCollectionId}`
+      );
+    }
     setDialogOpen(true);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!selectedAction) return;
 
-    // Handle logic based on action type
     switch (selectedAction.type) {
       case "customize":
         console.log("Saving customization with title:", pageTitle);
         break;
-      case "visibility":
-        console.log("Changed visibility to:", visibilityOption);
+      case "visibility": {
+        if (!activeCollectionId) {
+          console.error("No active collection ID found");
+          return;
+        }
+
+        const active = getActiveCollection();
+        if (
+          active?.visibility === visibilityOption &&
+          visibilityOption !== "protected"
+        ) {
+          toast({
+            title: "No changes made",
+          });
+          return;
+        }
+
+        try {
+          // Include emails array when updating to protected visibility
+          await updateCollectionVisibility(
+            activeCollectionId,
+            visibilityOption,
+            visibilityOption === "protected" ? emails : []
+          );
+
+          toast({
+            title: "Collection visibility updated",
+          });
+        } catch (error) {
+          console.error(error);
+          toast({
+            title: "An error occurred",
+            variant: "destructive",
+          });
+        }
         break;
+      }
       case "copy-link":
         navigator.clipboard.writeText(copyLink);
         console.log("Copied link to clipboard");
@@ -177,72 +258,87 @@ const ActionItems: React.FC = () => {
       case "visibility":
         return (
           <>
-            <div className="py-4 space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                    <Label htmlFor="public-option">Public</Label>
-                  </div>
-                  <input
-                    type="radio"
-                    id="public-option"
-                    name="visibility"
-                    value="public"
-                    checked={visibilityOption === "public"}
-                    onChange={() => setVisibilityOption("public")}
-                  />
-                </div>
-                <p className="text-sm text-muted-foreground ml-6">
-                  Anyone on the internet can see this page
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <Label>Visibility</Label>
+                <Select
+                  onValueChange={setVisibilityOption}
+                  value={visibilityOption}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select visibility" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="public">Public</SelectItem>
+                    <SelectItem value="private">Private</SelectItem>
+                    <SelectItem value="protected">Protected</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground">
+                  Choose who can view this collection
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-                    <Label htmlFor="team-option">Team</Label>
+              {visibilityOption === "protected" && (
+                <div className="space-y-4">
+                  <Label>Shared With</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter email address"
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      size="icon"
+                      onClick={addEmail}
+                      disabled={!newEmail}
+                    >
+                      <PlusIcon className="h-4 w-4" />
+                    </Button>
                   </div>
-                  <input
-                    type="radio"
-                    id="team-option"
-                    name="visibility"
-                    value="team"
-                    checked={visibilityOption === "team"}
-                    onChange={() => setVisibilityOption("team")}
-                  />
-                </div>
-                <p className="text-sm text-muted-foreground ml-6">
-                  Only team members can view this page
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 rounded-full bg-gray-500"></div>
-                    <Label htmlFor="private-option">Private</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {emails.map((email) => (
+                      <Badge
+                        key={email}
+                        variant="secondary"
+                        className="flex items-center gap-1"
+                      >
+                        {email}
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-4 w-4 p-0 hover:bg-transparent"
+                          onClick={() => removeEmail(email)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </Badge>
+                    ))}
                   </div>
-                  <input
-                    type="radio"
-                    id="private-option"
-                    name="visibility"
-                    value="private"
-                    checked={visibilityOption === "private"}
-                    onChange={() => setVisibilityOption("private")}
-                  />
+                  {emails.length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      Add email addresses to share this collection with specific
+                      people
+                    </p>
+                  )}
                 </div>
-                <p className="text-sm text-muted-foreground ml-6">
-                  Only you can view this page
-                </p>
-              </div>
+              )}
             </div>
             <DialogFooter>
               <Button variant="secondary" onClick={() => setDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleConfirm}>Apply</Button>
+              <Button
+                onClick={handleConfirm}
+                disabled={
+                  visibilityOption === "protected" && emails.length === 0
+                }
+              >
+                Apply
+              </Button>
             </DialogFooter>
           </>
         );
@@ -256,22 +352,13 @@ const ActionItems: React.FC = () => {
                 <Button
                   onClick={() => {
                     navigator.clipboard.writeText(copyLink);
-                    alert("Link copied to clipboard!");
+                    toast({
+                      title: "Link copied to clipboard!",
+                    });
                   }}
                 >
                   Copy
                 </Button>
-              </div>
-              <div className="mt-4">
-                <Label className="block mb-2">Link settings</Label>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Include tracking parameters</span>
-                  <Switch id="tracking" />
-                </div>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="text-sm">Generate short URL</span>
-                  <Switch id="short-url" />
-                </div>
               </div>
             </div>
             <DialogFooter>
