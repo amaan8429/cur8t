@@ -81,6 +81,7 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
       // Create the duplicate collection
       const result = await createCollectionAction(
         duplicateName,
+        active.description || "",
         duplicateVisibility
       );
 

@@ -47,6 +47,7 @@ import {
   Facebook,
   Linkedin,
 } from "lucide-react";
+import { Footer } from "@/components/ui/footer";
 
 interface User {
   id: string;
@@ -525,6 +526,7 @@ export default function ProfilePage({
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

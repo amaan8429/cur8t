@@ -6,12 +6,14 @@ import { Globe2, Lock, Users, PlusCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useCollectionStore } from "@/store/collection-store";
 import { useToast } from "@/hooks/use-toast";
 import { createCollectionAction } from "@/actions/collection/createCollection";
 
 export function CreateCollectionComponent() {
   const [collectionName, setCollectionName] = React.useState("");
+  const [description, setDescription] = React.useState("");
   const [visibility, setVisibility] = React.useState("private");
   const [isLoading, setIsLoading] = React.useState(false);
   const router = useRouter();
@@ -42,6 +44,7 @@ export function CreateCollectionComponent() {
       setIsLoading(true);
       const collectionCreated = await createCollectionAction(
         collectionName,
+        description,
         visibility
       );
       if (collectionCreated.success) {
@@ -97,17 +100,33 @@ export function CreateCollectionComponent() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="relative">
-            <Input
-              value={collectionName}
-              onChange={(e) => setCollectionName(e.target.value)}
-              className="h-16 text-lg px-6 rounded-xl"
-              placeholder="Collection name"
-              disabled={isLoading}
-            />
-            <span className="absolute right-4 top-5 text-muted-foreground text-sm">
-              {collectionName.length}/50
-            </span>
+          <div className="space-y-4">
+            <div className="relative">
+              <Input
+                value={collectionName}
+                onChange={(e) => setCollectionName(e.target.value)}
+                className="h-16 text-lg px-6 rounded-xl"
+                placeholder="Collection name"
+                disabled={isLoading}
+              />
+              <span className="absolute right-4 top-5 text-muted-foreground text-sm">
+                {collectionName.length}/50
+              </span>
+            </div>
+
+            <div className="relative">
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="min-h-[100px] text-lg px-6 py-4 rounded-xl resize-none"
+                placeholder="Collection description (optional)"
+                disabled={isLoading}
+                maxLength={200}
+              />
+              <span className="absolute right-4 bottom-3 text-muted-foreground text-sm">
+                {description.length}/200
+              </span>
+            </div>
           </div>
 
           <div className="space-y-4">

@@ -24,6 +24,7 @@ import ChangeVisibility from "./change-visibility";
 import CopyCollectionLink from "./copy-collection-link";
 import DeleteCollectionOption from "./delete-collection";
 import ChangeCollectionName from "./change-collection-name";
+import ChangeCollectionDescription from "./change-collection-description";
 import { useCollectionStore } from "@/store/collection-store";
 import LoadingCollections from "./loading";
 import NoCollections from "./no-collections";
@@ -110,6 +111,11 @@ export function NavCollection() {
                   <ChangeCollectionName
                     collectionId={collection.id}
                     collectionName={collection.title}
+                  />
+                  <DropdownMenuSeparator />
+                  <ChangeCollectionDescription
+                    collectionId={collection.id}
+                    collectionDescription={collection.description || ""}
                   />
                   <DropdownMenuSeparator />
                   <DeleteCollectionOption collection={collection} />

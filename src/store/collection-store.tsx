@@ -21,6 +21,10 @@ interface CollectionStore {
     collectionId: string,
     newName: string
   ) => Promise<void>;
+  updateCollectionDescription: (
+    collectionId: string,
+    newDescription: string
+  ) => Promise<void>;
 }
 
 export const useCollectionStore = create<CollectionStore>((set) => ({
@@ -124,13 +128,29 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
           collections:
             state.collections?.map((collection) =>
               collection.id === collectionId
-                ? { ...collection, name: newName }
+                ? { ...collection, title: newName }
                 : collection
             ) || [],
         }));
       }
     } catch (error) {
       console.error("Failed to update collection name:", error);
+    }
+  },
+
+  // Update collection description
+  updateCollectionDescription: async (collectionId, newDescription) => {
+    try {
+      set((state) => ({
+        collections:
+          state.collections?.map((collection) =>
+            collection.id === collectionId
+              ? { ...collection, description: newDescription }
+              : collection
+          ) || [],
+      }));
+    } catch (error) {
+      console.error("Failed to update collection description:", error);
     }
   },
 }));

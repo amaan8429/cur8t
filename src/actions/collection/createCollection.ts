@@ -8,6 +8,7 @@ import { eq } from "drizzle-orm";
 
 export async function createCollectionAction(
   collectionName: string,
+  description: string,
   visiblity: string
 ) {
   const { userId } = await auth();
@@ -35,6 +36,7 @@ export async function createCollectionAction(
     .insert(CollectionsTable)
     .values({
       title: collectionName,
+      description: description,
       userId: userId,
       url: "",
       visibility: visiblity,
