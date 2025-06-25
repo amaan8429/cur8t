@@ -12,6 +12,7 @@ import {
   Share,
   Lock,
   Shield,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +21,6 @@ import { getSingleCollectionAction } from "@/actions/collection/getSingleCollect
 import { getCollectionLinksAction } from "@/actions/linkActions/getCollectionLinks";
 import { ReadOnlyLinkGrid } from "@/components/SingleCollection/read-only-link-grid";
 import { AccessDenied } from "@/components/SingleCollection/access-denied";
-import { ManageCollectionLinks } from "@/components/SingleCollection/manage-collection";
 import { Link } from "@/types/types";
 
 interface Collection {
@@ -221,14 +221,30 @@ export default function CollectionPage() {
         </div>
 
         {/* Collection Content */}
-        <div>
-          {isOwner ? (
-            // Owner can manage the collection (edit, add links, etc.)
-            <ManageCollectionLinks collectionId={collectionId} />
-          ) : (
-            // Non-owners get read-only view
-            <ReadOnlyLinkGrid links={links} isLoading={isLinksLoading} />
+        <div className="space-y-6">
+          {/* Owner Actions */}
+          {isOwner && (
+            <div className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg bg-accent/50">
+              <div className="flex-1">
+                <h3 className="font-semibold text-sm">Collection Owner</h3>
+                <p className="text-sm text-muted-foreground">
+                  Manage this collection in your dashboard to add links, change
+                  settings, and more.
+                </p>
+              </div>
+              <Button asChild className="shrink-0">
+                <a
+                  href={`/dashboard?collectionId=${encodeURIComponent(collectionId)}`}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Manage in Dashboard
+                </a>
+              </Button>
+            </div>
           )}
+
+          {/* Collection Links */}
+          <ReadOnlyLinkGrid links={links} isLoading={isLinksLoading} />
         </div>
       </div>
     </div>
