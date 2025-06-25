@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { ModeToggle } from "@/components/mode-toggle";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -63,6 +64,7 @@ interface Collection {
   sharedEmails: string[];
   createdAt: Date;
   updatedAt: Date;
+  authorUsername?: string | null;
 }
 
 export default function CollectionPage() {
@@ -475,10 +477,35 @@ export default function CollectionPage() {
                 {/* Collection Metadata */}
                 <div className="flex flex-wrap items-center gap-6 text-sm">
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <div className="p-1.5 rounded-full bg-muted">
-                      <User className="h-4 w-4" />
-                    </div>
-                    <span className="font-medium">By {collection.author}</span>
+                    {collection.authorUsername ? (
+                      <button
+                        onClick={() =>
+                          window.open(
+                            `/profile/${collection.authorUsername}`,
+                            "_blank"
+                          )
+                        }
+                        className="flex items-center gap-2 hover:text-foreground transition-colors group"
+                      >
+                        <Avatar className="h-6 w-6 group-hover:ring-2 group-hover:ring-primary/20 transition-all">
+                          <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                            {collection.author.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium">
+                          By {collection.author}
+                        </span>
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <div className="p-1.5 rounded-full bg-muted">
+                          <User className="h-4 w-4" />
+                        </div>
+                        <span className="font-medium">
+                          By {collection.author}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-2 text-muted-foreground">

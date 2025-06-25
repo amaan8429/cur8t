@@ -26,8 +26,10 @@ export async function getSingleCollectionAction(collectionId: string) {
       sharedEmails: CollectionsTable.sharedEmails,
       createdAt: CollectionsTable.createdAt,
       updatedAt: CollectionsTable.updatedAt,
+      authorUsername: UsersTable.username,
     })
     .from(CollectionsTable)
+    .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
     .where(eq(CollectionsTable.id, collectionId));
 
   if (!collectionResult || collectionResult.length === 0) {
