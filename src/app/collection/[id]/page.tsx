@@ -17,6 +17,7 @@ import {
   Download,
   Check,
   Bookmark,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -84,6 +85,9 @@ export default function CollectionPage() {
     "like" | "save" | "duplicate"
   >("like");
 
+  // Loading states for buttons to prevent flash
+  const [isCheckingStatus, setIsCheckingStatus] = useState(true);
+
   const collectionId = params.id as string;
 
   useEffect(() => {
@@ -129,6 +133,7 @@ export default function CollectionPage() {
   useEffect(() => {
     const checkLikeStatus = async () => {
       if (isLoaded && userId && collectionId) {
+        setIsCheckingStatus(true);
         console.log("Auth loaded, checking like status. UserId:", userId);
         try {
           const likeStatus = await checkIfLikedAction(collectionId);
@@ -144,6 +149,8 @@ export default function CollectionPage() {
           console.error("Error checking like/save status:", error);
           setIsLiked(false);
           setIsSaved(false);
+        } finally {
+          setIsCheckingStatus(false);
         }
       } else if (isLoaded && !userId) {
         console.log(
@@ -151,6 +158,7 @@ export default function CollectionPage() {
         );
         setIsLiked(false);
         setIsSaved(false);
+        setIsCheckingStatus(false);
       }
     };
 
@@ -166,18 +174,23 @@ export default function CollectionPage() {
           icon: <Eye className="h-4 w-4" />,
           label: "Public",
           description: "Anyone with the link can view",
+          color:
+            "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
         };
       case "private":
         return {
           icon: <Lock className="h-4 w-4" />,
           label: "Private",
           description: "Only you can view",
+          color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
         };
       case "protected":
         return {
           icon: <Shield className="h-4 w-4" />,
           label: "Protected",
           description: "Only you and invited people can view",
+          color:
+            "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
         };
       default:
         return null;
@@ -211,48 +224,67 @@ export default function CollectionPage() {
     }
 
     console.log("HandleLike called. Current isLiked state:", isLiked);
+
+    // Optimistic update
+    const previousIsLiked = isLiked;
+    const previousLikes = collection?.likes || 0;
+
+    setIsLiked(!isLiked);
+    setCollection((prev) =>
+      prev
+        ? { ...prev, likes: isLiked ? prev.likes - 1 : prev.likes + 1 }
+        : null
+    );
     setIsLiking(true);
+
     try {
-      if (isLiked) {
+      if (previousIsLiked) {
         const result = await unlikeCollectionAction(collectionId);
-        if (result.success) {
-          setIsLiked(false);
+        if (!result.success) {
+          // Revert optimistic update
+          setIsLiked(previousIsLiked);
           setCollection((prev) =>
-            prev ? { ...prev, likes: prev.likes - 1 } : null
+            prev ? { ...prev, likes: previousLikes } : null
           );
-          toast({
-            title: "Collection unliked",
-          });
-        } else {
           toast({
             title: "Error",
             description: result.error || "Failed to unlike collection",
             variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Collection unliked",
           });
         }
       } else {
         console.log("About to call likeCollectionAction");
         const result = await likeCollectionAction(collectionId);
         console.log("Like action result:", result);
-        if (result.success) {
-          console.log("Like successful, updating state to true");
-          setIsLiked(true);
+        if (!result.success) {
+          // Revert optimistic update
+          setIsLiked(previousIsLiked);
           setCollection((prev) =>
-            prev ? { ...prev, likes: prev.likes + 1 } : null
+            prev ? { ...prev, likes: previousLikes } : null
           );
-          toast({
-            title: "Collection liked!",
-          });
-        } else {
           console.log("Like failed:", result.error);
           toast({
             title: "Error",
             description: result.error || "Failed to like collection",
             variant: "destructive",
           });
+        } else {
+          console.log("Like successful");
+          toast({
+            title: "Collection liked!",
+          });
         }
       }
     } catch (error) {
+      // Revert optimistic update
+      setIsLiked(previousIsLiked);
+      setCollection((prev) =>
+        prev ? { ...prev, likes: previousLikes } : null
+      );
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",
@@ -312,47 +344,56 @@ export default function CollectionPage() {
     }
 
     console.log("HandleSave called. Current isSaved state:", isSaved);
+
+    // Optimistic update
+    const previousIsSaved = isSaved;
+    setIsSaved(!isSaved);
     setIsSaving(true);
+
     try {
-      if (isSaved) {
+      if (previousIsSaved) {
         console.log("About to call unsaveCollectionAction");
         const result = await unsaveCollectionAction(collectionId);
         console.log("Unsave action result:", result);
-        if (result.success) {
-          console.log("Unsave successful, updating state to false");
-          setIsSaved(false);
-          toast({
-            title: "Collection removed from saved",
-          });
-        } else {
+        if (!result.success) {
+          // Revert optimistic update
+          setIsSaved(previousIsSaved);
           console.log("Unsave failed:", result.error);
           toast({
             title: "Error",
             description: result.error || "Failed to unsave collection",
             variant: "destructive",
           });
+        } else {
+          console.log("Unsave successful");
+          toast({
+            title: "Collection removed from saved",
+          });
         }
       } else {
         console.log("About to call saveCollectionAction");
         const result = await saveCollectionAction(collectionId);
         console.log("Save action result:", result);
-        if (result.success) {
-          console.log("Save successful, updating state to true");
-          setIsSaved(true);
-          toast({
-            title: "Collection saved!",
-            description: "You can find it in your saved collections.",
-          });
-        } else {
+        if (!result.success) {
+          // Revert optimistic update
+          setIsSaved(previousIsSaved);
           console.log("Save failed:", result.error);
           toast({
             title: "Error",
             description: result.error || "Failed to save collection",
             variant: "destructive",
           });
+        } else {
+          console.log("Save successful");
+          toast({
+            title: "Collection saved!",
+            description: "You can find it in your saved collections.",
+          });
         }
       }
     } catch (error) {
+      // Revert optimistic update
+      setIsSaved(previousIsSaved);
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",
@@ -366,24 +407,35 @@ export default function CollectionPage() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="container mx-auto p-6 max-w-6xl">
-        <div className="space-y-6">
-          {/* Header skeleton */}
-          <div className="space-y-4">
-            <Skeleton className="h-8 w-3/4" />
-            <Skeleton className="h-4 w-1/2" />
-            <div className="flex gap-4">
-              <Skeleton className="h-6 w-20" />
-              <Skeleton className="h-6 w-24" />
-              <Skeleton className="h-6 w-16" />
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+        <div className="container mx-auto p-6 max-w-7xl">
+          <div className="space-y-8">
+            {/* Header skeleton */}
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <Skeleton className="h-12 w-3/4" />
+                <Skeleton className="h-6 w-1/2" />
+              </div>
+              <div className="flex flex-wrap gap-4">
+                <Skeleton className="h-10 w-32" />
+                <Skeleton className="h-10 w-28" />
+                <Skeleton className="h-10 w-24" />
+                <Skeleton className="h-10 w-20" />
+              </div>
+              <div className="flex flex-wrap gap-4">
+                <Skeleton className="h-6 w-24" />
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-6 w-28" />
+                <Skeleton className="h-6 w-36" />
+              </div>
             </div>
-          </div>
 
-          {/* Content skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Skeleton key={i} className="h-48 w-full" />
-            ))}
+            {/* Content skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Skeleton key={i} className="h-56 w-full rounded-xl" />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -403,213 +455,268 @@ export default function CollectionPage() {
   const visibilityInfo = getVisibilityInfo();
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl">
-      <div className="space-y-6">
-        {/* Collection Header */}
-        <div className="space-y-4">
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tight">
-                {collection.title}
-              </h1>
-              {collection.description && (
-                <p className="text-lg text-muted-foreground">
-                  {collection.description}
-                </p>
-              )}
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <div className="container mx-auto p-6 max-w-7xl">
+        <div className="space-y-8">
+          {/* Collection Header */}
+          <div className="space-y-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+              <div className="space-y-4 flex-1">
+                <div className="space-y-3">
+                  <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                    {collection.title}
+                  </h1>
+                  {collection.description && (
+                    <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl">
+                      {collection.description}
+                    </p>
+                  )}
+                </div>
 
-            <div className="flex gap-2">
-              <ModeToggle />
+                {/* Collection Metadata */}
+                <div className="flex flex-wrap items-center gap-6 text-sm">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className="p-1.5 rounded-full bg-muted">
+                      <User className="h-4 w-4" />
+                    </div>
+                    <span className="font-medium">By {collection.author}</span>
+                  </div>
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={copyLink}
-                className="flex items-center gap-2"
-                disabled={linkCopied}
-              >
-                {linkCopied ? (
-                  <Check className="h-4 w-4" />
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className="p-1.5 rounded-full bg-muted">
+                      <Link2 className="h-4 w-4" />
+                    </div>
+                    <span className="font-medium">
+                      {collection.totalLinks} links
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className="p-1.5 rounded-full bg-muted">
+                      <Heart className="h-4 w-4" />
+                    </div>
+                    <span className="font-medium">
+                      {collection.likes} likes
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className="p-1.5 rounded-full bg-muted">
+                      <Clock className="h-4 w-4" />
+                    </div>
+                    <span className="font-medium">
+                      Updated {collection.updatedAt.toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  {visibilityInfo && (
+                    <Badge
+                      variant="secondary"
+                      className={`flex items-center gap-2 px-3 py-1.5 ${visibilityInfo.color}`}
+                    >
+                      {visibilityInfo.icon}
+                      <span className="font-medium">
+                        {visibilityInfo.label}
+                      </span>
+                    </Badge>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-3">
+                <ModeToggle />
+
+                <Button
+                  variant="outline"
+                  size="default"
+                  onClick={copyLink}
+                  className="flex items-center gap-2 hover:bg-accent/50 transition-all"
+                  disabled={linkCopied}
+                >
+                  {linkCopied ? (
+                    <Check className="h-4 w-4 text-green-600" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                  {linkCopied ? "Copied!" : "Copy Link"}
+                </Button>
+
+                {/* Save Button - Show skeleton while checking status */}
+                {isCheckingStatus ? (
+                  <Skeleton className="h-10 w-20" />
                 ) : (
-                  <Copy className="h-4 w-4" />
-                )}
-                {linkCopied ? "Copied!" : "Copy Link"}
-              </Button>
-
-              <Button
-                variant={isSaved ? "default" : "outline"}
-                size="sm"
-                onClick={handleSave}
-                disabled={isSaving}
-                className={`flex items-center gap-2 transition-all ${
-                  isSaved
-                    ? "bg-blue-500 hover:bg-blue-600 text-white border-blue-500 hover:border-blue-600"
-                    : "hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-950"
-                }`}
-              >
-                <Bookmark
-                  className={`h-4 w-4 transition-all ${
-                    isSaved
-                      ? "text-white fill-white"
-                      : "hover:text-blue-500 fill-none"
-                  }`}
-                  style={{
-                    fill: isSaved ? "currentColor" : "none",
-                  }}
-                />
-                {isSaving ? "..." : isSaved ? "Unsave" : "Save"}
-              </Button>
-
-              {!isOwner && (
-                <>
                   <Button
-                    variant={isLiked ? "default" : "outline"}
-                    size="sm"
-                    onClick={handleLike}
-                    disabled={isLiking}
+                    variant={isSaved ? "default" : "outline"}
+                    size="default"
+                    onClick={handleSave}
+                    disabled={isSaving}
                     className={`flex items-center gap-2 transition-all ${
-                      isLiked
-                        ? "bg-red-500 hover:bg-red-600 text-white border-red-500 hover:border-red-600"
-                        : "hover:bg-red-50 hover:border-red-300 dark:hover:bg-red-950"
+                      isSaved
+                        ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700 shadow-lg shadow-blue-500/20"
+                        : "hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-950/50 hover:shadow-md"
                     }`}
                   >
-                    <Heart
+                    <Bookmark
                       className={`h-4 w-4 transition-all ${
-                        isLiked
+                        isSaved
                           ? "text-white fill-white"
-                          : "hover:text-red-500 fill-none"
+                          : "hover:text-blue-600 fill-none"
                       }`}
                       style={{
-                        fill: isLiked ? "currentColor" : "none",
+                        fill: isSaved ? "currentColor" : "none",
                       }}
                     />
-                    {isLiking ? "..." : isLiked ? "Unlike" : "Like"}
+                    {isSaving ? "..." : isSaved ? "Unsave" : "Save"}
                   </Button>
+                )}
 
-                  {isSignedIn ? (
-                    <Dialog
-                      open={duplicateDialogOpen}
-                      onOpenChange={setDuplicateDialogOpen}
-                    >
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex items-center gap-2"
-                        >
-                          <Download className="h-4 w-4" />
-                          Duplicate
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Duplicate Collection</DialogTitle>
-                          <DialogDescription>
-                            This will create a copy of &ldquo;
-                            {collection?.title}
-                            &rdquo; in your account with all its links.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <DialogFooter>
+                {!isOwner && (
+                  <>
+                    {/* Like Button - Show skeleton while checking status */}
+                    {isCheckingStatus ? (
+                      <Skeleton className="h-10 w-20" />
+                    ) : (
+                      <Button
+                        variant={isLiked ? "default" : "outline"}
+                        size="default"
+                        onClick={handleLike}
+                        disabled={isLiking}
+                        className={`flex items-center gap-2 transition-all ${
+                          isLiked
+                            ? "bg-red-600 hover:bg-red-700 text-white border-red-600 hover:border-red-700 shadow-lg shadow-red-500/20"
+                            : "hover:bg-red-50 hover:border-red-300 dark:hover:bg-red-950/50 hover:shadow-md"
+                        }`}
+                      >
+                        <Heart
+                          className={`h-4 w-4 transition-all ${
+                            isLiked
+                              ? "text-white fill-white"
+                              : "hover:text-red-600 fill-none"
+                          }`}
+                          style={{
+                            fill: isLiked ? "currentColor" : "none",
+                          }}
+                        />
+                        {isLiking ? "..." : isLiked ? "Unlike" : "Like"}
+                      </Button>
+                    )}
+
+                    {isSignedIn ? (
+                      <Dialog
+                        open={duplicateDialogOpen}
+                        onOpenChange={setDuplicateDialogOpen}
+                      >
+                        <DialogTrigger asChild>
                           <Button
-                            variant="secondary"
-                            onClick={() => setDuplicateDialogOpen(false)}
+                            variant="outline"
+                            size="default"
+                            className="flex items-center gap-2 hover:bg-accent/50 transition-all hover:shadow-md"
                           >
-                            Cancel
+                            <Download className="h-4 w-4" />
+                            Duplicate
                           </Button>
-                          <Button
-                            onClick={handleDuplicate}
-                            disabled={isDuplicating}
-                          >
-                            {isDuplicating
-                              ? "Duplicating..."
-                              : "Duplicate to My Account"}
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleDuplicate}
-                      className="flex items-center gap-2"
-                    >
-                      <Download className="h-4 w-4" />
-                      Duplicate
-                    </Button>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Collection Metadata */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <User className="h-4 w-4" />
-              <span>By {collection.author}</span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <Link2 className="h-4 w-4" />
-              <span>{collection.totalLinks} links</span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <Heart className="h-4 w-4" />
-              <span>{collection.likes} likes</span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              <span>Updated {collection.updatedAt.toLocaleDateString()}</span>
-            </div>
-
-            {visibilityInfo && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                {visibilityInfo.icon}
-                {visibilityInfo.label}
-              </Badge>
-            )}
-          </div>
-        </div>
-
-        {/* Collection Content */}
-        <div className="space-y-6">
-          {/* Owner Actions */}
-          {isOwner && (
-            <div className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg bg-accent/50">
-              <div className="flex-1">
-                <h3 className="font-semibold text-sm">Collection Owner</h3>
-                <p className="text-sm text-muted-foreground">
-                  Manage this collection in your dashboard to add links, change
-                  settings, and more.
-                </p>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md">
+                          <DialogHeader>
+                            <DialogTitle className="text-xl">
+                              Duplicate Collection
+                            </DialogTitle>
+                            <DialogDescription className="text-base leading-relaxed">
+                              This will create a copy of &ldquo;
+                              {collection?.title}
+                              &rdquo; in your account with all its links.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <DialogFooter className="gap-3">
+                            <Button
+                              variant="outline"
+                              onClick={() => setDuplicateDialogOpen(false)}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={handleDuplicate}
+                              disabled={isDuplicating}
+                              className="bg-primary hover:bg-primary/90"
+                            >
+                              {isDuplicating
+                                ? "Duplicating..."
+                                : "Duplicate to My Account"}
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="default"
+                        onClick={handleDuplicate}
+                        className="flex items-center gap-2 hover:bg-accent/50 transition-all hover:shadow-md"
+                      >
+                        <Download className="h-4 w-4" />
+                        Duplicate
+                      </Button>
+                    )}
+                  </>
+                )}
               </div>
-              <Button asChild className="shrink-0">
-                <a
-                  href={`/dashboard?collectionId=${encodeURIComponent(collectionId)}`}
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Manage in Dashboard
-                </a>
-              </Button>
             </div>
-          )}
+          </div>
 
-          {/* Collection Links */}
-          <ReadOnlyLinkGrid links={links} isLoading={isLinksLoading} />
+          {/* Collection Content */}
+          <div className="space-y-8">
+            {/* Owner Actions */}
+            {isOwner && (
+              <div className="flex flex-col sm:flex-row gap-4 p-6 border rounded-xl bg-gradient-to-r from-accent/50 to-accent/30 shadow-sm">
+                <div className="flex-1 space-y-2">
+                  <h3 className="font-semibold text-lg flex items-center gap-2">
+                    <Settings className="h-5 w-5 text-primary" />
+                    Collection Owner
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Manage this collection in your dashboard to add links,
+                    change settings, and more.
+                  </p>
+                </div>
+                <Button
+                  asChild
+                  className="shrink-0 shadow-md hover:shadow-lg transition-all"
+                >
+                  <a
+                    href={`/dashboard?collectionId=${encodeURIComponent(collectionId)}`}
+                    className="flex items-center gap-2"
+                  >
+                    <Settings className="h-4 w-4" />
+                    Manage in Dashboard
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </Button>
+              </div>
+            )}
+
+            {/* Collection Links */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-semibold">Links</h2>
+                {collection.totalLinks > 0 && (
+                  <Badge variant="outline" className="text-sm">
+                    {collection.totalLinks} total
+                  </Badge>
+                )}
+              </div>
+              <ReadOnlyLinkGrid links={links} isLoading={isLinksLoading} />
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Authentication Dialog */}
       <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Sign in required</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-xl">Sign in required</DialogTitle>
+            <DialogDescription className="text-base leading-relaxed">
               You need to sign in to {authDialogAction} this collection.
             </DialogDescription>
           </DialogHeader>
@@ -620,7 +727,9 @@ export default function CollectionPage() {
               </Button>
             </SignInButton>
             <SignUpButton mode="modal">
-              <Button className="flex-1">Sign Up</Button>
+              <Button className="flex-1 bg-primary hover:bg-primary/90">
+                Sign Up
+              </Button>
             </SignUpButton>
           </div>
         </DialogContent>
