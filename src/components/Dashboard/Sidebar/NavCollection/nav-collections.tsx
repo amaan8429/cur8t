@@ -63,12 +63,17 @@ export function NavCollection() {
       <SidebarMenu>
         {collections.map((collection) => {
           const isActive = collection.id === activeCollectionId;
-          <NoCollections />;
+          // Create tooltip content with title and description
+          const tooltipContent = collection.description
+            ? `${collection.title}\n\n${collection.description}`
+            : collection.title;
+
           return (
             <SidebarMenuItem key={collection.id}>
               <SidebarMenuButton
                 asChild
                 isActive={isActive}
+                tooltip={tooltipContent}
                 className="group hover:bg-accent/50 transition-colors"
               >
                 <Link
