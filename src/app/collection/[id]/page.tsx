@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, SignInButton, SignUpButton } from "@clerk/nextjs";
 import {
   Clock,
   Eye,
@@ -79,6 +79,10 @@ export default function CollectionPage() {
   const [isDuplicating, setIsDuplicating] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [authDialogAction, setAuthDialogAction] = useState<
+    "like" | "save" | "duplicate"
+  >("like");
 
   const collectionId = params.id as string;
 
@@ -201,11 +205,8 @@ export default function CollectionPage() {
 
   const handleLike = async () => {
     if (!isSignedIn) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to like this collection.",
-        variant: "destructive",
-      });
+      setAuthDialogAction("like");
+      setAuthDialogOpen(true);
       return;
     }
 
@@ -264,11 +265,8 @@ export default function CollectionPage() {
 
   const handleDuplicate = async () => {
     if (!isSignedIn) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to duplicate this collection.",
-        variant: "destructive",
-      });
+      setAuthDialogAction("duplicate");
+      setAuthDialogOpen(true);
       return;
     }
 
@@ -308,11 +306,8 @@ export default function CollectionPage() {
 
   const handleSave = async () => {
     if (!isSignedIn) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to save this collection.",
-        variant: "destructive",
-      });
+      setAuthDialogAction("save");
+      setAuthDialogOpen(true);
       return;
     }
 
@@ -442,31 +437,29 @@ export default function CollectionPage() {
                 {linkCopied ? "Copied!" : "Copy Link"}
               </Button>
 
-              {isSignedIn && (
-                <Button
-                  variant={isSaved ? "default" : "outline"}
-                  size="sm"
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  className={`flex items-center gap-2 transition-all ${
+              <Button
+                variant={isSaved ? "default" : "outline"}
+                size="sm"
+                onClick={handleSave}
+                disabled={isSaving}
+                className={`flex items-center gap-2 transition-all ${
+                  isSaved
+                    ? "bg-blue-500 hover:bg-blue-600 text-white border-blue-500 hover:border-blue-600"
+                    : "hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-950"
+                }`}
+              >
+                <Bookmark
+                  className={`h-4 w-4 transition-all ${
                     isSaved
-                      ? "bg-blue-500 hover:bg-blue-600 text-white border-blue-500 hover:border-blue-600"
-                      : "hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-950"
+                      ? "text-white fill-white"
+                      : "hover:text-blue-500 fill-none"
                   }`}
-                >
-                  <Bookmark
-                    className={`h-4 w-4 transition-all ${
-                      isSaved
-                        ? "text-white fill-white"
-                        : "hover:text-blue-500 fill-none"
-                    }`}
-                    style={{
-                      fill: isSaved ? "currentColor" : "none",
-                    }}
-                  />
-                  {isSaving ? "..." : isSaved ? "Unsave" : "Save"}
-                </Button>
-              )}
+                  style={{
+                    fill: isSaved ? "currentColor" : "none",
+                  }}
+                />
+                {isSaving ? "..." : isSaved ? "Unsave" : "Save"}
+              </Button>
 
               {!isOwner && (
                 <>
@@ -598,6 +591,36 @@ export default function CollectionPage() {
           <ReadOnlyLinkGrid links={links} isLoading={isLinksLoading} />
         </div>
       </div>
+
+      {/* Authentication Dialog */}
+      <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Sign in required</DialogTitle>
+            <DialogDescription>
+              You need to sign in to {authDialogAction} this collection.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <SignInButton mode="modal">
+              <Button variant="outline" className="flex-1">
+                Sign In
+              </Button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <Button className="flex-1">Sign Up</Button>
+            </SignUpButton>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="secondary"
+              onClick={() => setAuthDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

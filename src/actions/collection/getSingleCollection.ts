@@ -68,7 +68,7 @@ export async function getSingleCollectionAction(collectionId: string) {
       };
     }
   }
-  // For public collections, no authentication required
+  // For public collections, no authentication required - anyone can view
 
   return {
     success: true,
