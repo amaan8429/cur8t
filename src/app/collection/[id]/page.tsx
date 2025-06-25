@@ -487,47 +487,59 @@ export default function CollectionPage() {
                     {isLiking ? "..." : isLiked ? "Unlike" : "Like"}
                   </Button>
 
-                  <Dialog
-                    open={duplicateDialogOpen}
-                    onOpenChange={setDuplicateDialogOpen}
-                  >
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-2"
-                      >
-                        <Download className="h-4 w-4" />
-                        Duplicate
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Duplicate Collection</DialogTitle>
-                        <DialogDescription>
-                          This will create a copy of &ldquo;{collection?.title}
-                          &rdquo; in your account with all its links.
-                          {!isSignedIn && " You need to sign in first."}
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter>
+                  {isSignedIn ? (
+                    <Dialog
+                      open={duplicateDialogOpen}
+                      onOpenChange={setDuplicateDialogOpen}
+                    >
+                      <DialogTrigger asChild>
                         <Button
-                          variant="secondary"
-                          onClick={() => setDuplicateDialogOpen(false)}
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2"
                         >
-                          Cancel
+                          <Download className="h-4 w-4" />
+                          Duplicate
                         </Button>
-                        <Button
-                          onClick={handleDuplicate}
-                          disabled={isDuplicating || !isSignedIn}
-                        >
-                          {isDuplicating
-                            ? "Duplicating..."
-                            : "Duplicate to My Account"}
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Duplicate Collection</DialogTitle>
+                          <DialogDescription>
+                            This will create a copy of &ldquo;
+                            {collection?.title}
+                            &rdquo; in your account with all its links.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <Button
+                            variant="secondary"
+                            onClick={() => setDuplicateDialogOpen(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={handleDuplicate}
+                            disabled={isDuplicating}
+                          >
+                            {isDuplicating
+                              ? "Duplicating..."
+                              : "Duplicate to My Account"}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDuplicate}
+                      className="flex items-center gap-2"
+                    >
+                      <Download className="h-4 w-4" />
+                      Duplicate
+                    </Button>
+                  )}
                 </>
               )}
             </div>
@@ -611,14 +623,6 @@ export default function CollectionPage() {
               <Button className="flex-1">Sign Up</Button>
             </SignUpButton>
           </div>
-          <DialogFooter>
-            <Button
-              variant="secondary"
-              onClick={() => setAuthDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
