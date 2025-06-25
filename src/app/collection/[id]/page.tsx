@@ -49,6 +49,7 @@ import {
 import { ReadOnlyLinkGrid } from "@/components/SingleCollection/read-only-link-grid";
 import { AccessDenied } from "@/components/SingleCollection/access-denied";
 import { Link } from "@/types/types";
+import { Footer } from "@/components/ui/footer";
 
 interface Collection {
   id: string;
@@ -174,23 +175,21 @@ export default function CollectionPage() {
           icon: <Eye className="h-4 w-4" />,
           label: "Public",
           description: "Anyone with the link can view",
-          color:
-            "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+          color: "bg-primary/10 text-primary border-primary/20",
         };
       case "private":
         return {
           icon: <Lock className="h-4 w-4" />,
           label: "Private",
           description: "Only you can view",
-          color: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+          color: "bg-destructive/10 text-destructive border-destructive/20",
         };
       case "protected":
         return {
           icon: <Shield className="h-4 w-4" />,
           label: "Protected",
           description: "Only you and invited people can view",
-          color:
-            "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+          color: "bg-secondary/50 text-secondary-foreground border-secondary",
         };
       default:
         return null;
@@ -535,7 +534,7 @@ export default function CollectionPage() {
                   disabled={linkCopied}
                 >
                   {linkCopied ? (
-                    <Check className="h-4 w-4 text-green-600" />
+                    <Check className="h-4 w-4 text-primary" />
                   ) : (
                     <Copy className="h-4 w-4" />
                   )}
@@ -553,15 +552,15 @@ export default function CollectionPage() {
                     disabled={isSaving}
                     className={`flex items-center gap-2 transition-all ${
                       isSaved
-                        ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700 shadow-lg shadow-blue-500/20"
-                        : "hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-950/50 hover:shadow-md"
+                        ? "bg-primary hover:bg-primary/90 text-primary-foreground border-primary shadow-lg shadow-primary/20"
+                        : "hover:bg-accent/50 hover:border-primary/30 hover:shadow-md"
                     }`}
                   >
                     <Bookmark
                       className={`h-4 w-4 transition-all ${
                         isSaved
-                          ? "text-white fill-white"
-                          : "hover:text-blue-600 fill-none"
+                          ? "text-primary-foreground"
+                          : "hover:text-primary"
                       }`}
                       style={{
                         fill: isSaved ? "currentColor" : "none",
@@ -584,15 +583,15 @@ export default function CollectionPage() {
                         disabled={isLiking}
                         className={`flex items-center gap-2 transition-all ${
                           isLiked
-                            ? "bg-red-600 hover:bg-red-700 text-white border-red-600 hover:border-red-700 shadow-lg shadow-red-500/20"
-                            : "hover:bg-red-50 hover:border-red-300 dark:hover:bg-red-950/50 hover:shadow-md"
+                            ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground border-destructive shadow-lg shadow-destructive/20"
+                            : "hover:bg-accent/50 hover:border-destructive/30 hover:shadow-md"
                         }`}
                       >
                         <Heart
                           className={`h-4 w-4 transition-all ${
                             isLiked
-                              ? "text-white fill-white"
-                              : "hover:text-red-600 fill-none"
+                              ? "text-destructive-foreground"
+                              : "hover:text-destructive"
                           }`}
                           style={{
                             fill: isLiked ? "currentColor" : "none",
@@ -696,20 +695,12 @@ export default function CollectionPage() {
             )}
 
             {/* Collection Links */}
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold">Links</h2>
-                {collection.totalLinks > 0 && (
-                  <Badge variant="outline" className="text-sm">
-                    {collection.totalLinks} total
-                  </Badge>
-                )}
-              </div>
-              <ReadOnlyLinkGrid links={links} isLoading={isLinksLoading} />
-            </div>
+            <ReadOnlyLinkGrid links={links} isLoading={isLinksLoading} />
           </div>
         </div>
       </div>
+
+      <Footer />
 
       {/* Authentication Dialog */}
       <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>

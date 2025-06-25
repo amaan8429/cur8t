@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 
 interface EmptyStatesProps {
-  view: "grid" | "table";
+  view: "grid" | "table" | "list";
 }
 
 const EmptyStates = ({ view }: EmptyStatesProps) => {
@@ -45,6 +45,14 @@ const EmptyStates = ({ view }: EmptyStatesProps) => {
           </TableBody>
         </Table>
       </div>
+    );
+  }
+
+  if (view === "list") {
+    return (
+      <Card className="h-48 flex items-center justify-center">
+        <EmptyContent />
+      </Card>
     );
   }
 

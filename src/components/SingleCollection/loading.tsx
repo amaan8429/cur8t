@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table";
 
 interface LoadingStatesProps {
-  view: "grid" | "table";
+  view: "grid" | "table" | "list";
 }
 
 const LoadingStates = ({ view }: LoadingStatesProps) => {
@@ -55,6 +55,29 @@ const LoadingStates = ({ view }: LoadingStatesProps) => {
             ))}
           </TableBody>
         </Table>
+      </div>
+    );
+  }
+
+  if (view === "list") {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <Card key={i} className="animate-pulse">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4 flex-1">
+                  <div className="h-10 w-10 rounded-full bg-muted" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-48 bg-muted rounded" />
+                    <div className="h-3 w-64 bg-muted rounded" />
+                  </div>
+                </div>
+                <div className="h-8 w-8 bg-muted rounded" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     );
   }
