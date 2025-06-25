@@ -92,6 +92,17 @@ export const SavedCollectionsTable = pgTable("saved_collections", {
   savedAt: timestamp("saved_at").notNull().defaultNow(),
 });
 
+export const CollectionLikesTable = pgTable("collection_likes", {
+  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => UsersTable.id, { onDelete: "cascade" }),
+  collectionId: uuid("collection_id")
+    .notNull()
+    .references(() => CollectionsTable.id, { onDelete: "cascade" }),
+  likedAt: timestamp("liked_at").notNull().defaultNow(),
+});
+
 // Infer types for users
 export type InsertUser = typeof UsersTable.$inferInsert;
 export type SelectUser = typeof UsersTable.$inferSelect;
@@ -107,3 +118,7 @@ export type SelectLink = typeof LinksTable.$inferSelect;
 // Infer types for bookmarked collections
 export type InsertSavedCollection = typeof SavedCollectionsTable.$inferInsert;
 export type SelectSavedCollection = typeof SavedCollectionsTable.$inferSelect;
+
+// Infer types for collection likes
+export type InsertCollectionLike = typeof CollectionLikesTable.$inferInsert;
+export type SelectCollectionLike = typeof CollectionLikesTable.$inferSelect;
