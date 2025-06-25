@@ -6,6 +6,7 @@ import ProfileSettings from "./profile-settings";
 import GeneralSettings from "./general-settings";
 import LoadingSettings from "./loading";
 import APIKeySettings from "./api-key-settings";
+import UsernameSettings from "./username-settings";
 
 const SettingsPage = () => {
   const { user, isLoaded } = useUser();
@@ -21,6 +22,7 @@ const SettingsPage = () => {
   return (
     <div className="mx-auto p-6 space-y-8">
       <ProfileSettings user={user} />
+      <UsernameSettings />
       <GeneralSettings />
       <APIKeySettings />
     </div>

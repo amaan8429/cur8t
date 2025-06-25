@@ -12,6 +12,7 @@ export const UsersTable = pgTable("users", {
   id: text("id").primaryKey().notNull(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
+  username: text("username").unique(),
   githubConnected: boolean("github_connected").notNull().default(false),
   APIKeysCount: integer("api_keys_count").notNull().default(0),
   totalCollections: integer("total_collections").notNull().default(0),

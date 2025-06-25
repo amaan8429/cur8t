@@ -1,4 +1,5 @@
 import { getSingleCollectionNameAction } from "@/actions/collection/getSingleCollectionName";
+import { getUserInfoAction } from "@/actions/user/getUserInfo";
 import { AppSidebar } from "@/components/Dashboard/Sidebar/app-sidebar";
 import { ContentArea } from "@/components/Dashboard/ContentArea/content-area";
 import { NavActions } from "@/components/Dashboard/NavActions/nav-actions";
@@ -15,12 +16,20 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { ClientStateManager } from "@/components/Dashboard/Sidebar/client-state-manager";
+import { redirect } from "next/navigation";
 
 export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  // Check if user has a username set
+  const userInfo = await getUserInfoAction();
+
+  if (userInfo && !userInfo.username) {
+    redirect("/onboarding/username");
+  }
+
   const searchParamsData = await searchParams;
   const activeItem = searchParamsData.item as string;
   const activeCollectionId = searchParamsData.collectionId as string;
