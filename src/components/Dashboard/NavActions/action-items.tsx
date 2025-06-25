@@ -51,6 +51,7 @@ const ActionItems: React.FC = () => {
 
   // Form states for different dialogs
   const [pageTitle, setPageTitle] = React.useState("");
+  const [pageDescription, setPageDescription] = React.useState("");
   const [visibilityOption, setVisibilityOption] = React.useState("public");
   const [emails, setEmails] = React.useState<string[]>([]);
   const [newEmail, setNewEmail] = React.useState("");
@@ -73,6 +74,12 @@ const ActionItems: React.FC = () => {
     setSelectedAction(item);
 
     // Initialize states based on action type
+    if (item.type === "customize") {
+      const active = getActiveCollection();
+      setPageTitle(active?.title || "");
+      setPageDescription(active?.description || "");
+    }
+
     if (item.type === "visibility") {
       const active = getActiveCollection();
       setVisibilityOption(active?.visibility || "public");
@@ -109,6 +116,8 @@ const ActionItems: React.FC = () => {
           <CustomizeAction
             pageTitle={pageTitle}
             setPageTitle={setPageTitle}
+            pageDescription={pageDescription}
+            setPageDescription={setPageDescription}
             onClose={handleClose}
           />
         );
@@ -218,7 +227,7 @@ const ActionItems: React.FC = () => {
               </DialogTitle>
               <DialogDescription>
                 {selectedAction.type === "customize" &&
-                  "Customize the appearance and settings of your page."}
+                  "Customize the title and description of your collection."}
                 {selectedAction.type === "visibility" &&
                   "Choose who can see your page."}
                 {selectedAction.type === "copy-link" &&

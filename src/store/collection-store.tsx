@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { getCollectionsAction } from "@/actions/collection/getCollections";
 import { deleteCollectionAction } from "@/actions/collection/deleteCollection";
 import { ChangeCollectionAction } from "@/actions/collection/changeCollectionName";
+import { ChangeCollectionDescriptionAction } from "@/actions/collection/changeCollectionDescription";
 import { Collection } from "@/types/types";
 import { ChangeCollectionVisibilityAction } from "@/actions/collection/changeCollectionVisi";
 
@@ -141,16 +142,23 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
   // Update collection description
   updateCollectionDescription: async (collectionId, newDescription) => {
     try {
-      set((state) => ({
-        collections:
-          state.collections?.map((collection) =>
-            collection.id === collectionId
-              ? { ...collection, description: newDescription }
-              : collection
-          ) || [],
-      }));
+      const response = await ChangeCollectionDescriptionAction(
+        collectionId,
+        newDescription
+      );
+      if (response.success) {
+        set((state) => ({
+          collections:
+            state.collections?.map((collection) =>
+              collection.id === collectionId
+                ? { ...collection, description: newDescription }
+                : collection
+            ) || [],
+        }));
+      }
     } catch (error) {
       console.error("Failed to update collection description:", error);
+      throw error;
     }
   },
 }));
