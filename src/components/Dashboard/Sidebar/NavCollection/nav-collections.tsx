@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { MoreHorizontal, Folder, FolderOpen, Pin } from "lucide-react";
+import { MoreHorizontal, Folder, FolderOpen, Pin, Plus } from "lucide-react";
 
 import {
   SidebarGroup,
@@ -13,6 +13,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { CreateCollectionComponent } from "../../TopSection/create-collection";
 
 import {
   DropdownMenu,
@@ -36,6 +45,7 @@ export function NavCollection() {
   const { isMobile } = useSidebar();
   const { collections, fetchCollections } = useCollectionStore();
   const { activeCollectionId } = useActiveState();
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
   const { pinnedCollectionIds, fetchPinnedCollections } =
@@ -87,7 +97,33 @@ export function NavCollection() {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Collections</SidebarGroupLabel>
+      <div className="flex items-center justify-between">
+        <SidebarGroupLabel>Collections</SidebarGroupLabel>
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 opacity-60 hover:opacity-100 transition-opacity"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Create New Collection</DialogTitle>
+            </DialogHeader>
+            <CreateCollectionComponent
+              onSuccess={(collectionId) => {
+                setIsCreateDialogOpen(false);
+                // Navigate to the new collection
+                window.location.href = `?collectionId=${encodeURIComponent(collectionId)}`;
+              }}
+              isDialog={true}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
       <SidebarMenu>
         {sortedCollections.map((collection) => {
           const isActive = collection.id === activeCollectionId;

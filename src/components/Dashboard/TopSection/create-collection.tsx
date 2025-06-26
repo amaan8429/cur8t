@@ -2,20 +2,31 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Globe2, Lock, Users, PlusCircle } from "lucide-react";
+import { Globe2, Lock, Users, PlusCircle, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
 import { useCollectionStore } from "@/store/collection-store";
 import { useToast } from "@/hooks/use-toast";
 import { createCollectionAction } from "@/actions/collection/createCollection";
 
-export function CreateCollectionComponent() {
+interface CreateCollectionComponentProps {
+  onSuccess?: (collectionId: string) => void;
+  isDialog?: boolean;
+}
+
+export function CreateCollectionComponent({
+  onSuccess,
+  isDialog = false,
+}: CreateCollectionComponentProps = {}) {
   const [collectionName, setCollectionName] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [visibility, setVisibility] = React.useState("private");
   const [isLoading, setIsLoading] = React.useState(false);
+  const [loadingProgress, setLoadingProgress] = React.useState(0);
+  const [loadingMessage, setLoadingMessage] = React.useState("");
   const router = useRouter();
   const { createACollection } = useCollectionStore();
   const { toast } = useToast();
@@ -42,16 +53,52 @@ export function CreateCollectionComponent() {
 
     try {
       setIsLoading(true);
+      setLoadingProgress(0);
+      setLoadingMessage("Validating collection details...");
+
+      // Simulate progress steps for better UX
+      setLoadingProgress(20);
+
+      setLoadingMessage("Creating collection...");
+      setLoadingProgress(40);
+
       const collectionCreated = await createCollectionAction(
         collectionName,
         description,
         visibility
       );
+
+      setLoadingProgress(70);
+      setLoadingMessage("Setting up collection...");
+
       if (collectionCreated.success) {
-        createACollection(collectionCreated.data);
-        router.push(
-          `?collectionId=${encodeURIComponent(collectionCreated.data.id)}`
-        );
+        setLoadingProgress(90);
+        setLoadingMessage("Finalizing...");
+
+        await createACollection(collectionCreated.data);
+
+        setLoadingProgress(100);
+        setLoadingMessage("Collection created successfully!");
+
+        // Reset form
+        setCollectionName("");
+        setDescription("");
+        setVisibility("private");
+
+        toast({
+          description: "Collection created successfully!",
+        });
+
+        // Small delay to show completion
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        if (onSuccess) {
+          onSuccess(collectionCreated.data.id);
+        } else {
+          router.push(
+            `?collectionId=${encodeURIComponent(collectionCreated.data.id)}`
+          );
+        }
       } else {
         toast({
           description: "Failed to create collection. Please try again.",
@@ -65,6 +112,8 @@ export function CreateCollectionComponent() {
       });
     } finally {
       setIsLoading(false);
+      setLoadingProgress(0);
+      setLoadingMessage("");
     }
   };
 
@@ -90,22 +139,48 @@ export function CreateCollectionComponent() {
   ];
 
   return (
-    <div className="flex items-center justify-center p-4">
-      <div className="w-full max-w-xl space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold">Create New Collection</h1>
-          <p className="text-muted-foreground">
-            Start organizing your content in one place
-          </p>
-        </div>
+    <div
+      className={
+        isDialog ? "space-y-6" : "flex items-center justify-center p-4"
+      }
+    >
+      <div className={isDialog ? "w-full" : "w-full max-w-xl space-y-8"}>
+        {!isDialog && (
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold">Create New Collection</h1>
+            <p className="text-muted-foreground">
+              Start organizing your content in one place
+            </p>
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        {isLoading && (
+          <div className="space-y-4 p-4 bg-muted/50 rounded-lg border">
+            <div className="flex items-center space-x-3">
+              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              <span className="text-sm font-medium">{loadingMessage}</span>
+            </div>
+            <div className="space-y-2">
+              <Progress value={loadingProgress} className="h-2" />
+              <p className="text-xs text-muted-foreground text-center">
+                {loadingProgress}% complete
+              </p>
+            </div>
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit}
+          className={isDialog ? "space-y-6" : "space-y-8"}
+        >
           <div className="space-y-4">
             <div className="relative">
               <Input
                 value={collectionName}
                 onChange={(e) => setCollectionName(e.target.value)}
-                className="h-16 text-lg px-6 rounded-xl"
+                className={
+                  isDialog ? "h-12 px-4" : "h-16 text-lg px-6 rounded-xl"
+                }
                 placeholder="Collection name"
                 disabled={isLoading}
               />
@@ -118,7 +193,11 @@ export function CreateCollectionComponent() {
               <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="min-h-[100px] text-lg px-6 py-4 rounded-xl resize-none"
+                className={
+                  isDialog
+                    ? "min-h-[80px] px-4 py-3 resize-none"
+                    : "min-h-[100px] text-lg px-6 py-4 rounded-xl resize-none"
+                }
                 placeholder="Collection description (optional)"
                 disabled={isLoading}
                 maxLength={200}
@@ -133,13 +212,19 @@ export function CreateCollectionComponent() {
             <label className="block text-sm font-medium mb-4">
               Choose visibility
             </label>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div
+              className={
+                isDialog
+                  ? "grid gap-3 grid-cols-1 sm:grid-cols-3"
+                  : "grid gap-4 md:grid-cols-3"
+              }
+            >
               {visibilityOptions.map((option) => (
                 <button
                   key={option.id}
                   type="button"
                   onClick={() => setVisibility(option.id)}
-                  className={`p-4 rounded-xl border-2 text-left transition-all hover:border-primary ${
+                  className={`${isDialog ? "p-3" : "p-4"} rounded-xl border-2 text-left transition-all hover:border-primary ${
                     visibility === option.id
                       ? "border-primary bg-primary/5"
                       : "border-border hover:bg-accent"
@@ -158,10 +243,16 @@ export function CreateCollectionComponent() {
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full h-16 text-lg rounded-xl"
+            className={
+              isDialog ? "w-full h-12" : "w-full h-16 text-lg rounded-xl"
+            }
           >
-            <PlusCircle className="mr-2 h-5 w-5" />
-            {isLoading ? "Creating..." : "Create Collection"}
+            {isLoading ? (
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            ) : (
+              <PlusCircle className="mr-2 h-5 w-5" />
+            )}
+            {isLoading ? loadingMessage || "Creating..." : "Create Collection"}
           </Button>
         </form>
       </div>

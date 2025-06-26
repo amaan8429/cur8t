@@ -47,11 +47,6 @@ const data = {
       isActive: true,
     },
     {
-      title: "New",
-      url: "#",
-      icon: PlusCircle,
-    },
-    {
       title: "Saved",
       url: "#",
       icon: Save,
