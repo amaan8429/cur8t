@@ -1,6 +1,7 @@
 import React from "react";
-import { Link2 } from "lucide-react";
+import { Link2, Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,58 +10,33 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useLinkStore } from "@/store/link-store";
 
 interface EmptyStatesProps {
   view: "grid" | "table" | "list";
 }
 
 const EmptyStates = ({ view }: EmptyStatesProps) => {
+  const { setIsOpen } = useLinkStore();
+
   const EmptyContent = () => (
     <div className="text-center p-8">
       <Link2 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
       <h3 className="text-lg font-medium">No links found</h3>
-      <p className="text-sm text-muted-foreground mt-2">
+      <p className="text-sm text-muted-foreground mt-2 mb-4">
         Add your first link to get started
       </p>
+      <Button onClick={() => setIsOpen(true)} className="mt-2">
+        <Plus className="h-4 w-4 mr-2" />
+        Add Your First Link
+      </Button>
     </div>
   );
 
-  if (view === "table") {
-    return (
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[300px]">Title</TableHead>
-              <TableHead>URL</TableHead>
-              <TableHead className="w-[150px] text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={3} className="h-48">
-                <EmptyContent />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </div>
-    );
-  }
-
-  if (view === "list") {
-    return (
-      <Card className="h-48 flex items-center justify-center">
-        <EmptyContent />
-      </Card>
-    );
-  }
-
+  // Return the same centered empty content for all views
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <Card className="col-span-full h-48 flex items-center justify-center">
-        <EmptyContent />
-      </Card>
+    <div className="flex items-center justify-center min-h-[400px] w-full">
+      <EmptyContent />
     </div>
   );
 };
