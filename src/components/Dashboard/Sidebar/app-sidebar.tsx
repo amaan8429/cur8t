@@ -47,18 +47,12 @@ const data = {
       isActive: true,
     },
     {
-      title: "New Collection",
+      title: "New",
       url: "#",
       icon: PlusCircle,
     },
-
     {
-      title: "Explore Collections",
-      url: "#",
-      icon: Wallpaper,
-    },
-    {
-      title: "Saved Collections",
+      title: "Saved",
       url: "#",
       icon: Save,
     },

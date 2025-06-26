@@ -23,11 +23,27 @@ const PinCollection = ({
 }: PinCollectionProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { optimisticAddPin, optimisticRemovePin, revertOptimisticUpdate } =
-    usePinnedCollectionsStore();
+  const {
+    optimisticAddPin,
+    optimisticRemovePin,
+    revertOptimisticUpdate,
+    pinnedCollectionIds,
+  } = usePinnedCollectionsStore();
 
-  const handlePinToggle = async (e: Event) => {
-    e.preventDefault();
+  // Check if pin limit is reached and current collection is not pinned
+  const isPinLimitReached = pinnedCollectionIds.length >= 3 && !isPinned;
+
+  const handlePinToggle = async () => {
+    // Check pin limit before proceeding
+    if (isPinLimitReached) {
+      toast({
+        title: "Pin limit reached",
+        description:
+          "You can only pin up to 3 collections. Unpin a collection first.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     // Optimistic update first - update UI immediately
     if (isPinned) {
@@ -90,15 +106,30 @@ const PinCollection = ({
   };
 
   return (
-    <DropdownMenuItem onSelect={handlePinToggle} disabled={isLoading}>
+    <DropdownMenuItem
+      onSelect={handlePinToggle}
+      disabled={isLoading || isPinLimitReached}
+      title={
+        isPinLimitReached
+          ? "Pin limit reached (3/3). Unpin a collection first."
+          : undefined
+      }
+    >
       {isLoading ? (
         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
       ) : isPinned ? (
         <PinOff className="h-4 w-4 mr-2" />
       ) : (
-        <Pin className="h-4 w-4 mr-2" />
+        <Pin
+          className={`h-4 w-4 mr-2 ${isPinLimitReached ? "opacity-50" : ""}`}
+        />
       )}
-      {isPinned ? "Unpin Collection" : "Pin Collection"}
+      <span className={isPinLimitReached ? "opacity-50" : ""}>
+        {isPinned ? "Unpin Collection" : "Pin Collection"}
+      </span>
+      {isPinLimitReached && (
+        <span className="ml-auto text-xs text-muted-foreground">(3/3)</span>
+      )}
     </DropdownMenuItem>
   );
 };
