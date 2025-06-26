@@ -7,6 +7,16 @@ import { FrontendLink, FrontendLinkSchema } from "@/types/types";
 import { LinkGrid } from "./link-grid";
 import LinkTable from "./link-table";
 import ManageLinksHeader from "./link-header";
+import { PlusCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { AddLinkForm } from "./add-link-form";
 
 export function ManageCollectionLinks({
   collectionId,
@@ -110,9 +120,6 @@ export function ManageCollectionLinks({
         setView={setView}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        onLinkAdded={handleLinkAdded}
       />
 
       {view === "grid" ? (
@@ -132,6 +139,35 @@ export function ManageCollectionLinks({
           links={filteredLinks} // Pass filtered links
         />
       )}
+
+      {/* Floating Action Button */}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          <div className="fixed bottom-8 right-8 z-50">
+            {/* Pulsing Ring Animation */}
+            <div className="absolute inset-0 h-16 w-16 rounded-full bg-primary/30 animate-ping"></div>
+            <div className="absolute inset-0 h-16 w-16 rounded-full bg-primary/20 animate-pulse"></div>
+
+            {/* Main Button */}
+            <Button
+              size="icon"
+              className="relative h-16 w-16 rounded-full bg-gradient-to-br from-primary via-primary to-primary/80 hover:from-primary/90 hover:via-primary hover:to-primary shadow-2xl hover:shadow-primary/50 transition-all duration-500 hover:scale-125 hover:rotate-90 group border-2 border-white/20 backdrop-blur-sm"
+            >
+              {/* Sparkle Effect */}
+              <div className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-bounce"></div>
+              <div className="absolute -bottom-1 -left-1 h-2 w-2 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-bounce delay-150"></div>
+
+              <PlusCircle className="h-7 w-7 text-white transition-all duration-500 group-hover:scale-110 drop-shadow-lg" />
+            </Button>
+          </div>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Link</DialogTitle>
+          </DialogHeader>
+          <AddLinkForm onLinkAdded={handleLinkAdded} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

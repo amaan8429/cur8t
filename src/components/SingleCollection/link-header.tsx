@@ -1,25 +1,14 @@
 import React from "react";
-import { Search } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { PlusCircle, LayoutGrid, Table } from "lucide-react";
+import { LayoutGrid, Table } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { AddLinkForm } from "./add-link-form";
 
 interface HeaderProps {
   view: "grid" | "table";
   setView: (view: "grid" | "table") => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  onLinkAdded: (link: { id: string; title: string; url: string }) => void;
 }
 
 const ManageLinksHeader = ({
@@ -27,9 +16,6 @@ const ManageLinksHeader = ({
   setView,
   searchQuery,
   setSearchQuery,
-  isOpen,
-  setIsOpen,
-  onLinkAdded,
 }: HeaderProps) => {
   return (
     <div className="space-y-4">
@@ -65,21 +51,11 @@ const ManageLinksHeader = ({
           </div>
         </div>
 
-        {/* Add New Link Button */}
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button className="w-full sm:w-auto">
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Add New Link
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Link</DialogTitle>
-            </DialogHeader>
-            <AddLinkForm onLinkAdded={onLinkAdded} />
-          </DialogContent>
-        </Dialog>
+        {/* Filters Button */}
+        <Button variant="outline" className="w-full sm:w-auto">
+          <Filter className="h-4 w-4 mr-2" />
+          Filters
+        </Button>
       </div>
     </div>
   );
