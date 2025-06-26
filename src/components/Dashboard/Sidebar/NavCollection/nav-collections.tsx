@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { MoreHorizontal, Folder, FolderOpen, Pin, Plus } from "lucide-react";
 
 import {
@@ -46,21 +47,27 @@ export function NavCollection() {
   const { collections, fetchCollections } = useCollectionStore();
   const { activeCollectionId } = useActiveState();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(true);
   const { pinnedCollectionIds, fetchPinnedCollections } =
     usePinnedCollectionsStore();
 
-  // Fetch collections on mount with loading state
+  // Fetch collections only once on mount
   useEffect(() => {
     const loadData = async () => {
-      setIsLoading(true);
-      await fetchCollections();
-      await fetchPinnedCollections();
-      setIsLoading(false);
+      if (collections === null) {
+        // Only fetch if we don't have data yet
+        setIsLoading(true);
+        await fetchCollections();
+        await fetchPinnedCollections();
+        setIsLoading(false);
+      } else {
+        setIsLoading(false); // We already have data, just stop loading
+      }
     };
     loadData();
-  }, [fetchCollections, fetchPinnedCollections]);
+  }, []); // Empty dependency array - only run once on mount
 
   const handlePinStatusChange = () => {
     // No need to do anything - optimistic updates handle this
@@ -116,8 +123,10 @@ export function NavCollection() {
             <CreateCollectionComponent
               onSuccess={(collectionId) => {
                 setIsCreateDialogOpen(false);
-                // Navigate to the new collection
-                window.location.href = `?collectionId=${encodeURIComponent(collectionId)}`;
+                // Navigate to the new collection using Next.js router (no page reload)
+                router.push(
+                  `?collectionId=${encodeURIComponent(collectionId)}`
+                );
               }}
               isDialog={true}
             />

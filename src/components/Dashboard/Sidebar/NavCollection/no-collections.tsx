@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from "next/navigation";
 import { Folder, Plus } from "lucide-react";
 import {
   SidebarGroup,
@@ -19,6 +20,7 @@ import { CreateCollectionComponent } from "../../TopSection/create-collection";
 
 const NoCollections = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false);
+  const router = useRouter();
 
   return (
     <SidebarGroup>
@@ -41,8 +43,10 @@ const NoCollections = () => {
             <CreateCollectionComponent
               onSuccess={(collectionId) => {
                 setIsCreateDialogOpen(false);
-                // Navigate to the new collection
-                window.location.href = `?collectionId=${encodeURIComponent(collectionId)}`;
+                // Navigate to the new collection using Next.js router (no page reload)
+                router.push(
+                  `?collectionId=${encodeURIComponent(collectionId)}`
+                );
               }}
               isDialog={true}
             />
