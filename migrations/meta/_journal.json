@@ -15,6 +15,13 @@
       "when": 1750846176896,
       "tag": "0001_lyrical_microbe",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1750943229894,
+      "tag": "0002_add_top_collections_to_users",
+      "breakpoints": true
     }
   ]
 }
