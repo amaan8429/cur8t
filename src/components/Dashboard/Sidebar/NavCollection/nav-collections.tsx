@@ -103,7 +103,7 @@ export function NavCollection() {
                 asChild
                 isActive={isActive}
                 tooltip={tooltipContent}
-                className="group hover:bg-accent/50 transition-colors"
+                className="group hover:bg-sidebar-accent/50 transition-colors"
               >
                 <Link
                   href={`?collectionId=${encodeURIComponent(collection.id)}`}
@@ -117,7 +117,7 @@ export function NavCollection() {
                   )}
                   <span className="truncate">{collection.title}</span>
                   {isPinned && (
-                    <Pin className="h-3 w-3 ml-auto opacity-60 text-blue-500" />
+                    <Pin className="h-3 w-3 ml-auto opacity-60 text-sidebar-primary" />
                   )}
                 </Link>
               </SidebarMenuButton>

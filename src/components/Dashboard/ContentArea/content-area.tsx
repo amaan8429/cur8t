@@ -20,9 +20,9 @@ export function ContentArea() {
   return (
     <div className="p-6">
       {activeItem === "Home" && <Home />}
-      {activeItem === "New Collection" && <CreateCollectionComponent />}
+      {activeItem === "New" && <CreateCollectionComponent />}
       {activeItem === "Explore Collections" && <ExploreCollections />}
-      {activeItem === "Saved Collections" && <SavedCollections />}
+      {activeItem === "Saved" && <SavedCollections />}
 
       {activeItem === "Ask AI" && (
         <div>
