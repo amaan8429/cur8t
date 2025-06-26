@@ -42,28 +42,42 @@ export async function fetchSavedCollections({
     }
   };
 
-  // Get total count
+  // Get total count of saved collections for this user
   const totalCountResult = await db
     .select({ count: sql<number>`count(*)` })
-    .from(SavedCollectionsTable);
+    .from(SavedCollectionsTable)
+    .where(eq(SavedCollectionsTable.userId, userId));
 
   const totalCount = totalCountResult[0].count;
 
-  // Fetch paginated data
+  // Fetch paginated saved collections with their collection data
   const savedCollections = await db
-    .select()
+    .select({
+      id: CollectionsTable.id,
+      title: CollectionsTable.title,
+      author: CollectionsTable.author,
+      likes: CollectionsTable.likes,
+      description: CollectionsTable.description,
+      userId: CollectionsTable.userId,
+      url: CollectionsTable.url,
+      createdAt: CollectionsTable.createdAt,
+      updatedAt: CollectionsTable.updatedAt,
+      visibility: CollectionsTable.visibility,
+      sharedEmails: CollectionsTable.sharedEmails,
+      totalLinks: CollectionsTable.totalLinks,
+    })
     .from(SavedCollectionsTable)
-    .orderBy(desc(getSortColumn()))
-    .limit(limit)
-    .offset(offset)
-    .leftJoin(
+    .innerJoin(
       CollectionsTable,
       eq(SavedCollectionsTable.collectionId, CollectionsTable.id)
     )
-    .where(eq(SavedCollectionsTable.userId, userId));
+    .where(eq(SavedCollectionsTable.userId, userId))
+    .orderBy(desc(getSortColumn()))
+    .limit(limit)
+    .offset(offset);
 
   return {
-    data: (savedCollections[0]?.collections ?? []) as Collection[],
+    data: savedCollections as Collection[],
     pagination: {
       total: totalCount,
       totalPages: Math.ceil(totalCount / limit),

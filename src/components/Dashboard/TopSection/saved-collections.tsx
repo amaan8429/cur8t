@@ -10,6 +10,10 @@ import {
   Star,
   ChevronLeft,
   ChevronRight,
+  Link2,
+  Heart,
+  Calendar,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,27 +27,16 @@ import {
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// import { Collection } from "@/types/types";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Collection } from "@/types/types";
 import { fetchSavedCollections } from "@/actions/collection/fetchSavedCollections";
-
-export interface Collection {
-  id: string;
-  title: string;
-  author: string;
-  likes: number;
-  description: string;
-  userId: string;
-  url: string;
-  createdAt: Date;
-  updatedAt: Date;
-  visibility: string;
-  sharedEmails: string[];
-  totalLinks: number;
-}
+import Link from "next/link";
 
 const SavedCollections = () => {
   const [isGridView, setIsGridView] = useState(true);
@@ -70,23 +63,7 @@ const SavedCollections = () => {
         console.error("Failed to fetch collections:", response.error);
         return;
       }
-      const mappedCollections: Collection[] =
-        response.data?.map((item) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          author: item.author,
-          likes: Number(item.likes), // Ensure likes is a number
-          totalLinks: item.totalLinks,
-          userId: item.userId,
-          url: item.url,
-          createdAt: new Date(item.createdAt),
-          updatedAt: new Date(item.updatedAt),
-          visibility: item.visibility,
-          sharedEmails: item.sharedEmails,
-        })) || [];
-
-      setCollections(mappedCollections);
+      setCollections(response.data || []);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
       console.error("Failed to fetch collections:", error);
@@ -118,55 +95,131 @@ const SavedCollections = () => {
   };
 
   const CollectionCard = ({ collection }: { collection: Collection }) => (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold line-clamp-1">
-          {collection.title}
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">by {collection.author}</p>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground line-clamp-2 mb-4">
-          {collection.description}
-        </p>
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Star className="h-4 w-4" />
-            {collection.likes}
-          </span>
-          <span>{collection.totalLinks} items</span>
-        </div>
-      </CardContent>
-      <CardFooter className="text-sm text-muted-foreground">
-        Updated {formatDate(collection.updatedAt.toString())}
-      </CardFooter>
-    </Card>
+    <Link
+      href={`/collection/${collection.id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Card className="group hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer border hover:border-primary/20 h-full">
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between">
+            <div className="flex-1 space-y-2">
+              <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
+                {collection.title}
+              </CardTitle>
+              <CardDescription className="line-clamp-3 text-muted-foreground">
+                {collection.description || "No description provided"}
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+
+        <CardContent className="pt-0">
+          <div className="space-y-3">
+            <div className="flex items-center gap-4 text-sm">
+              <div className="flex items-center gap-1.5 text-muted-foreground">
+                <Link2 className="h-3.5 w-3.5" />
+                <span>{collection.totalLinks}</span>
+              </div>
+
+              {collection.likes > 0 && (
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Heart className="h-3.5 w-3.5" />
+                  <span>{collection.likes}</span>
+                </div>
+              )}
+
+              <Badge variant="outline" className="text-xs">
+                Saved
+              </Badge>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Calendar className="h-3 w-3" />
+                <span>
+                  Updated {formatDate(collection.updatedAt.toString())}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Avatar className="h-5 w-5">
+                  <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                    {collection.author.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-xs text-muted-foreground truncate max-w-[100px]">
+                  {collection.author}
+                </span>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 
   const CollectionListItem = ({ collection }: { collection: Collection }) => (
-    <div className="border-b py-4 hover:bg-accent/50 px-4 -mx-4 transition-colors">
-      <div className="flex justify-between items-start mb-2">
-        <div>
-          <h3 className="font-semibold">{collection.title}</h3>
-          <p className="text-sm text-muted-foreground">
-            by {collection.author}
-          </p>
-        </div>
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <Star className="h-4 w-4" />
-            {collection.likes}
-          </span>
-          <span>{collection.totalLinks} items</span>
-        </div>
-      </div>
-      <p className="text-muted-foreground line-clamp-1 text-sm">
-        {collection.description}
-      </p>
-      <p className="text-sm text-muted-foreground mt-2">
-        Updated {formatDate(collection.updatedAt.toString())}
-      </p>
-    </div>
+    <Link
+      href={`/collection/${collection.id}`}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Card className="group hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer border hover:border-primary/20">
+        <CardHeader className="pb-3">
+          <div className="flex items-start justify-between">
+            <div className="flex-1 space-y-2">
+              <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
+                {collection.title}
+              </CardTitle>
+              <CardDescription className="line-clamp-3 text-muted-foreground">
+                {collection.description || "No description provided"}
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+
+        <CardContent className="pt-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4 text-sm">
+              <div className="flex items-center gap-1.5 text-muted-foreground">
+                <Link2 className="h-3.5 w-3.5" />
+                <span>{collection.totalLinks}</span>
+              </div>
+
+              {collection.likes > 0 && (
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Heart className="h-3.5 w-3.5" />
+                  <span>{collection.likes}</span>
+                </div>
+              )}
+
+              <Badge variant="outline" className="text-xs">
+                Saved
+              </Badge>
+
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Calendar className="h-3 w-3" />
+                <span>
+                  Updated {formatDate(collection.updatedAt.toString())}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Avatar className="h-5 w-5">
+                <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                  {collection.author.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-sm text-muted-foreground">
+                {collection.author}
+              </span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 
   const Pagination = () => (
@@ -196,9 +249,10 @@ const SavedCollections = () => {
   return (
     <div className="container mx-auto py-4 px-4">
       <div className="mb-8">
-        <h3 className="text-3xl font-bold">
-          Discover public collections shared by the community
-        </h3>
+        <h3 className="text-3xl font-bold">Your Saved Collections</h3>
+        <p className="text-muted-foreground mt-2">
+          Collections you&apos;ve saved from the community
+        </p>
       </div>
 
       {/* Search and Filters */}
@@ -206,7 +260,7 @@ const SavedCollections = () => {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Search collections..."
+            placeholder="Search saved collections..."
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -264,39 +318,54 @@ const SavedCollections = () => {
       {/* Loading State */}
       {isLoading && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">Loading collections...</p>
+          <p className="text-muted-foreground">Loading saved collections...</p>
         </div>
       )}
 
       {/* Collections Grid/List */}
       {!isLoading && (
         <>
-          {isGridView ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCollections.map((collection: Collection) => (
-                <CollectionCard key={collection.id} collection={collection} />
-              ))}
-            </div>
+          {filteredCollections.length > 0 ? (
+            <>
+              {isGridView ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredCollections.map((collection: Collection) => (
+                    <CollectionCard
+                      key={collection.id}
+                      collection={collection}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredCollections.map((collection) => (
+                    <CollectionListItem
+                      key={collection.id}
+                      collection={collection}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Pagination */}
+              <Pagination />
+            </>
           ) : (
-            <div className="space-y-2">
-              {filteredCollections.map((collection) => (
-                <CollectionListItem
-                  key={collection.id}
-                  collection={collection}
-                />
-              ))}
-            </div>
+            <Card className="border-dashed">
+              <CardContent className="text-center py-16">
+                <div className="p-4 rounded-full bg-muted/50 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                  <Sparkles className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  No Saved Collections Found
+                </h3>
+                <p className="text-muted-foreground max-w-md mx-auto mb-4">
+                  You haven&apos;t saved any collections yet. Browse the explore
+                  page to discover and save interesting collections.
+                </p>
+              </CardContent>
+            </Card>
           )}
-
-          {/* Empty State */}
-          {filteredCollections.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">No collections found</p>
-            </div>
-          )}
-
-          {/* Pagination */}
-          {filteredCollections.length > 0 && <Pagination />}
         </>
       )}
     </div>
