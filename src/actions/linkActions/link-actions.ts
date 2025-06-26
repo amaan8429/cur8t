@@ -3,12 +3,13 @@
 import { db } from "@/db";
 import { totalLinksCount } from "@/lib/totalLinksCount";
 import { CollectionsTable, LinksTable } from "@/schema";
+import { extractTitleFromUrl, generateFallbackTitle } from "@/lib/extractTitle";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 interface AddLinkData {
-  title: string;
+  title?: string;
   url: string;
 }
 
@@ -23,14 +24,25 @@ export async function addLinkAction(data: AddLinkData, collectionId: string) {
     return { error: "Collection Id is required" };
   }
 
-  if (!data.title || !data.url) {
-    return { error: "Title and URL are required" };
+  if (!data.url) {
+    return { error: "URL is required" };
+  }
+
+  // Extract title if not provided
+  let finalTitle: string = data.title?.trim() || "";
+  if (!finalTitle) {
+    try {
+      finalTitle = await extractTitleFromUrl(data.url);
+    } catch (error) {
+      console.warn("Failed to extract title, using fallback:", error);
+      finalTitle = generateFallbackTitle(data.url);
+    }
   }
 
   const newLink = await db
     .insert(LinksTable)
     .values({
-      title: data.title,
+      title: finalTitle,
       url: data.url,
       linkCollectionId: collectionId,
       userId,

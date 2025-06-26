@@ -28,13 +28,10 @@ const CollectionSchema = z.object({
 export const FrontendLinkSchema = z.object({
   title: z
     .string()
-    .trim()
-    .min(1, {
-      message: "Title must be at least 1 character long",
-    })
     .max(100, {
-      message: "Title must be at most 50 characters long",
-    }),
+      message: "Title must be at most 100 characters long",
+    })
+    .optional(),
   url: z.string().trim().url(),
 });
 

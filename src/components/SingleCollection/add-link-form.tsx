@@ -31,9 +31,11 @@ export function AddLinkForm({ onLinkAdded }: AddLinkFormProps) {
   });
 
   function onSubmit(values: FrontendLink) {
+    // Pass title as-is (empty string if not provided) - backend will handle auto-generation
     onLinkAdded({
       id: Math.random().toString(36).slice(2, 9),
-      ...values,
+      title: values.title?.trim() || "",
+      url: values.url,
     });
     form.reset();
   }
@@ -46,9 +48,12 @@ export function AddLinkForm({ onLinkAdded }: AddLinkFormProps) {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>Title (optional)</FormLabel>
               <FormControl>
-                <Input placeholder="Enter link title" {...field} />
+                <Input
+                  placeholder="Leave empty to auto-generate from URL"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -69,11 +74,7 @@ export function AddLinkForm({ onLinkAdded }: AddLinkFormProps) {
         />
         <Button
           type="submit"
-          disabled={
-            !form.formState.isValid ||
-            form.formState.isSubmitting ||
-            form.formState.isSubmitted
-          }
+          disabled={form.formState.isSubmitting || !form.watch("url")?.trim()}
         >
           Add Link
         </Button>

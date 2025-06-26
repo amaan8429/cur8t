@@ -14,10 +14,10 @@ interface LinkStore {
   setIsOpen: (isOpen: boolean) => void;
   refreshLinks: (collectionId: string) => Promise<void>;
   addLink: (
-    newLink: Omit<
-      Link,
-      "id" | "userId" | "createdAt" | "updatedAt" | "linkCollectionId"
-    >,
+    newLink: {
+      title?: string;
+      url: string;
+    },
     collectionId: string
   ) => Promise<void>;
   deleteLink: (id: string) => Promise<void>;

@@ -4,12 +4,13 @@ import { db } from "@/db";
 import { totalLinksCount } from "@/lib/totalLinksCount";
 import { CollectionsTable, LinksTable } from "@/schema";
 import { FrontendLinkSchema } from "@/types/types";
+import { extractTitleFromUrl, generateFallbackTitle } from "@/lib/extractTitle";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 
 export async function createLinkAction(
   linkCollectionId: string,
-  linkName: string,
+  linkName: string | undefined,
   linkUrl: string
 ) {
   const { userId } = await auth();
@@ -33,8 +34,19 @@ export async function createLinkAction(
     };
   }
 
+  // Extract title if not provided
+  let finalTitle: string = parsedLink.data.title || "";
+  if (!finalTitle.trim()) {
+    try {
+      finalTitle = await extractTitleFromUrl(parsedLink.data.url);
+    } catch (error) {
+      console.warn("Failed to extract title, using fallback:", error);
+      finalTitle = generateFallbackTitle(parsedLink.data.url);
+    }
+  }
+
   const link = {
-    title: parsedLink.data.title,
+    title: finalTitle,
     url: parsedLink.data.url,
     linkCollectionId,
     userId,

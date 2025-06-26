@@ -34,8 +34,18 @@ export function ManageCollectionLinks({
     fetchedLinks.current.add(collectionId);
   }, [collectionId]);
 
-  const handleLinkAdded = async (newLink: FrontendLink) => {
-    const parsedLink = FrontendLinkSchema.safeParse(newLink);
+  const handleLinkAdded = async (newLink: {
+    id: string;
+    title: string;
+    url: string;
+  }) => {
+    // Validate the URL
+    const linkToValidate = {
+      title: newLink.title.trim() || undefined, // Convert empty string to undefined
+      url: newLink.url,
+    };
+
+    const parsedLink = FrontendLinkSchema.safeParse(linkToValidate);
     if (!parsedLink.success) {
       return toast({
         title: "Failed to add link",
@@ -46,7 +56,12 @@ export function ManageCollectionLinks({
       });
     }
     try {
-      await addLink(parsedLink.data, collectionId);
+      // Pass the data that addLinkAction expects
+      const linkData = {
+        title: newLink.title.trim() || undefined, // Let backend handle empty titles
+        url: parsedLink.data.url,
+      };
+      await addLink(linkData, collectionId);
     } catch (error) {
       console.error("Failed to add link:", error);
     } finally {
