@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FrontendLink, FrontendLinkSchema } from "@/types/types";
 import { LinkGrid } from "./link-grid";
 import LinkTable from "./link-table";
-import ManageLinksHeader from "./link-header";
+import ManageLinksHeader, { FilterOptions } from "./link-header";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,6 +37,11 @@ export function ManageCollectionLinks({
   const [view, setView] = React.useState<"grid" | "table">("grid");
   const fetchedLinks = React.useRef(new Set());
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [filterOptions, setFilterOptions] = React.useState<FilterOptions>({
+    sortBy: "newest",
+    dateRange: "all",
+    domains: [],
+  });
 
   React.useEffect(() => {
     if (fetchedLinks.current.has(collectionId)) return;
@@ -102,16 +107,103 @@ export function ManageCollectionLinks({
     }
   };
 
-  // Filter links based on search query
-  const filteredLinks = React.useMemo(() => {
-    return links.filter((link) => {
-      const searchLower = searchQuery.toLowerCase().trim();
-      return (
-        link.title.toLowerCase().includes(searchLower) ||
-        link.url.toLowerCase().includes(searchLower)
-      );
+  // Get available domains from links
+  const availableDomains = React.useMemo(() => {
+    const domains = new Set<string>();
+    links.forEach((link) => {
+      try {
+        const domain = new URL(link.url).hostname.replace("www.", "");
+        domains.add(domain);
+      } catch {
+        // Skip invalid URLs
+      }
     });
-  }, [links, searchQuery]);
+    return Array.from(domains).sort();
+  }, [links]);
+
+  // Filter and sort links based on search query and filter options
+  const filteredLinks = React.useMemo(() => {
+    const filtered = links.filter((link) => {
+      const searchLower = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        link.title.toLowerCase().includes(searchLower) ||
+        link.url.toLowerCase().includes(searchLower);
+
+      if (!matchesSearch) return false;
+
+      // Date range filter
+      if (filterOptions.dateRange !== "all") {
+        const linkDate = new Date(link.createdAt);
+        const now = new Date();
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        );
+
+        switch (filterOptions.dateRange) {
+          case "today":
+            if (linkDate < today) return false;
+            break;
+          case "week":
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            if (linkDate < weekAgo) return false;
+            break;
+          case "month":
+            const monthAgo = new Date(
+              today.getTime() - 30 * 24 * 60 * 60 * 1000
+            );
+            if (linkDate < monthAgo) return false;
+            break;
+        }
+      }
+
+      // Domain filter
+      if (filterOptions.domains.length > 0) {
+        try {
+          const linkDomain = new URL(link.url).hostname.replace("www.", "");
+          if (!filterOptions.domains.includes(linkDomain)) return false;
+        } catch {
+          return false; // Skip invalid URLs
+        }
+      }
+
+      return true;
+    });
+
+    // Sort links
+    switch (filterOptions.sortBy) {
+      case "oldest":
+        filtered.sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+        break;
+      case "title":
+        filtered.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "domain":
+        filtered.sort((a, b) => {
+          try {
+            const domainA = new URL(a.url).hostname.replace("www.", "");
+            const domainB = new URL(b.url).hostname.replace("www.", "");
+            return domainA.localeCompare(domainB);
+          } catch {
+            return 0;
+          }
+        });
+        break;
+      case "newest":
+      default:
+        filtered.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        break;
+    }
+
+    return filtered;
+  }, [links, searchQuery, filterOptions]);
 
   return (
     <div className="space-y-4">
@@ -120,6 +212,9 @@ export function ManageCollectionLinks({
         setView={setView}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        filterOptions={filterOptions}
+        setFilterOptions={setFilterOptions}
+        availableDomains={availableDomains}
       />
 
       {view === "grid" ? (
