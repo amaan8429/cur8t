@@ -3,6 +3,10 @@ import PlatformStats from "@/components/Homepage/PlatformStats";
 import TrendingCollections from "@/components/Homepage/TrendingCollections";
 import QuickSearch from "@/components/Homepage/QuickSearch";
 import ActivityFeed from "@/components/Homepage/ActivityFeed";
+import FeaturedUsers from "@/components/Homepage/FeaturedUsers";
+import CategorySections from "@/components/Homepage/CategorySections";
+import GitHubShowcase from "@/components/Homepage/GitHubShowcase";
+import PersonalRecommendations from "@/components/Homepage/PersonalRecommendations";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import React from "react";
@@ -34,6 +38,34 @@ const Home = () => {
         {/* Trending Collections */}
         <section>
           <TrendingCollections />
+        </section>
+
+        <Separator className="my-16" />
+
+        {/* Personal Recommendations (Only for logged-in users) */}
+        <section>
+          <PersonalRecommendations />
+        </section>
+
+        <Separator className="my-16" />
+
+        {/* Featured Users */}
+        <section>
+          <FeaturedUsers />
+        </section>
+
+        <Separator className="my-16" />
+
+        {/* Category Sections */}
+        <section>
+          <CategorySections />
+        </section>
+
+        <Separator className="my-16" />
+
+        {/* GitHub Showcase */}
+        <section>
+          <GitHubShowcase />
         </section>
 
         <Separator className="my-16" />
