@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { MoreHorizontal, Folder, FolderOpen } from "lucide-react";
+import { MoreHorizontal, Folder, FolderOpen, Pin } from "lucide-react";
 
 import {
   SidebarGroup,
@@ -25,10 +25,12 @@ import CopyCollectionLink from "./copy-collection-link";
 import DeleteCollectionOption from "./delete-collection";
 import ChangeCollectionName from "./change-collection-name";
 import ChangeCollectionDescription from "./change-collection-description";
+import PinCollection from "./pin-collection";
 import { useCollectionStore } from "@/store/collection-store";
 import LoadingCollections from "./loading";
 import NoCollections from "./no-collections";
 import { useActiveState } from "@/store/activeStateStore";
+import { usePinnedCollectionsStore } from "@/store/pinned-collections-store";
 
 export function NavCollection() {
   const { isMobile } = useSidebar();
@@ -36,16 +38,23 @@ export function NavCollection() {
   const { activeCollectionId } = useActiveState();
 
   const [isLoading, setIsLoading] = useState(true);
+  const { pinnedCollectionIds, fetchPinnedCollections } =
+    usePinnedCollectionsStore();
 
   // Fetch collections on mount with loading state
   useEffect(() => {
-    const loadCollections = async () => {
+    const loadData = async () => {
       setIsLoading(true);
       await fetchCollections();
+      await fetchPinnedCollections();
       setIsLoading(false);
     };
-    loadCollections();
-  }, [fetchCollections]);
+    loadData();
+  }, [fetchCollections, fetchPinnedCollections]);
+
+  const handlePinStatusChange = () => {
+    // No need to do anything - optimistic updates handle this
+  };
 
   // Loading state
   if (isLoading) {
@@ -57,12 +66,32 @@ export function NavCollection() {
     return <NoCollections />;
   }
 
+  // Sort collections to show pinned ones first
+  const sortedCollections = collections.sort((a, b) => {
+    const aIsPinned = pinnedCollectionIds.includes(a.id);
+    const bIsPinned = pinnedCollectionIds.includes(b.id);
+
+    if (aIsPinned && !bIsPinned) return -1;
+    if (!aIsPinned && bIsPinned) return 1;
+
+    // If both are pinned, maintain their pinned order
+    if (aIsPinned && bIsPinned) {
+      const aIndex = pinnedCollectionIds.indexOf(a.id);
+      const bIndex = pinnedCollectionIds.indexOf(b.id);
+      return aIndex - bIndex;
+    }
+
+    // For non-pinned collections, maintain original order (by creation date)
+    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  });
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Collections</SidebarGroupLabel>
       <SidebarMenu>
-        {collections.map((collection) => {
+        {sortedCollections.map((collection) => {
           const isActive = collection.id === activeCollectionId;
+          const isPinned = pinnedCollectionIds.includes(collection.id);
           // Create tooltip content with title and description
           const tooltipContent = collection.description
             ? `${collection.title}\n\n${collection.description}`
@@ -87,6 +116,9 @@ export function NavCollection() {
                     <Folder className="h-4 w-4 mr-2 shrink-0" />
                   )}
                   <span className="truncate">{collection.title}</span>
+                  {isPinned && (
+                    <Pin className="h-3 w-3 ml-auto opacity-60 text-blue-500" />
+                  )}
                 </Link>
               </SidebarMenuButton>
               <DropdownMenu>
@@ -106,6 +138,12 @@ export function NavCollection() {
                   side={isMobile ? "bottom" : "right"}
                   align={isMobile ? "end" : "start"}
                 >
+                  <PinCollection
+                    collectionId={collection.id}
+                    isPinned={isPinned}
+                    onPinStatusChange={handlePinStatusChange}
+                  />
+                  <DropdownMenuSeparator />
                   <ChangeVisibility
                     collectionId={collection.id}
                     collectionVisibility={collection.visibility}

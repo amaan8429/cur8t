@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "pinned_collections" text[] DEFAULT '{}' NOT NULL;

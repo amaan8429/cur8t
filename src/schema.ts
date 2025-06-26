@@ -17,6 +17,7 @@ export const UsersTable = pgTable("users", {
   APIKeysCount: integer("api_keys_count").notNull().default(0),
   totalCollections: integer("total_collections").notNull().default(0),
   topCollections: text("top_collections").array().default([]).notNull(),
+  pinnedCollections: text("pinned_collections").array().default([]).notNull(),
 });
 
 export const APIKeysTable = pgTable("api_keys", {
