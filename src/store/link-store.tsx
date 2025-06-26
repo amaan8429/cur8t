@@ -6,6 +6,7 @@ import {
   deleteLinkAction,
   updateLinkAction,
 } from "@/actions/linkActions/link-actions";
+import { generateFallbackTitle } from "@/lib/extractTitle";
 
 interface LinkStore {
   links: Link[];
@@ -18,7 +19,8 @@ interface LinkStore {
       title?: string;
       url: string;
     },
-    collectionId: string
+    collectionId: string,
+    onError?: (error: string) => void
   ) => Promise<void>;
   deleteLink: (id: string) => Promise<void>;
   updateLink: (
@@ -54,26 +56,59 @@ export const useLinkStore = create<LinkStore>((set) => ({
       set({ isLoading: false });
     }
   },
-  addLink: async (newLink, collectionId) => {
+  addLink: async (newLink, collectionId, onError) => {
+    // Generate optimistic link data
+    const optimisticId = `temp-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    const trimmedTitle = newLink.title?.trim();
+    const optimisticTitle: string =
+      trimmedTitle && trimmedTitle.length > 0
+        ? trimmedTitle
+        : generateFallbackTitle(newLink.url) || "Untitled Link";
+
+    const optimisticLink: Link = {
+      id: optimisticId,
+      title: optimisticTitle,
+      url: newLink.url,
+      linkCollectionId: collectionId,
+      userId: "temp-user", // Will be replaced by real data
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    // Add optimistically to UI immediately
+    set((state) => ({
+      links: [...state.links, optimisticLink],
+      isOpen: false, // Close dialog immediately
+    }));
+
     try {
-      set({ isLoading: true });
+      // Make the actual API call in the background
       const createdLink = await addLinkAction(newLink, collectionId);
+
       if ("error" in createdLink) {
-        console.error(createdLink.error);
+        // Remove optimistic link and show error
+        set((state) => ({
+          links: state.links.filter((link) => link.id !== optimisticId),
+        }));
+        onError?.(createdLink.error);
+        return;
       }
+
       if (createdLink.success) {
-        set((state) => {
-          const links = [...state.links, createdLink.data].length;
-          console.log("Links:", links);
-          return {
-            links: [...state.links, createdLink.data],
-          };
-        });
+        // Replace optimistic link with real data
+        set((state) => ({
+          links: state.links.map((link) =>
+            link.id === optimisticId ? createdLink.data : link
+          ),
+        }));
       }
     } catch (error) {
+      // Remove optimistic link on error
+      set((state) => ({
+        links: state.links.filter((link) => link.id !== optimisticId),
+      }));
       console.error("Failed to add link:", error);
-    } finally {
-      set({ isLoading: false });
+      onError?.("Failed to add link. Please try again.");
     }
   },
   deleteLink: async (id) => {

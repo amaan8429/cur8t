@@ -55,18 +55,21 @@ export function ManageCollectionLinks({
             : "Unknown error",
       });
     }
-    try {
-      // Pass the data that addLinkAction expects
-      const linkData = {
-        title: newLink.title.trim() || undefined, // Let backend handle empty titles
-        url: parsedLink.data.url,
-      };
-      await addLink(linkData, collectionId);
-    } catch (error) {
-      console.error("Failed to add link:", error);
-    } finally {
-      setIsOpen(false);
-    }
+
+    // Pass the data that addLinkAction expects with error callback
+    const linkData = {
+      title: newLink.title.trim() || undefined, // Let backend handle empty titles
+      url: parsedLink.data.url,
+    };
+
+    // Use optimistic updates - dialog closes immediately and link appears
+    await addLink(linkData, collectionId, (error) => {
+      toast({
+        title: "Failed to add link",
+        description: error,
+        variant: "destructive",
+      });
+    });
   };
 
   const handleDeleteLink = async (id: string) => {
