@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button } from "../../ui/button";
 import { Star } from "lucide-react";
-import { saveCollection } from "@/actions/collection/saveCollection";
+import { saveCollectionAction } from "@/actions/collection/saveCollection";
 
 const SavedCollection = ({ collectionId }: { collectionId: string }) => {
   const [isSaved, setIsSaved] = React.useState(false);
@@ -11,9 +11,9 @@ const SavedCollection = ({ collectionId }: { collectionId: string }) => {
   }, []);
 
   const handleSave = async () => {
-    const saveResponse = await saveCollection(collectionId);
+    const saveResponse = await saveCollectionAction(collectionId);
     console.log(saveResponse);
-    if (saveResponse.sucess) {
+    if (saveResponse.success) {
       setIsSaved(true);
     }
   };
