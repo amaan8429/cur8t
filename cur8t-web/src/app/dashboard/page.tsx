@@ -18,6 +18,9 @@ import {
 import { ClientStateManager } from "@/components/Dashboard/Sidebar/client-state-manager";
 import { redirect } from "next/navigation";
 
+// Force dynamic rendering for authenticated routes
+export const dynamic = "force-dynamic";
+
 export default async function Page({
   searchParams,
 }: {
