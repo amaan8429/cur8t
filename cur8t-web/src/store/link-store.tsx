@@ -90,7 +90,7 @@ export const useLinkStore = create<LinkStore>((set) => ({
         set((state) => ({
           links: state.links.filter((link) => link.id !== optimisticId),
         }));
-        onError?.(createdLink.error);
+        onError?.(createdLink.error || "An unknown error occurred");
         return;
       }
 
