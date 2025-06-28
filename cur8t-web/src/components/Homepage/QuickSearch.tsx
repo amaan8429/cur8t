@@ -39,7 +39,7 @@ interface SearchResult {
   users: Array<{
     id: string;
     name: string;
-    username: string;
+    username: string | null;
     totalCollections: number;
   }>;
 }
@@ -144,32 +144,39 @@ const QuickSearch = () => {
     </Link>
   );
 
-  const UserResult = ({ user }: { user: SearchResult["users"][0] }) => (
-    <Link
-      href={`/profile/${user.username}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={() => setIsOpen(false)}
-    >
-      <div className="flex items-center gap-3 p-3 hover:bg-accent rounded-lg transition-colors cursor-pointer">
-        <Avatar className="h-8 w-8">
-          <AvatarFallback className="text-xs bg-primary/10 text-primary">
-            {user.name.charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex-1 min-w-0">
-          <div className="font-medium">{user.name}</div>
-          <div className="text-sm text-muted-foreground">@{user.username}</div>
-          <div className="text-xs text-muted-foreground mt-1">
-            {user.totalCollections} public collections
+  const UserResult = ({ user }: { user: SearchResult["users"][0] }) => {
+    // Since quickSearch filters out users without usernames, this should always be truthy
+    if (!user.username) return null;
+
+    return (
+      <Link
+        href={`/profile/${user.username}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => setIsOpen(false)}
+      >
+        <div className="flex items-center gap-3 p-3 hover:bg-accent rounded-lg transition-colors cursor-pointer">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="text-xs bg-primary/10 text-primary">
+              {user.name.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <div className="font-medium">{user.name}</div>
+            <div className="text-sm text-muted-foreground">
+              @{user.username}
+            </div>
+            <div className="text-xs text-muted-foreground mt-1">
+              {user.totalCollections} public collections
+            </div>
           </div>
+          <Badge variant="outline" className="text-xs">
+            User
+          </Badge>
         </div>
-        <Badge variant="outline" className="text-xs">
-          User
-        </Badge>
-      </div>
-    </Link>
-  );
+      </Link>
+    );
+  };
 
   const hasResults =
     results && (results.collections.length > 0 || results.users.length > 0);
