@@ -1,36 +1,47 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from agents.routes import router as agents_router
+
+from config.settings import settings
+from agents import get_active_routers, get_agent_list
 
 # Create FastAPI app
 app = FastAPI(
-    title="Cur8t Agents API",
-    description="AI agents for bookmark and collection management",
-    version="1.0.0"
+    title=settings.app_name,
+    description=settings.app_description,
+    version=settings.app_version,
+    debug=settings.debug
 )
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Add your frontend URL
+    allow_origins=settings.allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include agent routes
-app.include_router(agents_router)
+# Include all active agent routes
+for router in get_active_routers():
+    app.include_router(router, prefix="/agents")
 
 @app.get("/")
 async def root():
+    """API root endpoint with information about available agents"""
     return {
-        "message": "Cur8t Agents API", 
-        "version": "1.0.0",
-        "agents": [
-            "Article Link Extractor"
-        ]
+        "message": settings.app_name,
+        "version": settings.app_version,
+        "description": settings.app_description,
+        "agents": get_agent_list(),
+        "docs": "/docs",
+        "health": "/health"
     }
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "service": "cur8t-agents-api"}
+    """Health check endpoint"""
+    return {
+        "status": "healthy", 
+        "service": "cur8t-agents-api",
+        "version": settings.app_version
+    }

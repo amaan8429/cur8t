@@ -1,45 +1,49 @@
+"""
+Article Link Extractor service implementation
+"""
+
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
-from typing import List, Optional, Tuple, Union
-import re
+from typing import List, Optional, Tuple
 from datetime import datetime
-import time
 
-from .models import ExtractedLink, ArticleLinkResponse, ErrorResponse
+from .models import ArticleLinkResponse
+from core.models import ErrorResponse, ExtractedLink
+from core.utils import is_valid_url, get_domain_from_url, create_http_session, clean_text, should_skip_url
+from config.settings import settings
 
-class ArticleLinkExtractor:
+class ArticleLinkExtractorService:
+    """Service for extracting links from articles"""
+    
     def __init__(self):
-        self.session = requests.Session()
-        self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        })
+        self.session = create_http_session()
     
-    def _is_valid_url(self, url: str) -> bool:
-        """Simple URL validation"""
-        url_pattern = re.compile(
-            r'^https?://'  # http:// or https://
-            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-            r'localhost|'  # localhost...
-            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-            r'(?::\d+)?'  # optional port
-            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-        return url_pattern.match(url) is not None
-    
-    def extract_links_from_article(self, article_url: str, collection_name: Optional[str] = None) -> Tuple[Optional[ArticleLinkResponse], Optional[ErrorResponse]]:
+    def extract_links_from_article(
+        self, 
+        article_url: str, 
+        collection_name: Optional[str] = None
+    ) -> Tuple[Optional[ArticleLinkResponse], Optional[ErrorResponse]]:
         """
         Extract all links from an article and prepare them for collection creation
+        
+        Args:
+            article_url: URL of the article to extract links from
+            collection_name: Optional custom collection name
+            
+        Returns:
+            Tuple of (response, error) - one will be None
         """
         try:
             # Validate URL
-            if not self._is_valid_url(article_url):
+            if not is_valid_url(article_url):
                 return None, ErrorResponse(
                     error="Invalid URL",
                     details="The provided URL is not valid"
                 )
             
             # Fetch the article
-            response = self.session.get(article_url, timeout=10)
+            response = self.session.get(article_url, timeout=settings.request_timeout)
             response.raise_for_status()
             
             # Parse HTML
@@ -56,7 +60,7 @@ class ArticleLinkExtractor:
             
             # Generate collection name if not provided
             if not collection_name:
-                collection_name = f"Links from {article_title or urlparse(article_url).netloc}"
+                collection_name = f"Links from {article_title or get_domain_from_url(article_url)}"
             
             # Create response
             result = ArticleLinkResponse(
@@ -66,8 +70,7 @@ class ArticleLinkExtractor:
                 article_url=article_url,
                 total_links_found=len(filtered_links),
                 extracted_links=filtered_links,
-                collection_name=collection_name,
-                created_at=datetime.now()
+                collection_name=collection_name
             )
             
             return result, None
@@ -75,17 +78,18 @@ class ArticleLinkExtractor:
         except requests.exceptions.RequestException as e:
             return None, ErrorResponse(
                 error="Failed to fetch article",
-                details=str(e)
+                details=str(e),
+                error_code="FETCH_ERROR"
             )
         except Exception as e:
             return None, ErrorResponse(
                 error="Processing error",
-                details=str(e)
+                details=str(e),
+                error_code="PROCESSING_ERROR"
             )
     
     def _extract_title(self, soup: BeautifulSoup) -> Optional[str]:
         """Extract article title from HTML"""
-        # Try multiple selectors for title
         title_selectors = [
             'h1',
             'title',
@@ -102,8 +106,11 @@ class ArticleLinkExtractor:
                     title = element.get('content')
                 else:
                     title = element.get_text(strip=True)
-                if title and len(str(title).strip()) > 0:
-                    return str(title).strip()
+                
+                if title:
+                    cleaned_title = clean_text(str(title), max_length=200)
+                    if cleaned_title:
+                        return cleaned_title
         
         return None
     
@@ -115,7 +122,7 @@ class ArticleLinkExtractor:
         for link in soup.find_all('a', href=True):
             href = link['href'].strip()
             
-            # Skip empty hrefs, anchors, and javascript
+            # Skip empty hrefs and basic patterns
             if not href or href.startswith('#') or href.startswith('javascript:') or href.startswith('mailto:'):
                 continue
             
@@ -123,8 +130,9 @@ class ArticleLinkExtractor:
             absolute_url = urljoin(base_url, href)
             
             # Extract link text and title
-            link_text = link.get_text(strip=True)
+            link_text = clean_text(link.get_text(strip=True), max_length=300)
             link_title = link.get('title', '') or link_text
+            link_title = clean_text(str(link_title), max_length=200)
             
             links.append({
                 'url': absolute_url,
@@ -147,37 +155,32 @@ class ArticleLinkExtractor:
                 continue
             
             # Validate URL
-            if not self._is_valid_url(url):
+            if not is_valid_url(url):
                 continue
             
-            # Skip common non-content URLs
-            skip_patterns = [
-                'facebook.com/sharer',
-                'twitter.com/intent',
-                'linkedin.com/sharing',
-                'pinterest.com/pin',
-                'reddit.com/submit',
-                '.jpg', '.jpeg', '.png', '.gif', '.pdf', '.zip'
-            ]
-            
-            if any(pattern in url.lower() for pattern in skip_patterns):
+            # Skip common patterns
+            if should_skip_url(url):
                 continue
             
             # Extract domain
-            domain = urlparse(url).netloc
+            domain = get_domain_from_url(url)
             
             # Create ExtractedLink object
             extracted_link = ExtractedLink(
                 url=url,
-                title=link['title'][:200] if link['title'] else None,  # Limit title length
-                description=link['text'][:300] if link['text'] else None,  # Limit description length
+                title=link['title'] if link['title'] else None,
+                description=link['text'] if link['text'] else None,
                 domain=domain
             )
             
             filtered.append(extracted_link)
             seen_urls.add(url)
+            
+            # Limit results
+            if len(filtered) >= settings.max_links_per_extraction:
+                break
         
-        return filtered[:50]  # Limit to 50 links to avoid overwhelming responses
+        return filtered
 
-# Create global instance
-article_extractor = ArticleLinkExtractor() 
+# Global instance
+article_extractor_service = ArticleLinkExtractorService() 

@@ -9,8 +9,8 @@ import json
 def test_article_extractor():
     """Test the Article Link Extractor agent"""
     
-    # API endpoint
-    url = "http://localhost:8000/agents/article-extractor"
+    # API endpoint (updated to match new structure)
+    url = "http://localhost:8000/agents/article-extractor/"
     
     # Test data
     test_data = {
