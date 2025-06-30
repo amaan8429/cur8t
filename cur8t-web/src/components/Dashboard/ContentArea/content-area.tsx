@@ -7,6 +7,7 @@ import { CreateCollectionComponent } from "../TopSection/create-collection";
 import ExploreCollections from "../TopSection/explore-collections";
 import Home from "../TopSection/home";
 import SavedCollections from "../TopSection/saved-collections";
+import ToolsAndAgents from "../TopSection/tools-and-agents";
 import { useActiveState } from "@/store/activeStateStore";
 
 export function ContentArea() {
@@ -23,6 +24,7 @@ export function ContentArea() {
       {activeItem === "New" && <CreateCollectionComponent />}
       {activeItem === "Explore Collections" && <ExploreCollections />}
       {activeItem === "Saved" && <SavedCollections />}
+      {activeItem === "Tools and Agents" && <ToolsAndAgents />}
 
       {activeItem === "Ask AI" && (
         <div>

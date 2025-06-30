@@ -47,6 +47,11 @@ const data = {
       isActive: true,
     },
     {
+      title: "Tools and Agents",
+      url: "#",
+      icon: Command,
+    },
+    {
       title: "Saved",
       url: "#",
       icon: Save,
