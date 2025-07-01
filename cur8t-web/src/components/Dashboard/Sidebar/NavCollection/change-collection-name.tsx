@@ -26,28 +26,34 @@ const ChangeCollectionName = ({
   const [open, setOpen] = React.useState(false);
   const { updateCollectionName } = useCollectionStore();
   const [loading, setLoading] = React.useState(false);
-  const { toast } = useToast();
+  const {
+    toast,
+    success: toastSuccess,
+    error: toastError,
+    warning: toastWarning,
+  } = useToast();
 
   const handleUpdateConfirm = async (data: { title: string }) => {
     if (!data.title.trim()) {
-      toast({
-        title: "Title cannot be empty",
+      toastWarning({
+        title: "Title Required",
+        description: "Please enter a collection name.",
       });
       return;
     }
 
     if (data.title === collectionName) {
-      toast({
-        title: "Collection name is the same",
+      toastWarning({
+        title: "No Changes",
+        description: "Collection name is the same.",
       });
       return;
     }
 
     if (data.title.length > 50) {
-      toast({
-        title: "Title is too long",
+      toastWarning({
+        title: "Name Too Long",
         description: "Please enter a title with 50 characters or less",
-        variant: "destructive",
       });
       return;
     }
@@ -55,13 +61,14 @@ const ChangeCollectionName = ({
     try {
       setLoading(true);
       await updateCollectionName(collectionId, data.title);
-      toast({
-        title: "Collection name updated successfully",
+      toastSuccess({
+        title: "Collection Updated",
+        description: "Collection name has been successfully updated.",
       });
     } catch (error) {
-      toast({
-        title: "Failed to update collection name",
-        variant: "destructive",
+      toastError({
+        title: "Update Failed",
+        description: "Failed to update collection name. Please try again.",
       });
     } finally {
       setLoading(false);

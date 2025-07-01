@@ -70,7 +70,12 @@ interface Collection {
 export default function CollectionPage() {
   const params = useParams();
   const { userId, isSignedIn, isLoaded } = useAuth();
-  const { toast } = useToast();
+  const {
+    toast,
+    success: toastSuccess,
+    error: toastError,
+    info: toastInfo,
+  } = useToast();
   const [collection, setCollection] = useState<Collection | null>(null);
   const [links, setLinks] = useState<Link[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -224,12 +229,9 @@ export default function CollectionPage() {
       return;
     }
 
-    console.log("HandleLike called. Current isLiked state:", isLiked);
-
     // Optimistic update
     const previousIsLiked = isLiked;
     const previousLikes = collection?.likes || 0;
-
     setIsLiked(!isLiked);
     setCollection((prev) =>
       prev
@@ -239,7 +241,7 @@ export default function CollectionPage() {
     setIsLiking(true);
 
     try {
-      if (previousIsLiked) {
+      if (isLiked) {
         const result = await unlikeCollectionAction(collectionId);
         if (!result.success) {
           // Revert optimistic update
@@ -247,36 +249,22 @@ export default function CollectionPage() {
           setCollection((prev) =>
             prev ? { ...prev, likes: previousLikes } : null
           );
-          toast({
-            title: "Error",
+          toastError({
+            title: "Unlike Failed",
             description: result.error || "Failed to unlike collection",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Collection unliked",
           });
         }
       } else {
-        console.log("About to call likeCollectionAction");
         const result = await likeCollectionAction(collectionId);
-        console.log("Like action result:", result);
         if (!result.success) {
           // Revert optimistic update
           setIsLiked(previousIsLiked);
           setCollection((prev) =>
             prev ? { ...prev, likes: previousLikes } : null
           );
-          console.log("Like failed:", result.error);
-          toast({
-            title: "Error",
+          toastError({
+            title: "Like Failed",
             description: result.error || "Failed to like collection",
-            variant: "destructive",
-          });
-        } else {
-          console.log("Like successful");
-          toast({
-            title: "Collection liked!",
           });
         }
       }
@@ -286,10 +274,9 @@ export default function CollectionPage() {
       setCollection((prev) =>
         prev ? { ...prev, likes: previousLikes } : null
       );
-      toast({
-        title: "Error",
+      toastError({
+        title: "Action Failed",
         description: "Something went wrong. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsLiking(false);
@@ -311,8 +298,8 @@ export default function CollectionPage() {
       });
 
       if (result.success) {
-        toast({
-          title: "Collection duplicated!",
+        toastSuccess({
+          title: "Collection Duplicated!",
           description: "The collection has been added to your account.",
         });
         setDuplicateDialogOpen(false);
@@ -320,17 +307,15 @@ export default function CollectionPage() {
         // Redirect to dashboard with new collection
         window.open(`/dashboard?collectionId=${result.data.id}`, "_blank");
       } else {
-        toast({
-          title: "Error",
+        toastError({
+          title: "Duplicate Failed",
           description: result.error || "Failed to duplicate collection",
-          variant: "destructive",
         });
       }
     } catch (error) {
-      toast({
-        title: "Error",
+      toastError({
+        title: "Duplicate Failed",
         description: "Something went wrong. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsDuplicating(false);
@@ -360,15 +345,15 @@ export default function CollectionPage() {
           // Revert optimistic update
           setIsSaved(previousIsSaved);
           console.log("Unsave failed:", result.error);
-          toast({
-            title: "Error",
+          toastError({
+            title: "Unsave Failed",
             description: result.error || "Failed to unsave collection",
-            variant: "destructive",
           });
         } else {
           console.log("Unsave successful");
-          toast({
-            title: "Collection removed from saved",
+          toastInfo({
+            title: "Collection Removed",
+            description: "Collection removed from saved collections.",
           });
         }
       } else {
@@ -379,15 +364,14 @@ export default function CollectionPage() {
           // Revert optimistic update
           setIsSaved(previousIsSaved);
           console.log("Save failed:", result.error);
-          toast({
-            title: "Error",
+          toastError({
+            title: "Save Failed",
             description: result.error || "Failed to save collection",
-            variant: "destructive",
           });
         } else {
           console.log("Save successful");
-          toast({
-            title: "Collection saved!",
+          toastSuccess({
+            title: "Collection Saved!",
             description: "You can find it in your saved collections.",
           });
         }
@@ -395,10 +379,10 @@ export default function CollectionPage() {
     } catch (error) {
       // Revert optimistic update
       setIsSaved(previousIsSaved);
-      toast({
-        title: "Error",
+      console.error("Error in handleSave:", error);
+      toastError({
+        title: "Save Failed",
         description: "Something went wrong. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsSaving(false);

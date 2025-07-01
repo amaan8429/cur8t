@@ -21,21 +21,21 @@ const CopyCollectionLink = ({ collectionId }: { collectionId: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const shareLink = `https://bukmarks.com/collection/${collectionId}`;
-  const { toast } = useToast();
+  const { toast, success: toastSuccess, error: toastError } = useToast();
 
-  const copyToClipboard = async () => {
+  const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(shareLink);
-      setIsCopied(true);
-      toast({
-        title: "Link copied to clipboard",
+      const collectionUrl = `${window.location.origin}/collection/${collectionId}`;
+      await navigator.clipboard.writeText(collectionUrl);
+      toastSuccess({
+        title: "Link Copied!",
+        description: "Collection link has been copied to clipboard.",
       });
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy text: ", err);
-      toast({
-        title: "Failed to copy link to clipboard",
-        variant: "destructive",
+    } catch (error) {
+      console.error("Failed to copy link:", error);
+      toastError({
+        title: "Copy Failed",
+        description: "Failed to copy the link. Please try again.",
       });
     }
   };
@@ -91,7 +91,7 @@ const CopyCollectionLink = ({ collectionId }: { collectionId: string }) => {
               type="submit"
               size="sm"
               className="px-3 relative"
-              onClick={copyToClipboard}
+              onClick={handleCopyLink}
             >
               <span className={isCopied ? "opacity-0" : "opacity-100"}>
                 Copy

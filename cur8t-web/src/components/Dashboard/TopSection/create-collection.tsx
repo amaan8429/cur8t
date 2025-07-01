@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Globe2, Lock, Users, PlusCircle, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { useCollectionStore } from "@/store/collection-store";
 import { useToast } from "@/hooks/use-toast";
 import { createCollectionAction } from "@/actions/collection/createCollection";
+import { useActiveState } from "@/store/activeStateStore";
 
 interface CreateCollectionComponentProps {
   onSuccess?: (collectionId: string) => void;
@@ -21,45 +23,50 @@ export function CreateCollectionComponent({
   onSuccess,
   isDialog = false,
 }: CreateCollectionComponentProps = {}) {
-  const [collectionName, setCollectionName] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [visibility, setVisibility] = React.useState("private");
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [loadingProgress, setLoadingProgress] = React.useState(0);
-  const [loadingMessage, setLoadingMessage] = React.useState("");
+  const [collectionName, setCollectionName] = useState("");
+  const [description, setDescription] = useState("");
+  const [visibility, setVisibility] = useState("private");
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const router = useRouter();
   const { createACollection } = useCollectionStore();
-  const { toast } = useToast();
+  const {
+    toast,
+    success: toastSuccess,
+    error: toastError,
+    warning: toastWarning,
+  } = useToast();
+  const { activeCollectionId, setActiveCollectionId } = useActiveState();
+  const [newCollectionTitle, setNewCollectionTitle] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!collectionName.trim()) {
-      toast({
-        description: "Please enter a collection name",
-        variant: "destructive",
+    if (collectionName.trim().length === 0) {
+      toastWarning({
+        title: "Collection Name Required",
+        description: "Please enter a name for your collection.",
       });
       return;
     }
 
     if (collectionName.length > 50) {
-      toast({
-        description:
-          "Please enter a collection name with 50 characters or less",
-        variant: "destructive",
+      toastWarning({
+        title: "Name Too Long",
+        description: "Collection name must be 50 characters or less.",
       });
       return;
     }
 
+    setIsLoading(true);
+    setLoadingProgress(10);
+    setLoadingMessage("Creating collection...");
+
     try {
-      setIsLoading(true);
-      setLoadingProgress(0);
-      setLoadingMessage("Validating collection details...");
-
-      // Simulate progress steps for better UX
-      setLoadingProgress(20);
-
-      setLoadingMessage("Creating collection...");
+      await new Promise((resolve) => setTimeout(resolve, 300));
       setLoadingProgress(40);
 
       const collectionCreated = await createCollectionAction(
@@ -76,6 +83,7 @@ export function CreateCollectionComponent({
         setLoadingMessage("Finalizing...");
 
         await createACollection(collectionCreated.data);
+        setActiveCollectionId(collectionCreated.data.id);
 
         setLoadingProgress(100);
         setLoadingMessage("Collection created successfully!");
@@ -85,8 +93,9 @@ export function CreateCollectionComponent({
         setDescription("");
         setVisibility("private");
 
-        toast({
-          description: "Collection created successfully!",
+        toastSuccess({
+          title: "Collection Created!",
+          description: `"${collectionName}" has been successfully created.`,
         });
 
         // Small delay to show completion
@@ -100,15 +109,18 @@ export function CreateCollectionComponent({
           );
         }
       } else {
-        toast({
-          description: "Failed to create collection. Please try again.",
-          variant: "destructive",
+        toastError({
+          title: "Creation Failed",
+          description:
+            collectionCreated.error ||
+            "Failed to create collection. Please try again.",
         });
       }
     } catch (err) {
-      toast({
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
+      console.error("Error creating collection:", err);
+      toastError({
+        title: "Creation Failed",
+        description: "Something went wrong. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -137,6 +149,61 @@ export function CreateCollectionComponent({
       description: "Only selected people can access",
     },
   ];
+
+  const handleCreateCollection = async () => {
+    if (!newCollectionTitle.trim()) {
+      toastWarning({
+        title: "Collection Name Required",
+        description: "Please enter a name for your collection.",
+      });
+      return;
+    }
+
+    if (newCollectionTitle.length > 50) {
+      toastWarning({
+        title: "Name Too Long",
+        description: "Collection name must be 50 characters or less.",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const result = await createCollectionAction(
+        newCollectionTitle,
+        "",
+        "private"
+      );
+
+      if (result.success) {
+        const newCollection = result.data;
+        await createACollection(newCollection);
+        setActiveCollectionId(newCollection.id);
+
+        toastSuccess({
+          title: "Collection Created!",
+          description: `"${newCollectionTitle}" has been successfully created.`,
+        });
+
+        setNewCollectionTitle("");
+        setOpen(false);
+      } else {
+        toastError({
+          title: "Creation Failed",
+          description:
+            result.error || "Failed to create collection. Please try again.",
+        });
+      }
+    } catch (error) {
+      console.error("Error creating collection:", error);
+      toastError({
+        title: "Creation Failed",
+        description: "Something went wrong. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div

@@ -22,7 +22,12 @@ const PinCollection = ({
   onPinStatusChange,
 }: PinCollectionProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const {
+    toast,
+    success: toastSuccess,
+    error: toastError,
+    warning: toastWarning,
+  } = useToast();
   const {
     optimisticAddPin,
     optimisticRemovePin,
@@ -36,11 +41,10 @@ const PinCollection = ({
   const handlePinToggle = async () => {
     // Check pin limit before proceeding
     if (isPinLimitReached) {
-      toast({
-        title: "Pin limit reached",
+      toastWarning({
+        title: "Pin Limit Reached",
         description:
           "You can only pin up to 3 collections. Unpin a collection first.",
-        variant: "destructive",
       });
       return;
     }
@@ -57,51 +61,49 @@ const PinCollection = ({
       onPinStatusChange();
     }
 
-    // Note: No loading state during optimistic update to keep it instant
+    setIsLoading(true);
 
     try {
-      let result;
       if (isPinned) {
-        result = await removePinnedCollection(collectionId);
-      } else {
-        result = await addPinnedCollection(collectionId);
-      }
-
-      if (result.error) {
-        // Revert optimistic update on error
-        await revertOptimisticUpdate();
-        if (onPinStatusChange) {
-          onPinStatusChange();
+        const result = await removePinnedCollection(collectionId);
+        if (!result.success) {
+          // Revert optimistic update on error
+          revertOptimisticUpdate();
+          toastError({
+            title: "Unpin Failed",
+            description: result.error || "Failed to unpin collection",
+          });
+        } else {
+          toastSuccess({
+            title: "Collection Unpinned",
+            description: "Collection removed from pinned collections.",
+          });
         }
-
-        toast({
-          title: "Error",
-          description: result.error,
-          variant: "destructive",
-        });
-        return;
+      } else {
+        const result = await addPinnedCollection(collectionId);
+        if (!result.success) {
+          // Revert optimistic update on error
+          revertOptimisticUpdate();
+          toastError({
+            title: "Pin Failed",
+            description: result.error || "Failed to pin collection",
+          });
+        } else {
+          toastSuccess({
+            title: "Collection Pinned",
+            description: "Collection added to pinned collections.",
+          });
+        }
       }
-
-      // Success toast
-      toast({
-        title: "Success",
-        description: isPinned
-          ? "Collection unpinned successfully"
-          : "Collection pinned successfully",
-      });
     } catch (error) {
       // Revert optimistic update on error
-      await revertOptimisticUpdate();
-      if (onPinStatusChange) {
-        onPinStatusChange();
-      }
-
-      console.error("Error toggling pin status:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update pin status",
-        variant: "destructive",
+      revertOptimisticUpdate();
+      toastError({
+        title: "Action Failed",
+        description: "Something went wrong. Please try again.",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 

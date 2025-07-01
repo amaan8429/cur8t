@@ -27,7 +27,7 @@ import {
   Globe,
   Calendar,
 } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { toast, useToast } from "@/hooks/use-toast";
 import {
   agentsApi,
   AgentsApiError,
@@ -62,6 +62,14 @@ export function ArticleExtractorDialog({
   const [newLinkTitle, setNewLinkTitle] = useState("");
   const [savingCollection, setSavingCollection] = useState(false);
 
+  const {
+    toast: useToastToast,
+    success: toastSuccess,
+    error: toastError,
+    warning: toastWarning,
+    info: toastInfo,
+  } = useToast();
+
   const resetDialog = () => {
     setStep("input");
     setArticleUrl("");
@@ -77,10 +85,9 @@ export function ArticleExtractorDialog({
 
   const handleExtractLinks = async () => {
     if (!articleUrl.trim()) {
-      toast({
+      toastWarning({
         title: "Missing URL",
         description: "Please enter an article URL to extract links from.",
-        variant: "destructive",
       });
       return;
     }
@@ -95,7 +102,7 @@ export function ArticleExtractorDialog({
 
       setExtractedData(data);
       setStep("results");
-      toast({
+      toastSuccess({
         title: "Links extracted successfully!",
         description: `Found ${data.total_links_found} links from the article.`,
       });
@@ -103,16 +110,14 @@ export function ArticleExtractorDialog({
       console.error("Error extracting links:", error);
 
       if (error instanceof AgentsApiError) {
-        toast({
+        toastError({
           title: "Extraction failed",
           description: error.details || error.message,
-          variant: "destructive",
         });
       } else {
-        toast({
+        toastError({
           title: "Unexpected error",
           description: "An unexpected error occurred. Please try again.",
-          variant: "destructive",
         });
       }
     } finally {
@@ -132,7 +137,7 @@ export function ArticleExtractorDialog({
       total_links_found: updatedLinks.length,
     });
 
-    toast({
+    toastInfo({
       title: "Link removed",
       description: "The link has been removed from your collection.",
     });
@@ -140,10 +145,9 @@ export function ArticleExtractorDialog({
 
   const handleAddNewLink = () => {
     if (!newLinkUrl.trim()) {
-      toast({
+      toastWarning({
         title: "Missing URL",
         description: "Please enter a URL for the new link.",
-        variant: "destructive",
       });
       return;
     }
@@ -155,10 +159,9 @@ export function ArticleExtractorDialog({
       (link) => link.url === newLinkUrl
     );
     if (isDuplicate) {
-      toast({
+      toastWarning({
         title: "Duplicate link",
         description: "This link is already in your collection.",
-        variant: "destructive",
       });
       return;
     }
@@ -184,15 +187,14 @@ export function ArticleExtractorDialog({
       setNewLinkTitle("");
       setShowAddLinkForm(false);
 
-      toast({
+      toastInfo({
         title: "Link added",
         description: "The new link has been added to your collection.",
       });
     } catch (error) {
-      toast({
+      toastError({
         title: "Invalid URL",
         description: "Please enter a valid URL.",
-        variant: "destructive",
       });
     }
   };
@@ -211,7 +213,7 @@ export function ArticleExtractorDialog({
     });
     setIsEditingCollectionName(false);
 
-    toast({
+    toastInfo({
       title: "Collection name updated",
       description: "Your collection name has been changed.",
     });
@@ -240,15 +242,14 @@ export function ArticleExtractorDialog({
       });
 
       if (result.error) {
-        toast({
+        toastError({
           title: "Save Failed",
           description: result.error,
-          variant: "destructive",
         });
         return;
       }
 
-      toast({
+      toastSuccess({
         title: "Collection Saved!",
         description: `Saved "${result.data?.collection.title}" with ${result.data?.totalLinks} links.`,
       });
@@ -257,10 +258,9 @@ export function ArticleExtractorDialog({
       onOpenChange(false);
     } catch (error) {
       console.error("Error saving collection:", error);
-      toast({
+      toastError({
         title: "Save Failed",
         description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setSavingCollection(false);

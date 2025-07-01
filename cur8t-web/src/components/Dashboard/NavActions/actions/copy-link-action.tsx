@@ -13,12 +13,13 @@ export const CopyLinkAction: React.FC<CopyLinkActionProps> = ({
   copyLink,
   onClose,
 }) => {
-  const { toast } = useToast();
+  const { toast, success: toastSuccess } = useToast();
 
-  const handleCopyLink = () => {
+  const copyToClipboard = () => {
     navigator.clipboard.writeText(copyLink);
-    toast({
-      title: "Link copied to clipboard!",
+    toastSuccess({
+      title: "Link Copied!",
+      description: "Collection link has been copied to clipboard.",
     });
   };
 
@@ -27,7 +28,7 @@ export const CopyLinkAction: React.FC<CopyLinkActionProps> = ({
       <div className="py-4">
         <div className="flex space-x-2">
           <Input value={copyLink} readOnly className="flex-1" />
-          <Button onClick={handleCopyLink}>Copy</Button>
+          <Button onClick={copyToClipboard}>Copy</Button>
         </div>
       </div>
       <DialogFooter>

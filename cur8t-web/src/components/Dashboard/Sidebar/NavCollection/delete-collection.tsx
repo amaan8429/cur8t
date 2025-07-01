@@ -19,7 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 const DeleteCollectionOption = ({ collection }: { collection: Collection }) => {
   const [loading, setLoading] = React.useState(false);
   const { deleteCollection } = useCollectionStore();
-  const { toast } = useToast();
+  const { toast, success: toastSuccess, error: toastError } = useToast();
 
   const handleDeleteCollection = async () => {
     try {
@@ -27,23 +27,21 @@ const DeleteCollectionOption = ({ collection }: { collection: Collection }) => {
       const result = await deleteCollection(collection.id);
       if (result?.error) {
         console.log(result.error);
-        toast({
-          title: "Error",
+        toastError({
+          title: "Delete Failed",
           description: "Failed to delete collection. Please try again.",
-          variant: "destructive",
         });
         return;
       }
-      toast({
-        title: "Success",
-        description: "Collection deleted successfully.",
+      toastSuccess({
+        title: "Collection Deleted",
+        description: "Your collection has been successfully deleted.",
       });
     } catch (error) {
       console.error("Failed to delete collection: ", error);
-      toast({
-        title: "Error",
+      toastError({
+        title: "Delete Failed",
         description: "Failed to delete collection. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setLoading(false);

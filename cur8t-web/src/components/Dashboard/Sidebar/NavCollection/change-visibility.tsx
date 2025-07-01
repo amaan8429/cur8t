@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { PlusIcon, StarOff, X, Link as LinkIcon } from "lucide-react";
 import {
@@ -50,7 +50,13 @@ const ChangeVisibility = ({
   const [collectionLink] = React.useState(
     `https://bukmarks.vercel.app/collection/${collectionId}`
   );
-  const { toast } = useToast();
+  const {
+    toast,
+    success: toastSuccess,
+    error: toastError,
+    warning: toastWarning,
+  } = useToast();
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -64,16 +70,14 @@ const ChangeVisibility = ({
 
   const addEmail = () => {
     if (!isValidEmail(newEmail)) {
-      toast({
+      toastWarning({
         title: "Invalid email format",
-        variant: "destructive",
       });
       return;
     }
     if (emails.includes(newEmail)) {
-      toast({
+      toastWarning({
         title: "Email already added",
-        variant: "destructive",
       });
       return;
     }
@@ -92,35 +96,49 @@ const ChangeVisibility = ({
     });
   };
 
-  const onSubmit = async (data: { visibility: string }) => {
-    try {
-      if (
-        collectionVisibility === data.visibility &&
-        data.visibility !== "protected"
-      ) {
-        toast({
-          title: "No changes made",
-        });
-        return;
-      }
+  const handleUpdateConfirm = async (data: { visibility: string }) => {
+    if (data.visibility === "protected" && emails.length === 0) {
+      toastWarning({
+        title: "Email Required",
+        description: "Please add at least one email for protected visibility.",
+      });
+      return;
+    }
 
-      // Include emails array when updating to protected visibility
+    const emailsToSend = data.visibility === "protected" ? emails : [];
+
+    if (
+      data.visibility === collectionVisibility &&
+      JSON.stringify(emailsToSend) === JSON.stringify(sharedEmails)
+    ) {
+      toastWarning({
+        title: "No Changes",
+        description: "Visibility settings are the same.",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
       await updateCollectionVisibility(
         collectionId,
         data.visibility,
-        data.visibility === "protected" ? emails : []
+        emailsToSend
       );
 
-      toast({
-        title: "Collection visibility updated",
+      toastSuccess({
+        title: "Visibility Updated",
+        description: "Collection visibility has been successfully updated.",
       });
-      setOpen(false);
     } catch (error) {
-      console.error(error);
-      toast({
-        title: "An error occurred",
-        variant: "destructive",
+      console.error("Failed to update visibility:", error);
+      toastError({
+        title: "Update Failed",
+        description: "Failed to update visibility. Please try again.",
       });
+    } finally {
+      setLoading(false);
+      setOpen(false);
     }
   };
 
@@ -146,7 +164,10 @@ const ChangeVisibility = ({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(handleUpdateConfirm)}
+            className="space-y-6"
+          >
             <FormField
               control={form.control}
               name="visibility"
@@ -256,7 +277,7 @@ const ChangeVisibility = ({
                     form.watch("visibility") !== "protected")
                 }
               >
-                {form.formState.isSubmitting ? "Updating..." : "Update"}
+                {loading ? "Updating..." : "Update"}
               </Button>
             </DialogFooter>
           </form>

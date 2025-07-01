@@ -41,8 +41,18 @@ export default async function Page({
   let activeCollectionName = "";
 
   if (activeCollectionId) {
-    activeCollectionName =
+    const collectionNameResult =
       await getSingleCollectionNameAction(activeCollectionId);
+    if (collectionNameResult.success) {
+      activeCollectionName = collectionNameResult.data;
+    } else {
+      console.error(
+        "Failed to fetch collection name:",
+        collectionNameResult.error
+      );
+      // Handle error gracefully - redirect to dashboard without collection
+      redirect("/dashboard");
+    }
   }
 
   return (

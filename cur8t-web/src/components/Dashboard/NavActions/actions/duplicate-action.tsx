@@ -44,16 +44,21 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
   const { updateCollectionVisibility, collections, createACollection } =
     useCollectionStore();
   const { activeCollectionId } = useActiveState();
-  const { toast } = useToast();
+  const {
+    toast,
+    success: toastSuccess,
+    error: toastError,
+    warning: toastWarning,
+  } = useToast();
 
   const getActiveCollection = () =>
     collections?.find((c) => c.id === activeCollectionId);
 
   const handleConfirm = async () => {
     if (!activeCollectionId || !duplicateName.trim()) {
-      toast({
-        title: "Collection name is required",
-        variant: "destructive",
+      toastWarning({
+        title: "Name Required",
+        description: "Please enter a collection name.",
       });
       return;
     }
@@ -62,9 +67,9 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
     try {
       const active = getActiveCollection();
       if (!active) {
-        toast({
-          title: "Original collection not found",
-          variant: "destructive",
+        toastError({
+          title: "Source Not Found",
+          description: "Original collection not found.",
         });
         return;
       }
@@ -86,9 +91,9 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
       );
 
       if (!result.success) {
-        toast({
-          title: "Failed to duplicate collection",
-          variant: "destructive",
+        toastError({
+          title: "Duplicate Failed",
+          description: "Failed to duplicate collection. Please try again.",
         });
         return;
       }
@@ -122,16 +127,18 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
         );
       }
 
-      toast({
-        title: "Collection duplicated successfully",
+      toastSuccess({
+        title: "Collection Duplicated!",
+        description: "Your collection has been successfully duplicated.",
       });
 
       onClose();
     } catch (error) {
       console.error(error);
-      toast({
+      toastError({
         title: "An error occurred while duplicating",
-        variant: "destructive",
+        description:
+          "An error occurred while duplicating the collection. Please try again later.",
       });
     } finally {
       setIsDuplicating(false);
