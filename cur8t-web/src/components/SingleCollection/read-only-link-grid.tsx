@@ -172,7 +172,7 @@ export function ReadOnlyLinkGrid({
   const renderListView = () => (
     <div className="space-y-4">
       {filteredLinks.map((link) => (
-        <Card key={link.id} className="hover:shadow-md transition-shadow">
+        <Card key={link.id} className="hover:shadow-sm transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4 flex-1 min-w-0">

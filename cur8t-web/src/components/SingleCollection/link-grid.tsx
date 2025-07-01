@@ -108,7 +108,7 @@ export function LinkGrid({
         return (
           <Card
             key={link.id}
-            className="flex flex-col hover:shadow-md transition-shadow"
+            className="flex flex-col hover:shadow-sm transition-shadow"
           >
             <CardHeader className="flex-grow">
               <div className="flex items-center space-x-4">

@@ -240,7 +240,7 @@ export default function ProfilePage({
         {/* Profile Header */}
         <div className="mb-12">
           <div className="text-center mb-8">
-            <Avatar className="mx-auto h-24 w-24 mb-6 ring-4 ring-border shadow-lg">
+            <Avatar className="mx-auto h-24 w-24 mb-6 ring-4 ring-border shadow-sm">
               <AvatarFallback className="text-2xl bg-primary/10 text-primary font-semibold">
                 {user.name.charAt(0).toUpperCase()}
               </AvatarFallback>

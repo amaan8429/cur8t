@@ -579,8 +579,8 @@ export default function CollectionPage() {
                     disabled={isSaving}
                     className={`flex items-center gap-2 transition-all ${
                       isSaved
-                        ? "bg-primary hover:bg-primary/90 text-primary-foreground border-primary shadow-lg shadow-primary/20"
-                        : "hover:bg-accent/50 hover:border-primary/30 hover:shadow-md"
+                        ? "bg-primary hover:bg-primary/90 text-primary-foreground border-primary shadow-sm"
+                        : "hover:bg-accent/50 hover:border-primary/30 hover:shadow-sm"
                     }`}
                   >
                     <Bookmark
@@ -610,8 +610,8 @@ export default function CollectionPage() {
                         disabled={isLiking}
                         className={`flex items-center gap-2 transition-all ${
                           isLiked
-                            ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground border-destructive shadow-lg shadow-destructive/20"
-                            : "hover:bg-accent/50 hover:border-destructive/30 hover:shadow-md"
+                            ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground border-destructive shadow-sm"
+                            : "hover:bg-accent/50 hover:border-destructive/30 hover:shadow-sm"
                         }`}
                       >
                         <Heart
@@ -637,7 +637,7 @@ export default function CollectionPage() {
                           <Button
                             variant="outline"
                             size="default"
-                            className="flex items-center gap-2 hover:bg-accent/50 transition-all hover:shadow-md"
+                            className="flex items-center gap-2 hover:bg-accent/50 transition-all hover:shadow-sm"
                           >
                             <Download className="h-4 w-4" />
                             Duplicate
@@ -678,7 +678,7 @@ export default function CollectionPage() {
                         variant="outline"
                         size="default"
                         onClick={handleDuplicate}
-                        className="flex items-center gap-2 hover:bg-accent/50 transition-all hover:shadow-md"
+                        className="flex items-center gap-2 hover:bg-accent/50 transition-all hover:shadow-sm"
                       >
                         <Download className="h-4 w-4" />
                         Duplicate
@@ -707,7 +707,7 @@ export default function CollectionPage() {
                 </div>
                 <Button
                   asChild
-                  className="shrink-0 shadow-md hover:shadow-lg transition-all"
+                  className="shrink-0 shadow-sm hover:shadow-sm transition-all"
                 >
                   <a
                     href={`/dashboard?collectionId=${encodeURIComponent(collectionId)}`}

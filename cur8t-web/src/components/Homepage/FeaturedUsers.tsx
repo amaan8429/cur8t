@@ -108,7 +108,7 @@ export default function FeaturedUsers() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {users.map((user) => (
-          <Card key={user.id} className="hover:shadow-lg transition-shadow">
+          <Card key={user.id} className="hover:shadow-sm transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-3">
                 <Avatar className="w-12 h-12">

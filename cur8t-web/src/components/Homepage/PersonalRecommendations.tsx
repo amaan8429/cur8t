@@ -115,7 +115,7 @@ export default function PersonalRecommendations() {
         {collections.map((collection) => (
           <Card
             key={collection.id}
-            className="hover:shadow-lg transition-shadow group"
+            className="hover:shadow-sm transition-shadow group"
           >
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
