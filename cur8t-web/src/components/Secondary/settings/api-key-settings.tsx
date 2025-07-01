@@ -192,7 +192,10 @@ const APIKeySettings = () => {
 
         <div className="space-y-4">
           {apiKeys.map((apiKey, index) => (
-            <div key={index} className="p-4 border rounded-lg space-y-2">
+            <div
+              key={index}
+              className="p-4 border border-border/30 rounded-lg space-y-2"
+            >
               <div className="flex justify-between items-start">
                 <div>
                   <h4 className="font-medium">{apiKey.name}</h4>

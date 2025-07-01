@@ -100,7 +100,7 @@ const SavedCollections = () => {
       target="_blank"
       rel="noopener noreferrer"
     >
-      <Card className="group hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer border hover:border-primary/20 h-full">
+      <Card className="group hover:shadow-sm transition-all duration-300 cursor-pointer border-border/30 hover:border-border/50 h-full">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div className="flex-1 space-y-2">
@@ -165,7 +165,7 @@ const SavedCollections = () => {
       target="_blank"
       rel="noopener noreferrer"
     >
-      <Card className="group hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer border hover:border-primary/20">
+      <Card className="group hover:shadow-sm transition-all duration-300 cursor-pointer border-border/30 hover:border-border/50">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div className="flex-1 space-y-2">
@@ -351,7 +351,7 @@ const SavedCollections = () => {
               <Pagination />
             </>
           ) : (
-            <Card className="border-dashed">
+            <Card className="border-dashed border-border/30">
               <CardContent className="text-center py-16">
                 <div className="p-4 rounded-full bg-muted/50 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                   <Sparkles className="h-8 w-8 text-muted-foreground" />

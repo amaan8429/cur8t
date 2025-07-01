@@ -261,7 +261,7 @@ const TopCollectionsSettings = () => {
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDragEnd={handleDragEnd}
-                className={`p-4 border rounded-lg cursor-move transition-all ${
+                className={`p-4 border border-border/30 rounded-lg cursor-move transition-all ${
                   draggedItem === index ? "opacity-50" : ""
                 } hover:bg-muted/50`}
               >
@@ -311,7 +311,7 @@ const TopCollectionsSettings = () => {
                 availableCollections.map((collection) => (
                   <div
                     key={collection.id}
-                    className="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                    className="p-4 border border-border/30 rounded-lg hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">

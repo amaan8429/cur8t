@@ -18,7 +18,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-background border-t mt-20">
+    <footer className="bg-background border-t border-border/30 mt-20">
       <div className="container mx-auto px-6 py-12 max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}

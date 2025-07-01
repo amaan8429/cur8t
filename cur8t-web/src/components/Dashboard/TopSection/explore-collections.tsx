@@ -189,7 +189,7 @@ const ExploreCollections = () => {
 
   const CollectionCard = ({ collection }: { collection: Collection }) => (
     <Link href={`/collection/${collection.id}`}>
-      <Card className="group hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer border hover:border-primary/20 h-full">
+      <Card className="group hover:shadow-sm transition-all duration-300 cursor-pointer border-border/30 hover:border-border/50 h-full">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div className="flex-1 space-y-2">
@@ -250,7 +250,7 @@ const ExploreCollections = () => {
 
   const CollectionListItem = ({ collection }: { collection: Collection }) => (
     <Link href={`/collection/${collection.id}`}>
-      <Card className="group hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer border hover:border-primary/20">
+      <Card className="group hover:shadow-sm transition-all duration-300 cursor-pointer border-border/30 hover:border-border/50">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div className="flex-1 space-y-2">
@@ -335,7 +335,7 @@ const ExploreCollections = () => {
   );
 
   const EmptyState = () => (
-    <Card className="border-dashed">
+    <Card className="border-dashed border-border/30">
       <CardContent className="text-center py-16">
         <div className="p-4 rounded-full bg-muted/50 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
           <Sparkles className="h-8 w-8 text-muted-foreground" />
@@ -520,7 +520,7 @@ const ExploreCollections = () => {
 
         {/* Advanced Filters Panel */}
         {showFilters && (
-          <Card className="p-6 border-dashed">
+          <Card className="p-6 border-dashed border-border/30">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <label className="text-sm font-medium mb-2 block">

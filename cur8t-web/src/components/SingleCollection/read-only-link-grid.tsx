@@ -123,7 +123,7 @@ export function ReadOnlyLinkGrid({
       {filteredLinks.map((link) => (
         <Card
           key={link.id}
-          className="flex flex-col hover:shadow-lg transition-all duration-200 border-0 shadow-md hover:scale-[1.02]"
+          className="flex flex-col hover:shadow-sm transition-all duration-200 border border-border/30 hover:border-border/50"
         >
           <CardHeader className="flex-grow pb-3">
             <div className="flex items-center space-x-3">

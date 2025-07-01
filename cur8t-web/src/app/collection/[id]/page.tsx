@@ -694,7 +694,7 @@ export default function CollectionPage() {
           <div className="space-y-8">
             {/* Owner Actions */}
             {isOwner && (
-              <div className="flex flex-col sm:flex-row gap-4 p-6 border rounded-xl bg-gradient-to-r from-accent/50 to-accent/30 shadow-sm">
+              <div className="flex flex-col sm:flex-row gap-4 p-6 border border-border/30 rounded-xl bg-gradient-to-r from-accent/50 to-accent/30">
                 <div className="flex-1 space-y-2">
                   <h3 className="font-semibold text-lg flex items-center gap-2">
                     <Settings className="h-5 w-5 text-primary" />

@@ -77,7 +77,10 @@ export default function CategorySections() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Array.from({ length: 3 }).map((_, j) => (
-                  <div key={j} className="border rounded-lg p-4 space-y-3">
+                  <div
+                    key={j}
+                    className="border border-border/30 rounded-lg p-4 space-y-3"
+                  >
                     <div className="h-5 bg-muted rounded w-full" />
                     <div className="h-4 bg-muted rounded w-3/4" />
                     <div className="flex gap-2">
@@ -157,7 +160,7 @@ export default function CategorySections() {
                       key={collection.id}
                       href={`/collection/${collection.id}`}
                     >
-                      <div className="border rounded-lg p-4 hover:shadow-md transition-shadow group">
+                      <div className="border border-border/30 rounded-lg p-4 hover:shadow-sm transition-shadow group">
                         <h3 className="font-medium line-clamp-2 group-hover:text-blue-600 transition-colors">
                           {collection.title}
                         </h3>

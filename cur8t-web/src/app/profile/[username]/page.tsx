@@ -382,7 +382,7 @@ export default function ProfilePage({
           </div>
 
           {collections.length === 0 ? (
-            <Card className="border-dashed">
+            <Card className="border-dashed border-border/30">
               <CardContent className="text-center py-16">
                 <div className="p-4 rounded-full bg-muted/50 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                   <User className="h-8 w-8 text-muted-foreground" />
@@ -412,7 +412,7 @@ export default function ProfilePage({
                     href={`/collection/${collection.id}`}
                   >
                     <Card
-                      className={`group hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer border hover:border-primary/20 ${
+                      className={`group hover:shadow-sm transition-all duration-300 cursor-pointer border-border/30 hover:border-border/50 ${
                         viewMode === "list" ? "flex flex-row" : "h-full"
                       }`}
                     >

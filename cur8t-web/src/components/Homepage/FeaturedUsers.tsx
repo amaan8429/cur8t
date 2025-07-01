@@ -160,7 +160,7 @@ export default function FeaturedUsers() {
                     href={`/collection/${collection.id}`}
                     className="block"
                   >
-                    <div className="border rounded-lg p-3 hover:bg-muted/50 transition-colors">
+                    <div className="border border-border/30 rounded-lg p-3 hover:bg-muted/50 transition-colors">
                       <h5 className="text-sm font-medium line-clamp-1">
                         {collection.title}
                       </h5>

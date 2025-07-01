@@ -126,7 +126,7 @@ export default function ToolsAndAgents() {
         {agents.map((agent) => (
           <Card
             key={agent.id}
-            className="hover:shadow-lg transition-shadow duration-200"
+            className="border-border/30 hover:border-border/50 hover:shadow-sm transition-all duration-200"
           >
             <CardHeader className="space-y-3">
               <div className="flex items-start justify-between">
@@ -177,7 +177,7 @@ export default function ToolsAndAgents() {
         ))}
       </div>
 
-      <div className="mt-8 p-6 rounded-lg bg-muted/50 border border-dashed">
+      <div className="mt-8 p-6 rounded-lg bg-muted/30 border border-dashed border-border/30">
         <div className="text-center space-y-2">
           <Bot className="h-8 w-8 mx-auto text-muted-foreground" />
           <h3 className="text-lg font-semibold">More Agents Coming Soon</h3>

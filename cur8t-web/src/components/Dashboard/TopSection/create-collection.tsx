@@ -155,7 +155,7 @@ export function CreateCollectionComponent({
         )}
 
         {isLoading && (
-          <div className="space-y-4 p-4 bg-muted/50 rounded-lg border">
+          <div className="space-y-4 p-4 bg-muted/30 rounded-lg border border-border/30">
             <div className="flex items-center space-x-3">
               <Loader2 className="h-5 w-5 animate-spin text-primary" />
               <span className="text-sm font-medium">{loadingMessage}</span>
@@ -224,7 +224,7 @@ export function CreateCollectionComponent({
                   key={option.id}
                   type="button"
                   onClick={() => setVisibility(option.id)}
-                  className={`${isDialog ? "p-3" : "p-4"} rounded-xl border-2 text-left transition-all hover:border-primary ${
+                  className={`${isDialog ? "p-3" : "p-4"} rounded-xl border border-border/30 text-left transition-all hover:border-border/50 ${
                     visibility === option.id
                       ? "border-primary bg-primary/5"
                       : "border-border hover:bg-accent"

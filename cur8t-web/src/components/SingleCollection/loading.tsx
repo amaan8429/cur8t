@@ -21,7 +21,7 @@ interface LoadingStatesProps {
 const LoadingStates = ({ view }: LoadingStatesProps) => {
   if (view === "table") {
     return (
-      <div className="rounded-md border">
+      <div className="rounded-md border border-border/30">
         <Table>
           <TableHeader>
             <TableRow>

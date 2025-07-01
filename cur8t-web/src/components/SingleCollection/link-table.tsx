@@ -91,7 +91,7 @@ const LinkTable = ({
   }
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border border-border/30">
       <Table>
         <TableHeader>
           <TableRow>
