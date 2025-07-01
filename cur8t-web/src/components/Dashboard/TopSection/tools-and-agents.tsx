@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -20,6 +20,8 @@ import {
   Bot,
   ExternalLink,
 } from "lucide-react";
+import { ArticleExtractorDialog } from "./dialogs/article-extractor-dialog";
+import { ApiStatusIndicator } from "./dialogs/api-status-indicator";
 
 const agents = [
   {
@@ -28,7 +30,7 @@ const agents = [
     description:
       "Give it a link to an article and it will extract all links from it and create a collection",
     icon: FileText,
-    status: "Coming Soon",
+    status: "Active",
     features: [
       "Smart link detection",
       "Auto collection creation",
@@ -91,12 +93,28 @@ const agents = [
 ];
 
 export default function ToolsAndAgents() {
+  const [articleExtractorOpen, setArticleExtractorOpen] = useState(false);
+
+  const handleTryAgent = (agentId: number) => {
+    switch (agentId) {
+      case 1: // Article Link Extractor
+        setArticleExtractorOpen(true);
+        break;
+      default:
+        // For other agents, show coming soon message
+        break;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <div className="flex items-center gap-2">
-          <Bot className="h-6 w-6" />
-          <h1 className="text-2xl font-bold">Tools and Agents</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Bot className="h-6 w-6" />
+            <h1 className="text-2xl font-bold">Tools and Agents</h1>
+          </div>
+          <ApiStatusIndicator />
         </div>
         <p className="text-muted-foreground">
           Powerful AI agents to help you organize, discover, and manage your
@@ -115,7 +133,10 @@ export default function ToolsAndAgents() {
                 <div className="p-2 rounded-lg bg-primary/10">
                   <agent.icon className="h-6 w-6 text-primary" />
                 </div>
-                <Badge variant="secondary" className="text-xs">
+                <Badge
+                  variant={agent.status === "Active" ? "default" : "secondary"}
+                  className="text-xs"
+                >
                   {agent.status}
                 </Badge>
               </div>
@@ -142,7 +163,12 @@ export default function ToolsAndAgents() {
                   ))}
                 </ul>
               </div>
-              <Button variant="outline" className="w-full" disabled>
+              <Button
+                variant="outline"
+                className="w-full"
+                disabled={agent.status === "Coming Soon"}
+                onClick={() => handleTryAgent(agent.id)}
+              >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Try Agent
               </Button>
@@ -161,6 +187,12 @@ export default function ToolsAndAgents() {
           </p>
         </div>
       </div>
+
+      {/* Dialogs */}
+      <ArticleExtractorDialog
+        open={articleExtractorOpen}
+        onOpenChange={setArticleExtractorOpen}
+      />
     </div>
   );
 }
