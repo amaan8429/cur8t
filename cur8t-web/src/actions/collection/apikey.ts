@@ -7,8 +7,8 @@ import { eq } from "drizzle-orm";
 
 function generateKey() {
   const key =
-    "pk_" +
-    Array.from(crypto.getRandomValues(new Uint8Array(24)))
+    "cur8t_api_" +
+    Array.from(crypto.getRandomValues(new Uint8Array(32)))
       .map((b) => b.toString(16).padStart(2, "0"))
       .join("");
   return key;
