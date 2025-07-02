@@ -98,10 +98,11 @@ async def get_top_collections(authorization: Optional[str] = Header(None)):
         placeholders = ','.join(['%s'] * len(top_collection_ids))
         
         # Get the actual collection details
-        collections_query = f"""
+        # Cast the text array to UUID array for proper comparison
+        collections_query = """
             SELECT id, title, description, visibility, total_links as "totalLinks", created_at as "createdAt"
             FROM collections 
-            WHERE user_id = %s AND id = ANY(%s)
+            WHERE user_id = %s AND id = ANY(%s::uuid[])
         """
         
         collections_result = execute_query_all(
@@ -150,7 +151,7 @@ async def create_link(
         collection_query = """
             SELECT id, total_links 
             FROM collections 
-            WHERE id = %s AND user_id = %s
+            WHERE id = %s::uuid AND user_id = %s
         """
         collection_result = execute_query_one(
             collection_query, 
@@ -172,7 +173,7 @@ async def create_link(
         link_id = str(uuid.uuid4())
         insert_link_query = """
             INSERT INTO links (id, title, url, link_collection_id, user_id, created_at, updated_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s::uuid, %s, %s, %s::uuid, %s, %s, %s)
             RETURNING id, title, url, link_collection_id, user_id, created_at, updated_at
         """
         
@@ -190,7 +191,7 @@ async def create_link(
         update_collection_query = """
             UPDATE collections 
             SET total_links = %s 
-            WHERE id = %s AND user_id = %s
+            WHERE id = %s::uuid AND user_id = %s
         """
         # Update collection's total links count
         execute_query(
