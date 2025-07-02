@@ -21,27 +21,53 @@ from ..core.utils import extract_title_from_url, generate_fallback_title
 
 router = APIRouter()
 
-def get_user_id_from_header(authorization: Optional[str] = Header(None)) -> str:
-    """Extract user ID from authorization header"""
-    logger.info(f"🔍 Authorization header received: {authorization}")
-    logger.info(f"🔍 Authorization type: {type(authorization)}")
-    logger.info(f"🔍 Authorization is None: {authorization is None}")
+def get_user_id_from_api_key(authorization: Optional[str] = Header(None)) -> str:
+    """Extract and validate API key, then return the associated user ID"""
+    logger.info(f"🔑 Authorization header received: {authorization}")
+    logger.info(f"🔑 Authorization type: {type(authorization)}")
+    logger.info(f"🔑 Authorization is None: {authorization is None}")
     
     if not authorization:
         logger.error("❌ No authorization header provided")
         raise HTTPException(status_code=401, detail="Authorization header required")
     
-    logger.info(f"🔍 Authorization starts with 'Bearer ': {authorization.startswith('Bearer ')}")
+    logger.info(f"🔑 Authorization starts with 'Bearer ': {authorization.startswith('Bearer ')}")
     
-    # For now, we'll extract user ID from the header
-    # In production, you'd want to validate the JWT token from Clerk
-    if authorization.startswith("Bearer "):
-        user_id = authorization[7:]  # Remove "Bearer " prefix
-        logger.info(f"✅ Extracted user ID: {user_id}")
+    if not authorization.startswith("Bearer "):
+        logger.error(f"❌ Invalid authorization format. Expected 'Bearer <api_key>', got: {authorization}")
+        raise HTTPException(status_code=401, detail="Invalid authorization format")
+    
+    api_key = authorization[7:]  # Remove "Bearer " prefix
+    logger.info(f"🔑 Extracted API key: {api_key[:8]}...{api_key[-4:] if len(api_key) > 12 else api_key}")
+    
+    # Validate API key against database
+    try:
+        api_key_query = """
+            SELECT ak.user_id, ak.name, ak.created_at, u.name as user_name
+            FROM api_keys ak
+            JOIN users u ON ak.user_id = u.id
+            WHERE ak.key = %s
+        """
+        
+        logger.info(f"🔍 Validating API key in database...")
+        api_key_result = execute_query_one(api_key_query, (api_key,))
+        
+        if not api_key_result:
+            logger.error(f"❌ Invalid API key: {api_key[:8]}...")
+            raise HTTPException(status_code=401, detail="Invalid API key")
+        
+        user_id = api_key_result['user_id']
+        api_key_name = api_key_result['name']
+        user_name = api_key_result['user_name']
+        
+        logger.info(f"✅ Valid API key '{api_key_name}' for user: {user_name} (ID: {user_id})")
         return user_id
-    
-    logger.error(f"❌ Invalid authorization format. Expected 'Bearer <token>', got: {authorization}")
-    raise HTTPException(status_code=401, detail="Invalid authorization format")
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Database error during API key validation: {str(e)}")
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
 
 @router.get("/")
 def root():
@@ -49,17 +75,38 @@ def root():
 
 @router.get("/test-auth")
 async def test_auth(authorization: Optional[str] = Header(None)):
-    """Test endpoint to debug authorization header"""
+    """Test endpoint to debug API key authentication"""
     logger.info(f"🧪 TEST AUTH - Received header: {authorization}")
     logger.info(f"🧪 TEST AUTH - Header type: {type(authorization)}")
     
-    response = {
-        "received_header": authorization,
-        "extracted_user_id": authorization[7:] if authorization and authorization.startswith("Bearer ") else None,
-        "header_present": authorization is not None,
-        "header_length": len(authorization) if authorization else 0,
-        "starts_with_bearer": authorization.startswith("Bearer ") if authorization else False
-    }
+    try:
+        user_id = get_user_id_from_api_key(authorization)
+        
+        response = {
+            "success": True,
+            "message": "API key authentication successful",
+            "user_id": user_id,
+            "received_header": authorization[:20] + "..." if authorization and len(authorization) > 20 else authorization,
+            "header_present": authorization is not None,
+            "starts_with_bearer": authorization.startswith("Bearer ") if authorization else False
+        }
+        
+    except HTTPException as e:
+        response = {
+            "success": False,
+            "error": e.detail,
+            "received_header": authorization[:20] + "..." if authorization and len(authorization) > 20 else authorization,
+            "header_present": authorization is not None,
+            "starts_with_bearer": authorization.startswith("Bearer ") if authorization else False
+        }
+    except Exception as e:
+        response = {
+            "success": False,
+            "error": f"Unexpected error: {str(e)}",
+            "received_header": authorization[:20] + "..." if authorization and len(authorization) > 20 else authorization,
+            "header_present": authorization is not None,
+            "starts_with_bearer": authorization.startswith("Bearer ") if authorization else False
+        }
     
     logger.info(f"🧪 TEST AUTH - Response: {response}")
     return response
@@ -71,7 +118,7 @@ async def get_top_collections(authorization: Optional[str] = Header(None)):
     logger.info(f"🚀 TOP COLLECTIONS - Authorization header: {authorization}")
     
     try:
-        user_id = get_user_id_from_header(authorization)
+        user_id = get_user_id_from_api_key(authorization)
         logger.info(f"🚀 TOP COLLECTIONS - User ID extracted: {user_id}")
         
         # Get user's top collections array
@@ -145,7 +192,7 @@ async def create_link(
 ):
     """Add a link to a collection"""
     try:
-        user_id = get_user_id_from_header(authorization)
+        user_id = get_user_id_from_api_key(authorization)
         
         # Validate collection exists and belongs to user
         collection_query = """
