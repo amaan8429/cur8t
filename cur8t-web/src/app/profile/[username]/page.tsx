@@ -27,7 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/layout/ModeToggle";
 import Link from "next/link";
 import {
   Heart,
@@ -47,7 +47,7 @@ import {
   Facebook,
   Linkedin,
 } from "lucide-react";
-import { Footer } from "@/components/ui/footer";
+import { Footer } from "@/components/layout/Footer";
 
 interface User {
   id: string;

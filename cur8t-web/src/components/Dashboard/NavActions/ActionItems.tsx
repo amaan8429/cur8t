@@ -29,11 +29,11 @@ import { useCollectionStore } from "@/store/collection-store";
 import { useActiveState } from "@/store/activeStateStore";
 
 // Import individual action components
-import { CustomizeAction } from "./actions/customize-action";
-import { VisibilityAction } from "./actions/visibility-action";
-import { CopyLinkAction } from "./actions/copy-link-action";
-import { DuplicateAction } from "./actions/duplicate-action";
-import { ExportAction } from "./actions/export-action";
+import { CustomizeAction } from "./actions/CustomizeAction";
+import { VisibilityAction } from "./actions/VisibilityAction";
+import { CopyLinkAction } from "./actions/CopyLinkAction";
+import { DuplicateAction } from "./actions/DuplicateAction";
+import { ExportAction } from "./actions/ExportAction";
 
 // Interface for the ActionItem
 export interface ActionItem {

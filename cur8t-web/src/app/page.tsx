@@ -1,15 +1,15 @@
-import Hero from "@/components/LandingPage/hero";
-import PlatformStats from "@/components/Homepage/PlatformStats";
-import TrendingCollections from "@/components/Homepage/TrendingCollections";
-import QuickSearch from "@/components/Homepage/QuickSearch";
-import ActivityFeed from "@/components/Homepage/ActivityFeed";
-import FeaturedUsers from "@/components/Homepage/FeaturedUsers";
-import CategorySections from "@/components/Homepage/CategorySections";
-import GitHubShowcase from "@/components/Homepage/GitHubShowcase";
-import PersonalRecommendations from "@/components/Homepage/PersonalRecommendations";
+import PlatformStats from "@/components/homepage/PlatformStats";
+import TrendingCollections from "@/components/homepage/TrendingCollections";
+import QuickSearch from "@/components/homepage/QuickSearch";
+import ActivityFeed from "@/components/homepage/ActivityFeed";
+import FeaturedUsers from "@/components/homepage/FeaturedUsers";
+import CategorySections from "@/components/homepage/CategorySections";
+import GitHubShowcase from "@/components/homepage/GitHubShowcase";
+import PersonalRecommendations from "@/components/homepage/PersonalRecommendations";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import React from "react";
+import Hero from "@/components/landingPage/Hero";
 
 const Home = () => {
   return (

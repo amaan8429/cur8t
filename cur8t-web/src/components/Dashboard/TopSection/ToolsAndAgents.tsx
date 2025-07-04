@@ -20,8 +20,8 @@ import {
   Bot,
   ExternalLink,
 } from "lucide-react";
-import { ArticleExtractorDialog } from "./dialogs/article-extractor-dialog";
-import { ApiStatusIndicator } from "./dialogs/api-status-indicator";
+import { ArticleExtractorDialog } from "./dialogs/ArticleExtractorDialog";
+import { ApiStatusIndicator } from "./dialogs/ApiStatusIndicator";
 
 const agents = [
   {

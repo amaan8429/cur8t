@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import UpdatedAt from "./updated-at";
-import SavedCollection from "./save-collection";
-import ActionItems from "./action-items";
+import UpdatedAt from "./UpdatedAt";
+import SavedCollection from "./SaveCollection";
+import ActionItems from "./ActionItems";
 import { useLinkStore } from "@/store/link-store";
 import { useCollectionStore } from "@/store/collection-store";
 import { useActiveState } from "@/store/activeStateStore";

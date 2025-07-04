@@ -1,8 +1,8 @@
 import { getSingleCollectionNameAction } from "@/actions/collection/getSingleCollectionName";
 import { getUserInfoAction } from "@/actions/user/getUserInfo";
-import { AppSidebar } from "@/components/Dashboard/Sidebar/app-sidebar";
-import { ContentArea } from "@/components/Dashboard/ContentArea/content-area";
-import { NavActions } from "@/components/Dashboard/NavActions/nav-actions";
+import { AppSidebar } from "@/components/dashboard/Sidebar/AppSidebar";
+import { ContentArea } from "@/components/dashboard/ContentArea/ContentArea";
+import { NavActions } from "@/components/dashboard/NavActions/NavActions";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,7 +15,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { ClientStateManager } from "@/components/Dashboard/Sidebar/client-state-manager";
+import { ClientStateManager } from "@/components/dashboard/Sidebar/ClientStateManager";
 import { redirect } from "next/navigation";
 
 // Force dynamic rendering for authenticated routes

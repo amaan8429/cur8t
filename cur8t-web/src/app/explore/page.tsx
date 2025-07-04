@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ModeToggle } from "@/components/mode-toggle";
-import { Footer } from "@/components/ui/footer";
+import { ModeToggle } from "@/components/layout/ModeToggle";
+import { Footer } from "@/components/layout/Footer";
 import { fetchPublicCollections } from "@/actions/collection/fetchPublicCollections";
 import { Collection } from "@/types/types";
 import { Badge } from "@/components/ui/badge";

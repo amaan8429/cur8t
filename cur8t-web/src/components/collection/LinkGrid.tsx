@@ -36,8 +36,8 @@ import {
 import { Link } from "@/types/types";
 import { truncateUrl } from "@/lib/truncate";
 import { useLinkStore } from "@/store/link-store";
-import LoadingStates from "./loading";
-import EmptyStates from "./no-links";
+import LoadingStates from "./Loading";
+import EmptyStates from "./NoLinks";
 
 interface LinkGridProps {
   collectionId: string;

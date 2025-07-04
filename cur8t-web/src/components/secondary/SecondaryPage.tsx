@@ -1,8 +1,7 @@
 import React from "react";
-import IntegrationsPage from "./integrations/integrations-page";
-import HelpPage from "./help/help-page";
-import TrashPage from "./trash/trash-page";
-import SettingsPage from "./settings/settings-page";
+import IntegrationsPage from "../integrations/IntegrationsPage";
+import HelpPage from "../help/HelpPage";
+import SettingsPage from "../settings/SettingsPage";
 import { useActiveState } from "@/store/activeStateStore";
 
 const SecondaryPage = () => {
@@ -12,8 +11,6 @@ const SecondaryPage = () => {
     return <IntegrationsPage />;
   } else if (activeSecondary === "Settings") {
     return <SettingsPage />;
-  } else if (activeSecondary === "Trash") {
-    return <TrashPage />;
   } else if (activeSecondary === "Help") {
     return <HelpPage />;
   }

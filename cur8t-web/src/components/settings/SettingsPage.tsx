@@ -2,12 +2,12 @@
 
 import React from "react";
 import { useUser } from "@clerk/nextjs";
-import ProfileSettings from "./profile-settings";
-import GeneralSettings from "./general-settings";
-import LoadingSettings from "./loading";
-import APIKeySettings from "./api-key-settings";
-import UsernameSettings from "./username-settings";
-import TopCollectionsSettings from "./top-collections-settings";
+import ProfileSettings from "./ProfileSettings";
+import GeneralSettings from "./GeneralSettings";
+import LoadingSettings from "./Loading";
+import APIKeySettings from "./ApiKeySettings";
+import UsernameSettings from "./UsernameSettings";
+import TopCollectionsSettings from "./TopCollectionsSettings";
 
 const SettingsPage = () => {
   const { user, isLoaded } = useUser();

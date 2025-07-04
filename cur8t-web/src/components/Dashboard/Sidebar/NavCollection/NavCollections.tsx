@@ -22,7 +22,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CreateCollectionComponent } from "../../TopSection/create-collection";
+import { CreateCollectionComponent } from "../../TopSection/CreateCollection";
 
 import {
   DropdownMenu,
@@ -30,17 +30,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import ChangeVisibility from "./change-visibility";
-import CopyCollectionLink from "./copy-collection-link";
-import DeleteCollectionOption from "./delete-collection";
-import ChangeCollectionName from "./change-collection-name";
-import ChangeCollectionDescription from "./change-collection-description";
-import PinCollection from "./pin-collection";
+import ChangeVisibility from "./ChangeVisibility";
+import CopyCollectionLink from "./CopyCollectionLink";
+import DeleteCollectionOption from "./DeleteCollection";
+import ChangeCollectionName from "./ChangeCollectionName";
+import ChangeCollectionDescription from "./ChangeCollectionDescription";
+import PinCollection from "./PinCollection";
 import { useCollectionStore } from "@/store/collection-store";
-import LoadingCollections from "./loading";
-import NoCollections from "./no-collections";
+import NoCollections from "./NoCollections";
 import { useActiveState } from "@/store/activeStateStore";
 import { usePinnedCollectionsStore } from "@/store/pinned-collections-store";
+import LoadingCollections from "./Loading";
 
 export function NavCollection() {
   const { isMobile } = useSidebar();

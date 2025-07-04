@@ -4,9 +4,9 @@ import React from "react";
 import { useLinkStore } from "@/store/link-store";
 import { useToast } from "@/hooks/use-toast";
 import { FrontendLink, FrontendLinkSchema } from "@/types/types";
-import { LinkGrid } from "./link-grid";
-import LinkTable from "./link-table";
-import ManageLinksHeader, { FilterOptions } from "./link-header";
+import { LinkGrid } from "./LinkGrid";
+import LinkTable from "./LinkTable";
+import ManageLinksHeader, { FilterOptions } from "./LinkHeader";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { AddLinkForm } from "./add-link-form";
+import { AddLinkForm } from "./AddLinkForm";
 
 export function ManageCollectionLinks({
   collectionId,

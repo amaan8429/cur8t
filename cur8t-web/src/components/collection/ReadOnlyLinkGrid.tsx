@@ -32,8 +32,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/types/types";
 import { truncateUrl } from "@/lib/truncate";
-import LoadingStates from "./loading";
-import EmptyStates from "./no-links";
+import LoadingStates from "./Loading";
+import EmptyStates from "./NoLinks";
 
 type ViewMode = "grid" | "list" | "table";
 

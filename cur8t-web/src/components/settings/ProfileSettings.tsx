@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import Logout from "./logout";
+import Logout from "./Logout";
 
 interface ProfileSettingsProps {
   user: any;

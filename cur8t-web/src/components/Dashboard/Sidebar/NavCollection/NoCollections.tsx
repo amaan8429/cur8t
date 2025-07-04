@@ -16,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CreateCollectionComponent } from "../../TopSection/create-collection";
+import { CreateCollectionComponent } from "../../TopSection/CreateCollection";
 
 const NoCollections = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false);

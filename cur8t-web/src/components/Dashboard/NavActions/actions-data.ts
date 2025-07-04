@@ -15,7 +15,7 @@ import {
   StarHalf,
   StarOff,
 } from "lucide-react";
-import { ActionItem } from "./action-items";
+import { ActionItem } from "./ActionItems";
 
 // Define action types for better type safety
 export type ActionType =

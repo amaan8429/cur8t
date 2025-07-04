@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/layout/ModeToggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Dialog,
@@ -47,10 +47,10 @@ import {
   unsaveCollectionAction,
   checkIfSavedAction,
 } from "@/actions/collection/saveCollection";
-import { ReadOnlyLinkGrid } from "@/components/SingleCollection/read-only-link-grid";
-import { AccessDenied } from "@/components/SingleCollection/access-denied";
+import { ReadOnlyLinkGrid } from "@/components/collection/ReadOnlyLinkGrid";
+import { AccessDenied } from "@/components/collection/AccessDenied";
 import { Link } from "@/types/types";
-import { Footer } from "@/components/ui/footer";
+import { Footer } from "@/components/layout/Footer";
 
 interface Collection {
   id: string;

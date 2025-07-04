@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Github, Code, Terminal, Chrome } from "lucide-react";
 import React from "react";
-import GitHubIntegrationComponent from "./github-integration";
+import GitHubIntegrationComponent from "./GitHubIntegration";
 
 const IntegrationsPage = () => {
   return (
