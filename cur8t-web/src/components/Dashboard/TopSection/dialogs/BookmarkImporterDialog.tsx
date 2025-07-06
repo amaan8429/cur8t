@@ -394,9 +394,9 @@ export function BookmarkImporterDialog({
               (step, index) => (
                 <div key={step} className="flex items-center">
                   <div
-                    className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${
+                    className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium transition-all duration-200 ${
                       currentStep === step
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-primary text-primary-foreground shadow-lg scale-110"
                         : index <
                             [
                               "upload",
@@ -405,7 +405,7 @@ export function BookmarkImporterDialog({
                               "create",
                               "complete",
                             ].indexOf(currentStep)
-                          ? "bg-green-500 text-white"
+                          ? "bg-emerald-500 text-white shadow-md"
                           : "bg-muted text-muted-foreground"
                     }`}
                   >
@@ -417,14 +417,14 @@ export function BookmarkImporterDialog({
                       "create",
                       "complete",
                     ].indexOf(currentStep) ? (
-                      <CheckCircle className="h-4 w-4" />
+                      <CheckCircle className="h-5 w-5" />
                     ) : (
                       index + 1
                     )}
                   </div>
                   {index < 4 && (
                     <div
-                      className={`h-0.5 w-16 ${
+                      className={`h-1 w-16 rounded-full transition-all duration-300 ${
                         index <
                         [
                           "upload",
@@ -433,7 +433,7 @@ export function BookmarkImporterDialog({
                           "create",
                           "complete",
                         ].indexOf(currentStep)
-                          ? "bg-green-500"
+                          ? "bg-emerald-500"
                           : "bg-muted"
                       }`}
                     />
@@ -644,10 +644,10 @@ export function BookmarkImporterDialog({
                     transition={{ duration: 0.3 }}
                   >
                     <Card
-                      className={`border-l-4 ${
+                      className={`border-l-4 transition-all duration-200 ${
                         selectedCategories.includes(category.name)
-                          ? "border-l-primary bg-primary/5"
-                          : "border-l-muted"
+                          ? "border-l-primary bg-primary/5 shadow-md hover:shadow-lg"
+                          : "border-l-muted-foreground/30 hover:border-l-primary/50 hover:bg-muted/30"
                       }`}
                     >
                       <CardContent className="pt-4">
@@ -715,9 +715,9 @@ export function BookmarkImporterDialog({
                               ))}
                             </div>
 
-                            <div className="border rounded-lg p-4 bg-muted/20">
-                              <h5 className="font-medium mb-3 flex items-center gap-2">
-                                <GripVertical className="h-4 w-4" />
+                            <div className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-4 bg-muted/10 hover:bg-muted/20 transition-colors duration-200">
+                              <h5 className="font-semibold mb-4 flex items-center gap-2 text-foreground">
+                                <GripVertical className="h-4 w-4 text-muted-foreground" />
                                 Links ({category.bookmarks.length})
                               </h5>
 
@@ -745,15 +745,17 @@ export function BookmarkImporterDialog({
                                           initial={{ opacity: 0, scale: 0.8 }}
                                           animate={{ opacity: 1, scale: 1 }}
                                           exit={{ opacity: 0, scale: 0.8 }}
-                                          className="p-3 bg-background border rounded-lg cursor-move hover:shadow-sm transition-all"
+                                          className="p-4 bg-card border border-border rounded-xl cursor-move hover:shadow-md hover:border-primary/30 transition-all duration-200 group-hover:bg-accent/50"
                                         >
                                           {editingLink?.categoryIndex ===
                                             categoryIndex &&
                                           editingLink?.linkIndex ===
                                             linkIndex ? (
-                                            <div className="space-y-2">
+                                            <div className="space-y-3">
                                               <div>
-                                                <Label>Title</Label>
+                                                <Label className="text-sm font-semibold text-foreground">
+                                                  Title
+                                                </Label>
                                                 <Input
                                                   value={editedTitle}
                                                   onChange={(e) =>
@@ -761,34 +763,39 @@ export function BookmarkImporterDialog({
                                                       e.target.value
                                                     )
                                                   }
-                                                  placeholder="Link title"
+                                                  placeholder="Enter link title"
+                                                  className="mt-1 border-primary/20 focus:border-primary/50 bg-background"
                                                 />
                                               </div>
                                               <div>
-                                                <Label>URL</Label>
+                                                <Label className="text-sm font-semibold text-foreground">
+                                                  URL
+                                                </Label>
                                                 <Input
                                                   value={editedUrl}
                                                   onChange={(e) =>
                                                     setEditedUrl(e.target.value)
                                                   }
-                                                  placeholder="Link URL"
+                                                  placeholder="Enter link URL"
+                                                  className="mt-1 border-primary/20 focus:border-primary/50 bg-background font-mono text-sm"
                                                 />
                                               </div>
                                               <div className="flex gap-2">
                                                 <Button
                                                   size="sm"
                                                   onClick={saveEditedLink}
-                                                  className="flex-1"
+                                                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
                                                 >
-                                                  <Save className="h-3 w-3 mr-1" />
-                                                  Save
+                                                  <Save className="h-4 w-4 mr-2" />
+                                                  Save Changes
                                                 </Button>
                                                 <Button
                                                   size="sm"
                                                   variant="outline"
                                                   onClick={cancelEditingLink}
+                                                  className="border-muted-foreground/30 hover:bg-muted/50"
                                                 >
-                                                  <X className="h-3 w-3 mr-1" />
+                                                  <X className="h-4 w-4 mr-2" />
                                                   Cancel
                                                 </Button>
                                               </div>
@@ -796,17 +803,17 @@ export function BookmarkImporterDialog({
                                           ) : (
                                             <div className="flex items-center justify-between">
                                               <div className="flex items-center gap-3 flex-1 min-w-0">
-                                                <GripVertical className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                <GripVertical className="h-5 w-5 text-muted-foreground/60 opacity-0 group-hover:opacity-100 transition-all duration-200" />
                                                 <div className="flex-1 min-w-0">
-                                                  <div className="font-medium truncate">
+                                                  <div className="font-semibold text-foreground truncate text-sm">
                                                     {bookmark.title}
                                                   </div>
-                                                  <div className="text-xs text-muted-foreground truncate">
+                                                  <div className="text-xs text-muted-foreground/80 truncate mt-1 font-mono">
                                                     {bookmark.url}
                                                   </div>
                                                 </div>
                                               </div>
-                                              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
                                                 <Button
                                                   size="sm"
                                                   variant="ghost"
@@ -817,8 +824,9 @@ export function BookmarkImporterDialog({
                                                     )
                                                   }
                                                   title="Open link"
+                                                  className="h-8 w-8 p-0 hover:bg-primary/10 hover:text-primary"
                                                 >
-                                                  <ExternalLink className="h-3 w-3" />
+                                                  <ExternalLink className="h-4 w-4" />
                                                 </Button>
                                                 <Button
                                                   size="sm"
@@ -830,8 +838,9 @@ export function BookmarkImporterDialog({
                                                     )
                                                   }
                                                   title="Edit link"
+                                                  className="h-8 w-8 p-0 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950 dark:hover:text-blue-400"
                                                 >
-                                                  <Edit2 className="h-3 w-3" />
+                                                  <Edit2 className="h-4 w-4" />
                                                 </Button>
                                                 <Button
                                                   size="sm"
@@ -843,9 +852,9 @@ export function BookmarkImporterDialog({
                                                     )
                                                   }
                                                   title="Delete link"
-                                                  className="text-destructive hover:text-destructive"
+                                                  className="h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                                                 >
-                                                  <Trash2 className="h-3 w-3" />
+                                                  <Trash2 className="h-4 w-4" />
                                                 </Button>
                                               </div>
                                             </div>
@@ -858,9 +867,14 @@ export function BookmarkImporterDialog({
                               </Reorder.Group>
 
                               {category.bookmarks.length === 0 && (
-                                <div className="text-center py-8 text-muted-foreground">
-                                  <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                                  <p>No links in this category</p>
+                                <div className="text-center py-12 text-muted-foreground">
+                                  <FileText className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                                  <p className="text-sm font-medium">
+                                    No links in this category
+                                  </p>
+                                  <p className="text-xs mt-1 opacity-70">
+                                    All links have been removed or moved
+                                  </p>
                                 </div>
                               )}
                             </div>
@@ -876,23 +890,25 @@ export function BookmarkImporterDialog({
                 <Button
                   variant="outline"
                   onClick={() => setCurrentStep("analyze")}
+                  className="border-muted-foreground/30 hover:bg-muted/50"
                 >
                   Back to Analysis
                 </Button>
                 <Button
                   onClick={createCollections}
                   disabled={selectedCategories.length === 0 || isLoading}
-                  className="flex-1"
+                  className="flex-1 h-11 bg-emerald-600 hover:bg-emerald-700 text-white disabled:bg-muted disabled:text-muted-foreground"
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                       Creating Collections...
                     </>
                   ) : (
                     <>
-                      <Plus className="h-4 w-4 mr-2" />
-                      Create {selectedCategories.length} Collections
+                      <Plus className="h-5 w-5 mr-2" />
+                      Create {selectedCategories.length} Collection
+                      {selectedCategories.length !== 1 ? "s" : ""}
                     </>
                   )}
                 </Button>
@@ -902,17 +918,25 @@ export function BookmarkImporterDialog({
 
           {currentStep === "complete" && (
             <div className="space-y-4">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="text-center space-y-4">
-                    <CheckCircle className="h-12 w-12 text-green-500 mx-auto" />
-                    <div>
-                      <h3 className="text-lg font-semibold">
+              <Card className="border-emerald-200 dark:border-emerald-800">
+                <CardContent className="pt-8 pb-6">
+                  <div className="text-center space-y-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-emerald-100 dark:bg-emerald-900/20 rounded-full blur-xl scale-150 opacity-30"></div>
+                      <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto relative" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold text-foreground">
                         Collections Created Successfully!
                       </h3>
-                      <p className="text-muted-foreground">
-                        Your bookmarks have been imported and organized into{" "}
-                        {createdCollections.length} smart collections.
+                      <p className="text-muted-foreground/90 max-w-md mx-auto leading-relaxed">
+                        Your bookmarks have been intelligently imported and
+                        organized into{" "}
+                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                          {createdCollections.length} smart collections
+                        </span>
+                        . Click on any collection below to view and manage your
+                        links.
                       </p>
                     </div>
                   </div>
@@ -932,41 +956,46 @@ export function BookmarkImporterDialog({
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {createdCollections.map((collection) => (
+                      {createdCollections.map((collection, index) => (
                         <motion.div
                           key={collection.id}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.3 }}
+                          transition={{ duration: 0.3, delay: index * 0.1 }}
                         >
                           <Card
-                            className="cursor-pointer hover:shadow-md transition-all border-l-4 border-l-green-500 bg-green-50/50 hover:bg-green-50"
+                            className="cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4 border-l-emerald-500 bg-emerald-50/30 hover:bg-emerald-50/60 dark:bg-emerald-950/20 dark:hover:bg-emerald-950/40"
                             onClick={() => {
-                              router.push(`/collection/${collection.id}`);
-                              onOpenChange(false);
+                              window.open(
+                                `/collection/${collection.id}`,
+                                "_blank"
+                              );
                             }}
                           >
-                            <CardContent className="p-4">
+                            <CardContent className="p-5">
                               <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                  <FolderOpen className="h-5 w-5 text-green-600" />
+                                <div className="flex items-center gap-4">
+                                  <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
+                                    <FolderOpen className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                                  </div>
                                   <div>
-                                    <h4 className="font-medium">
+                                    <h4 className="font-semibold text-foreground text-base">
                                       {collection.title}
                                     </h4>
-                                    <p className="text-sm text-muted-foreground">
+                                    <p className="text-sm text-muted-foreground/90 mt-1">
                                       {collection.linksCount} links imported
+                                      successfully
                                     </p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-3">
                                   <Badge
                                     variant="secondary"
-                                    className="bg-green-100 text-green-700"
+                                    className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300 font-medium"
                                   >
                                     {collection.linksCount} links
                                   </Badge>
-                                  <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                                  <ExternalLink className="h-5 w-5 text-muted-foreground/70" />
                                 </div>
                               </div>
                             </CardContent>
@@ -982,16 +1011,19 @@ export function BookmarkImporterDialog({
                 <Button
                   variant="outline"
                   onClick={() => onOpenChange(false)}
-                  className="flex-1"
+                  className="flex-1 h-11 border-muted-foreground/30 hover:bg-muted/50"
                 >
-                  Close
+                  Close Dialog
                 </Button>
                 <Button
-                  onClick={() => router.push("/dashboard")}
-                  className="flex-1"
+                  onClick={() => {
+                    window.open("/dashboard", "_blank");
+                    onOpenChange(false);
+                  }}
+                  className="flex-1 h-11 bg-primary hover:bg-primary/90"
                 >
-                  <FolderOpen className="h-4 w-4 mr-2" />
-                  View Dashboard
+                  <FolderOpen className="h-5 w-5 mr-2" />
+                  Open Dashboard
                 </Button>
               </div>
             </div>
