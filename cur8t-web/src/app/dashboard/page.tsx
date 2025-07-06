@@ -1,8 +1,5 @@
 import { getSingleCollectionNameAction } from "@/actions/collection/getSingleCollectionName";
 import { getUserInfoAction } from "@/actions/user/getUserInfo";
-import { AppSidebar } from "@/components/dashboard/Sidebar/AppSidebar";
-import { ContentArea } from "@/components/dashboard/ContentArea/ContentArea";
-import { NavActions } from "@/components/dashboard/NavActions/NavActions";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,6 +14,9 @@ import {
 } from "@/components/ui/sidebar";
 import { ClientStateManager } from "@/components/dashboard/Sidebar/ClientStateManager";
 import { redirect } from "next/navigation";
+import { AppSidebar } from "@/components/dashboard/Sidebar/AppSidebar";
+import { NavActions } from "@/components/dashboard/NavActions/NavActions";
+import { ContentArea } from "@/components/dashboard/ContentArea/ContentArea";
 
 // Force dynamic rendering for authenticated routes
 export const dynamic = "force-dynamic";
