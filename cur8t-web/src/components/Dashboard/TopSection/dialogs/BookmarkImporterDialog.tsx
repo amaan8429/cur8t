@@ -405,7 +405,7 @@ export function BookmarkImporterDialog({
                               "create",
                               "complete",
                             ].indexOf(currentStep)
-                          ? "bg-emerald-500 text-white shadow-md"
+                          ? "bg-primary text-primary-foreground shadow-md"
                           : "bg-muted text-muted-foreground"
                     }`}
                   >
@@ -433,7 +433,7 @@ export function BookmarkImporterDialog({
                           "create",
                           "complete",
                         ].indexOf(currentStep)
-                          ? "bg-emerald-500"
+                          ? "bg-primary"
                           : "bg-muted"
                       }`}
                     />
@@ -784,7 +784,7 @@ export function BookmarkImporterDialog({
                                                 <Button
                                                   size="sm"
                                                   onClick={saveEditedLink}
-                                                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white"
+                                                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
                                                 >
                                                   <Save className="h-4 w-4 mr-2" />
                                                   Save Changes
@@ -897,7 +897,7 @@ export function BookmarkImporterDialog({
                 <Button
                   onClick={createCollections}
                   disabled={selectedCategories.length === 0 || isLoading}
-                  className="flex-1 h-11 bg-emerald-600 hover:bg-emerald-700 text-white disabled:bg-muted disabled:text-muted-foreground"
+                  className="flex-1 h-11 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-muted disabled:text-muted-foreground"
                 >
                   {isLoading ? (
                     <>
@@ -918,12 +918,12 @@ export function BookmarkImporterDialog({
 
           {currentStep === "complete" && (
             <div className="space-y-4">
-              <Card className="border-emerald-200 dark:border-emerald-800">
+              <Card className="border-primary/20 dark:border-primary/30">
                 <CardContent className="pt-8 pb-6">
                   <div className="text-center space-y-6">
                     <div className="relative">
-                      <div className="absolute inset-0 bg-emerald-100 dark:bg-emerald-900/20 rounded-full blur-xl scale-150 opacity-30"></div>
-                      <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto relative" />
+                      <div className="absolute inset-0 bg-primary/10 dark:bg-primary/20 rounded-full blur-xl scale-150 opacity-30"></div>
+                      <CheckCircle className="h-16 w-16 text-primary mx-auto relative" />
                     </div>
                     <div className="space-y-2">
                       <h3 className="text-xl font-bold text-foreground">
@@ -932,7 +932,7 @@ export function BookmarkImporterDialog({
                       <p className="text-muted-foreground/90 max-w-md mx-auto leading-relaxed">
                         Your bookmarks have been intelligently imported and
                         organized into{" "}
-                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                        <span className="font-semibold text-primary">
                           {createdCollections.length} smart collections
                         </span>
                         . Click on any collection below to view and manage your
@@ -964,7 +964,7 @@ export function BookmarkImporterDialog({
                           transition={{ duration: 0.3, delay: index * 0.1 }}
                         >
                           <Card
-                            className="cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4 border-l-emerald-500 bg-emerald-50/30 hover:bg-emerald-50/60 dark:bg-emerald-950/20 dark:hover:bg-emerald-950/40"
+                            className="cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary bg-primary/5 hover:bg-primary/10 dark:bg-primary/10 dark:hover:bg-primary/20"
                             onClick={() => {
                               window.open(
                                 `/collection/${collection.id}`,
@@ -975,8 +975,8 @@ export function BookmarkImporterDialog({
                             <CardContent className="p-5">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
-                                  <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
-                                    <FolderOpen className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                                  <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/20">
+                                    <FolderOpen className="h-6 w-6 text-primary" />
                                   </div>
                                   <div>
                                     <h4 className="font-semibold text-foreground text-base">
@@ -991,7 +991,7 @@ export function BookmarkImporterDialog({
                                 <div className="flex items-center gap-3">
                                   <Badge
                                     variant="secondary"
-                                    className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300 font-medium"
+                                    className="bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary font-medium"
                                   >
                                     {collection.linksCount} links
                                   </Badge>
