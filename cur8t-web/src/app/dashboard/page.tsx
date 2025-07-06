@@ -12,10 +12,10 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { ClientStateManager } from "@/components/dashboard/Sidebar/ClientStateManager";
 import { redirect } from "next/navigation";
-import { AppSidebar } from "@/components/dashboard/Sidebar/AppSidebar";
 import { NavActions } from "@/components/dashboard/NavActions/NavActions";
+import { ClientStateManager } from "@/components/dashboard/Sidebar/ClientStateManager";
+import { AppSidebar } from "@/components/dashboard/Sidebar/AppSidebar";
 import { ContentArea } from "@/components/dashboard/ContentArea/ContentArea";
 
 // Force dynamic rendering for authenticated routes
