@@ -3,6 +3,7 @@ Agents package - AI agents for bookmark and collection management
 """
 
 from .article_extractor.routes import router as article_extractor_router
+from .bookmark_importer.routes import router as bookmark_importer_router
 
 # Export available agent routers
 available_agents = {
@@ -38,9 +39,9 @@ available_agents = {
     },
     "bookmark_importer": {
         "name": "Bookmark File Importer",
-        "description": "Import and organize bookmark files",
-        "status": "coming_soon",
-        "router": None
+        "description": "Import and organize bookmark files using Gemini AI",
+        "status": "active",
+        "router": bookmark_importer_router
     }
 }
 

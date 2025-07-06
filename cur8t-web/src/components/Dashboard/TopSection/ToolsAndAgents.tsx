@@ -21,6 +21,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { ArticleExtractorDialog } from "./dialogs/ArticleExtractorDialog";
+import { BookmarkImporterDialog } from "./dialogs/BookmarkImporterDialog";
 import { ApiStatusIndicator } from "./dialogs/ApiStatusIndicator";
 
 const agents = [
@@ -83,22 +84,26 @@ const agents = [
     description:
       "Import your bookmarks file and automatically sort them into organized collections",
     icon: Upload,
-    status: "Coming Soon",
+    status: "Active",
     features: [
-      "Multiple formats",
-      "Smart categorization",
-      "Duplicate detection",
+      "Multiple browsers",
+      "AI-powered categorization",
+      "Smart organization",
     ],
   },
 ];
 
 export default function ToolsAndAgents() {
   const [articleExtractorOpen, setArticleExtractorOpen] = useState(false);
+  const [bookmarkImporterOpen, setBookmarkImporterOpen] = useState(false);
 
   const handleTryAgent = (agentId: number) => {
     switch (agentId) {
       case 1: // Article Link Extractor
         setArticleExtractorOpen(true);
+        break;
+      case 6: // Bookmark File Importer
+        setBookmarkImporterOpen(true);
         break;
       default:
         // For other agents, show coming soon message
@@ -192,6 +197,10 @@ export default function ToolsAndAgents() {
       <ArticleExtractorDialog
         open={articleExtractorOpen}
         onOpenChange={setArticleExtractorOpen}
+      />
+      <BookmarkImporterDialog
+        open={bookmarkImporterOpen}
+        onOpenChange={setBookmarkImporterOpen}
       />
     </div>
   );
