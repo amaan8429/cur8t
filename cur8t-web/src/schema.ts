@@ -18,6 +18,14 @@ export const UsersTable = pgTable("users", {
   totalCollections: integer("total_collections").notNull().default(0),
   topCollections: text("top_collections").array().default([]).notNull(),
   pinnedCollections: text("pinned_collections").array().default([]).notNull(),
+
+  twitterUsername: text("twitter_username").unique(),
+  linkedinUsername: text("linkedin_username").unique(),
+  githubUsername: text("github_username").unique(),
+  instagramUsername: text("instagram_username").unique(),
+  personalWebsite: text("personal_website").unique(),
+  bio: text("bio").default(""),
+  showSocialLinks: boolean("show_social_links").notNull().default(true),
 });
 
 export const APIKeysTable = pgTable("api_keys", {
