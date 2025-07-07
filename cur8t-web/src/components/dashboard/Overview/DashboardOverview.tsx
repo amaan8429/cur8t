@@ -76,21 +76,21 @@ export function DashboardOverview() {
       title: "Explore Collections",
       description: "Discover public collections",
       icon: ExternalLink,
-      action: () => setActiveItem("Explore Collections"),
+      action: () => window.open("/explore", "_blank"),
       variant: "secondary" as const,
     },
     {
       title: "Tools & Agents",
       description: "Use AI-powered features",
       icon: Workflow,
-      action: () => setActiveItem("Tools and Agents"),
+      action: () => router.push("/dashboard?item=Tools and Agents"),
       variant: "accent" as const,
     },
     {
       title: "Settings",
       description: "Manage your account",
       icon: Settings,
-      action: () => setActiveItem("Settings"),
+      action: () => router.push("/dashboard?secondary=Settings"),
       variant: "neutral" as const,
     },
   ];
@@ -128,13 +128,10 @@ export function DashboardOverview() {
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="space-y-4">
+      <div className="space-y-4 flex flex-row justify-between">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Welcome back!</h1>
-          <p className="text-muted-foreground">
-            Here&apos;s what&apos;s happening with your bookmarks and
-            collections.
-          </p>
+          <p className="text-muted-foreground">wassup homie, how you doing?</p>
         </div>
 
         {/* Search Bar */}
@@ -144,7 +141,7 @@ export function DashboardOverview() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <DashboardStatsCard
           title="Total Collections"
           value={stats.totalCollections}
@@ -158,12 +155,6 @@ export function DashboardOverview() {
           subtitle="+12 from last week"
           icon={LinkIcon}
           trend="up"
-        />
-        <DashboardStatsCard
-          title="Pinned Collections"
-          value={stats.pinnedCollections.length}
-          subtitle="Quick access collections"
-          icon={Star}
         />
         <DashboardStatsCard
           title="API Keys"
@@ -183,7 +174,7 @@ export function DashboardOverview() {
           onViewAll={() => {
             // Navigate to profile page
             if (userId) {
-              router.push(`/profile/${userId}`);
+              window.open(`/profile?userId=${userId}`, "_blank");
             }
           }}
           onViewCollection={(id) => {
