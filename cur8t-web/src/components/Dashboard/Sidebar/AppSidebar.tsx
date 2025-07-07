@@ -21,10 +21,10 @@ import {
   PlusCircle,
 } from "lucide-react";
 
-import { NavCollection } from "@/components/Dashboard/Sidebar/NavCollection/NavCollections";
-import { NavMain } from "@/components/Dashboard/Sidebar/NavMain";
-import { NavSecondary } from "@/components/Dashboard/Sidebar/NavSecondary";
-import { LogoNameDisplay } from "@/components/Dashboard/Sidebar/LogoNameDisplay";
+import { NavCollection } from "@/components/dashboard/Sidebar/NavCollection/NavCollections";
+import { NavMain } from "@/components/dashboard/Sidebar/NavMain";
+import { NavSecondary } from "@/components/dashboard/Sidebar/NavSecondary";
+import { LogoNameDisplay } from "@/components/dashboard/Sidebar/LogoNameDisplay";
 import {
   Sidebar,
   SidebarContent,

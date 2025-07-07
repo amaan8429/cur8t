@@ -13,10 +13,10 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { redirect } from "next/navigation";
-import { NavActions } from "../../components/Dashboard/NavActions/NavActions";
-import { ClientStateManager } from "../../components/Dashboard/Sidebar/ClientStateManager";
-import { AppSidebar } from "../../components/Dashboard/Sidebar/AppSidebar";
-import { ContentArea } from "../../components/Dashboard/ContentArea/ContentArea";
+import { NavActions } from "../../components/dashboard/NavActions/NavActions";
+import { ClientStateManager } from "../../components/dashboard/Sidebar/ClientStateManager";
+import { AppSidebar } from "../../components/dashboard/Sidebar/AppSidebar";
+import { ContentArea } from "../../components/dashboard/ContentArea/ContentArea";
 
 // Force dynamic rendering for authenticated routes
 export const dynamic = "force-dynamic";
