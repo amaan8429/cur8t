@@ -39,6 +39,19 @@ const agents = [
     ],
   },
   {
+    id: 6,
+    title: "Bookmark File Importer",
+    description:
+      "Import your bookmarks file and automatically sort them into organized collections",
+    icon: Upload,
+    status: "Active",
+    features: [
+      "Multiple browsers",
+      "AI-powered categorization",
+      "Smart organization",
+    ],
+  },
+  {
     id: 2,
     title: "Smart Export Guide",
     description:
@@ -77,19 +90,6 @@ const agents = [
     icon: PlayCircle,
     status: "Coming Soon",
     features: ["Topic detection", "Auto sorting", "Custom playlists"],
-  },
-  {
-    id: 6,
-    title: "Bookmark File Importer",
-    description:
-      "Import your bookmarks file and automatically sort them into organized collections",
-    icon: Upload,
-    status: "Active",
-    features: [
-      "Multiple browsers",
-      "AI-powered categorization",
-      "Smart organization",
-    ],
   },
 ];
 
