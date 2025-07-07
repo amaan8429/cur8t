@@ -9,6 +9,7 @@ import ExploreCollections from "../TopSection/ExploreCollections";
 import { Home } from "lucide-react";
 import SavedCollections from "../TopSection/SavedCollections";
 import ToolsAndAgents from "../TopSection/ToolsAndAgents";
+import { DashboardOverview } from "../Overview/DashboardOverview";
 
 export function ContentArea() {
   // Use the hook to subscribe to state changes, not .getState()
@@ -20,6 +21,7 @@ export function ContentArea() {
 
   return (
     <div className="p-6">
+      {activeItem === "Overview" && <DashboardOverview />}
       {activeItem === "New" && <CreateCollectionComponent />}
       {activeItem === "Explore Collections" && <ExploreCollections />}
       {activeItem === "Saved" && <SavedCollections />}

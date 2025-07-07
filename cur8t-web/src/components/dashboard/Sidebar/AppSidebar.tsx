@@ -41,7 +41,7 @@ const data = {
   },
   navMain: [
     {
-      title: "Home",
+      title: "Overview",
       url: "#",
       icon: Home,
       isActive: true,
