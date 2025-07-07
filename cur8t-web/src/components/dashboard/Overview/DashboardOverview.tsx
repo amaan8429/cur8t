@@ -47,6 +47,7 @@ export function DashboardOverview() {
   const [loading, setLoading] = useState(true);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const router = useRouter();
+  const setActiveUserId = useActiveState((state) => state.setActiveUserId);
   const { userId } = useAuth();
 
   useEffect(() => {
@@ -59,6 +60,10 @@ export function DashboardOverview() {
       } finally {
         setLoading(false);
       }
+    }
+
+    if (userId) {
+      setActiveUserId(userId);
     }
 
     fetchStats();

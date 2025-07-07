@@ -6,13 +6,17 @@ import { useActiveState } from "@/store/activeStateStore";
 
 const SecondaryPage = () => {
   const activeSecondary = useActiveState.getState().activeSecondary;
+  const activeUserId = useActiveState.getState().activeUserId;
 
   if (activeSecondary === "Integrations") {
     return <IntegrationsPage />;
   } else if (activeSecondary === "Settings") {
     return <SettingsPage />;
-  } else if (activeSecondary === "Help") {
-    return <HelpPage />;
+  } else if (activeSecondary === "Profile") {
+    if (activeUserId) {
+      return window.open(`/profile?userId=${activeUserId}`, "_blank");
+    }
+    return null;
   }
 };
 
