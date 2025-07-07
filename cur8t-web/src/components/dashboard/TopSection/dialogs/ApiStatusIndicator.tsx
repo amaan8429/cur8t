@@ -143,51 +143,12 @@ export function ApiStatusIndicator({ className }: ApiStatusIndicatorProps) {
               Agents API Status
             </DialogTitle>
             <DialogDescription>
-              Connection status and information about the Cur8t Agents API
+              Connection status about cur8t agents API
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
             {/* Connection Status */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Activity className="h-4 w-4" />
-                  Connection Status
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Status:</span>
-                  <Badge
-                    variant={getStatusVariant()}
-                    className="flex items-center gap-1"
-                  >
-                    {getStatusIcon()}
-                    {getStatusText()}
-                  </Badge>
-                </div>
-
-                {status.error && (
-                  <div className="mt-2 p-2 bg-red-50 rounded-md">
-                    <p className="text-sm text-red-700">{status.error}</p>
-                  </div>
-                )}
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={checkApiStatus}
-                  disabled={status.isLoading}
-                  className="w-full mt-3"
-                >
-                  <RefreshCw
-                    className={`h-3 w-3 mr-2 ${status.isLoading ? "animate-spin" : ""}`}
-                  />
-                  Refresh Status
-                </Button>
-              </CardContent>
-            </Card>
 
             {/* API Information */}
             {status.apiInfo && (

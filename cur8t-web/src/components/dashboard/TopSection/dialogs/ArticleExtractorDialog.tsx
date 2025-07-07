@@ -275,8 +275,8 @@ export function ArticleExtractorDialog({
         if (!newOpen) resetDialog();
       }}
     >
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
-        <DialogHeader>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col mx-4 sm:mx-6 lg:mx-8">
+        <DialogHeader className="px-1 pb-4">
           <DialogTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
             Article Link Extractor
@@ -286,7 +286,7 @@ export function ArticleExtractorDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto px-1">
           {step === "input" && (
             <div className="space-y-6">
               <div className="space-y-2">
@@ -467,7 +467,7 @@ export function ArticleExtractorDialog({
                 )}
 
                 {/* Links Grid */}
-                <div className="space-y-2 max-h-96 overflow-auto">
+                <div className="space-y-2 max-h-96 overflow-auto pr-2">
                   {extractedData.extracted_links.map((link, index) => (
                     <div
                       key={index}
@@ -538,7 +538,7 @@ export function ArticleExtractorDialog({
           )}
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="px-1 pt-4">
           {step === "input" && (
             <>
               <Button variant="outline" onClick={() => onOpenChange(false)}>
