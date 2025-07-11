@@ -28,53 +28,68 @@ const SettingsPage = () => {
         <TabsList className="grid w-full grid-cols-5 mb-8 bg-muted/50 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
           <TabsTrigger
             value="profile"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 ease-in-out hover:bg-muted"
           >
             Profile
           </TabsTrigger>
           <TabsTrigger
             value="collections"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 ease-in-out hover:bg-muted"
           >
             Collections
           </TabsTrigger>
           <TabsTrigger
             value="general"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 ease-in-out hover:bg-muted"
           >
             General
           </TabsTrigger>
           <TabsTrigger
             value="api"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 ease-in-out hover:bg-muted"
           >
             API Keys
           </TabsTrigger>
           <TabsTrigger
             value="social"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 ease-in-out hover:bg-muted"
           >
             Social
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="profile" className="space-y-6">
+        <TabsContent
+          value="profile"
+          className="space-y-6 animate-in fade-in-0 slide-in-from-right-2 duration-300"
+        >
           <ProfileSettings user={user} />
         </TabsContent>
 
-        <TabsContent value="collections" className="space-y-6">
+        <TabsContent
+          value="collections"
+          className="space-y-6 animate-in fade-in-0 slide-in-from-right-2 duration-300"
+        >
           <TopCollectionsSettings />
         </TabsContent>
 
-        <TabsContent value="general" className="space-y-6">
+        <TabsContent
+          value="general"
+          className="space-y-6 animate-in fade-in-0 slide-in-from-right-2 duration-300"
+        >
           <GeneralSettings />
         </TabsContent>
 
-        <TabsContent value="api" className="space-y-6">
+        <TabsContent
+          value="api"
+          className="space-y-6 animate-in fade-in-0 slide-in-from-right-2 duration-300"
+        >
           <APIKeySettings />
         </TabsContent>
 
-        <TabsContent value="social" className="space-y-6">
+        <TabsContent
+          value="social"
+          className="space-y-6 animate-in fade-in-0 slide-in-from-right-2 duration-300"
+        >
           <SocialMediaSettings />
         </TabsContent>
       </Tabs>
