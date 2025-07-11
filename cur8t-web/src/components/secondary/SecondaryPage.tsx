@@ -5,8 +5,9 @@ import SettingsPage from "../settings/SettingsPage";
 import { useActiveState } from "@/store/activeStateStore";
 
 const SecondaryPage = () => {
-  const activeSecondary = useActiveState.getState().activeSecondary;
-  const activeUserId = useActiveState.getState().activeUserId;
+  // Use the proper hook instead of getState() during render
+  const activeSecondary = useActiveState((state) => state.activeSecondary);
+  const activeUserId = useActiveState((state) => state.activeUserId);
 
   if (activeSecondary === "Integrations") {
     return <IntegrationsPage />;
@@ -18,6 +19,8 @@ const SecondaryPage = () => {
     }
     return null;
   }
+
+  return null;
 };
 
 export default SecondaryPage;

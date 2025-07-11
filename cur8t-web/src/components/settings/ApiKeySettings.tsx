@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
@@ -37,7 +38,7 @@ const APIKeySettings = () => {
     name: string;
   } | null>(null);
   const [newKeyName, setNewKeyName] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
@@ -48,7 +49,7 @@ const APIKeySettings = () => {
         toast({
           title: "Error",
           description: "Failed to fetch API keys. Please try again later.",
-          variant: "destructive",
+          className: "bg-primary border-primary text-primary-foreground",
         });
         return;
       }
@@ -63,8 +64,39 @@ const APIKeySettings = () => {
       }
     };
 
-    fetchKeys();
+    fetchKeys().finally(() => setIsLoading(false));
   }, [toast]);
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-6 w-32" />
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-9 w-32" />
+          </div>
+          {Array.from({ length: 2 }).map((_, i) => (
+            <div
+              key={i}
+              className="p-4 border border-border/30 rounded-lg space-y-2"
+            >
+              <div className="flex justify-between items-start">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-3 w-16" />
+                </div>
+                <Skeleton className="h-8 w-16" />
+              </div>
+              <Skeleton className="h-9 w-full" />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    );
+  }
 
   const confirmDelete = (key: string, name: string) => {
     setSelectedKeyForDeletion({ key, name });
@@ -86,13 +118,14 @@ const APIKeySettings = () => {
       toast({
         title: "Error",
         description: response.error,
-        variant: "destructive",
+        className: "bg-primary border-primary text-primary-foreground",
       });
     } else {
       setApiKeys(apiKeys.filter((k) => k.key !== selectedKeyForDeletion.key));
       toast({
         title: "Success",
         description: "API key deleted successfully",
+        className: "bg-primary border-primary text-primary-foreground",
       });
     }
 
@@ -114,7 +147,7 @@ const APIKeySettings = () => {
       toast({
         title: "Error",
         description: data.error || "Failed to create API key",
-        variant: "destructive",
+        className: "bg-primary border-primary text-primary-foreground",
       });
       setIsLoading(false);
       return;
@@ -124,7 +157,7 @@ const APIKeySettings = () => {
       toast({
         title: "Error",
         description: "Maximum number of API keys reached",
-        variant: "destructive",
+        className: "bg-primary border-primary text-primary-foreground",
       });
       setIsLoading(false);
       return;
@@ -142,6 +175,7 @@ const APIKeySettings = () => {
     toast({
       title: "Success",
       description: "New API key generated successfully",
+      className: "bg-primary border-primary text-primary-foreground",
     });
 
     setIsLoading(false);
@@ -155,13 +189,14 @@ const APIKeySettings = () => {
         toast({
           title: "Copied!",
           description: `API key "${keyName}" copied to clipboard`,
+          className: "bg-primary border-primary text-primary-foreground",
         });
       },
       () => {
         toast({
           title: "Error",
           description: "Failed to copy API key to clipboard",
-          variant: "destructive",
+          className: "bg-primary border-primary text-primary-foreground",
         });
       }
     );
@@ -171,19 +206,16 @@ const APIKeySettings = () => {
     <Card>
       <CardHeader>
         <CardTitle>API Keys</CardTitle>
-        <CardDescription>
-          Manage your API keys for cli and other integrations
-        </CardDescription>
+        <CardDescription>Manage CLI and integration keys</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex justify-between items-center">
-          <p className="text-sm text-muted-foreground">
-            You can generate up to 3 API keys
-          </p>
+          <p className="text-sm text-muted-foreground">Up to 3 keys allowed</p>
           <Button
             onClick={() => setShowNewKeyDialog(true)}
             disabled={apiKeys.length >= 3 || isLoading}
             size="sm"
+            className="bg-primary hover:bg-primary/90"
           >
             <Plus className="w-4 h-4 mr-2" />
             Generate New Key
@@ -208,6 +240,7 @@ const APIKeySettings = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => copyToClipboard(apiKey.key, apiKey.name)}
+                    className="text-primary hover:bg-primary/10"
                   >
                     <Copy className="w-4 h-4" />
                   </Button>
@@ -216,6 +249,7 @@ const APIKeySettings = () => {
                     size="sm"
                     onClick={() => confirmDelete(apiKey.key, apiKey.name)}
                     disabled={isDeleting}
+                    className="text-destructive hover:bg-destructive/10"
                   >
                     Delete
                   </Button>
@@ -250,12 +284,14 @@ const APIKeySettings = () => {
                 variant="outline"
                 onClick={() => setShowNewKeyDialog(false)}
                 disabled={isLoading}
+                className="border-border hover:bg-muted"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleCreateKey}
                 disabled={!newKeyName || isLoading}
+                className="bg-primary hover:bg-primary/90"
               >
                 {isLoading ? "Generating..." : "Generate Key"}
               </Button>
@@ -278,13 +314,14 @@ const APIKeySettings = () => {
                 variant="outline"
                 onClick={() => setShowDeleteDialog(false)}
                 disabled={isDeleting}
+                className="border-border hover:bg-muted"
               >
                 Cancel
               </Button>
               <Button
-                variant="destructive"
                 onClick={deleteKey}
                 disabled={isDeleting}
+                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
               >
                 {isDeleting ? "Deleting..." : "Delete"}
               </Button>

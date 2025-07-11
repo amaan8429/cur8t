@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
@@ -62,7 +63,7 @@ const TopCollectionsSettings = () => {
         toast({
           title: "Error",
           description: topCollectionsResult.error,
-          variant: "destructive",
+          className: "bg-primary border-primary text-primary-foreground",
         });
         return;
       }
@@ -71,7 +72,7 @@ const TopCollectionsSettings = () => {
         toast({
           title: "Error",
           description: allCollectionsResult.error,
-          variant: "destructive",
+          className: "bg-primary border-primary text-primary-foreground",
         });
         return;
       }
@@ -87,7 +88,7 @@ const TopCollectionsSettings = () => {
       toast({
         title: "Error",
         description: "Failed to fetch collections",
-        variant: "destructive",
+        className: "bg-primary border-primary text-primary-foreground",
       });
     } finally {
       setIsLoading(false);
@@ -105,7 +106,7 @@ const TopCollectionsSettings = () => {
         toast({
           title: "Error",
           description: result.error,
-          variant: "destructive",
+          className: "bg-primary border-primary text-primary-foreground",
         });
         return;
       }
@@ -115,13 +116,14 @@ const TopCollectionsSettings = () => {
       toast({
         title: "Success",
         description: "Top collections updated successfully",
+        className: "bg-primary border-primary text-primary-foreground",
       });
     } catch (error) {
       console.error("Error saving top collections:", error);
       toast({
         title: "Error",
         description: "Failed to update top collections",
-        variant: "destructive",
+        className: "bg-primary border-primary text-primary-foreground",
       });
     } finally {
       setIsSaving(false);
@@ -133,7 +135,7 @@ const TopCollectionsSettings = () => {
       toast({
         title: "Limit reached",
         description: "You can only have up to 5 top collections",
-        variant: "destructive",
+        className: "bg-primary border-primary text-primary-foreground",
       });
       return;
     }
@@ -142,7 +144,7 @@ const TopCollectionsSettings = () => {
       toast({
         title: "Already added",
         description: "This collection is already in your top collections",
-        variant: "destructive",
+        className: "bg-primary border-primary text-primary-foreground",
       });
       return;
     }
@@ -191,15 +193,31 @@ const TopCollectionsSettings = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Top Collections</CardTitle>
-          <CardDescription>Loading...</CardDescription>
+          <Skeleton className="h-6 w-48" />
         </CardHeader>
-        <CardContent>
-          <div className="animate-pulse space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-16 bg-muted rounded" />
-            ))}
+        <CardContent className="space-y-6">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-9 w-32" />
           </div>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="p-4 border border-border/30 rounded-lg space-y-2"
+            >
+              <div className="flex justify-between items-start">
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-3 w-48" />
+                </div>
+                <Skeleton className="h-8 w-8" />
+              </div>
+              <div className="flex items-center justify-between">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-6 w-16" />
+              </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
     );
@@ -207,35 +225,42 @@ const TopCollectionsSettings = () => {
 
   return (
     <Card>
-      <CardHeader className="relative">
+      <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Star className="h-5 w-5" />
+          <Star className="h-5 w-5 text-primary" />
           Top Collections
         </CardTitle>
         <CardDescription>
           Select up to 5 collections to feature. These will be displayed in your
           browser extension.
         </CardDescription>
-        {hasChanges && (
-          <div className="absolute right-6 top-6">
-            <Button onClick={handleSave} disabled={isSaving} size="sm">
-              <Save className="h-4 w-4 mr-2" />
-              {isSaving ? "Saving..." : "Save Changes"}
-            </Button>
-          </div>
-        )}
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex justify-between items-center">
-          <p className="text-sm text-muted-foreground">
-            {topCollections.length}/5 collections selected
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-muted-foreground">
+              {topCollections.length}/5 collections selected
+            </p>
+            {hasChanges && (
+              <Button
+                onClick={handleSave}
+                disabled={isSaving}
+                size="sm"
+                className="bg-primary hover:bg-primary/90"
+              >
+                <Save className="h-4 w-4 mr-2" />
+                {isSaving ? "Saving..." : "Save Changes"}
+              </Button>
+            )}
+          </div>
           <Button
             onClick={() => setShowAddDialog(true)}
             disabled={
               topCollections.length >= 5 || availableCollections.length === 0
             }
             size="sm"
+            variant="outline"
+            className="border-primary/20 text-primary hover:bg-primary/10"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Collection
@@ -287,6 +312,7 @@ const TopCollectionsSettings = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleRemoveCollection(collection.id)}
+                    className="text-destructive hover:bg-destructive/10"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -333,6 +359,7 @@ const TopCollectionsSettings = () => {
                       <Button
                         onClick={() => handleAddCollection(collection)}
                         size="sm"
+                        className="bg-primary hover:bg-primary/90"
                       >
                         <Plus className="h-4 w-4 mr-2" />
                         Add
@@ -343,7 +370,11 @@ const TopCollectionsSettings = () => {
               )}
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setShowAddDialog(false)}
+                className="border-border hover:bg-muted"
+              >
                 Cancel
               </Button>
             </DialogFooter>

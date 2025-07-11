@@ -131,7 +131,7 @@ export default function SocialMediaSettings() {
         toast({
           title: "Error",
           description: "Failed to load social media settings",
-          variant: "destructive",
+          className: "bg-primary border-primary text-primary-foreground",
         });
       } finally {
         setIsLoading(false);
@@ -189,6 +189,7 @@ export default function SocialMediaSettings() {
         toast({
           title: "Success",
           description: "Your social media settings have been updated",
+          className: "bg-primary border-primary text-primary-foreground",
         });
       } else {
         throw new Error("Failed to save");
@@ -197,7 +198,7 @@ export default function SocialMediaSettings() {
       toast({
         title: "Error",
         description: "Failed to update social media settings",
-        variant: "destructive",
+        className: "bg-primary border-primary text-primary-foreground",
       });
     } finally {
       setIsSaving(false);
@@ -312,13 +313,14 @@ export default function SocialMediaSettings() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
+            <User className="h-5 w-5 text-primary" />
             Social Media Settings
           </CardTitle>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setPreviewMode(!previewMode)}
+            className="border-primary/20 text-primary hover:bg-primary/10"
           >
             {previewMode ? (
               <EyeOff className="h-4 w-4" />
@@ -470,6 +472,7 @@ export default function SocialMediaSettings() {
                 onCheckedChange={(checked) =>
                   handleToggleChange("showSocialLinks", checked)
                 }
+                className="data-[state=checked]:bg-primary"
               />
             </div>
           </>
@@ -483,7 +486,7 @@ export default function SocialMediaSettings() {
               isSaving ||
               Object.values(validationErrors).some((error) => error)
             }
-            className="min-w-[100px]"
+            className="min-w-[100px] bg-primary hover:bg-primary/90"
           >
             {isSaving ? "Saving..." : "Save Changes"}
           </Button>
