@@ -30,7 +30,16 @@ export function ContentArea() {
       {activeCollectionId && (
         <ManageCollectionLinks collectionId={activeCollectionId} />
       )}
-      {activeSecondary && <SecondaryPage />}
+      {activeSecondary &&
+        typeof SecondaryPage === "function" &&
+        (() => {
+          const result = SecondaryPage();
+          // Only render if result is a valid React element (not a Window object)
+          if (React.isValidElement(result)) {
+            return result;
+          }
+          return null;
+        })()}
     </div>
   );
 }
