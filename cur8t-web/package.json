@@ -53,6 +53,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.0",
+    "react-wrap-balancer": "^1.1.1",
     "sharp": "^0.34.1",
     "svix": "^1.43.0",
     "tailwind-merge": "^2.6.0",

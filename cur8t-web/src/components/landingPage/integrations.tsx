@@ -20,6 +20,7 @@ interface BentoGridItemProps {
   className?: string;
   size?: "small" | "medium" | "large";
   status?: "available" | "coming-soon" | "beta";
+  onClick?: () => void;
 }
 
 const BentoGridItem = ({
@@ -29,6 +30,7 @@ const BentoGridItem = ({
   className,
   size = "small",
   status = "available",
+  onClick,
 }: BentoGridItemProps) => {
   const variants = {
     hidden: { opacity: 0, y: 20 },
@@ -50,6 +52,7 @@ const BentoGridItem = ({
   return (
     <motion.div
       variants={variants}
+      onClick={onClick}
       className={cn(
         "group relative flex h-full cursor-pointer flex-col justify-between overflow-hidden rounded-xl border border-border bg-card px-6 pb-10 pt-6 shadow-sm transition-all duration-500 hover:border-primary/30 hover:shadow-md",
         className
@@ -84,7 +87,7 @@ const BentoGridItem = ({
         <div className="mt-4 flex items-center text-sm text-primary">
           <span className="mr-1">
             {status === "available"
-              ? "Use now"
+              ? "Learn more"
               : status === "beta"
                 ? "Try beta"
                 : "Learn more"}
@@ -159,6 +162,12 @@ export default function Integrations() {
     },
   };
 
+  const handleBrowserExtensionClick = () => {
+    document.getElementById("browser-extension-showcase")?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   return (
     <section className="py-16 bg-background">
       <div className="mx-auto max-w-6xl px-4">
@@ -197,6 +206,11 @@ export default function Integrations() {
               icon={integration.icon}
               size={integration.size}
               status={integration.status}
+              onClick={
+                integration.title === "Browser Extension"
+                  ? handleBrowserExtensionClick
+                  : undefined
+              }
               className={cn(
                 integration.size === "large" && "sm:col-span-2",
                 "min-h-[180px]"

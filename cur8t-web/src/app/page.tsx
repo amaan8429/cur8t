@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Hero from "@/components/landingPage/Hero";
 import Integrations from "@/components/landingPage/integrations";
+import BrowserExtensionShowcase from "@/components/landingPage/BrowserExtensionShowcase";
 import {
   Navbar,
   NavBody,
@@ -89,6 +90,9 @@ const Home = () => {
         <section id="integrations">
           <Integrations />
         </section>
+
+        {/* Browser Extension Showcase */}
+        <BrowserExtensionShowcase />
 
         {/* Placeholder sections for the other nav links */}
         <section
