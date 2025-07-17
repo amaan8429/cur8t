@@ -2,15 +2,15 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
-import { JetBrains_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 
 export const metadata = {
-  title: "Bukmarks",
+  title: "Cur8t",
   description: "a way to share links faster and optmize your workflow",
 };
 
-const jetBrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -22,9 +22,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body
-          className={`${jetBrainsMono.className} ${jetBrainsMono.className}`}
-        >
+        <body className={`${inter.variable}`}>
           <ThemeProvider attribute="class" defaultTheme="system">
             <main>{children}</main>
             <Toaster />
