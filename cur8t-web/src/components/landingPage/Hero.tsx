@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export default function Hero() {
-  const [mounted, setMounted] = useState(false);
-
   // State for animated counters
   const [stats, setStats] = useState({
     users: 500,
@@ -15,15 +13,8 @@ export default function Hero() {
     networks: 40,
   });
 
-  // Only start animation after component mounts (fixes hydration)
+  // Animation to count up numbers
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Animation to count up numbers - only after mounted
-  useEffect(() => {
-    if (!mounted) return;
-
     const interval = setInterval(() => {
       setStats((prev) => {
         const newUsers = prev.users >= 20000 ? 20000 : prev.users + 500;
@@ -48,7 +39,7 @@ export default function Hero() {
     }, 50);
 
     return () => clearInterval(interval);
-  }, [mounted]);
+  }, []);
 
   // Animation variants
   const containerVariants = {
@@ -136,26 +127,60 @@ export default function Hero() {
 
         {/* Particle effects - subtle dots */}
         <div className="absolute inset-0 opacity-20">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute h-1 w-1 rounded-full bg-foreground"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                opacity: [0.2, 0.8, 0.2],
-                scale: [1, 1.5, 1],
-              }}
-              transition={{
-                duration: 3 + Math.random() * 2,
-                repeat: Number.POSITIVE_INFINITY,
-                ease: "easeInOut",
-                delay: Math.random() * 2,
-              }}
-            />
-          ))}
+          {Array.from({ length: 20 }).map((_, i) => {
+            // Use consistent values based on index to avoid hydration issues
+            const positions = [
+              { top: 15, left: 25 },
+              { top: 75, left: 85 },
+              { top: 35, left: 70 },
+              { top: 90, left: 15 },
+              { top: 50, left: 45 },
+              { top: 20, left: 60 },
+              { top: 80, left: 30 },
+              { top: 10, left: 90 },
+              { top: 65, left: 20 },
+              { top: 40, left: 95 },
+              { top: 85, left: 55 },
+              { top: 25, left: 75 },
+              { top: 55, left: 10 },
+              { top: 95, left: 40 },
+              { top: 30, left: 80 },
+              { top: 70, left: 35 },
+              { top: 5, left: 65 },
+              { top: 45, left: 50 },
+              { top: 60, left: 85 },
+              { top: 15, left: 45 },
+            ];
+            const durations = [
+              3, 4, 3.5, 4.5, 3.2, 4.8, 3.8, 4.2, 3.6, 4.4, 3.4, 4.6, 3.1, 4.1,
+              3.7, 4.3, 3.9, 4.7, 3.3, 4.9,
+            ];
+            const delays = [
+              0, 0.5, 1, 1.5, 0.2, 0.7, 1.2, 1.7, 0.4, 0.9, 1.4, 1.9, 0.1, 0.6,
+              1.1, 1.6, 0.3, 0.8, 1.3, 1.8,
+            ];
+
+            return (
+              <motion.div
+                key={i}
+                className="absolute h-1 w-1 rounded-full bg-foreground"
+                style={{
+                  top: `${positions[i]?.top || 50}%`,
+                  left: `${positions[i]?.left || 50}%`,
+                }}
+                animate={{
+                  opacity: [0.2, 0.8, 0.2],
+                  scale: [1, 1.5, 1],
+                }}
+                transition={{
+                  duration: durations[i] || 3,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "easeInOut",
+                  delay: delays[i] || 0,
+                }}
+              />
+            );
+          })}
         </div>
       </div>
 

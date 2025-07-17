@@ -31,36 +31,27 @@ function FeatureCard({
 }: CardProps & {
   children: React.ReactNode;
 }) {
-  const [mounted, setMounted] = useState(false);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Always call the hooks, regardless of mounted state
   const motionTemplateX = useMotionTemplate`${mouseX}px`;
   const motionTemplateY = useMotionTemplate`${mouseY}px`;
 
   function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
-    if (!mounted) return;
     const { left, top } = currentTarget.getBoundingClientRect();
     mouseX.set(clientX - left);
     mouseY.set(clientY - top);
   }
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
     <motion.div
       className="animated-cards relative w-full rounded-[16px]"
-      onMouseMove={mounted ? handleMouseMove : undefined}
+      onMouseMove={handleMouseMove}
       style={
-        mounted
-          ? ({
-              "--x": motionTemplateX,
-              "--y": motionTemplateY,
-            } as WrapperStyle)
-          : {}
+        {
+          "--x": motionTemplateX,
+          "--y": motionTemplateY,
+        } as WrapperStyle
       }
     >
       <div
@@ -70,7 +61,7 @@ function FeatureCard({
           bgClass
         )}
       >
-        <div className="m-10 min-h-[550px] w-full">
+        <div className="m-6 min-h-[350px] w-full">
           <div className="flex w-4/6 flex-col gap-3">
             <h2 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">
               {title}
@@ -79,7 +70,7 @@ function FeatureCard({
               <Balancer>{description}</Balancer>
             </p>
           </div>
-          {mounted ? children : null}
+          {children}
         </div>
       </div>
     </motion.div>
@@ -185,14 +176,8 @@ function Steps({ steps, current, onChange }: StepsProps) {
 function useNumberCycler() {
   const [currentNumber, setCurrentNumber] = useState(0);
   const [dummy, setDummy] = useState(0);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const increment = () => {
-    if (!mounted) return;
     setCurrentNumber((prevNumber) => {
       return (prevNumber + 1) % 4;
     });
@@ -201,8 +186,6 @@ function useNumberCycler() {
   };
 
   useEffect(() => {
-    if (!mounted) return;
-
     const intervalId = setInterval(() => {
       setCurrentNumber((prevNumber) => {
         return (prevNumber + 1) % 4;
@@ -212,11 +195,11 @@ function useNumberCycler() {
     return () => {
       clearInterval(intervalId);
     };
-  }, [dummy, mounted]);
+  }, [dummy]);
 
   return {
     increment,
-    currentNumber: mounted ? currentNumber : 0,
+    currentNumber,
   };
 }
 
@@ -245,11 +228,6 @@ export function BrowserExtensionCard({
   };
 }) {
   const { currentNumber: step, increment } = useNumberCycler();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   return (
     <FeatureCard {...props}>
@@ -273,89 +251,87 @@ export function BrowserExtensionCard({
         />
       </div>
 
-      {mounted && (
-        <>
-          {/* step 1 */}
-          <Image
-            alt={image.alt}
-            className={cn(step1img1Class, {
-              "-translate-x-36 opacity-0 rounded-2xl": step > 0,
-            })}
-            src={image.step1dark1}
-            style={{
-              position: "absolute",
-              userSelect: "none",
-              maxWidth: "unset",
-            }}
-          />
-          <Image
-            alt={image.alt}
-            className={cn(step1img2Class, {
-              "-translate-x-24 opacity-0 rounded-2xl": step > 0,
-            })}
-            src={image.step1dark2}
-            style={{
-              position: "absolute",
-              userSelect: "none",
-              maxWidth: "unset",
-            }}
-          />
+      <div>
+        {/* step 1 */}
+        <Image
+          alt={image.alt}
+          className={cn(step1img1Class, {
+            "-translate-x-36 opacity-0 rounded-2xl": step > 0,
+          })}
+          src={image.step1dark1}
+          style={{
+            position: "absolute",
+            userSelect: "none",
+            maxWidth: "unset",
+          }}
+        />
+        <Image
+          alt={image.alt}
+          className={cn(step1img2Class, {
+            "-translate-x-24 opacity-0 rounded-2xl": step > 0,
+          })}
+          src={image.step1dark2}
+          style={{
+            position: "absolute",
+            userSelect: "none",
+            maxWidth: "unset",
+          }}
+        />
 
-          {/* step 2 */}
-          <Image
-            alt={image.alt}
-            className={cn(
-              step2img1Class,
-              "rounded-2xl",
-              { "translate-x-36 opacity-0": step < 1 },
-              { "-translate-x-36 opacity-0": step > 1 }
-            )}
-            src={image.step2dark1}
-            style={{
-              position: "absolute",
-              userSelect: "none",
-              maxWidth: "unset",
-            }}
-          />
-          <Image
-            alt={image.alt}
-            className={cn(
-              step2img2Class,
-              "rounded-2xl",
-              { "translate-x-24 opacity-0": step < 1 },
-              { "-translate-x-24 opacity-0": step > 1 }
-            )}
-            src={image.step2dark2}
-            style={{
-              position: "absolute",
-              userSelect: "none",
-              maxWidth: "unset",
-            }}
-          />
+        {/* step 2 */}
+        <Image
+          alt={image.alt}
+          className={cn(
+            step2img1Class,
+            "rounded-2xl",
+            { "translate-x-36 opacity-0": step < 1 },
+            { "-translate-x-36 opacity-0": step > 1 }
+          )}
+          src={image.step2dark1}
+          style={{
+            position: "absolute",
+            userSelect: "none",
+            maxWidth: "unset",
+          }}
+        />
+        <Image
+          alt={image.alt}
+          className={cn(
+            step2img2Class,
+            "rounded-2xl",
+            { "translate-x-24 opacity-0": step < 1 },
+            { "-translate-x-24 opacity-0": step > 1 }
+          )}
+          src={image.step2dark2}
+          style={{
+            position: "absolute",
+            userSelect: "none",
+            maxWidth: "unset",
+          }}
+        />
 
-          {/* step 3 */}
-          <Image
-            alt={image.alt}
-            className={cn(
-              step3imgClass,
-              "rounded-2xl",
-              { "translate-x-36 opacity-0": step < 2 },
-              { "-translate-x-36 opacity-0": step > 2 },
-              { "opacity-90": step === 2 }
-            )}
-            src={image.step3dark}
-            style={{
-              position: "absolute",
-              userSelect: "none",
-              maxWidth: "unset",
-            }}
-          />
+        {/* step 3 */}
+        <Image
+          alt={image.alt}
+          className={cn(
+            step3imgClass,
+            "rounded-2xl",
+            { "translate-x-36 opacity-0": step < 2 },
+            { "-translate-x-36 opacity-0": step > 2 },
+            { "opacity-90": step === 2 }
+          )}
+          src={image.step3dark}
+          style={{
+            position: "absolute",
+            userSelect: "none",
+            maxWidth: "unset",
+          }}
+        />
 
-          <div className="absolute left-48 top-5 z-50 size-full cursor-pointer md:left-0">
-            <Steps current={step} onChange={() => {}} steps={steps} />
-          </div>
-        </>
-      )}
+        <div className="absolute left-48 top-5 z-50 size-full cursor-pointer md:left-0">
+          <Steps current={step} onChange={() => {}} steps={steps} />
+        </div>
+      </div>
 
       <div
         className="absolute right-0 top-0 z-50 size-full cursor-pointer md:left-0"
@@ -375,27 +351,21 @@ const placeholderImage: StaticImageData = {
 };
 
 export default function BrowserExtensionShowcase() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
-    <section className="py-16 bg-muted/20" id="browser-extension-showcase">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="mb-12 text-center">
+    <section className="py-8 bg-muted/20" id="browser-extension-showcase">
+      <div className="mx-auto max-w-5xl px-4">
+        <div className="mb-6 text-center">
           <motion.h2
-            initial={false}
-            animate={mounted ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
           >
             Browser Extension
           </motion.h2>
           <motion.p
-            initial={false}
-            animate={mounted ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="mx-auto max-w-2xl text-muted-foreground"
           >
@@ -405,8 +375,8 @@ export default function BrowserExtensionShowcase() {
         </div>
 
         <motion.div
-          initial={false}
-          animate={mounted ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <BrowserExtensionCard

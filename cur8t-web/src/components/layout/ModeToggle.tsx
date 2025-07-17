@@ -23,15 +23,6 @@ export function ModeToggle() {
     }
   };
 
-  if (!mounted) {
-    return (
-      <Button variant="outline" size="icon" disabled>
-        <div className="h-[1.2rem] w-[1.2rem]" />
-        <span className="sr-only">Toggle theme</span>
-      </Button>
-    );
-  }
-
   const isDark = resolvedTheme === "dark";
 
   return (
@@ -43,16 +34,18 @@ export function ModeToggle() {
         "relative overflow-hidden transition-all duration-500 ease-in-out",
         "hover:scale-105 active:scale-95",
         "bg-gradient-to-br",
-        isDark
+        mounted && isDark
           ? "from-slate-800 to-slate-900 border-slate-700 hover:from-slate-700 hover:to-slate-800"
           : "from-amber-50 to-orange-100 border-amber-200 hover:from-amber-100 hover:to-orange-200"
       )}
+      disabled={!mounted}
+      suppressHydrationWarning
     >
       {/* Background animated gradient */}
       <div
         className={cn(
           "absolute inset-0 transition-opacity duration-700",
-          isDark ? "opacity-100" : "opacity-0"
+          mounted && isDark ? "opacity-100" : "opacity-0"
         )}
         style={{
           background:
@@ -65,14 +58,15 @@ export function ModeToggle() {
         className={cn(
           "absolute h-[1.2rem] w-[1.2rem] transition-all duration-500 ease-in-out",
           "text-amber-500",
-          isDark
+          mounted && isDark
             ? "scale-0 rotate-90 opacity-0"
             : "scale-100 rotate-0 opacity-100"
         )}
         style={{
-          filter: isDark
-            ? "none"
-            : "drop-shadow(0 0 8px rgba(245, 158, 11, 0.5))",
+          filter:
+            mounted && isDark
+              ? "none"
+              : "drop-shadow(0 0 8px rgba(245, 158, 11, 0.5))",
         }}
       />
 
@@ -81,14 +75,15 @@ export function ModeToggle() {
         className={cn(
           "absolute h-[1.2rem] w-[1.2rem] transition-all duration-500 ease-in-out",
           "text-blue-400",
-          isDark
+          mounted && isDark
             ? "scale-100 rotate-0 opacity-100"
             : "scale-0 -rotate-90 opacity-0"
         )}
         style={{
-          filter: isDark
-            ? "drop-shadow(0 0 8px rgba(96, 165, 250, 0.5))"
-            : "none",
+          filter:
+            mounted && isDark
+              ? "drop-shadow(0 0 8px rgba(96, 165, 250, 0.5))"
+              : "none",
         }}
       />
 
@@ -96,7 +91,7 @@ export function ModeToggle() {
       <div
         className={cn(
           "absolute inset-0 transition-opacity duration-1000",
-          isDark ? "opacity-100" : "opacity-0"
+          mounted && isDark ? "opacity-100" : "opacity-0"
         )}
       >
         {[...Array(3)].map((_, i) => (
@@ -117,7 +112,7 @@ export function ModeToggle() {
       <div
         className={cn(
           "absolute inset-0 transition-opacity duration-1000",
-          isDark ? "opacity-0" : "opacity-100"
+          mounted && isDark ? "opacity-0" : "opacity-100"
         )}
       >
         {[...Array(4)].map((_, i) => (
@@ -139,7 +134,7 @@ export function ModeToggle() {
       </div>
 
       <span className="sr-only">
-        Switch to {isDark ? "light" : "dark"} mode
+        Switch to {mounted && isDark ? "light" : "dark"} mode
       </span>
     </Button>
   );

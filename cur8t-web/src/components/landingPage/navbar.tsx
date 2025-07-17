@@ -55,14 +55,8 @@ export const Navbar = ({ children, className }: NavbarProps) => {
     offset: ["start start", "end start"],
   });
   const [visible, setVisible] = useState<boolean>(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    if (!mounted) return;
     if (latest > 100) {
       setVisible(true);
     } else {
@@ -80,7 +74,7 @@ export const Navbar = ({ children, className }: NavbarProps) => {
         React.isValidElement(child)
           ? React.cloneElement(
               child as React.ReactElement<{ visible?: boolean }>,
-              { visible: mounted ? visible : false }
+              { visible }
             )
           : child
       )}

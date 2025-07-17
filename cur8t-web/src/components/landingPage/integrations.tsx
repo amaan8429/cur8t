@@ -146,12 +146,6 @@ const integrations = [
 ];
 
 export default function Integrations() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const containerVariants = {
     hidden: {},
     visible: {
@@ -174,16 +168,16 @@ export default function Integrations() {
         {/* Section Header */}
         <div className="mb-12 text-center">
           <motion.h2
-            initial={mounted ? { opacity: 0, y: 20 } : false}
-            animate={mounted ? { opacity: 1, y: 0 } : {}}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
           >
             Available Everywhere
           </motion.h2>
           <motion.p
-            initial={mounted ? { opacity: 0, y: 20 } : false}
-            animate={mounted ? { opacity: 1, y: 0 } : {}}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="mx-auto max-w-xl text-muted-foreground"
           >
@@ -196,7 +190,7 @@ export default function Integrations() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           variants={containerVariants}
           initial="hidden"
-          animate={mounted ? "visible" : "hidden"}
+          animate="visible"
         >
           {integrations.map((integration, i) => (
             <BentoGridItem
