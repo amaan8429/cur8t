@@ -1,131 +1,296 @@
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-import Logo from "@/../public/Logo.png";
-import { ModeToggle } from "@/components/layout/ModeToggle";
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
+"use client";
+
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import HeroImage from "@/../public/hero.png";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-const Hero = () => {
+export default function Hero() {
+  const [mounted, setMounted] = useState(false);
+
+  // State for animated counters
+  const [stats, setStats] = useState({
+    users: 500,
+    transactions: 1500,
+    networks: 40,
+  });
+
+  // Only start animation after component mounts (fixes hydration)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Animation to count up numbers - only after mounted
+  useEffect(() => {
+    if (!mounted) return;
+
+    const interval = setInterval(() => {
+      setStats((prev) => {
+        const newUsers = prev.users >= 20000 ? 20000 : prev.users + 500;
+        const newTransactions =
+          prev.transactions >= 1500000 ? 1500000 : prev.transactions + 37500;
+        const newNetworks = prev.networks >= 40 ? 40 : prev.networks + 1;
+
+        if (
+          newUsers === 20000 &&
+          newTransactions === 1500000 &&
+          newNetworks === 40
+        ) {
+          clearInterval(interval);
+        }
+
+        return {
+          users: newUsers,
+          transactions: newTransactions,
+          networks: newNetworks,
+        };
+      });
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [mounted]);
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 },
+    },
+  };
+
+  // Glowing effect animation
+  const glowAnimation = {
+    opacity: [0.5, 0.8, 0.5],
+    scale: [1, 1.05, 1],
+    transition: {
+      duration: 3,
+      repeat: Number.POSITIVE_INFINITY,
+      ease: "easeInOut",
+    },
+  };
+
   return (
-    <>
-      <div className="relative flex flex-col w-full py-5 mx-auto md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-row items-center justify-between text-sm lg:justify-start">
-          <Link href={"/"} className="flex items-center gap-2">
-            <Image src={Logo} alt="Logo" className="size-10" />
-            <h4 className="text-3xl font-semibold">
-              Buk<span className="text-primary">Marks</span>
-            </h4>
-          </Link>
-          <div className="md:hidden">
-            <ModeToggle />
-          </div>
+    <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background py-16 text-foreground sm:px-6 lg:px-8">
+      <div className="absolute inset-0 z-0 h-full w-full rotate-180 items-center px-5 py-24 opacity-80 [background:radial-gradient(125%_125%_at_50%_10%,hsl(var(--background))_40%,hsl(var(--primary))_100%)]"></div>
+      <svg
+        id="noice"
+        className="absolute inset-0 z-10 h-full w-full opacity-30"
+      >
+        <filter id="noise-filter">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="1.34"
+            numOctaves="4"
+            stitchTiles="stitch"
+          ></feTurbulence>
+          <feColorMatrix type="saturate" values="0"></feColorMatrix>
+          <feComponentTransfer>
+            <feFuncR type="linear" slope="0.46"></feFuncR>
+            <feFuncG type="linear" slope="0.46"></feFuncG>
+            <feFuncB type="linear" slope="0.47"></feFuncB>
+            <feFuncA type="linear" slope="0.37"></feFuncA>
+          </feComponentTransfer>
+          <feComponentTransfer>
+            <feFuncR type="linear" slope="1.47" intercept="-0.23" />
+            <feFuncG type="linear" slope="1.47" intercept="-0.23" />
+            <feFuncB type="linear" slope="1.47" intercept="-0.23" />
+          </feComponentTransfer>
+        </filter>
+        <rect width="100%" height="100%" filter="url(#noise-filter)"></rect>
+      </svg>
+
+      {/* Background effects */}
+      <div className="absolute inset-0 z-0">
+        {/* Radial gradient */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/30 via-background/70 to-muted blur-3xl"></div>
+
+        {/* Grid pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="h-full w-full bg-[linear-gradient(to_right,hsl(var(--foreground)/0.22)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.2)_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
         </div>
-        <nav className="hidden md:flex md:justify-end md:space-x-4">
-          <ModeToggle />
-          <SignInButton forceRedirectUrl={"/dashboard"} mode="modal">
-            <Button variant={"secondary"}>Sign In</Button>
-          </SignInButton>
-          <SignUpButton forceRedirectUrl={"/dashboard"} mode="modal">
-            <Button>Sign Up</Button>
-          </SignUpButton>
-        </nav>
-      </div>
-      <section className="relative flex items-center justify-center">
-        <div className="relative items-center w-full py-12 lg:py-20">
-          <div className="text-center">
-            <span className="text-sm text-primary font-medium tracking-tight bg-primary/10 px-4 py-2 rounded-full">
-              Just a stupid side project
-            </span>
 
-            <h1 className="mt-8 text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-medium leading-none">
-              Manage your links
-              <span className="block text-primary">faster and better!</span>
-            </h1>
+        {/* Enhanced glow spots */}
+        <div className="absolute -left-20 top-20 h-60 w-60 rounded-full bg-primary/20 blur-[100px]"></div>
+        <div className="absolute -right-20 bottom-20 h-60 w-60 rounded-full bg-accent/20 blur-[100px]"></div>
+        <motion.div
+          animate={glowAnimation}
+          className="absolute left-1/4 top-1/3 h-40 w-40 rounded-full bg-primary/10 blur-[80px]"
+        ></motion.div>
+        <motion.div
+          animate={glowAnimation}
+          className="absolute bottom-1/3 right-1/4 h-40 w-40 rounded-full bg-accent/10 blur-[80px]"
+        ></motion.div>
 
-            <p className="max-w-xl mx-auto mt-4 text-base font-light lg:text-lg text-muted-foreground tracking-tighter">
-              Not a revolutionary project, just a simple way to share your links
-              faster and optimize your workflow :)
-            </p>
-            <div className="flex items-center gap-x-5 w-full justify-center mt-5 ">
-              <SignInButton>
-                <Button variant="secondary">Sign In</Button>
-              </SignInButton>
-              <SignUpButton>
-                <Button>Sign Up</Button>
-              </SignUpButton>
-            </div>
-          </div>
-
-          <div className="relative items-center w-full py-12 mx-auto mt-12">
-            <svg
-              className="absolute -mt-24 blur-3xl"
-              fill="none"
-              viewBox="0 0 400 400"
-              height="100%"
-              width="100%"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g clipPath="url(#clip0_10_20)">
-                <g filter="url(#filter0_f_10_20)">
-                  <path
-                    d="M128.6 0H0V322.2L106.2 134.75L128.6 0Z"
-                    fill="#03FFE0"
-                  ></path>
-                  <path
-                    d="M0 322.2V400H240H320L106.2 134.75L0 322.2Z"
-                    fill="#7C87F8"
-                  ></path>
-                  <path
-                    d="M320 400H400V78.75L106.2 134.75L320 400Z"
-                    fill="#4C65E4"
-                  ></path>
-                  <path
-                    d="M400 0H128.6L106.2 134.75L400 78.75V0Z"
-                    fill="#043AFF"
-                  ></path>
-                </g>
-              </g>
-              <defs>
-                <filter
-                  colorInterpolationFilters="sRGB"
-                  filterUnits="userSpaceOnUse"
-                  height="720.666"
-                  id="filter0_f_10_20"
-                  width="720.666"
-                  x="-160.333"
-                  y="-160.333"
-                >
-                  <feFlood
-                    floodOpacity="0"
-                    result="BackgroundImageFix"
-                  ></feFlood>
-                  <feBlend
-                    in="SourceGraphic"
-                    in2="BackgroundImageFix"
-                    mode="normal"
-                    result="shape"
-                  ></feBlend>
-                  <feGaussianBlur
-                    result="effect1_foregroundBlur_10_20"
-                    stdDeviation="80.1666"
-                  ></feGaussianBlur>
-                </filter>
-              </defs>
-            </svg>
-
-            <Image
-              src={HeroImage}
-              alt="Hero image"
-              priority
-              className="relative object-cover w-full border rounded-lg shadow-2xl lg:rounded-2xl"
+        {/* Particle effects - subtle dots */}
+        <div className="absolute inset-0 opacity-20">
+          {Array.from({ length: 20 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute h-1 w-1 rounded-full bg-foreground"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                opacity: [0.2, 0.8, 0.2],
+                scale: [1, 1.5, 1],
+              }}
+              transition={{
+                duration: 3 + Math.random() * 2,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "easeInOut",
+                delay: Math.random() * 2,
+              }}
             />
-          </div>
+          ))}
         </div>
-      </section>
-    </>
-  );
-};
+      </div>
 
-export default Hero;
+      {/* Main Content Area - Centered and Sequential */}
+      <motion.main
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="relative z-20 mx-auto flex w-full max-w-4xl flex-col items-center justify-center px-4 text-center sm:px-8"
+      >
+        {/* Badge */}
+        <motion.div
+          variants={itemVariants}
+          className="mb-6 inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm text-primary"
+        >
+          <span className="mr-2 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground">
+            New
+          </span>
+          Introducing Cur8t
+        </motion.div>
+
+        {/* Main Heading */}
+        <motion.h1
+          variants={itemVariants}
+          className="mb-6 bg-gradient-to-r from-foreground/70 via-foreground to-muted-foreground/80 bg-clip-text text-4xl font-bold leading-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
+        >
+          Curate your stuff with{" "}
+          <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+            Cur8t
+          </span>
+        </motion.h1>
+        {/* Description */}
+        <motion.p
+          variants={itemVariants}
+          className="mb-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
+        >
+          just a stupid side project turned into something that might be useful
+        </motion.p>
+
+        {/* Animated Stats Row */}
+        <motion.div
+          variants={itemVariants}
+          className="mb-8 flex flex-wrap justify-center gap-4 md:gap-6"
+        >
+          <div className="rounded-lg border border-primary/20 bg-card/40 px-6 py-3 backdrop-blur-sm">
+            <p className="text-2xl font-bold text-foreground sm:text-3xl">
+              {stats.users.toLocaleString()}+
+            </p>
+            <p className="text-sm text-muted-foreground">Users</p>
+          </div>
+          <div className="rounded-lg border border-accent/20 bg-card/40 px-6 py-3 backdrop-blur-sm">
+            <p className="text-2xl font-bold text-foreground sm:text-3xl">
+              {stats.transactions.toLocaleString()}+
+            </p>
+            <p className="text-sm text-muted-foreground">Collections</p>
+          </div>
+          <div className="rounded-lg border border-ring/20 bg-card/40 px-6 py-3 backdrop-blur-sm">
+            <p className="text-2xl font-bold text-foreground sm:text-3xl">
+              {stats.networks}+
+            </p>
+            <p className="text-sm text-muted-foreground">Integrations</p>
+          </div>
+        </motion.div>
+
+        {/* Integration badges */}
+        <motion.div
+          variants={itemVariants}
+          className="mb-8 flex flex-wrap items-center justify-center gap-2"
+        >
+          <span className="text-sm font-medium text-muted-foreground mr-2">
+            Integrates with:
+          </span>
+          <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-sm font-medium text-card-foreground backdrop-blur-sm transition-all hover:bg-accent">
+            <div className="h-2 w-2 rounded-full bg-accent"></div>
+            Browser
+          </div>
+          <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-sm font-medium text-card-foreground backdrop-blur-sm transition-all hover:bg-accent">
+            <div className="h-2 w-2 rounded-full bg-primary"></div>
+            Web App
+          </div>
+          <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-sm font-medium text-card-foreground backdrop-blur-sm transition-all hover:bg-accent">
+            <div className="h-2 w-2 rounded-full bg-ring"></div>
+            VS Code
+          </div>
+          <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-sm font-medium text-card-foreground backdrop-blur-sm transition-all hover:bg-accent">
+            <div className="h-2 w-2 rounded-full bg-secondary"></div>
+            +5 more
+          </div>
+        </motion.div>
+
+        {/* CTA Buttons */}
+        <motion.div
+          variants={itemVariants}
+          className="mb-8 flex flex-col gap-4 sm:flex-row"
+        >
+          <Button
+            className="group rounded-full border-t border-primary bg-gradient-to-b from-primary to-background/80 text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-primary/40"
+            size="lg"
+          >
+            Try now
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+          </Button>
+
+          <Button variant="outline" className="rounded-full" size="lg">
+            Learn more
+          </Button>
+        </motion.div>
+
+        {/* Social proof */}
+        <motion.div
+          variants={itemVariants}
+          className="flex items-center gap-3 rounded-full border border-border bg-card/50 px-4 py-2 backdrop-blur-sm"
+        >
+          <div className="flex -space-x-2">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="h-8 w-8 overflow-hidden rounded-full border-2 border-border bg-muted"
+              >
+                <div className="h-full w-full bg-gradient-to-br from-primary to-accent opacity-80"></div>
+              </div>
+            ))}
+          </div>
+          <span className="text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">500+</span> users
+            already curating
+          </span>
+          <ArrowUpRight className="h-4 w-4 text-primary" />
+        </motion.div>
+      </motion.main>
+
+      {/* Bottom gradient effects */}
+      <div className="absolute -bottom-40 left-1/2 h-96 w-20 -translate-x-1/2 -rotate-45 rounded-full bg-muted/30 blur-[80px]"></div>
+      <div className="absolute -bottom-52 left-1/2 h-96 w-20 -translate-x-1/2 -rotate-45 rounded-full bg-muted/20 blur-[80px]"></div>
+      <div className="absolute -bottom-60 left-1/3 h-96 w-10 -translate-x-20 -rotate-45 rounded-full bg-muted/20 blur-[80px]"></div>
+    </section>
+  );
+}
