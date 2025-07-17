@@ -83,7 +83,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background py-16 text-foreground sm:px-6 lg:px-8">
+    <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background pt-24 pb-16 text-foreground sm:px-6 lg:px-8">
       <div className="absolute inset-0 z-0 h-full w-full rotate-180 items-center px-5 py-24 opacity-80 [background:radial-gradient(125%_125%_at_50%_10%,hsl(var(--background))_40%,hsl(var(--primary))_100%)]"></div>
       <svg
         id="noice"
