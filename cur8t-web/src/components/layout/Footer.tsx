@@ -1,9 +1,10 @@
 "use client";
 
 import { Github, Mail, Twitter } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="relative z-10 mt-8 w-full overflow-hidden pt-16 pb-8">
       {/* Background gradients */}
@@ -17,9 +18,11 @@ export default function Footer() {
         {/* Company info */}
         <div className="flex flex-col items-center md:items-start">
           <Link href="/" className="mb-4 flex items-center gap-2">
-            <img
+            <Image
               src="/cur8tlogo.png"
               alt="Cur8t Logo"
+              width={36}
+              height={36}
               className="h-9 w-9 object-contain"
             />
             <span className="text-xl font-semibold text-foreground">Cur8t</span>
@@ -185,3 +188,5 @@ export default function Footer() {
     </footer>
   );
 }
+
+export default Footer;
