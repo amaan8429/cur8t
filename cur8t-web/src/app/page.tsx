@@ -5,6 +5,8 @@ import Hero from "@/components/landingPage/Hero";
 import Integrations from "@/components/landingPage/integrations";
 import BrowserExtensionShowcase from "@/components/landingPage/BrowserExtensionShowcase";
 import GitHubSyncAnimation from "@/components/landingPage/GitHubSyncAnimation";
+import TweetCard from "@/components/landingPage/twittercard";
+import CodeBlock from "@/components/landingPage/codeblock";
 import {
   Navbar,
   NavBody,
@@ -17,6 +19,12 @@ import {
   NavbarButton,
 } from "@/components/landingPage/navbar";
 import SimplePricing from "@/components/landingPage/pricing";
+import ScrollBasedVelocityDemo from "@/components/landingPage/scollvelocity";
+import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
+import { Code2, Heart, MessageCircle } from "lucide-react";
+import Faq1 from "@/components/landingPage/faq";
+import Footer from "@/components/layout/Footer";
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -104,44 +112,13 @@ const Home = () => {
           <SimplePricing />
         </section>
 
-        {/* Placeholder sections for the other nav links */}
-        <section
-          id="about"
-          className="min-h-screen bg-muted/10 flex items-center justify-center"
-        >
-          <div className="text-center">
-            <h2 className="text-4xl font-bold text-foreground mb-4">
-              About Cur8t
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Your personal content curation platform. Organize, manage, and
-              discover the best content across all your favorite platforms.
-            </p>
-          </div>
+        {/* FAQ Section */}
+        <section id="faq">
+          <Faq1 />
         </section>
 
-        <section
-          id="contact"
-          className="min-h-screen bg-background flex items-center justify-center"
-        >
-          <div className="text-center">
-            <h2 className="text-4xl font-bold text-foreground mb-4">
-              Get in Touch
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              Ready to start curating? Have questions? We&apos;d love to hear
-              from you.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
-                Start Free Trial
-              </button>
-              <button className="px-6 py-3 border border-border text-foreground rounded-lg hover:bg-accent transition-colors">
-                Contact Support
-              </button>
-            </div>
-          </div>
-        </section>
+        {/* Footer */}
+        <Footer />
       </main>
     </div>
   );

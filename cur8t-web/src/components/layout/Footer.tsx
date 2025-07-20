@@ -1,68 +1,89 @@
 "use client";
 
+import { Github, Mail, Twitter, Bookmark } from "lucide-react";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import {
-  Github,
-  Twitter,
-  Heart,
-  Mail,
-  BookOpen,
-  Shield,
-  HelpCircle,
-  ExternalLink,
-} from "lucide-react";
 
-export function Footer() {
-  const currentYear = new Date().getFullYear();
-
+export default function Footer() {
   return (
-    <footer className="bg-background border-t border-border/30 mt-20">
-      <div className="container mx-auto px-6 py-12 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Brand Section */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center">
-                <BookOpen className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold">Bukmarks</span>
-            </div>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              Organize, share, and discover amazing collections of bookmarks.
-              Build your digital library and connect with like-minded people.
-            </p>
-            <div className="flex space-x-2">
-              <Button variant="outline" size="sm" asChild>
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <Github className="h-4 w-4" />
-                  GitHub
-                </a>
-              </Button>
-              <Button variant="outline" size="sm" asChild>
-                <a
-                  href="https://twitter.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <Twitter className="h-4 w-4" />
-                  Twitter
-                </a>
-              </Button>
-            </div>
-          </div>
+    <footer className="relative z-10 mt-8 w-full overflow-hidden pt-16 pb-8">
+      {/* Background gradients */}
+      <div className="pointer-events-none absolute top-0 left-1/2 z-0 h-full w-full -translate-x-1/2 select-none">
+        <div className="absolute -top-32 left-1/4 h-72 w-72 rounded-full bg-primary/10 dark:bg-primary/20 blur-3xl"></div>
+        <div className="absolute right-1/4 -bottom-24 h-80 w-80 rounded-full bg-primary/10 dark:bg-primary/20 blur-3xl"></div>
+      </div>
 
-          {/* Product */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-sm">Product</h3>
-            <ul className="space-y-3 text-sm">
+      {/* Glass container */}
+      <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-8 rounded-2xl border border-border/20 bg-card/50 backdrop-blur-sm px-6 py-10 shadow-lg md:flex-row md:items-start md:justify-between md:gap-12">
+        {/* Company info */}
+        <div className="flex flex-col items-center md:items-start">
+          <Link href="/" className="mb-4 flex items-center gap-2">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-2xl font-extrabold text-primary-foreground shadow-md">
+              <Bookmark className="h-5 w-5" />
+            </span>
+            <span className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-xl font-semibold tracking-tight text-transparent">
+              Cur8t
+            </span>
+          </Link>
+          <p className="text-muted-foreground mb-6 max-w-xs text-center text-sm md:text-left">
+            Organize, discover, and share your bookmarks with smart collections.
+            Never lose track of important content again.
+          </p>
+          <div className="mt-2 flex gap-3">
+            <Link
+              href="https://twitter.com/cur8t"
+              aria-label="Twitter"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Twitter className="h-5 w-5" />
+            </Link>
+            <Link
+              href="https://github.com/cur8t"
+              aria-label="GitHub"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Github className="h-5 w-5" />
+            </Link>
+            <Link
+              href="mailto:hello@cur8t.com"
+              aria-label="Email"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Mail className="h-5 w-5" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Navigation links */}
+        <nav className="flex w-full flex-col gap-9 text-center md:w-auto md:flex-row md:justify-end md:text-left">
+          <div>
+            <div className="mb-3 text-xs font-semibold tracking-widest text-primary uppercase">
+              Product
+            </div>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href="#integrations"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Features
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="#pricing"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Pricing
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="#integrations"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Integrations
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/dashboard"
@@ -71,147 +92,95 @@ export function Footer() {
                   Dashboard
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/collections"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Explore Collections
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/saved"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Saved Collections
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/integrations"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Integrations
-                </Link>
-              </li>
             </ul>
           </div>
-
-          {/* Support */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-sm">Support</h3>
-            <ul className="space-y-3 text-sm">
+          <div>
+            <div className="mb-3 text-xs font-semibold tracking-widest text-primary uppercase">
+              Company
+            </div>
+            <ul className="space-y-2">
               <li>
                 <Link
-                  href="/help"
-                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+                  href="/about"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <HelpCircle className="h-3 w-3" />
-                  Help Center
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/blog"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Blog
                 </Link>
               </li>
               <li>
                 <Link
                   href="/contact"
-                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <Mail className="h-3 w-3" />
-                  Contact Us
+                  Contact
                 </Link>
               </li>
               <li>
-                <a
-                  href="mailto:support@bukmarks.com"
+                <Link
+                  href="/careers"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  support@bukmarks.com
-                </a>
-              </li>
-              <li>
-                <Link
-                  href="/api-docs"
-                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
-                >
-                  API Documentation
-                  <ExternalLink className="h-3 w-3" />
+                  Careers
                 </Link>
               </li>
             </ul>
           </div>
-
-          {/* Legal */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-sm">Legal</h3>
-            <ul className="space-y-3 text-sm">
+          <div>
+            <div className="mb-3 text-xs font-semibold tracking-widest text-primary uppercase">
+              Resources
+            </div>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href="/docs"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Documentation
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/community"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Community
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/support"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Support
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/privacy"
-                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
-                >
-                  <Shield className="h-3 w-3" />
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/terms"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/cookies"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Cookie Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/security"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Security
+                  Privacy
                 </Link>
               </li>
             </ul>
           </div>
-        </div>
+        </nav>
+      </div>
 
-        <Separator className="my-8" />
-
-        {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-            <span>© {currentYear} Bukmarks. All rights reserved.</span>
-            <span className="hidden md:inline">•</span>
-            <span className="hidden md:inline">Version 1.0.0</span>
-          </div>
-
-          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-            <span>Made with</span>
-            <Heart className="h-4 w-4 text-red-500 fill-current" />
-            <span>by the Bukmarks team</span>
-          </div>
-        </div>
-
-        {/* Additional Info */}
-        <div className="mt-6 p-4 bg-muted/30 rounded-lg">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-2 md:space-y-0">
-            <div className="text-sm text-muted-foreground">
-              <strong>Status:</strong> All systems operational •
-              <Link href="/status" className="hover:text-foreground ml-1">
-                Check status page
-              </Link>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              <strong>Server:</strong> US-East •<strong>Uptime:</strong> 99.9%
-            </div>
-          </div>
-        </div>
+      {/* Copyright */}
+      <div className="relative z-10 mt-10 text-center text-xs text-muted-foreground">
+        <span>
+          &copy; 2025 Cur8t. All rights reserved. Made with ❤️ for better
+          bookmarking.
+        </span>
       </div>
     </footer>
   );
