@@ -206,7 +206,7 @@ export default function Hero() {
         {/* Main Heading */}
         <motion.h1
           variants={itemVariants}
-          className="mb-6 bg-gradient-to-r from-foreground/70 via-foreground to-muted-foreground/80 bg-clip-text text-4xl font-bold leading-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
+          className="mb-6 bg-gradient-to-r from-foreground/70 via-foreground to-muted-foreground/80 bg-clip-text text-4xl font-semibold leading-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
         >
           Curate your stuff with{" "}
           <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
@@ -227,19 +227,19 @@ export default function Hero() {
           className="mb-8 flex flex-wrap justify-center gap-4 md:gap-6"
         >
           <div className="rounded-lg border border-primary/20 bg-card/40 px-6 py-3 backdrop-blur-sm">
-            <p className="text-2xl font-bold text-foreground sm:text-3xl">
+            <p className="text-2xl font-semibold text-foreground sm:text-3xl">
               {stats.users.toLocaleString()}+
             </p>
             <p className="text-sm text-muted-foreground">Users</p>
           </div>
           <div className="rounded-lg border border-accent/20 bg-card/40 px-6 py-3 backdrop-blur-sm">
-            <p className="text-2xl font-bold text-foreground sm:text-3xl">
+            <p className="text-2xl font-semibold text-foreground sm:text-3xl">
               {stats.transactions.toLocaleString()}+
             </p>
             <p className="text-sm text-muted-foreground">Collections</p>
           </div>
           <div className="rounded-lg border border-ring/20 bg-card/40 px-6 py-3 backdrop-blur-sm">
-            <p className="text-2xl font-bold text-foreground sm:text-3xl">
+            <p className="text-2xl font-semibold text-foreground sm:text-3xl">
               {stats.networks}+
             </p>
             <p className="text-sm text-muted-foreground">Integrations</p>
