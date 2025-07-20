@@ -3,7 +3,20 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Bookmark,
+  Globe,
+  Chrome,
+  Share2,
+  Search,
+  Star,
+  Heart,
+  Zap,
+  Sparkles,
+  Tag,
+} from "lucide-react";
 import Image from "next/image";
 
 export default function Hero() {
@@ -125,6 +138,146 @@ export default function Hero() {
           animate={glowAnimation}
           className="absolute bottom-1/3 right-1/4 h-40 w-40 rounded-full bg-accent/10 blur-[80px]"
         ></motion.div>
+
+        {/* Floating Icons - Closer to content */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Bookmark Icon - Top Left */}
+          <motion.div
+            className="absolute top-32 left-8 md:left-16 p-3 rounded-xl bg-card/80 backdrop-blur-md border border-primary/30 shadow-lg"
+            animate={{
+              y: [0, -15, 0],
+              rotate: [0, 3, 0],
+            }}
+            transition={{
+              duration: 6,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+            }}
+          >
+            <Bookmark className="h-6 w-6 text-primary" />
+          </motion.div>
+
+          {/* Globe Icon - Top Right */}
+          <motion.div
+            className="absolute top-40 right-8 md:right-16 p-2.5 rounded-xl bg-card/80 backdrop-blur-md border border-primary/30 shadow-lg"
+            animate={{
+              y: [0, 12, 0],
+              rotate: [0, -3, 0],
+            }}
+            transition={{
+              duration: 5,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+          >
+            <Globe className="h-5 w-5 text-primary" />
+          </motion.div>
+
+          {/* Chrome Icon - Top Center Right */}
+          <motion.div
+            className="absolute top-24 right-24 md:right-32 p-3 rounded-xl bg-card/80 backdrop-blur-md border border-primary/30 shadow-lg"
+            animate={{
+              y: [0, -18, 0],
+              rotate: [0, 5, 0],
+            }}
+            transition={{
+              duration: 7,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+              delay: 0.5,
+            }}
+          >
+            <Chrome className="h-6 w-6 text-primary" />
+          </motion.div>
+
+          {/* Search Icon - Bottom Right */}
+          <motion.div
+            className="absolute bottom-32 right-12 md:right-20 p-3 rounded-xl bg-card/80 backdrop-blur-md border border-primary/30 shadow-lg"
+            animate={{
+              y: [0, -20, 0],
+              rotate: [0, 4, 0],
+            }}
+            transition={{
+              duration: 6.5,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+              delay: 1.5,
+            }}
+          >
+            <Search className="h-6 w-6 text-primary" />
+          </motion.div>
+
+          {/* Share Icon - Bottom Left */}
+          <motion.div
+            className="absolute bottom-40 left-12 md:left-20 p-2.5 rounded-xl bg-card/80 backdrop-blur-md border border-primary/30 shadow-lg"
+            animate={{
+              y: [0, 15, 0],
+              rotate: [0, -2, 0],
+            }}
+            transition={{
+              duration: 5.5,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+              delay: 2,
+            }}
+          >
+            <Share2 className="h-5 w-5 text-primary" />
+          </motion.div>
+
+          {/* Star Icon - Middle Left */}
+          <motion.div
+            className="absolute top-60 left-6 md:left-12 p-2.5 rounded-xl bg-card/80 backdrop-blur-md border border-primary/30 shadow-lg"
+            animate={{
+              y: [0, 10, 0],
+              rotate: [0, -3, 0],
+              scale: [1, 1.05, 1],
+            }}
+            transition={{
+              duration: 4.5,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+              delay: 3,
+            }}
+          >
+            <Star className="h-5 w-5 text-primary" />
+          </motion.div>
+
+          {/* Sparkles Icon - Middle Right */}
+          <motion.div
+            className="absolute top-64 right-6 md:right-12 p-2.5 rounded-xl bg-card/80 backdrop-blur-md border border-primary/30 shadow-lg"
+            animate={{
+              y: [0, -12, 0],
+              rotate: [0, 6, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{
+              duration: 6.2,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+              delay: 1.8,
+            }}
+          >
+            <Sparkles className="h-5 w-5 text-primary" />
+          </motion.div>
+
+          {/* Zap Icon - Bottom Center */}
+          <motion.div
+            className="absolute bottom-20 left-20 md:left-32 p-3 rounded-xl bg-card/80 backdrop-blur-md border border-primary/30 shadow-lg"
+            animate={{
+              y: [0, 16, 0],
+              rotate: [0, 8, 0],
+            }}
+            transition={{
+              duration: 5.8,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+              delay: 0.8,
+            }}
+          >
+            <Zap className="h-6 w-6 text-primary" />
+          </motion.div>
+        </div>
 
         {/* Particle effects - subtle dots */}
         <div className="absolute inset-0 opacity-20">
@@ -278,14 +431,18 @@ export default function Hero() {
           className="mb-12 flex flex-col gap-4 sm:flex-row"
         >
           <Button
-            className="group rounded-full border-t border-primary bg-gradient-to-b from-primary to-background/80 text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-primary/40"
+            className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-medium shadow-lg shadow-primary/25 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
             size="lg"
           >
-            Try now
+            Get Started
             <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Button>
 
-          <Button variant="outline" className="rounded-full" size="lg">
+          <Button
+            variant="outline"
+            className="border-2 border-border hover:border-primary bg-background/50 backdrop-blur-sm text-foreground hover:text-primary hover:bg-primary/5 px-8 py-6 text-base font-medium transition-all duration-300 hover:-translate-y-0.5"
+            size="lg"
+          >
             Learn more
           </Button>
         </motion.div>
