@@ -63,12 +63,12 @@ function FeatureCard({
           bgClass
         )}
       >
-        <div className="m-6 min-h-[350px] w-full">
-          <div className="flex w-4/6 flex-col gap-3">
-            <h2 className="text-xl font-bold tracking-tight text-foreground md:text-2xl">
+        <div className="m-4 sm:m-6 min-h-[250px] sm:min-h-[300px] md:min-h-[350px] w-full">
+          <div className="flex w-full sm:w-4/6 md:w-4/6 flex-col gap-2 sm:gap-3">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-foreground">
               {title}
             </h2>
-            <p className="text-sm leading-5 text-muted-foreground sm:text-base sm:leading-5">
+            <p className="text-sm sm:text-base leading-5 text-muted-foreground">
               <Balancer>{description}</Balancer>
             </p>
           </div>
@@ -108,9 +108,9 @@ interface StepsProps {
 
 function Steps({ steps, current, onChange }: StepsProps) {
   return (
-    <nav aria-label="Progress" className="flex justify-center px-4">
+    <nav aria-label="Progress" className="flex justify-center px-2 sm:px-4">
       <ol
-        className="flex w-full flex-wrap items-start justify-start gap-2 sm:justify-center md:w-10/12 md:divide-y-0"
+        className="flex w-full flex-wrap items-start justify-center gap-1 sm:gap-2 md:w-10/12"
         role="list"
       >
         {steps.map((step, stepIdx) => {
@@ -120,7 +120,7 @@ function Steps({ steps, current, onChange }: StepsProps) {
           return (
             <li
               className={cn(
-                "relative z-50 rounded-full px-3 py-1 transition-all duration-300 ease-in-out md:flex",
+                "relative z-50 rounded-full px-2 sm:px-3 py-1 transition-all duration-300 ease-in-out flex",
                 isCompleted ? "bg-primary/20" : "bg-muted/20"
               )}
               key={`${step.name}-${stepIdx}`}
@@ -132,19 +132,20 @@ function Steps({ steps, current, onChange }: StepsProps) {
                 )}
                 onClick={() => onChange(stepIdx)}
               >
-                <span className="flex items-center gap-2 text-sm font-medium">
+                <span className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium">
                   <span
                     className={cn(
                       "flex shrink-0 items-center justify-center rounded-full duration-300",
                       isCompleted &&
-                        "bg-primary size-4 text-primary-foreground",
+                        "bg-primary size-3 sm:size-4 text-primary-foreground",
                       isCurrent &&
-                        "bg-primary/80 size-4 p-2 text-primary-foreground",
-                      isFuture && "bg-muted size-4 p-2 text-muted-foreground"
+                        "bg-primary/80 size-3 sm:size-4 p-1 sm:p-2 text-primary-foreground",
+                      isFuture &&
+                        "bg-muted size-3 sm:size-4 p-1 sm:p-2 text-muted-foreground"
                     )}
                   >
                     {isCompleted ? (
-                      <IconCheck className="size-3 stroke-current" />
+                      <IconCheck className="size-2 sm:size-3 stroke-current" />
                     ) : (
                       <span
                         className={cn(
@@ -158,7 +159,7 @@ function Steps({ steps, current, onChange }: StepsProps) {
                   </span>
                   <span
                     className={cn(
-                      "text-sm font-medium duration-300",
+                      "text-xs sm:text-sm font-medium duration-300",
                       isCompleted && "text-primary",
                       isFuture && "text-muted-foreground"
                     )}
@@ -236,12 +237,12 @@ export function BrowserExtensionCard({
       <div
         className={cn(
           { "translate-x-0 opacity-0": step < 3 },
-          "absolute left-2/4 top-1/3 flex w-full -translate-x-1/2 -translate-y-[33%] flex-col gap-12 text-center text-2xl font-bold transition-all duration-500 md:w-3/5"
+          "absolute left-2/4 top-1/2 sm:top-1/3 flex w-full -translate-x-1/2 -translate-y-1/2 sm:-translate-y-[33%] flex-col gap-6 sm:gap-12 text-center text-xl sm:text-2xl font-bold transition-all duration-500 md:w-3/5"
         )}
       >
         <Image
           alt={image.alt}
-          className="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 md:left-[35px] md:top-[30%] md:w-full"
+          className="pointer-events-none w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 sm:w-full"
           src={image.step4dark}
           width={800}
           height={300}
@@ -249,6 +250,9 @@ export function BrowserExtensionCard({
             position: "absolute",
             userSelect: "none",
             maxWidth: "unset",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
           }}
         />
       </div>
@@ -330,13 +334,13 @@ export function BrowserExtensionCard({
           }}
         />
 
-        <div className="absolute left-48 top-5 z-50 size-full cursor-pointer md:left-0">
+        <div className="absolute left-1/2 -translate-x-1/2 top-3 sm:top-5 z-50 w-full cursor-pointer">
           <Steps current={step} onChange={() => {}} steps={steps} />
         </div>
       </div>
 
       <div
-        className="absolute right-0 top-0 z-50 size-full cursor-pointer md:left-0"
+        className="absolute right-0 top-0 z-50 size-full cursor-pointer"
         onClick={() => increment()}
       />
     </FeatureCard>
@@ -354,12 +358,15 @@ const placeholderImage: StaticImageData = {
 
 export default function BrowserExtensionShowcase() {
   return (
-    <section className="py-8 bg-muted/20" id="browser-extension-showcase">
-      <div className="mx-auto max-w-5xl px-4">
-        <div className="text-center mb-16">
+    <section
+      className="py-8 sm:py-12 md:py-16 bg-muted/20"
+      id="browser-extension-showcase"
+    >
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="text-center mb-8 sm:mb-12 md:mb-16">
           <Badge
             variant="outline"
-            className="border-primary/20 bg-primary/5 mb-4 rounded-full px-4 py-1 text-sm font-medium"
+            className="border-primary/20 bg-primary/5 mb-4 rounded-full px-3 sm:px-4 py-1 text-sm font-medium"
           >
             <Chrome className="text-primary mr-1 h-3.5 w-3.5" />
             Browser Extension
@@ -369,7 +376,7 @@ export default function BrowserExtensionShowcase() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="from-foreground to-foreground/30 bg-gradient-to-b bg-clip-text text-4xl font-bold text-transparent sm:text-5xl"
+            className="from-foreground to-foreground/30 bg-gradient-to-b bg-clip-text text-3xl sm:text-4xl md:text-5xl font-bold text-transparent"
           >
             Save from anywhere on the web
           </motion.h1>
@@ -378,7 +385,7 @@ export default function BrowserExtensionShowcase() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-muted-foreground max-w-md pt-2 text-lg mx-auto"
+            className="text-muted-foreground max-w-md pt-2 text-base sm:text-lg mx-auto px-4 sm:px-0"
           >
             Save and organize bookmarks instantly while browsing. Never lose
             track of important content again
@@ -402,11 +409,11 @@ export default function BrowserExtensionShowcase() {
               step4dark: placeholderImage,
               alt: "Browser Extension Walkthrough",
             }}
-            step1img1Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 md:left-[35px] md:top-[30%] md:w-full"
-            step1img2Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 md:left-[45px] md:top-[35%] md:w-full"
-            step2img1Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 md:left-[35px] md:top-[30%] md:w-full"
-            step2img2Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 md:left-[45px] md:top-[35%] md:w-full"
-            step3imgClass="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 md:left-[35px] md:top-[30%] md:w-full"
+            step1img1Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 left-1/2 -translate-x-1/2 -translate-y-1/2 md:left-[35px] md:top-[30%] md:w-full md:translate-x-0 md:translate-y-0"
+            step1img2Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 left-1/2 -translate-x-1/2 -translate-y-1/2 md:left-[45px] md:top-[35%] md:w-full md:translate-x-0 md:translate-y-0"
+            step2img1Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 left-1/2 -translate-x-1/2 -translate-y-1/2 md:left-[35px] md:top-[30%] md:w-full md:translate-x-0 md:translate-y-0"
+            step2img2Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 left-1/2 -translate-x-1/2 -translate-y-1/2 md:left-[45px] md:top-[35%] md:w-full md:translate-x-0 md:translate-y-0"
+            step3imgClass="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 left-1/2 -translate-x-1/2 -translate-y-1/2 md:left-[35px] md:top-[30%] md:w-full md:translate-x-0 md:translate-y-0"
           />
         </motion.div>
       </div>

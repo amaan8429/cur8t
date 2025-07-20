@@ -27,7 +27,7 @@ export default function Hero() {
     networks: 40,
   });
 
-  // Animation to count up numbers
+  // Animation to count up numbers - optimized interval
   useEffect(() => {
     const interval = setInterval(() => {
       setStats((prev) => {
@@ -50,7 +50,7 @@ export default function Hero() {
           networks: newNetworks,
         };
       });
-    }, 50);
+    }, 150); // Reduced frequency for better mobile performance
 
     return () => clearInterval(interval);
   }, []);
@@ -89,16 +89,18 @@ export default function Hero() {
 
   return (
     <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-24 pb-16 text-foreground sm:px-6 lg:px-8">
-      {/* Modern Mesh Gradient Background */}
+      {/* Simplified Background for Mobile */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_40%,hsl(var(--primary)/0.12),transparent)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_80%_20%,hsl(var(--accent)/0.08),transparent)]"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_60%_at_50%_80%,hsl(var(--primary)/0.06),transparent)]"></div>
       </div>
+
+      {/* Noise effect - hidden on mobile for performance */}
       <svg
         id="noice"
-        className="absolute inset-0 z-10 h-full w-full opacity-20"
+        className="absolute inset-0 z-10 h-full w-full opacity-20 hidden md:block"
       >
         <filter id="noise-filter">
           <feTurbulence
@@ -123,14 +125,14 @@ export default function Hero() {
         <rect width="100%" height="100%" filter="url(#noise-filter)"></rect>
       </svg>
 
-      {/* Enhanced Background Effects */}
+      {/* Enhanced Background Effects - Reduced on mobile */}
       <div className="absolute inset-0 z-0">
-        {/* Subtle Grid Pattern */}
-        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.05]">
+        {/* Subtle Grid Pattern - Hidden on mobile */}
+        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.05] hidden md:block">
           <div className="h-full w-full bg-[linear-gradient(to_right,hsl(var(--foreground))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground))_1px,transparent_1px)] bg-[size:6rem_6rem]"></div>
         </div>
 
-        {/* Modern Floating Orbs */}
+        {/* Modern Floating Orbs - Simplified for mobile */}
         <motion.div
           animate={{
             scale: [1, 1.2, 1],
@@ -143,7 +145,7 @@ export default function Hero() {
             repeat: Number.POSITIVE_INFINITY,
             ease: "easeInOut",
           }}
-          className="absolute top-1/4 left-1/4 h-72 w-72 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 blur-3xl"
+          className="absolute top-1/4 left-1/4 h-32 w-32 md:h-72 md:w-72 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 blur-3xl"
         ></motion.div>
 
         <motion.div
@@ -159,9 +161,10 @@ export default function Hero() {
             ease: "easeInOut",
             delay: 2,
           }}
-          className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-gradient-to-l from-accent/15 to-primary/15 blur-3xl"
+          className="absolute bottom-1/4 right-1/4 h-48 w-48 md:h-96 md:w-96 rounded-full bg-gradient-to-l from-accent/15 to-primary/15 blur-3xl"
         ></motion.div>
 
+        {/* Central rotating orb - hidden on mobile */}
         <motion.div
           animate={{
             scale: [1, 1.3, 1],
@@ -173,11 +176,11 @@ export default function Hero() {
             repeat: Number.POSITIVE_INFINITY,
             ease: "linear",
           }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-gradient-conic from-primary/10 via-accent/5 to-primary/10 blur-2xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[300px] md:h-[500px] md:w-[500px] rounded-full bg-gradient-conic from-primary/10 via-accent/5 to-primary/10 blur-2xl hidden md:block"
         ></motion.div>
 
-        {/* Floating Icons - Closer to content */}
-        <div className="absolute inset-0 overflow-hidden">
+        {/* Floating Icons - Hidden on mobile devices */}
+        <div className="absolute inset-0 overflow-hidden hidden md:block">
           {/* Bookmark Icon - Top Left */}
           <motion.div
             className="absolute top-32 left-8 md:left-16 p-3 rounded-xl bg-card/80 backdrop-blur-md border border-primary/30 shadow-lg"
@@ -316,10 +319,10 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Particle effects - subtle dots */}
-        <div className="absolute inset-0 opacity-20">
-          {Array.from({ length: 20 }).map((_, i) => {
-            // Use consistent values based on index to avoid hydration issues
+        {/* Particle effects - Reduced for mobile */}
+        <div className="absolute inset-0 opacity-20 hidden md:block">
+          {Array.from({ length: 10 }).map((_, i) => {
+            // Reduced from 20 to 10 particles
             const positions = [
               { top: 15, left: 25 },
               { top: 75, left: 85 },
@@ -331,25 +334,9 @@ export default function Hero() {
               { top: 10, left: 90 },
               { top: 65, left: 20 },
               { top: 40, left: 95 },
-              { top: 85, left: 55 },
-              { top: 25, left: 75 },
-              { top: 55, left: 10 },
-              { top: 95, left: 40 },
-              { top: 30, left: 80 },
-              { top: 70, left: 35 },
-              { top: 5, left: 65 },
-              { top: 45, left: 50 },
-              { top: 60, left: 85 },
-              { top: 15, left: 45 },
             ];
-            const durations = [
-              3, 4, 3.5, 4.5, 3.2, 4.8, 3.8, 4.2, 3.6, 4.4, 3.4, 4.6, 3.1, 4.1,
-              3.7, 4.3, 3.9, 4.7, 3.3, 4.9,
-            ];
-            const delays = [
-              0, 0.5, 1, 1.5, 0.2, 0.7, 1.2, 1.7, 0.4, 0.9, 1.4, 1.9, 0.1, 0.6,
-              1.1, 1.6, 0.3, 0.8, 1.3, 1.8,
-            ];
+            const durations = [3, 4, 3.5, 4.5, 3.2, 4.8, 3.8, 4.2, 3.6, 4.4];
+            const delays = [0, 0.5, 1, 1.5, 0.2, 0.7, 1.2, 1.7, 0.4, 0.9];
 
             return (
               <motion.div
