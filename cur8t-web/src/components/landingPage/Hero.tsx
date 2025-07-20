@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 
 export default function Hero() {
   // State for animated counters
@@ -189,7 +190,7 @@ export default function Hero() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-20 mx-auto flex w-full max-w-4xl flex-col items-center justify-center px-4 text-center sm:px-8"
+        className="relative z-20 mx-auto flex w-full max-w-7xl flex-col items-center justify-center px-4 text-center sm:px-8"
       >
         {/* Badge */}
         <motion.div
@@ -274,7 +275,7 @@ export default function Hero() {
         {/* CTA Buttons */}
         <motion.div
           variants={itemVariants}
-          className="mb-8 flex flex-col gap-4 sm:flex-row"
+          className="mb-12 flex flex-col gap-4 sm:flex-row"
         >
           <Button
             className="group rounded-full border-t border-primary bg-gradient-to-b from-primary to-background/80 text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:shadow-primary/40"
@@ -287,6 +288,25 @@ export default function Hero() {
           <Button variant="outline" className="rounded-full" size="lg">
             Learn more
           </Button>
+        </motion.div>
+
+        {/* Dashboard Preview */}
+        <motion.div variants={itemVariants} className="mb-8 w-full max-w-7xl">
+          <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card/10 p-2 shadow-2xl shadow-primary/10 backdrop-blur-sm">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"></div>
+            <div className="relative overflow-hidden rounded-xl">
+              <Image
+                src="/dashboard.png"
+                alt="Cur8t Dashboard Preview"
+                width={1200}
+                height={800}
+                className="w-full h-auto object-cover"
+                priority
+              />
+              {/* Overlay gradient for better integration */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent"></div>
+            </div>
+          </div>
         </motion.div>
 
         {/* Social proof */}

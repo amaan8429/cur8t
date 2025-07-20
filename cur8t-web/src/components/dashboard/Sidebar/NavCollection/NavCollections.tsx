@@ -98,8 +98,8 @@ export function NavCollection() {
       return aIndex - bIndex;
     }
 
-    // For non-pinned collections, maintain original order (by creation date)
-    return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    // For non-pinned collections, show latest first (by creation date)
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
   return (

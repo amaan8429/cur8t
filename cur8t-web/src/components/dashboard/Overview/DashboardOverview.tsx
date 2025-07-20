@@ -97,8 +97,14 @@ export function DashboardOverview() {
 
   // Get collections from store (already fetched in sidebar)
   const { collections, fetchCollections } = useCollectionStore();
-  const { pinnedCollectionIds, fetchPinnedCollections } =
-    usePinnedCollectionsStore();
+  const {
+    pinnedCollectionIds,
+    fetchPinnedCollections,
+    isLoading: pinnedLoading,
+  } = usePinnedCollectionsStore();
+
+  // Track whether we've initiated the fetch to prevent duplicates
+  const [hasFetchedCollections, setHasFetchedCollections] = useState(false);
 
   useEffect(() => {
     async function fetchStats() {
@@ -117,64 +123,82 @@ export function DashboardOverview() {
     }
 
     fetchStats();
+  }, [userId, setActiveUserId]);
 
-    // Fetch collections if not already loaded
-    if (collections === null) {
-      fetchCollections();
-      fetchPinnedCollections();
+  // Separate effect for handling collections fetching
+  useEffect(() => {
+    async function initializeCollections() {
+      // Only fetch if collections are null AND we haven't already initiated a fetch
+      if (collections === null && !hasFetchedCollections) {
+        setHasFetchedCollections(true);
+        try {
+          await Promise.all([fetchCollections(), fetchPinnedCollections()]);
+        } catch (error) {
+          console.error("Error fetching collections:", error);
+        }
+      }
     }
+
+    initializeCollections();
   }, [
-    userId,
     collections,
     fetchCollections,
     fetchPinnedCollections,
-    setActiveUserId,
+    hasFetchedCollections,
   ]);
 
   // Filter collections based on search query and filters
   const filteredCollections =
-    collections?.filter((collection) => {
-      // Search filter
-      const matchesSearch =
-        collection.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        collection.description
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase());
+    collections
+      ?.filter((collection) => {
+        // Search filter
+        const matchesSearch =
+          collection.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          collection.description
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
 
-      // Visibility filter
-      const matchesVisibility =
-        filters.visibility === "all" ||
-        collection.visibility === filters.visibility;
+        // Visibility filter
+        const matchesVisibility =
+          filters.visibility === "all" ||
+          collection.visibility === filters.visibility;
 
-      // Date filter
-      let matchesDate = true;
-      if (filters.dateRange !== "all") {
-        const now = new Date();
-        const createdAt = new Date(collection.createdAt);
-        const daysDiff =
-          (now.getTime() - createdAt.getTime()) / (1000 * 3600 * 24);
+        // Date filter
+        let matchesDate = true;
+        if (filters.dateRange !== "all") {
+          const now = new Date();
+          const createdAt = new Date(collection.createdAt);
+          const daysDiff =
+            (now.getTime() - createdAt.getTime()) / (1000 * 3600 * 24);
 
-        switch (filters.dateRange) {
-          case "today":
-            matchesDate = daysDiff <= 1;
-            break;
-          case "week":
-            matchesDate = daysDiff <= 7;
-            break;
-          case "month":
-            matchesDate = daysDiff <= 30;
-            break;
-          case "year":
-            matchesDate = daysDiff <= 365;
-            break;
+          switch (filters.dateRange) {
+            case "today":
+              matchesDate = daysDiff <= 1;
+              break;
+            case "week":
+              matchesDate = daysDiff <= 7;
+              break;
+            case "month":
+              matchesDate = daysDiff <= 30;
+              break;
+            case "year":
+              matchesDate = daysDiff <= 365;
+              break;
+          }
         }
-      }
 
-      // Links filter
-      const matchesLinks = collection.totalLinks >= filters.minLinks;
+        // Links filter
+        const matchesLinks = collection.totalLinks >= filters.minLinks;
 
-      return matchesSearch && matchesVisibility && matchesDate && matchesLinks;
-    }) || [];
+        return (
+          matchesSearch && matchesVisibility && matchesDate && matchesLinks
+        );
+      })
+      // Sort to show latest collections first
+      ?.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      ) || [];
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredCollections.length / ITEMS_PER_PAGE);
@@ -224,7 +248,8 @@ export function DashboardOverview() {
     setShowFilters(false);
   };
 
-  if (loading) {
+  // Show loading if stats are loading OR collections are not yet loaded
+  if (loading || collections === null || pinnedLoading) {
     return (
       <div className="space-y-8 p-6 bg-muted/30 min-h-screen">
         {/* Header Skeleton */}
