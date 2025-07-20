@@ -235,7 +235,11 @@ export const NavbarLogo = () => {
       href="#"
       className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-foreground"
     >
-      <div className="h-7 w-7 rounded-full bg-gradient-to-br from-primary to-accent"></div>
+      <img
+        src="/cur8tlogo.png"
+        alt="Cur8t Logo"
+        className="h-8 w-8 object-contain"
+      />
       <span className="font-medium text-foreground">Cur8t</span>
     </a>
   );

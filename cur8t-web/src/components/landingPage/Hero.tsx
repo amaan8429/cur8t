@@ -88,11 +88,17 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background pt-24 pb-16 text-foreground sm:px-6 lg:px-8">
-      <div className="absolute inset-0 z-0 h-full w-full rotate-180 items-center px-5 py-24 opacity-80 [background:radial-gradient(125%_125%_at_50%_10%,hsl(var(--background))_40%,hsl(var(--primary))_100%)]"></div>
+    <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-24 pb-16 text-foreground sm:px-6 lg:px-8">
+      {/* Modern Mesh Gradient Background */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_40%,hsl(var(--primary)/0.12),transparent)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_70%_at_80%_20%,hsl(var(--accent)/0.08),transparent)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_60%_at_50%_80%,hsl(var(--primary)/0.06),transparent)]"></div>
+      </div>
       <svg
         id="noice"
-        className="absolute inset-0 z-10 h-full w-full opacity-30"
+        className="absolute inset-0 z-10 h-full w-full opacity-20"
       >
         <filter id="noise-filter">
           <feTurbulence
@@ -117,26 +123,57 @@ export default function Hero() {
         <rect width="100%" height="100%" filter="url(#noise-filter)"></rect>
       </svg>
 
-      {/* Background effects */}
+      {/* Enhanced Background Effects */}
       <div className="absolute inset-0 z-0">
-        {/* Radial gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/30 via-background/70 to-muted blur-3xl"></div>
-
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="h-full w-full bg-[linear-gradient(to_right,hsl(var(--foreground)/0.22)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.2)_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        {/* Subtle Grid Pattern */}
+        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.05]">
+          <div className="h-full w-full bg-[linear-gradient(to_right,hsl(var(--foreground))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground))_1px,transparent_1px)] bg-[size:6rem_6rem]"></div>
         </div>
 
-        {/* Enhanced glow spots */}
-        <div className="absolute -left-20 top-20 h-60 w-60 rounded-full bg-primary/20 blur-[100px]"></div>
-        <div className="absolute -right-20 bottom-20 h-60 w-60 rounded-full bg-accent/20 blur-[100px]"></div>
+        {/* Modern Floating Orbs */}
         <motion.div
-          animate={glowAnimation}
-          className="absolute left-1/4 top-1/3 h-40 w-40 rounded-full bg-primary/10 blur-[80px]"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.4, 0.6, 0.4],
+            x: [0, 30, 0],
+            y: [0, -20, 0],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "easeInOut",
+          }}
+          className="absolute top-1/4 left-1/4 h-72 w-72 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 blur-3xl"
         ></motion.div>
+
         <motion.div
-          animate={glowAnimation}
-          className="absolute bottom-1/3 right-1/4 h-40 w-40 rounded-full bg-accent/10 blur-[80px]"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.3, 0.5, 0.3],
+            x: [0, -40, 0],
+            y: [0, 25, 0],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+          className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-gradient-to-l from-accent/15 to-primary/15 blur-3xl"
+        ></motion.div>
+
+        <motion.div
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.2, 0.4, 0.2],
+            rotate: [0, 180, 360],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-gradient-conic from-primary/10 via-accent/5 to-primary/10 blur-2xl"
         ></motion.div>
 
         {/* Floating Icons - Closer to content */}
@@ -362,9 +399,46 @@ export default function Hero() {
           className="mb-6 bg-gradient-to-r from-foreground/70 via-foreground to-muted-foreground/80 bg-clip-text text-4xl font-semibold leading-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
         >
           Curate your stuff with{" "}
-          <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-            Cur8t
-          </span>
+          <motion.span
+            className="relative inline-block text-primary font-semibold"
+            animate={{
+              scale: [1, 1.02, 1],
+            }}
+            transition={{
+              duration: 2.5,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "easeInOut",
+            }}
+          >
+            <span className="relative z-10">Cur8t</span>
+            {/* Animated glow effect */}
+            <motion.div
+              animate={{
+                opacity: [0.3, 0.8, 0.3],
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "easeInOut",
+                delay: 0.5,
+              }}
+              className="absolute inset-0 bg-primary/20 blur-sm rounded-lg"
+            />
+            {/* Shimmer effect */}
+            <motion.div
+              animate={{
+                x: ["-100%", "100%"],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "linear",
+                repeatDelay: 2,
+              }}
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 overflow-hidden"
+            />
+          </motion.span>
         </motion.h1>
         {/* Description */}
         <motion.p
@@ -449,8 +523,21 @@ export default function Hero() {
 
         {/* Dashboard Preview */}
         <motion.div variants={itemVariants} className="mb-8 w-full max-w-7xl">
-          <div className="relative overflow-hidden rounded-2xl border border-border/50 bg-card/10 p-2 shadow-2xl shadow-primary/10 backdrop-blur-sm">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"></div>
+          <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-card/10 p-2 shadow-2xl shadow-primary/10 backdrop-blur-sm">
+            {/* Moving Light Spots */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{
+                duration: 8,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "linear",
+              }}
+              className="absolute -inset-1 rounded-2xl"
+            >
+              <div className="absolute top-0 left-1/4 w-8 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent blur-sm"></div>
+              <div className="absolute bottom-0 right-1/3 w-6 h-0.5 bg-gradient-to-r from-transparent via-accent to-transparent blur-sm"></div>
+            </motion.div>
+
             <div className="relative overflow-hidden rounded-xl">
               <Image
                 src="/dashboard.png"
@@ -460,8 +547,8 @@ export default function Hero() {
                 className="w-full h-auto object-cover"
                 priority
               />
-              {/* Overlay gradient for better integration */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent"></div>
+              {/* Subtle overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/10 via-transparent to-transparent"></div>
             </div>
           </div>
         </motion.div>
@@ -489,10 +576,9 @@ export default function Hero() {
         </motion.div>
       </motion.main>
 
-      {/* Bottom gradient effects */}
-      <div className="absolute -bottom-40 left-1/2 h-96 w-20 -translate-x-1/2 -rotate-45 rounded-full bg-muted/30 blur-[80px]"></div>
-      <div className="absolute -bottom-52 left-1/2 h-96 w-20 -translate-x-1/2 -rotate-45 rounded-full bg-muted/20 blur-[80px]"></div>
-      <div className="absolute -bottom-60 left-1/3 h-96 w-10 -translate-x-20 -rotate-45 rounded-full bg-muted/20 blur-[80px]"></div>
+      {/* Bottom Accent Effects */}
+      <div className="absolute -bottom-32 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-gradient-to-t from-primary/10 to-transparent blur-3xl"></div>
+      <div className="absolute -bottom-20 right-1/4 h-48 w-48 rounded-full bg-gradient-to-tl from-accent/8 to-transparent blur-2xl"></div>
     </section>
   );
 }

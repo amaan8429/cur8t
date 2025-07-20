@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Mail, Twitter, Bookmark } from "lucide-react";
+import { Github, Mail, Twitter } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
@@ -17,12 +17,12 @@ export default function Footer() {
         {/* Company info */}
         <div className="flex flex-col items-center md:items-start">
           <Link href="/" className="mb-4 flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-2xl font-extrabold text-primary-foreground shadow-md">
-              <Bookmark className="h-5 w-5" />
-            </span>
-            <span className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-xl font-semibold tracking-tight text-transparent">
-              Cur8t
-            </span>
+            <img
+              src="/cur8tlogo.png"
+              alt="Cur8t Logo"
+              className="h-9 w-9 object-contain"
+            />
+            <span className="text-xl font-semibold text-foreground">Cur8t</span>
           </Link>
           <p className="text-muted-foreground mb-6 max-w-xs text-center text-sm md:text-left">
             Organize, discover, and share your bookmarks with smart collections.
