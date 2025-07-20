@@ -11,6 +11,8 @@ import {
 } from "motion/react";
 import Balancer from "react-wrap-balancer";
 import { cn } from "@/lib/utils";
+import { Chrome } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 type WrapperStyle = MotionStyle & {
   "--x": MotionValue<string>;
@@ -354,23 +356,32 @@ export default function BrowserExtensionShowcase() {
   return (
     <section className="py-8 bg-muted/20" id="browser-extension-showcase">
       <div className="mx-auto max-w-5xl px-4">
-        <div className="mb-6 text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+        <div className="text-center mb-16">
+          <Badge
+            variant="outline"
+            className="border-primary/20 bg-primary/5 mb-4 rounded-full px-4 py-1 text-sm font-medium"
           >
+            <Chrome className="text-primary mr-1 h-3.5 w-3.5" />
             Browser Extension
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
+          </Badge>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mx-auto max-w-2xl text-muted-foreground"
+            transition={{ duration: 0.5 }}
+            className="from-foreground to-foreground/30 bg-gradient-to-b bg-clip-text text-4xl font-bold text-transparent sm:text-5xl"
+          >
+            Save from anywhere on the web
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-muted-foreground max-w-md pt-2 text-lg mx-auto"
           >
             Save and organize bookmarks instantly while browsing. Never lose
-            track of important content again.
+            track of important content again
           </motion.p>
         </div>
 

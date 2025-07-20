@@ -12,6 +12,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 interface BentoGridItemProps {
   title: string;
@@ -166,22 +167,32 @@ export default function Integrations() {
     <section className="py-16 bg-background">
       <div className="mx-auto max-w-6xl px-4">
         {/* Section Header */}
-        <div className="mb-12 text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+        <div className="text-center mb-16">
+          <Badge
+            variant="outline"
+            className="border-primary/20 bg-primary/5 mb-4 rounded-full px-4 py-1 text-sm font-medium"
           >
-            Available Everywhere
-          </motion.h2>
+            <Globe className="text-primary mr-1 h-3.5 w-3.5" />
+            Integrations
+          </Badge>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="from-foreground to-foreground/30 bg-gradient-to-b bg-clip-text text-4xl font-bold text-transparent sm:text-5xl"
+          >
+            Available everywhere you work
+          </motion.h1>
+
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mx-auto max-w-xl text-muted-foreground"
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-muted-foreground max-w-md pt-2 text-lg mx-auto"
           >
-            Access your curated content across all your favorite platforms.
+            Access your curated content across all your favorite platforms and
+            devices
           </motion.p>
         </div>
 

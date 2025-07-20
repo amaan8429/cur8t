@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Hero from "@/components/landingPage/Hero";
 import Integrations from "@/components/landingPage/integrations";
 import BrowserExtensionShowcase from "@/components/landingPage/BrowserExtensionShowcase";
+import GitHubSyncAnimation from "@/components/landingPage/GitHubSyncAnimation";
 import {
   Navbar,
   NavBody,
@@ -15,6 +16,7 @@ import {
   NavbarLogo,
   NavbarButton,
 } from "@/components/landingPage/navbar";
+import SimplePricing from "@/components/landingPage/pricing";
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -91,8 +93,16 @@ const Home = () => {
           <Integrations />
         </section>
 
+        {/* GitHub Sync Animation */}
+        <GitHubSyncAnimation />
+
         {/* Browser Extension Showcase */}
         <BrowserExtensionShowcase />
+
+        {/* Pricing Section */}
+        <section id="pricing">
+          <SimplePricing />
+        </section>
 
         {/* Placeholder sections for the other nav links */}
         <section
