@@ -23,13 +23,13 @@ const GitHubSyncAnimation = () => {
   }, [collections.length]);
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-background to-muted/20">
-      <div className="container mx-auto px-4 sm:px-6">
+    <section className="py-20 bg-gradient-to-b from-background to-muted/20">
+      <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12 md:mb-16">
+        <div className="text-center mb-16">
           <Badge
             variant="outline"
-            className="border-primary/20 bg-primary/5 mb-4 rounded-full px-3 sm:px-4 py-1 text-sm font-medium"
+            className="border-primary/20 bg-primary/5 mb-4 rounded-full px-4 py-1 text-sm font-medium"
           >
             <Zap className="text-primary mr-1 h-3.5 w-3.5" />
             GitHub Integration
@@ -39,7 +39,7 @@ const GitHubSyncAnimation = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="from-foreground to-foreground/30 bg-gradient-to-b bg-clip-text text-3xl sm:text-4xl md:text-5xl font-bold text-transparent"
+            className="from-foreground to-foreground/30 bg-gradient-to-b bg-clip-text text-4xl font-bold text-transparent sm:text-5xl"
           >
             Sync your collections to GitHub
           </motion.h1>
@@ -48,7 +48,7 @@ const GitHubSyncAnimation = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-muted-foreground max-w-md pt-2 text-base sm:text-lg mx-auto px-4 sm:px-0"
+            className="text-muted-foreground max-w-md pt-2 text-lg mx-auto"
           >
             Automatically sync your curated collections as awesome-lists to your
             GitHub repositories
@@ -56,129 +56,16 @@ const GitHubSyncAnimation = () => {
         </div>
 
         <div className="max-w-5xl mx-auto">
-          {/* Mobile Layout */}
-          <div className="flex flex-col md:hidden space-y-8">
-            {/* Collections Section - Mobile */}
-            <div className="w-full">
-              <div className="text-center mb-4">
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+          <div className="relative flex items-center justify-between">
+            {/* Collections Side */}
+            <div className="flex flex-col space-y-8 w-2/5">
+              <div className="text-center mb-6">
+                <h3 className="text-xl font-semibold text-foreground mb-2">
                   Your Collections
                 </h3>
                 <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                  <Database className="w-4 h-4" />
-                  <span className="text-sm">Cur8t</span>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                {collections.map((collection, index) => (
-                  <motion.div
-                    key={collection.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`relative p-3 rounded-lg border bg-card transition-all duration-500 ${
-                      activeSync === index
-                        ? "border-primary shadow-md shadow-primary/10"
-                        : "border-border"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-3 h-3 rounded-full ${collection.color}`}
-                      />
-                      <div>
-                        <p className="font-medium text-foreground text-sm">
-                          {collection.name}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {collection.count} links
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            {/* Sync Indicator - Mobile */}
-            <div className="flex justify-center">
-              <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-                className="p-3 rounded-full bg-primary/10 border border-primary/20"
-              >
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                >
-                  <Zap className="w-6 h-6 text-primary" />
-                </motion.div>
-              </motion.div>
-            </div>
-
-            {/* GitHub Repo - Mobile */}
-            <div className="w-full">
-              <div className="text-center mb-4">
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  GitHub Repository
-                </h3>
-                <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                  <GitBranch className="w-4 h-4" />
-                  <span className="text-sm">Your GitHub</span>
-                </div>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="relative p-4 rounded-lg border border-primary bg-card shadow-md w-full"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <GitBranch className="w-5 h-5 text-primary" />
-                  <div>
-                    <p className="font-semibold text-foreground">
-                      awesome-collection
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      ⭐ 2.8k stars
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="text-xs text-muted-foreground">Contains:</div>
-                  {collections.map((collection, index) => (
-                    <motion.div
-                      key={collection.id}
-                      className={`flex items-center gap-2 p-2 rounded text-xs transition-all duration-300 ${
-                        activeSync === index
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      <div
-                        className={`w-2 h-2 rounded-full ${collection.color}`}
-                      />
-                      <span>{collection.name}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
-          </div>
-
-          {/* Desktop Layout */}
-          <div className="hidden md:flex relative items-center justify-between">
-            {/* Collections Side - Desktop */}
-            <div className="flex flex-col space-y-6 lg:space-y-8 w-2/5">
-              <div className="text-center mb-4 lg:mb-6">
-                <h3 className="text-lg lg:text-xl font-semibold text-foreground mb-2">
-                  Your Collections
-                </h3>
-                <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                  <Database className="w-4 h-4 lg:w-5 lg:h-5" />
-                  <span className="text-sm lg:text-base">Cur8t</span>
+                  <Database className="w-5 h-5" />
+                  <span>Cur8t</span>
                 </div>
               </div>
 
@@ -188,7 +75,7 @@ const GitHubSyncAnimation = () => {
                   initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.2 }}
-                  className={`relative p-3 lg:p-4 rounded-xl border bg-card transition-all duration-500 ${
+                  className={`relative p-4 rounded-xl border bg-card transition-all duration-500 ${
                     activeSync === index
                       ? "border-primary shadow-lg shadow-primary/20 scale-105"
                       : "border-border"
@@ -196,13 +83,13 @@ const GitHubSyncAnimation = () => {
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-3 h-3 lg:w-4 lg:h-4 rounded-full ${collection.color}`}
+                      className={`w-4 h-4 rounded-full ${collection.color}`}
                     />
                     <div>
-                      <p className="font-medium text-foreground text-sm lg:text-base">
+                      <p className="font-medium text-foreground">
                         {collection.name}
                       </p>
-                      <p className="text-xs lg:text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground">
                         {collection.count} links
                       </p>
                     </div>
@@ -211,13 +98,13 @@ const GitHubSyncAnimation = () => {
               ))}
             </div>
 
-            {/* Animated Connections - Desktop */}
-            <div className="flex-1 relative h-64 lg:h-80 flex items-center justify-center">
+            {/* Animated Connections */}
+            <div className="flex-1 relative h-80 flex items-center justify-center">
               <svg width="100%" height="100%" className="absolute inset-0">
                 {/* Connection lines from each collection to the repo */}
                 {collections.map((_, index) => {
-                  const startY = 80 + index * 60; // Adjusted for smaller height
-                  const endY = 160; // Center position for the repo
+                  const startY = 120 + index * 80; // Position based on collection
+                  const endY = 200; // Center position for the repo
                   const isActive = activeSync === index;
 
                   return (
@@ -251,7 +138,7 @@ const GitHubSyncAnimation = () => {
                       <AnimatePresence>
                         {isActive && (
                           <motion.circle
-                            r="3"
+                            r="4"
                             fill="hsl(var(--primary))"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: [0, 1, 0] }}
@@ -271,43 +158,41 @@ const GitHubSyncAnimation = () => {
               </svg>
             </div>
 
-            {/* GitHub Repo - Desktop */}
+            {/* GitHub Repo */}
             <div className="w-2/5 flex flex-col items-center">
-              <div className="text-center mb-4 lg:mb-6">
-                <h3 className="text-lg lg:text-xl font-semibold text-foreground mb-2">
+              <div className="text-center mb-6">
+                <h3 className="text-xl font-semibold text-foreground mb-2">
                   GitHub Repository
                 </h3>
                 <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                  <GitBranch className="w-4 h-4 lg:w-5 lg:h-5" />
-                  <span className="text-sm lg:text-base">Your GitHub</span>
+                  <GitBranch className="w-5 h-5" />
+                  <span>Your GitHub</span>
                 </div>
               </div>
 
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="relative p-4 lg:p-6 rounded-xl border border-primary bg-card shadow-lg w-full max-w-sm"
+                className="relative p-6 rounded-xl border border-primary bg-card shadow-lg w-full max-w-sm"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <GitBranch className="w-5 h-5 lg:w-6 lg:h-6 text-primary" />
+                  <GitBranch className="w-6 h-6 text-primary" />
                   <div>
-                    <p className="font-semibold text-foreground text-base lg:text-lg">
+                    <p className="font-semibold text-foreground text-lg">
                       awesome-collection
                     </p>
-                    <p className="text-xs lg:text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                       ⭐ 2.8k stars
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="text-xs lg:text-sm text-muted-foreground">
-                    Contains:
-                  </div>
+                  <div className="text-sm text-muted-foreground">Contains:</div>
                   {collections.map((collection, index) => (
                     <motion.div
                       key={collection.id}
-                      className={`flex items-center gap-2 p-2 rounded text-xs lg:text-sm transition-all duration-300 ${
+                      className={`flex items-center gap-2 p-2 rounded text-sm transition-all duration-300 ${
                         activeSync === index
                           ? "bg-primary/10 text-primary"
                           : "text-muted-foreground"
