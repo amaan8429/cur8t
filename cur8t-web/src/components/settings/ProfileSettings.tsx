@@ -162,6 +162,17 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
       const data = await response.json();
 
       if (!response.ok) {
+        // Handle rate limiting specifically
+        if (response.status === 429) {
+          loadingToast.dismiss();
+          toast({
+            title: "Too many requests, try again later",
+            description:
+              "Please wait before attempting another username change.",
+          });
+          return;
+        }
+
         throw new Error(data.error || "Failed to update username");
       }
 
