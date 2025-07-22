@@ -113,20 +113,6 @@ export default function ToolsAndAgents() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Bot className="h-6 w-6" />
-            <h1 className="text-2xl font-bold">Tools and Agents</h1>
-          </div>
-          <ApiStatusIndicator />
-        </div>
-        <p className="text-muted-foreground">
-          Powerful AI agents to help you organize, discover, and manage your
-          collections more efficiently.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {agents.map((agent) => (
           <Card

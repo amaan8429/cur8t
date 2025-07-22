@@ -248,13 +248,6 @@ const SavedCollections = () => {
 
   return (
     <div className="container mx-auto py-4 px-4">
-      <div className="mb-8">
-        <h3 className="text-3xl font-bold">Your Saved Collections</h3>
-        <p className="text-muted-foreground mt-2">
-          Collections you&apos;ve saved from the community
-        </p>
-      </div>
-
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-8">
         <div className="relative flex-1">

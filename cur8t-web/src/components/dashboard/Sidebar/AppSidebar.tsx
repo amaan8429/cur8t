@@ -7,6 +7,7 @@ import {
   Calendar,
   Command,
   Home,
+  User,
   // Inbox,
   MessageCircleQuestion,
   SunMoon,
@@ -47,14 +48,9 @@ const data = {
       isActive: true,
     },
     {
-      title: "Tools and Agents",
+      title: "Profile",
       url: "#",
-      icon: Command,
-    },
-    {
-      title: "Saved",
-      url: "#",
-      icon: Save,
+      icon: User,
     },
   ],
   navSecondary: [
@@ -63,16 +59,20 @@ const data = {
       icon: Workflow,
     },
     {
+      title: "Saved Collections",
+      icon: Save,
+    },
+    {
+      title: "Tools and Agents",
+      icon: Command,
+    },
+    {
+      title: "Explore Collections",
+      icon: Search,
+    },
+    {
       title: "Settings",
       icon: Settings2,
-    },
-    {
-      title: "Trash",
-      icon: Trash2,
-    },
-    {
-      title: "Help",
-      icon: MessageCircleQuestion,
     },
   ],
   lists: [
