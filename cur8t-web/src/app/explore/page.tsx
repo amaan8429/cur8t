@@ -28,29 +28,68 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { fetchPublicCollections } from "@/actions/collection/fetchPublicCollections";
-import { fetchSavedCollections } from "@/actions/collection/fetchSavedCollections";
-import { getHomepageCollections } from "@/actions/platform/homepageCollections";
+import {
+  fetchPublicCollections,
+  PublicCollection,
+} from "@/actions/collection/fetchPublicCollections";
+import {
+  fetchSavedCollections,
+  SavedCollection,
+} from "@/actions/collection/fetchSavedCollections";
+import {
+  getHomepageCollections,
+  HomepageCollection,
+} from "@/actions/platform/homepageCollections";
+import { getUserInfoAction } from "@/actions/user/getUserInfo";
 import { Collection } from "@/types/types";
 import Link from "next/link";
 import { ModeToggle } from "@/components/layout/ModeToggle";
 import { Footer } from "@/components/layout/Footer";
 import { useUser } from "@clerk/nextjs";
 
+// Union type for collections that include author info
+type CollectionWithAuthor = {
+  id: string;
+  title: string;
+  author: string;
+  likes: number;
+  description: string;
+  userId: string;
+  url: string;
+  createdAt: Date;
+  updatedAt: Date;
+  visibility: string;
+  sharedEmails: string[];
+  totalLinks: number;
+};
+
 export default function ExplorePage() {
   const { user, isLoaded } = useUser();
   const [collections, setCollections] = useState<Collection[]>([]);
-  const [trendingCollections, setTrendingCollections] = useState<Collection[]>(
+  const [trendingCollections, setTrendingCollections] = useState<
+    PublicCollection[]
+  >([]);
+  const [recentCollections, setRecentCollections] = useState<
+    PublicCollection[]
+  >([]);
+  const [savedCollections, setSavedCollections] = useState<SavedCollection[]>(
     []
   );
-  const [recentCollections, setRecentCollections] = useState<Collection[]>([]);
-  const [savedCollections, setSavedCollections] = useState<Collection[]>([]);
-  const [newCollections, setNewCollections] = useState<Collection[]>([]);
+  const [newCollections, setNewCollections] = useState<HomepageCollection[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"explore" | "events">("explore");
   const [userStats, setUserStats] = useState({
     totalSavedCollections: 0,
   });
+  const [databaseUser, setDatabaseUser] = useState<{
+    id: string;
+    name: string;
+    email: string;
+    username: string | null;
+    totalCollections: number;
+  } | null>(null);
 
   const loadExploreData = async () => {
     setIsLoading(true);
@@ -69,6 +108,12 @@ export default function ExplorePage() {
       // Only fetch user-specific data if authenticated
       if (user) {
         try {
+          // Fetch database user info to get the proper username
+          const databaseUserInfo = await getUserInfoAction();
+          if (databaseUserInfo) {
+            setDatabaseUser(databaseUserInfo);
+          }
+
           const savedResponse = await fetchSavedCollections({
             page: 1,
             limit: 5,
@@ -137,7 +182,7 @@ export default function ExplorePage() {
     collection,
     isLarge = false,
   }: {
-    collection: Collection;
+    collection: CollectionWithAuthor;
     isLarge?: boolean;
   }) => (
     <TooltipProvider>
@@ -149,7 +194,7 @@ export default function ExplorePage() {
           <div className="flex items-start gap-4">
             <Avatar className="h-10 w-10 mt-0.5">
               <AvatarFallback className="text-sm bg-primary/10 text-primary font-medium">
-                {collection.author.charAt(0).toUpperCase()}
+                {collection.author?.charAt(0)?.toUpperCase() || "?"}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
@@ -157,14 +202,16 @@ export default function ExplorePage() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
-                      onClick={(e) => handleProfileClick(e, collection.author)}
+                      onClick={(e) =>
+                        handleProfileClick(e, collection.author || "Anonymous")
+                      }
                       className="text-sm text-muted-foreground hover:text-primary transition-colors truncate max-w-[100px]"
                     >
-                      {truncateText(collection.author, 12)}
+                      {truncateText(collection.author || "Anonymous", 12)}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{collection.author}</p>
+                    <p>{collection.author || "Anonymous"}</p>
                   </TooltipContent>
                 </Tooltip>
                 <span className="text-muted-foreground">/</span>
@@ -219,7 +266,11 @@ export default function ExplorePage() {
     </TooltipProvider>
   );
 
-  const TimelineCard = ({ collection }: { collection: Collection }) => (
+  const TimelineCard = ({
+    collection,
+  }: {
+    collection: CollectionWithAuthor;
+  }) => (
     <TooltipProvider>
       <div className="flex gap-4 pb-6">
         <div className="flex flex-col items-center">
@@ -235,7 +286,7 @@ export default function ExplorePage() {
               <div className="flex items-start gap-3">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="text-xs bg-primary/10 text-primary font-medium">
-                    {collection.author.charAt(0).toUpperCase()}
+                    {collection.author?.charAt(0)?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
@@ -495,7 +546,7 @@ export default function ExplorePage() {
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                      {collection.author.charAt(0).toUpperCase()}
+                      {collection.author?.charAt(0)?.toUpperCase() || "?"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
@@ -632,26 +683,44 @@ export default function ExplorePage() {
       );
     }
 
-    const displayName = user.firstName || user.username || "User";
-    const username =
-      user.username ||
-      user.emailAddresses[0]?.emailAddress?.split("@")[0] ||
-      "user";
+    // Use database user info if available, fallback to Clerk user info
+    const displayName =
+      databaseUser?.name || user.firstName || user.username || "User";
+    const profileUsername = databaseUser?.username;
 
     return (
       <Card className="border border-border/50">
         <CardContent className="p-8 text-center">
-          <Avatar className="h-24 w-24 mx-auto mb-6">
-            <AvatarFallback className="text-3xl bg-primary/10 text-primary">
-              {displayName.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <h2 className="text-xl font-bold mb-2">
-            {truncateText(displayName, 20)}
-          </h2>
-          <p className="text-muted-foreground text-sm mb-6">
-            {truncateText(username, 20)}
-          </p>
+          {/* Make avatar and name clickable if user has username */}
+          {profileUsername ? (
+            <Link href={`/profile/${profileUsername}`} className="block group">
+              <Avatar className="h-24 w-24 mx-auto mb-6 group-hover:ring-2 group-hover:ring-primary transition-all">
+                <AvatarFallback className="text-3xl bg-primary/10 text-primary">
+                  {displayName.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <h2 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                {truncateText(displayName, 20)}
+              </h2>
+              <p className="text-muted-foreground text-sm mb-6 group-hover:text-primary/80 transition-colors">
+                @{truncateText(profileUsername, 20)}
+              </p>
+            </Link>
+          ) : (
+            <>
+              <Avatar className="h-24 w-24 mx-auto mb-6">
+                <AvatarFallback className="text-3xl bg-primary/10 text-primary">
+                  {displayName.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <h2 className="text-xl font-bold mb-2">
+                {truncateText(displayName, 20)}
+              </h2>
+              <p className="text-muted-foreground text-sm mb-6">
+                Setup username in settings
+              </p>
+            </>
+          )}
 
           <div className="space-y-3 text-sm">
             <div className="flex justify-between py-2 border-b border-border/30">
@@ -660,6 +729,16 @@ export default function ExplorePage() {
                 {userStats.totalSavedCollections}
               </span>
             </div>
+            {databaseUser?.totalCollections !== undefined && (
+              <div className="flex justify-between py-2 border-b border-border/30">
+                <span className="text-muted-foreground">
+                  public collections
+                </span>
+                <span className="text-primary font-medium">
+                  {databaseUser.totalCollections}
+                </span>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

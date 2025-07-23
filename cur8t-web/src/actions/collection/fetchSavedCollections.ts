@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { CollectionsTable, SavedCollectionsTable } from "@/schema";
+import { CollectionsTable, SavedCollectionsTable, UsersTable } from "@/schema";
 import { Collection } from "@/types/types";
 import { auth } from "@clerk/nextjs/server";
 import { eq, desc } from "drizzle-orm";
@@ -12,6 +12,11 @@ export type PaginationParams = {
   limit: number;
   sortBy: "trending" | "recent" | "likes";
 };
+
+// Type for saved collection that includes author info from the join
+export interface SavedCollection extends Collection {
+  author: string;
+}
 
 export async function fetchSavedCollections({
   page = 1,
@@ -55,7 +60,7 @@ export async function fetchSavedCollections({
     .select({
       id: CollectionsTable.id,
       title: CollectionsTable.title,
-      author: CollectionsTable.author,
+      author: UsersTable.name,
       likes: CollectionsTable.likes,
       description: CollectionsTable.description,
       userId: CollectionsTable.userId,
@@ -71,13 +76,14 @@ export async function fetchSavedCollections({
       CollectionsTable,
       eq(SavedCollectionsTable.collectionId, CollectionsTable.id)
     )
+    .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
     .where(eq(SavedCollectionsTable.userId, userId))
     .orderBy(desc(getSortColumn()))
     .limit(limit)
     .offset(offset);
 
   return {
-    data: savedCollections as Collection[],
+    data: savedCollections as SavedCollection[],
     pagination: {
       total: totalCount,
       totalPages: Math.ceil(totalCount / limit),

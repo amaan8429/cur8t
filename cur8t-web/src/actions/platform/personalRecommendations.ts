@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { CollectionsTable, SavedCollectionsTable } from "@/schema";
+import { CollectionsTable, SavedCollectionsTable, UsersTable } from "@/schema";
 import { eq, and, ne, inArray, desc } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
 
@@ -31,7 +31,7 @@ export async function getPersonalRecommendations() {
         .select({
           id: CollectionsTable.id,
           title: CollectionsTable.title,
-          author: CollectionsTable.author,
+          author: UsersTable.name,
           description: CollectionsTable.description,
           likes: CollectionsTable.likes,
           totalLinks: CollectionsTable.totalLinks,
@@ -39,6 +39,7 @@ export async function getPersonalRecommendations() {
           userId: CollectionsTable.userId,
         })
         .from(CollectionsTable)
+        .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
         .where(
           and(
             eq(CollectionsTable.visibility, "public"),
@@ -84,7 +85,7 @@ export async function getPersonalRecommendations() {
             .select({
               id: CollectionsTable.id,
               title: CollectionsTable.title,
-              author: CollectionsTable.author,
+              author: UsersTable.name,
               description: CollectionsTable.description,
               likes: CollectionsTable.likes,
               totalLinks: CollectionsTable.totalLinks,
@@ -92,6 +93,7 @@ export async function getPersonalRecommendations() {
               userId: CollectionsTable.userId,
             })
             .from(CollectionsTable)
+            .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
             .where(
               and(
                 inArray(CollectionsTable.userId, similarCreators),
@@ -109,7 +111,7 @@ export async function getPersonalRecommendations() {
       .select({
         id: CollectionsTable.id,
         title: CollectionsTable.title,
-        author: CollectionsTable.author,
+        author: UsersTable.name,
         description: CollectionsTable.description,
         likes: CollectionsTable.likes,
         totalLinks: CollectionsTable.totalLinks,
@@ -117,6 +119,7 @@ export async function getPersonalRecommendations() {
         userId: CollectionsTable.userId,
       })
       .from(CollectionsTable)
+      .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
       .where(
         and(
           eq(CollectionsTable.visibility, "public"),

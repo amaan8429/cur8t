@@ -25,13 +25,6 @@ export async function createCollectionAction(
     return { error: "Visibility is required" };
   }
 
-  const author = await db
-    .select({
-      author: UsersTable.name,
-    })
-    .from(UsersTable)
-    .where(eq(UsersTable.id, userId));
-
   const createdCollection = await db
     .insert(CollectionsTable)
     .values({
@@ -40,7 +33,6 @@ export async function createCollectionAction(
       userId: userId,
       url: "",
       visibility: visiblity,
-      author: author[0].author,
     })
     .returning();
 

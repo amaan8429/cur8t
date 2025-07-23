@@ -58,7 +58,6 @@ export const GitHubSettingsTable = pgTable("github_settings", {
 export const CollectionsTable = pgTable("collections", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   title: text("title").notNull(),
-  author: text("author").notNull(),
   likes: integer("likes").default(0).notNull(),
   description: text("description").default("").notNull(),
   userId: text("user_id")

@@ -18,7 +18,7 @@ export async function getSingleCollectionAction(collectionId: string) {
       id: CollectionsTable.id,
       title: CollectionsTable.title,
       description: CollectionsTable.description,
-      author: CollectionsTable.author,
+      author: UsersTable.name,
       likes: CollectionsTable.likes,
       totalLinks: CollectionsTable.totalLinks,
       userId: CollectionsTable.userId,

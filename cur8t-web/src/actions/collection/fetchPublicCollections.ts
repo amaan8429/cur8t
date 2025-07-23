@@ -1,7 +1,8 @@
 "use server";
 
 import { db } from "@/db";
-import { CollectionsTable } from "@/schema";
+import { CollectionsTable, UsersTable } from "@/schema";
+import { Collection } from "@/types/types";
 import { eq, desc } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 
@@ -10,6 +11,11 @@ export type PaginationParams = {
   limit: number;
   sortBy: "trending" | "recent" | "likes";
 };
+
+// Type for public collection that includes author info from the join
+export interface PublicCollection extends Collection {
+  author: string;
+}
 
 export async function fetchPublicCollections({
   page = 1,
@@ -41,15 +47,30 @@ export async function fetchPublicCollections({
   const totalCount = totalCountResult[0].count;
 
   // Fetch paginated data
-  const collections = await db.query.CollectionsTable.findMany({
-    where: eq(CollectionsTable.visibility, "public"),
-    orderBy: [desc(getSortColumn())],
-    limit: limit,
-    offset: offset,
-  });
+  const collections = await db
+    .select({
+      id: CollectionsTable.id,
+      title: CollectionsTable.title,
+      author: UsersTable.name,
+      likes: CollectionsTable.likes,
+      description: CollectionsTable.description,
+      userId: CollectionsTable.userId,
+      url: CollectionsTable.url,
+      createdAt: CollectionsTable.createdAt,
+      updatedAt: CollectionsTable.updatedAt,
+      visibility: CollectionsTable.visibility,
+      sharedEmails: CollectionsTable.sharedEmails,
+      totalLinks: CollectionsTable.totalLinks,
+    })
+    .from(CollectionsTable)
+    .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
+    .where(eq(CollectionsTable.visibility, "public"))
+    .orderBy(desc(getSortColumn()))
+    .limit(limit)
+    .offset(offset);
 
   return {
-    data: collections,
+    data: collections as PublicCollection[],
     pagination: {
       total: totalCount,
       totalPages: Math.ceil(totalCount / limit),

@@ -23,7 +23,7 @@ export async function quickSearch(query: string) {
       .select({
         id: CollectionsTable.id,
         title: CollectionsTable.title,
-        author: CollectionsTable.author,
+        author: UsersTable.name,
         likes: CollectionsTable.likes,
         description: CollectionsTable.description,
         totalLinks: CollectionsTable.totalLinks,
@@ -31,12 +31,13 @@ export async function quickSearch(query: string) {
         updatedAt: CollectionsTable.updatedAt,
       })
       .from(CollectionsTable)
+      .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
       .where(
         and(
           or(
             ilike(CollectionsTable.title, searchTerm),
             ilike(CollectionsTable.description, searchTerm),
-            ilike(CollectionsTable.author, searchTerm)
+            ilike(UsersTable.name, searchTerm)
           ),
           eq(CollectionsTable.visibility, "public")
         )

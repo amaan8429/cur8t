@@ -115,7 +115,7 @@ const TrendingCollections = () => {
               <div className="flex items-center gap-2">
                 <Avatar className="h-5 w-5">
                   <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                    {collection.author.charAt(0).toUpperCase()}
+                    {collection.author?.charAt(0)?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
                 <span className="text-xs text-muted-foreground truncate max-w-[100px]">

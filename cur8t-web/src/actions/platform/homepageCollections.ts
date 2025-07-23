@@ -1,9 +1,14 @@
 "use server";
 
 import { db } from "@/db";
-import { CollectionsTable } from "@/schema";
+import { CollectionsTable, UsersTable } from "@/schema";
 import { eq, desc, gte, and } from "drizzle-orm";
 import { Collection } from "@/types/types";
+
+// Type for homepage collection that includes author info from the join
+export interface HomepageCollection extends Collection {
+  author: string;
+}
 
 export async function getHomepageCollections() {
   try {
@@ -12,7 +17,7 @@ export async function getHomepageCollections() {
       .select({
         id: CollectionsTable.id,
         title: CollectionsTable.title,
-        author: CollectionsTable.author,
+        author: UsersTable.name,
         likes: CollectionsTable.likes,
         description: CollectionsTable.description,
         userId: CollectionsTable.userId,
@@ -24,6 +29,7 @@ export async function getHomepageCollections() {
         totalLinks: CollectionsTable.totalLinks,
       })
       .from(CollectionsTable)
+      .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
       .where(eq(CollectionsTable.visibility, "public"))
       .orderBy(desc(CollectionsTable.likes))
       .limit(6);
@@ -33,7 +39,7 @@ export async function getHomepageCollections() {
       .select({
         id: CollectionsTable.id,
         title: CollectionsTable.title,
-        author: CollectionsTable.author,
+        author: UsersTable.name,
         likes: CollectionsTable.likes,
         description: CollectionsTable.description,
         userId: CollectionsTable.userId,
@@ -45,6 +51,7 @@ export async function getHomepageCollections() {
         totalLinks: CollectionsTable.totalLinks,
       })
       .from(CollectionsTable)
+      .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
       .where(eq(CollectionsTable.visibility, "public"))
       .orderBy(desc(CollectionsTable.updatedAt))
       .limit(6);
@@ -57,7 +64,7 @@ export async function getHomepageCollections() {
       .select({
         id: CollectionsTable.id,
         title: CollectionsTable.title,
-        author: CollectionsTable.author,
+        author: UsersTable.name,
         likes: CollectionsTable.likes,
         description: CollectionsTable.description,
         userId: CollectionsTable.userId,
@@ -69,6 +76,7 @@ export async function getHomepageCollections() {
         totalLinks: CollectionsTable.totalLinks,
       })
       .from(CollectionsTable)
+      .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
       .where(
         and(
           eq(CollectionsTable.visibility, "public"),
@@ -81,9 +89,9 @@ export async function getHomepageCollections() {
     return {
       success: true,
       data: {
-        trending: trendingCollections as Collection[],
-        recent: recentCollections as Collection[],
-        new: newCollections as Collection[],
+        trending: trendingCollections as HomepageCollection[],
+        recent: recentCollections as HomepageCollection[],
+        new: newCollections as HomepageCollection[],
       },
     };
   } catch (error) {

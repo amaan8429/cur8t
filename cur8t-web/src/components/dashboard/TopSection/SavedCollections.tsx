@@ -35,7 +35,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Collection } from "@/types/types";
-import { fetchSavedCollections } from "@/actions/collection/fetchSavedCollections";
+import {
+  fetchSavedCollections,
+  SavedCollection,
+} from "@/actions/collection/fetchSavedCollections";
 import Link from "next/link";
 
 const SavedCollections = () => {
@@ -44,7 +47,7 @@ const SavedCollections = () => {
   const [sortBy, setSortBy] = useState<"trending" | "recent" | "likes">(
     "trending"
   );
-  const [collections, setCollections] = useState<Collection[]>([]);
+  const [collections, setCollections] = useState<SavedCollection[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -94,7 +97,7 @@ const SavedCollections = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const CollectionCard = ({ collection }: { collection: Collection }) => (
+  const CollectionCard = ({ collection }: { collection: SavedCollection }) => (
     <Link
       href={`/collection/${collection.id}`}
       target="_blank"
@@ -145,11 +148,11 @@ const SavedCollections = () => {
               <div className="flex items-center gap-2">
                 <Avatar className="h-5 w-5">
                   <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                    {collection.author.charAt(0).toUpperCase()}
+                    {collection.author?.charAt(0)?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
                 <span className="text-xs text-muted-foreground truncate max-w-[100px]">
-                  {collection.author}
+                  {collection.author || "Anonymous"}
                 </span>
               </div>
             </div>
@@ -159,7 +162,11 @@ const SavedCollections = () => {
     </Link>
   );
 
-  const CollectionListItem = ({ collection }: { collection: Collection }) => (
+  const CollectionListItem = ({
+    collection,
+  }: {
+    collection: SavedCollection;
+  }) => (
     <Link
       href={`/collection/${collection.id}`}
       target="_blank"
@@ -209,11 +216,11 @@ const SavedCollections = () => {
             <div className="flex items-center gap-2">
               <Avatar className="h-5 w-5">
                 <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                  {collection.author.charAt(0).toUpperCase()}
+                  {collection.author?.charAt(0)?.toUpperCase() || "?"}
                 </AvatarFallback>
               </Avatar>
               <span className="text-sm text-muted-foreground">
-                {collection.author}
+                {collection.author || "Anonymous"}
               </span>
             </div>
           </div>
@@ -322,7 +329,7 @@ const SavedCollections = () => {
             <>
               {isGridView ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredCollections.map((collection: Collection) => (
+                  {filteredCollections.map((collection: SavedCollection) => (
                     <CollectionCard
                       key={collection.id}
                       collection={collection}

@@ -46,18 +46,6 @@ export async function duplicatePublicCollectionAction(
       return { error: "Cannot duplicate private collections" };
     }
 
-    // Get current user info
-    const userResult = await db
-      .select({ name: UsersTable.name })
-      .from(UsersTable)
-      .where(eq(UsersTable.id, userId));
-
-    if (!userResult || userResult.length === 0) {
-      return { error: "User not found" };
-    }
-
-    const userName = userResult[0].name;
-
     // Create duplicate collection
     const duplicateName = `Copy of ${source.title}`;
     const duplicateCollection = await db
@@ -65,7 +53,6 @@ export async function duplicatePublicCollectionAction(
       .values({
         title: duplicateName,
         description: source.description,
-        author: userName,
         userId: userId,
         url: "",
         visibility: visibility,

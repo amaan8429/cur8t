@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { CollectionsTable } from "@/schema";
+import { CollectionsTable, UsersTable } from "@/schema";
 import { eq, ilike, or } from "drizzle-orm";
 import { Collection } from "@/types/types";
 
@@ -132,7 +132,7 @@ export async function getCategorizedCollections() {
         .select({
           id: CollectionsTable.id,
           title: CollectionsTable.title,
-          author: CollectionsTable.author,
+          author: UsersTable.name,
           likes: CollectionsTable.likes,
           description: CollectionsTable.description,
           userId: CollectionsTable.userId,
@@ -144,6 +144,7 @@ export async function getCategorizedCollections() {
           totalLinks: CollectionsTable.totalLinks,
         })
         .from(CollectionsTable)
+        .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
         .where(
           or(
             eq(CollectionsTable.visibility, "public"),

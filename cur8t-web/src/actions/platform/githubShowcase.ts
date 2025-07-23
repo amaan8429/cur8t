@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { CollectionsTable, LinksTable } from "@/schema";
+import { CollectionsTable, LinksTable, UsersTable } from "@/schema";
 import { eq, and, ilike, desc } from "drizzle-orm";
 
 export async function getGitHubShowcase() {
@@ -11,7 +11,7 @@ export async function getGitHubShowcase() {
       .select({
         id: CollectionsTable.id,
         title: CollectionsTable.title,
-        author: CollectionsTable.author,
+        author: UsersTable.name,
         description: CollectionsTable.description,
         likes: CollectionsTable.likes,
         totalLinks: CollectionsTable.totalLinks,
@@ -19,6 +19,7 @@ export async function getGitHubShowcase() {
         userId: CollectionsTable.userId,
       })
       .from(CollectionsTable)
+      .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
       .where(
         and(
           eq(CollectionsTable.visibility, "public"),
@@ -33,7 +34,7 @@ export async function getGitHubShowcase() {
       .select({
         id: CollectionsTable.id,
         title: CollectionsTable.title,
-        author: CollectionsTable.author,
+        author: UsersTable.name,
         description: CollectionsTable.description,
         likes: CollectionsTable.likes,
         totalLinks: CollectionsTable.totalLinks,
@@ -41,6 +42,7 @@ export async function getGitHubShowcase() {
         userId: CollectionsTable.userId,
       })
       .from(CollectionsTable)
+      .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
       .innerJoin(
         LinksTable,
         eq(CollectionsTable.id, LinksTable.linkCollectionId)
@@ -54,7 +56,7 @@ export async function getGitHubShowcase() {
       .groupBy(
         CollectionsTable.id,
         CollectionsTable.title,
-        CollectionsTable.author,
+        UsersTable.name,
         CollectionsTable.description,
         CollectionsTable.likes,
         CollectionsTable.totalLinks,

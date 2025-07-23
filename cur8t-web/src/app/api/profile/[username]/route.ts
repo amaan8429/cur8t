@@ -41,7 +41,7 @@ export async function GET(
         id: CollectionsTable.id,
         title: CollectionsTable.title,
         description: CollectionsTable.description,
-        author: CollectionsTable.author,
+        author: UsersTable.name,
         likes: CollectionsTable.likes,
         totalLinks: CollectionsTable.totalLinks,
         userId: CollectionsTable.userId,
@@ -51,6 +51,7 @@ export async function GET(
         updatedAt: CollectionsTable.updatedAt,
       })
       .from(CollectionsTable)
+      .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
       .where(
         and(
           eq(CollectionsTable.userId, user.id),

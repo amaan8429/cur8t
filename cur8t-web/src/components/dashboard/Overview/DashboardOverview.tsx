@@ -1,13 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,13 +37,11 @@ import {
   ExternalLink,
   Pin,
   Globe,
-  Lock,
-  Shield,
   Folder,
   Eye,
-  User,
   ChevronLeft,
   ChevronRight,
+  Lock,
 } from "lucide-react";
 import { useActiveState } from "@/store/activeStateStore";
 import {
@@ -218,7 +210,7 @@ export function DashboardOverview() {
         return { icon: Globe, text: "Public", variant: "default" as const };
       case "protected":
         return {
-          icon: Shield,
+          icon: Lock,
           text: "Protected",
           variant: "secondary" as const,
         };
@@ -605,7 +597,6 @@ export function DashboardOverview() {
             <TableRow className="border-border/10">
               <TableHead className="w-12"></TableHead>
               <TableHead className="font-semibold">Name</TableHead>
-              <TableHead className="font-semibold">Author</TableHead>
               <TableHead className="font-semibold">Links</TableHead>
               <TableHead className="font-semibold">Visibility</TableHead>
               <TableHead className="font-semibold">Last Updated</TableHead>
@@ -668,16 +659,6 @@ export function DashboardOverview() {
                             </div>
                           )}
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center">
-                          <User className="h-3 w-3 text-muted-foreground" />
-                        </div>
-                        <span className="text-sm font-medium">
-                          {collection.author}
-                        </span>
                       </div>
                     </TableCell>
                     <TableCell>

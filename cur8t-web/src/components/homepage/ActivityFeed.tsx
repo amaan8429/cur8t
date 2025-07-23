@@ -131,7 +131,7 @@ const ActivityFeed = () => {
               <div className="flex items-center gap-1">
                 <Avatar className="h-4 w-4">
                   <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                    {collection.author.charAt(0).toUpperCase()}
+                    {collection.author?.charAt(0)?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
                 <span>{collection.author}</span>

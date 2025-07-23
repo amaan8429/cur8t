@@ -56,7 +56,7 @@ interface Collection {
   id: string;
   title: string;
   description: string;
-  author: string;
+  author: string | null;
   likes: number;
   totalLinks: number;
   userId: string;
@@ -473,7 +473,7 @@ export default function CollectionPage() {
                       >
                         <Avatar className="h-6 w-6 group-hover:ring-2 group-hover:ring-primary/20 transition-all">
                           <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                            {collection.author.charAt(0).toUpperCase()}
+                            {collection.author?.charAt(0)?.toUpperCase() || "?"}
                           </AvatarFallback>
                         </Avatar>
                         <span className="font-medium">

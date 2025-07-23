@@ -39,18 +39,6 @@ export async function saveExtractedCollectionAction(
   }
 
   try {
-    // Get user information
-    const author = await db
-      .select({
-        author: UsersTable.name,
-      })
-      .from(UsersTable)
-      .where(eq(UsersTable.id, userId));
-
-    if (!author.length) {
-      return { error: "User not found in database" };
-    }
-
     // Create collection
     const createdCollection = await db
       .insert(CollectionsTable)
@@ -62,7 +50,6 @@ export async function saveExtractedCollectionAction(
         userId: userId,
         url: data.article_url || "",
         visibility: "private", // Default to private
-        author: author[0].author,
         totalLinks: data.extracted_links.length,
       })
       .returning();

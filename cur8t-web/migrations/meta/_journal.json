@@ -29,6 +29,13 @@
       "when": 1750946447710,
       "tag": "0003_add_pinned_collections_to_users",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1753285571720,
+      "tag": "0004_milky_mentor",
+      "breakpoints": true
     }
   ]
 }

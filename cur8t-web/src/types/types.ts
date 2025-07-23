@@ -13,7 +13,6 @@ const LinkSchema = z.object({
 const CollectionSchema = z.object({
   id: z.string(),
   title: z.string(),
-  author: z.string(),
   likes: z.number(),
   description: z.string(),
   userId: z.string(),
