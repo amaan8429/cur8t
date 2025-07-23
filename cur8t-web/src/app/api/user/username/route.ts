@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate username format
-    if (username.length < 3) {
+    if (username.length < 3 || username.length > 20) {
       return NextResponse.json(
         { error: "Username must be at least 3 characters long" },
         { status: 400 }

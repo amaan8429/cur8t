@@ -5,7 +5,6 @@ import SettingsPage from "../settings/SettingsPage";
 import { useActiveState } from "@/store/activeStateStore";
 import SavedCollections from "../dashboard/TopSection/SavedCollections";
 import ToolsAndAgents from "../dashboard/TopSection/ToolsAndAgents";
-import ExploreCollections from "../dashboard/TopSection/ExploreCollections";
 import { useRouter } from "next/navigation";
 
 const SecondaryPage = () => {
@@ -30,8 +29,7 @@ const SecondaryPage = () => {
   } else if (activeSecondary === "Tools and Agents") {
     return <ToolsAndAgents />;
   } else if (activeSecondary === "Explore Collections") {
-    //push to explore collections page in a new tab
-    window.open("/explore", "_blank");
+    router.push("/explore");
   }
 
   return null;
