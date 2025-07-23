@@ -1,13 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ModeToggle } from "@/components/layout/ModeToggle";
-import { Footer } from "@/components/layout/Footer";
-import { fetchPublicCollections } from "@/actions/collection/fetchPublicCollections";
-import { Collection } from "@/types/types";
-import { Badge } from "@/components/ui/badge";
+import React, { useEffect, useState } from "react";
+import {
+  Star,
+  Calendar,
+  User,
+  TrendingUp,
+  Clock,
+  Link2,
+  Plus,
+  ExternalLink,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -15,74 +20,76 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
 import {
-  Search,
-  Grid,
-  List,
-  TrendingUp,
-  Clock,
-  Star,
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-  X,
-  Link2,
-  Heart,
-  Calendar,
-  Sparkles,
-  Users,
-  SortAsc,
-} from "lucide-react";
-import { useMemo } from "react";
-
-interface FilterState {
-  minLikes: number;
-  minLinks: number;
-  dateRange: "all" | "week" | "month" | "year";
-  author: string;
-}
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { fetchPublicCollections } from "@/actions/collection/fetchPublicCollections";
+import { fetchSavedCollections } from "@/actions/collection/fetchSavedCollections";
+import { getHomepageCollections } from "@/actions/platform/homepageCollections";
+import { Collection } from "@/types/types";
+import Link from "next/link";
+import { ModeToggle } from "@/components/layout/ModeToggle";
+import { Footer } from "@/components/layout/Footer";
+import { useUser } from "@clerk/nextjs";
 
 export default function ExplorePage() {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"trending" | "recent" | "likes">(
-    "trending"
-  );
+  const { user, isLoaded } = useUser();
   const [collections, setCollections] = useState<Collection[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [trendingCollections, setTrendingCollections] = useState<Collection[]>(
+    []
+  );
+  const [recentCollections, setRecentCollections] = useState<Collection[]>([]);
+  const [savedCollections, setSavedCollections] = useState<Collection[]>([]);
+  const [newCollections, setNewCollections] = useState<Collection[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState<FilterState>({
-    minLikes: 0,
-    minLinks: 0,
-    dateRange: "all",
-    author: "",
+  const [activeTab, setActiveTab] = useState<"explore" | "events">("explore");
+  const [userStats, setUserStats] = useState({
+    totalSavedCollections: 0,
   });
 
-  const ITEMS_PER_PAGE = 12;
-
-  const loadCollections = async () => {
+  const loadExploreData = async () => {
     setIsLoading(true);
     try {
-      const response = await fetchPublicCollections({
-        page: currentPage,
-        limit: ITEMS_PER_PAGE,
-        sortBy,
-      });
-      setCollections(response.data);
-      setTotalPages(response.pagination.totalPages);
+      // Always fetch public data
+      const [trendingResponse, recentResponse, homepageResponse] =
+        await Promise.all([
+          fetchPublicCollections({ page: 1, limit: 5, sortBy: "likes" }),
+          fetchPublicCollections({ page: 1, limit: 6, sortBy: "recent" }),
+          getHomepageCollections(),
+        ]);
+
+      setTrendingCollections(trendingResponse.data);
+      setRecentCollections(recentResponse.data);
+
+      // Only fetch user-specific data if authenticated
+      if (user) {
+        try {
+          const savedResponse = await fetchSavedCollections({
+            page: 1,
+            limit: 5,
+            sortBy: "recent",
+          });
+          if (savedResponse.data) {
+            setSavedCollections(savedResponse.data);
+            setUserStats({
+              totalSavedCollections: savedResponse.pagination.total,
+            });
+          }
+        } catch (error) {
+          console.error("Failed to fetch saved collections:", error);
+          // Don't fail the whole page if saved collections fail
+        }
+      }
+
+      // Handle new collections for events timeline
+      if (homepageResponse.success && homepageResponse.data) {
+        setNewCollections(homepageResponse.data.new);
+      }
     } catch (error) {
       console.error("Failed to fetch collections:", error);
     }
@@ -90,566 +97,638 @@ export default function ExplorePage() {
   };
 
   useEffect(() => {
-    loadCollections();
-  }, [currentPage, sortBy]);
-
-  const filteredCollections = useMemo(() => {
-    return collections.filter((collection) => {
-      const matchesSearch =
-        collection.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        collection.description
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        collection.author.toLowerCase().includes(searchQuery.toLowerCase());
-
-      const matchesLikes = collection.likes >= filters.minLikes;
-      const matchesLinks = collection.totalLinks >= filters.minLinks;
-      const matchesAuthor =
-        !filters.author ||
-        collection.author.toLowerCase().includes(filters.author.toLowerCase());
-
-      const matchesDate = (() => {
-        if (filters.dateRange === "all") return true;
-        const now = new Date();
-        const collectionDate = new Date(collection.updatedAt);
-        const diffTime = now.getTime() - collectionDate.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        switch (filters.dateRange) {
-          case "week":
-            return diffDays <= 7;
-          case "month":
-            return diffDays <= 30;
-          case "year":
-            return diffDays <= 365;
-          default:
-            return true;
-        }
-      })();
-
-      return (
-        matchesSearch &&
-        matchesLikes &&
-        matchesLinks &&
-        matchesAuthor &&
-        matchesDate
-      );
-    });
-  }, [collections, searchQuery, filters]);
+    if (isLoaded) {
+      loadExploreData();
+    }
+  }, [isLoaded, user]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
       month: "short",
       day: "numeric",
     });
   };
 
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      minLikes: 0,
-      minLinks: 0,
-      dateRange: "all",
-      author: "",
+  const formatFullDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
-    setSearchQuery("");
   };
 
-  const hasActiveFilters = useMemo(() => {
-    return (
-      filters.minLikes > 0 ||
-      filters.minLinks > 0 ||
-      filters.dateRange !== "all" ||
-      filters.author !== "" ||
-      searchQuery !== ""
-    );
-  }, [filters, searchQuery]);
+  const handleCollectionClick = (collectionId: string) => {
+    window.open(`/collection/${collectionId}`, "_blank", "noopener,noreferrer");
+  };
 
-  const CollectionCard = ({ collection }: { collection: Collection }) => (
-    <Link href={`/collection/${collection.id}`}>
-      <Card className="group hover:shadow-sm transition-all duration-300 cursor-pointer border-border/30 hover:border-border/50 h-full">
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex-1 space-y-2">
-              <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
-                {collection.title}
-              </CardTitle>
-              <CardDescription className="line-clamp-3 text-muted-foreground">
-                {collection.description || "No description provided"}
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
+  const handleProfileClick = (e: React.MouseEvent, author: string) => {
+    e.stopPropagation();
+    window.open(`/profile/${author}`, "_blank", "noopener,noreferrer");
+  };
 
-        <CardContent className="pt-0">
-          <div className="space-y-3">
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Link2 className="h-3.5 w-3.5" />
-                <span>{collection.totalLinks}</span>
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
+  const CollectionCard = ({
+    collection,
+    isLarge = false,
+  }: {
+    collection: Collection;
+    isLarge?: boolean;
+  }) => (
+    <TooltipProvider>
+      <Card
+        className="group hover:bg-muted/50 transition-colors cursor-pointer border border-border/50 hover:border-border"
+        onClick={() => handleCollectionClick(collection.id)}
+      >
+        <CardContent className="p-6">
+          <div className="flex items-start gap-4">
+            <Avatar className="h-10 w-10 mt-0.5">
+              <AvatarFallback className="text-sm bg-primary/10 text-primary font-medium">
+                {collection.author.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-2">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={(e) => handleProfileClick(e, collection.author)}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors truncate max-w-[100px]"
+                    >
+                      {truncateText(collection.author, 12)}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{collection.author}</p>
+                  </TooltipContent>
+                </Tooltip>
+                <span className="text-muted-foreground">/</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate max-w-[200px]">
+                      {truncateText(collection.title, 25)}
+                    </h3>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{collection.title}</p>
+                  </TooltipContent>
+                </Tooltip>
+                <Badge variant="outline" className="text-xs px-2 py-0.5">
+                  Public
+                </Badge>
               </div>
 
-              {collection.likes > 0 && (
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <Heart className="h-3.5 w-3.5" />
-                  <span>{collection.likes}</span>
-                </div>
+              {collection.description && (
+                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                  {collection.description}
+                </p>
               )}
 
-              <Badge variant="outline" className="text-xs">
-                Public
-              </Badge>
-            </div>
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-primary"></div>
+                  <span>collection</span>
+                </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Calendar className="h-3 w-3" />
+                {collection.likes > 0 && (
+                  <div className="flex items-center gap-1.5">
+                    <Star className="h-3 w-3" />
+                    <span>{collection.likes}</span>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-1.5">
+                  <Link2 className="h-3 w-3" />
+                  <span>{collection.totalLinks}</span>
+                </div>
+
                 <span>
                   Updated {formatDate(collection.updatedAt.toString())}
                 </span>
               </div>
+            </div>
+            <ExternalLink className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+        </CardContent>
+      </Card>
+    </TooltipProvider>
+  );
 
-              <div className="flex items-center gap-2">
-                <Avatar className="h-5 w-5">
-                  <AvatarFallback className="text-xs bg-primary/10 text-primary">
+  const TimelineCard = ({ collection }: { collection: Collection }) => (
+    <TooltipProvider>
+      <div className="flex gap-4 pb-6">
+        <div className="flex flex-col items-center">
+          <div className="w-2 h-2 bg-primary rounded-full mt-3"></div>
+          <div className="w-px bg-border flex-1 mt-2"></div>
+        </div>
+        <div className="flex-1">
+          <Card
+            className="group hover:bg-muted/50 transition-colors cursor-pointer border border-border/50 hover:border-border"
+            onClick={() => handleCollectionClick(collection.id)}
+          >
+            <CardContent className="p-5">
+              <div className="flex items-start gap-3">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback className="text-xs bg-primary/10 text-primary font-medium">
                     {collection.author.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-xs text-muted-foreground truncate max-w-[100px]">
-                  {collection.author}
-                </span>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </Link>
-  );
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) =>
+                            handleProfileClick(e, collection.author)
+                          }
+                          className="text-sm font-medium text-foreground hover:text-primary transition-colors truncate max-w-[120px]"
+                        >
+                          {truncateText(collection.author, 15)}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{collection.author}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <span className="text-xs text-muted-foreground">
+                      created
+                    </span>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate max-w-[150px]">
+                          {truncateText(collection.title, 20)}
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{collection.title}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
 
-  const CollectionListItem = ({ collection }: { collection: Collection }) => (
-    <Link href={`/collection/${collection.id}`}>
-      <Card className="group hover:shadow-sm transition-all duration-300 cursor-pointer border-border/30 hover:border-border/50">
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex-1 space-y-2">
-              <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
-                {collection.title}
-              </CardTitle>
-              <CardDescription className="line-clamp-3 text-muted-foreground">
-                {collection.description || "No description provided"}
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
+                  {collection.description && (
+                    <p className="text-sm text-muted-foreground mb-3 line-clamp-1">
+                      {collection.description}
+                    </p>
+                  )}
 
-        <CardContent className="pt-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Link2 className="h-3.5 w-3.5" />
-                <span>{collection.totalLinks}</span>
-              </div>
-
-              {collection.likes > 0 && (
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <Heart className="h-3.5 w-3.5" />
-                  <span>{collection.likes}</span>
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1.5">
+                      <Link2 className="h-3 w-3" />
+                      <span>{collection.totalLinks} links</span>
+                    </div>
+                    <span>
+                      {formatFullDate(collection.createdAt.toString())}
+                    </span>
+                  </div>
                 </div>
-              )}
-
-              <Badge variant="outline" className="text-xs">
-                Public
-              </Badge>
-
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Calendar className="h-3 w-3" />
-                <span>
-                  Updated {formatDate(collection.updatedAt.toString())}
-                </span>
+                <ExternalLink className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Avatar className="h-5 w-5">
-                <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                  {collection.author.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <span className="text-sm text-muted-foreground">
-                {collection.author}
-              </span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </Link>
-  );
-
-  const LoadingCards = () => (
-    <div
-      className={cn(
-        viewMode === "grid"
-          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          : "space-y-4"
-      )}
-    >
-      {[...Array(8)].map((_, i) => (
-        <Card key={i} className="overflow-hidden">
-          <CardHeader>
-            <Skeleton className="h-6 w-3/4 mb-2" />
-            <Skeleton className="h-4 w-1/2" />
-          </CardHeader>
-          <CardContent>
-            <Skeleton className="h-16 w-full mb-4" />
-            <div className="flex items-center gap-4">
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-6 w-16" />
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-
-  const EmptyState = () => (
-    <Card className="border-dashed border-border/30">
-      <CardContent className="text-center py-16">
-        <div className="p-4 rounded-full bg-muted/50 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-          <Sparkles className="h-8 w-8 text-muted-foreground" />
+            </CardContent>
+          </Card>
         </div>
-        <h3 className="text-lg font-semibold text-foreground mb-2">
-          No Collections Found
-        </h3>
-        <p className="text-muted-foreground max-w-md mx-auto mb-4">
-          {hasActiveFilters
-            ? "Try adjusting your search filters to find more collections."
-            : "No public collections available at the moment. Check back later!"}
-        </p>
-        {hasActiveFilters && (
-          <Button variant="outline" onClick={resetFilters}>
-            Clear all filters
-          </Button>
-        )}
+      </div>
+    </TooltipProvider>
+  );
+
+  const FeaturedSection = () => (
+    <Card className="mb-8 border border-border/50">
+      <CardHeader className="pb-4">
+        <div className="flex items-center gap-2">
+          <Clock className="h-5 w-5 text-primary" />
+          <CardTitle className="text-lg">
+            Recently Updated Collections
+          </CardTitle>
+        </div>
+        <CardDescription>
+          Discover collections that have been recently updated by the community.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6">
+          {isLoading
+            ? [...Array(3)].map((_, i) => (
+                <div key={i} className="flex gap-4">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <div className="flex-1 space-y-3">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-3 w-1/2" />
+                  </div>
+                </div>
+              ))
+            : recentCollections
+                .slice(0, 3)
+                .map((collection) => (
+                  <CollectionCard key={collection.id} collection={collection} />
+                ))}
+        </div>
       </CardContent>
     </Card>
   );
 
-  const Pagination = () => (
-    <div className="flex items-center justify-center gap-2 mt-8">
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        <ChevronLeft className="h-4 w-4" />
-        Previous
-      </Button>
+  const TrendingSection = () => (
+    <TooltipProvider>
+      <Card className="border border-border/50">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-semibold">Trending collections</h3>
+              <span className="text-xs text-muted-foreground">today</span>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {isLoading
+            ? [...Array(5)].map((_, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <Skeleton className="h-4 w-4 rounded-full flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <Skeleton className="h-3 w-3/4 mb-1" />
+                    <Skeleton className="h-3 w-1/2" />
+                  </div>
+                  <Skeleton className="h-4 w-4 flex-shrink-0" />
+                </div>
+              ))
+            : trendingCollections.map((collection, index) => (
+                <div
+                  key={collection.id}
+                  className="flex items-start gap-3 p-3 -m-3 rounded-lg hover:bg-muted/50 transition-colors group cursor-pointer"
+                  onClick={() => handleCollectionClick(collection.id)}
+                >
+                  <div className="flex items-center justify-center h-4 w-4 bg-primary text-primary-foreground rounded-full text-xs font-medium flex-shrink-0 mt-0.5">
+                    {index + 1}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1 text-xs mb-1">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={(e) =>
+                              handleProfileClick(e, collection.author)
+                            }
+                            className="text-muted-foreground hover:text-primary truncate max-w-[80px]"
+                          >
+                            {truncateText(collection.author, 10)}
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{collection.author}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <span className="text-muted-foreground">/</span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="font-medium text-foreground group-hover:text-primary transition-colors truncate max-w-[120px]">
+                            {truncateText(collection.title, 15)}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{collection.title}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <p className="text-xs text-muted-foreground line-clamp-1">
+                      {collection.description || "Collection of curated links"}
+                    </p>
+                  </div>
+                  <Star className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                </div>
+              ))}
 
-      <div className="flex items-center gap-1">
-        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-          const page = i + 1;
-          return (
-            <Button
-              key={page}
-              variant={currentPage === page ? "default" : "outline"}
-              size="sm"
-              onClick={() => handlePageChange(page)}
-              className="w-10"
+          <div className="pt-3 border-t border-border/50">
+            <Link
+              href="/explore"
+              className="text-xs text-primary hover:underline"
             >
-              {page}
-            </Button>
-          );
-        })}
-      </div>
-
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
-        Next
-        <ChevronRight className="h-4 w-4" />
-      </Button>
-    </div>
+              See more trending collections →
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </TooltipProvider>
   );
 
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header with Theme Toggle */}
-        <div className="flex justify-end mb-6">
-          <ModeToggle />
-        </div>
-
-        <div className="space-y-8">
-          {/* Page Header */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Sparkles className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-foreground">
-                  Explore Collections
-                </h1>
-                <p className="text-muted-foreground">
-                  Discover amazing bookmark collections from the community
-                </p>
-              </div>
+  const SavedCollectionsSection = () => {
+    // Show loading state while Clerk is determining authentication status
+    if (!isLoaded) {
+      return (
+        <Card className="border border-border/50">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-4 w-32" />
             </div>
-          </div>
-
-          {/* Search and Controls */}
-          <div className="space-y-4 mb-8">
-            {/* Search Bar */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-              <Input
-                placeholder="Search collections, authors, or descriptions..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="pl-10 h-12 text-base"
-              />
-              {searchQuery && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-
-            {/* Controls Row */}
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-              <div className="flex items-center gap-4">
-                {/* Sort Dropdown */}
-                <Select
-                  value={sortBy}
-                  onValueChange={(value: "trending" | "recent" | "likes") =>
-                    setSortBy(value)
-                  }
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SortAsc className="h-4 w-4 mr-2" />
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="trending">
-                      <div className="flex items-center gap-2">
-                        <TrendingUp className="h-4 w-4" />
-                        Trending
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="recent">
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        Recently Updated
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="likes">
-                      <div className="flex items-center gap-2">
-                        <Star className="h-4 w-4" />
-                        Most Liked
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {/* Filters Toggle */}
-                <Button
-                  variant={showFilters ? "default" : "outline"}
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="gap-2"
-                >
-                  <Filter className="h-4 w-4" />
-                  Filters
-                  {hasActiveFilters && (
-                    <Badge variant="secondary" className="ml-1">
-                      {Object.values(filters).filter(
-                        (v) => v !== "" && v !== 0 && v !== "all"
-                      ).length + (searchQuery ? 1 : 0)}
-                    </Badge>
-                  )}
-                </Button>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <Skeleton className="h-8 w-8 rounded-full" />
+                <div className="flex-1">
+                  <Skeleton className="h-3 w-3/4 mb-1" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
               </div>
+            ))}
+          </CardContent>
+        </Card>
+      );
+    }
 
-              {/* View Toggle */}
-              <div className="flex items-center gap-2 p-1 bg-muted rounded-lg">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                  className="h-8 px-3"
-                >
-                  <Grid className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                  className="h-8 px-3"
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
+    // Don't show this section if user is not authenticated
+    if (!user) {
+      return (
+        <Card className="border border-border/50">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-2">
+              <User className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-semibold">Join Cur8t</h3>
             </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-6">
+              <User className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground mb-3">
+                Sign up to save collections and track your favorites
+              </p>
+              <Link href="/sign-up">
+                <Button size="sm" className="w-full">
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
 
-            {/* Advanced Filters Panel */}
-            {showFilters && (
-              <Card className="p-6 border-dashed border-border/30">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Min Likes
-                    </label>
-                    <Input
-                      type="number"
-                      min="0"
-                      value={filters.minLikes}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          minLikes: parseInt(e.target.value) || 0,
-                        }))
-                      }
-                      placeholder="0"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Min Links
-                    </label>
-                    <Input
-                      type="number"
-                      min="0"
-                      value={filters.minLinks}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          minLinks: parseInt(e.target.value) || 0,
-                        }))
-                      }
-                      placeholder="0"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Updated
-                    </label>
-                    <Select
-                      value={filters.dateRange}
-                      onValueChange={(
-                        value: "all" | "week" | "month" | "year"
-                      ) =>
-                        setFilters((prev) => ({ ...prev, dateRange: value }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All time</SelectItem>
-                        <SelectItem value="week">This week</SelectItem>
-                        <SelectItem value="month">This month</SelectItem>
-                        <SelectItem value="year">This year</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium mb-2 block">
-                      Author
-                    </label>
-                    <Input
-                      value={filters.author}
-                      onChange={(e) =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          author: e.target.value,
-                        }))
-                      }
-                      placeholder="Filter by author"
-                    />
+    return (
+      <TooltipProvider>
+        <Card className="border border-border/50">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-2">
+              <Star className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-semibold">Your saved collections</h3>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {isLoading ? (
+              [...Array(3)].map((_, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <div className="flex-1">
+                    <Skeleton className="h-3 w-3/4 mb-1" />
+                    <Skeleton className="h-3 w-1/2" />
                   </div>
                 </div>
-
-                {hasActiveFilters && (
-                  <div className="flex justify-end mt-4">
-                    <Button variant="outline" onClick={resetFilters} size="sm">
-                      <X className="h-4 w-4 mr-2" />
-                      Clear all filters
-                    </Button>
+              ))
+            ) : savedCollections.length > 0 ? (
+              savedCollections.slice(0, 5).map((collection) => (
+                <div
+                  key={collection.id}
+                  className="flex items-center gap-3 p-3 -m-3 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                  onClick={() => handleCollectionClick(collection.id)}
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                      {collection.author.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="text-xs font-medium text-foreground truncate max-w-[180px]">
+                          {truncateText(collection.title, 22)}
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{collection.title}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <div className="text-xs text-muted-foreground">
+                      {collection.totalLinks} links
+                    </div>
                   </div>
-                )}
-              </Card>
+                  <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <Star className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+                <p className="text-xs text-muted-foreground">
+                  No saved collections yet
+                </p>
+              </div>
             )}
-          </div>
+          </CardContent>
+        </Card>
+      </TooltipProvider>
+    );
+  };
 
-          {/* Results Count */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Users className="h-4 w-4" />
-              <span>
-                {isLoading
-                  ? "Loading..."
-                  : `${filteredCollections.length} collection${filteredCollections.length !== 1 ? "s" : ""} found`}
+  const EventsTimelineSection = () => (
+    <Card className="border border-border/50">
+      <CardHeader className="pb-4">
+        <div className="flex items-center gap-2">
+          <Plus className="h-5 w-5 text-primary" />
+          <CardTitle className="text-lg">New Collections Timeline</CardTitle>
+        </div>
+        <CardDescription>
+          Recently created collections from the community (past week)
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          {isLoading ? (
+            [...Array(6)].map((_, i) => (
+              <div key={i} className="flex gap-4 pb-6">
+                <div className="flex flex-col items-center">
+                  <Skeleton className="h-2 w-2 rounded-full mt-3" />
+                  <div className="w-px bg-border flex-1 mt-2"></div>
+                </div>
+                <div className="flex-1">
+                  <Card className="border border-border/50">
+                    <CardContent className="p-5">
+                      <div className="flex gap-3">
+                        <Skeleton className="h-8 w-8 rounded-full" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-4 w-3/4" />
+                          <Skeleton className="h-3 w-1/2" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            ))
+          ) : newCollections.length > 0 ? (
+            newCollections.map((collection) => (
+              <TimelineCard key={collection.id} collection={collection} />
+            ))
+          ) : (
+            <div className="text-center py-12">
+              <Plus className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-sm font-medium text-foreground mb-2">
+                No new collections this week
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Check back later for fresh content!
+              </p>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const UserProfileSection = () => {
+    // Show loading state while Clerk is determining authentication status
+    if (!isLoaded) {
+      return (
+        <Card className="border border-border/50">
+          <CardContent className="p-8 text-center">
+            <Skeleton className="h-24 w-24 rounded-full mx-auto mb-6" />
+            <Skeleton className="h-6 w-32 mx-auto mb-2" />
+            <Skeleton className="h-4 w-24 mx-auto mb-6" />
+            <div className="space-y-3">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    if (!user) {
+      return (
+        <Card className="border border-border/50">
+          <CardContent className="p-8 text-center">
+            <Avatar className="h-24 w-24 mx-auto mb-6">
+              <AvatarFallback className="text-3xl bg-muted text-muted-foreground">
+                ?
+              </AvatarFallback>
+            </Avatar>
+            <h2 className="text-xl font-bold mb-2">Welcome to Cur8t</h2>
+            <p className="text-muted-foreground text-sm mb-6">
+              Discover amazing bookmark collections
+            </p>
+
+            <div className="space-y-3">
+              <Link href="/sign-up">
+                <Button className="w-full">Sign Up</Button>
+              </Link>
+              <Link href="/sign-in">
+                <Button variant="outline" className="w-full">
+                  Sign In
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    const displayName = user.firstName || user.username || "User";
+    const username =
+      user.username ||
+      user.emailAddresses[0]?.emailAddress?.split("@")[0] ||
+      "user";
+
+    return (
+      <Card className="border border-border/50">
+        <CardContent className="p-8 text-center">
+          <Avatar className="h-24 w-24 mx-auto mb-6">
+            <AvatarFallback className="text-3xl bg-primary/10 text-primary">
+              {displayName.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <h2 className="text-xl font-bold mb-2">
+            {truncateText(displayName, 20)}
+          </h2>
+          <p className="text-muted-foreground text-sm mb-6">
+            {truncateText(username, 20)}
+          </p>
+
+          <div className="space-y-3 text-sm">
+            <div className="flex justify-between py-2 border-b border-border/30">
+              <span className="text-muted-foreground">saved collections</span>
+              <span className="text-primary font-medium">
+                {userStats.totalSavedCollections}
               </span>
             </div>
           </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
-          {/* Content */}
-          {isLoading ? (
-            <LoadingCards />
-          ) : filteredCollections.length === 0 ? (
-            <EmptyState />
-          ) : (
-            <>
-              {/* Collections Grid/List - Reduced to 2 columns max */}
-              <div
-                className={cn(
-                  "transition-all duration-300",
-                  viewMode === "grid"
-                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                    : "space-y-4"
-                )}
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Top Navigation */}
+      <div className="border-b bg-background sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <nav className="flex space-x-8">
+              <Button
+                variant="ghost"
+                className={`font-medium rounded-none ${
+                  activeTab === "explore"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-muted-foreground"
+                }`}
+                onClick={() => setActiveTab("explore")}
               >
-                {filteredCollections.map((collection) =>
-                  viewMode === "grid" ? (
-                    <CollectionCard
-                      key={collection.id}
-                      collection={collection}
-                    />
-                  ) : (
-                    <CollectionListItem
-                      key={collection.id}
-                      collection={collection}
-                    />
-                  )
-                )}
-              </div>
-
-              {/* Pagination */}
-              {filteredCollections.length > 0 && <Pagination />}
-            </>
-          )}
+                Explore
+              </Button>
+              <Button
+                variant="ghost"
+                className={`font-medium rounded-none ${
+                  activeTab === "events"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-muted-foreground"
+                }`}
+                onClick={() => setActiveTab("events")}
+              >
+                Events
+              </Button>
+            </nav>
+            <ModeToggle />
+          </div>
         </div>
       </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex gap-8">
+          {/* Left Sidebar - User Profile */}
+          <div className="w-80 flex-shrink-0">
+            <UserProfileSection />
+          </div>
+
+          {/* Main Content */}
+          <div className="flex-1 max-w-3xl">
+            {activeTab === "explore" ? (
+              <div className="space-y-8">
+                <FeaturedSection />
+              </div>
+            ) : (
+              <div className="space-y-8">
+                <EventsTimelineSection />
+              </div>
+            )}
+          </div>
+
+          {/* Right Sidebar */}
+          <div className="w-80 flex-shrink-0 space-y-8">
+            <TrendingSection />
+            <SavedCollectionsSection />
+          </div>
+        </div>
+      </div>
+
       <Footer />
     </div>
   );
