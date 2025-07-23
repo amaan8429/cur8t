@@ -8,6 +8,7 @@ import { Collection } from "@/types/types";
 // Type for homepage collection that includes author info from the join
 export interface HomepageCollection extends Collection {
   author: string;
+  authorUsername: string | null;
 }
 
 export async function getHomepageCollections() {
@@ -18,6 +19,7 @@ export async function getHomepageCollections() {
         id: CollectionsTable.id,
         title: CollectionsTable.title,
         author: UsersTable.name,
+        authorUsername: UsersTable.username,
         likes: CollectionsTable.likes,
         description: CollectionsTable.description,
         userId: CollectionsTable.userId,
@@ -40,6 +42,7 @@ export async function getHomepageCollections() {
         id: CollectionsTable.id,
         title: CollectionsTable.title,
         author: UsersTable.name,
+        authorUsername: UsersTable.username,
         likes: CollectionsTable.likes,
         description: CollectionsTable.description,
         userId: CollectionsTable.userId,
@@ -65,6 +68,7 @@ export async function getHomepageCollections() {
         id: CollectionsTable.id,
         title: CollectionsTable.title,
         author: UsersTable.name,
+        authorUsername: UsersTable.username,
         likes: CollectionsTable.likes,
         description: CollectionsTable.description,
         userId: CollectionsTable.userId,

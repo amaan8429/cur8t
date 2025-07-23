@@ -16,6 +16,7 @@ export type PaginationParams = {
 // Type for saved collection that includes author info from the join
 export interface SavedCollection extends Collection {
   author: string;
+  authorUsername: string | null;
 }
 
 export async function fetchSavedCollections({
@@ -61,6 +62,7 @@ export async function fetchSavedCollections({
       id: CollectionsTable.id,
       title: CollectionsTable.title,
       author: UsersTable.name,
+      authorUsername: UsersTable.username,
       likes: CollectionsTable.likes,
       description: CollectionsTable.description,
       userId: CollectionsTable.userId,

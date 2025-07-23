@@ -15,6 +15,7 @@ export type PaginationParams = {
 // Type for public collection that includes author info from the join
 export interface PublicCollection extends Collection {
   author: string;
+  authorUsername: string | null;
 }
 
 export async function fetchPublicCollections({
@@ -52,6 +53,7 @@ export async function fetchPublicCollections({
       id: CollectionsTable.id,
       title: CollectionsTable.title,
       author: UsersTable.name,
+      authorUsername: UsersTable.username,
       likes: CollectionsTable.likes,
       description: CollectionsTable.description,
       userId: CollectionsTable.userId,

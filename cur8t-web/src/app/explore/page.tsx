@@ -52,6 +52,7 @@ type CollectionWithAuthor = {
   id: string;
   title: string;
   author: string;
+  authorUsername: string | null;
   likes: number;
   description: string;
   userId: string;
@@ -168,9 +169,18 @@ export default function ExplorePage() {
     window.open(`/collection/${collectionId}`, "_blank", "noopener,noreferrer");
   };
 
-  const handleProfileClick = (e: React.MouseEvent, author: string) => {
+  const handleProfileClick = (
+    e: React.MouseEvent,
+    authorUsername: string | null
+  ) => {
     e.stopPropagation();
-    window.open(`/profile/${author}`, "_blank", "noopener,noreferrer");
+    if (authorUsername) {
+      window.open(
+        `/profile/${authorUsername}`,
+        "_blank",
+        "noopener,noreferrer"
+      );
+    }
   };
 
   const truncateText = (text: string, maxLength: number) => {
@@ -203,7 +213,7 @@ export default function ExplorePage() {
                   <TooltipTrigger asChild>
                     <button
                       onClick={(e) =>
-                        handleProfileClick(e, collection.author || "Anonymous")
+                        handleProfileClick(e, collection.authorUsername)
                       }
                       className="text-sm text-muted-foreground hover:text-primary transition-colors truncate max-w-[100px]"
                     >
@@ -295,7 +305,7 @@ export default function ExplorePage() {
                       <TooltipTrigger asChild>
                         <button
                           onClick={(e) =>
-                            handleProfileClick(e, collection.author)
+                            handleProfileClick(e, collection.authorUsername)
                           }
                           className="text-sm font-medium text-foreground hover:text-primary transition-colors truncate max-w-[120px]"
                         >
@@ -420,7 +430,7 @@ export default function ExplorePage() {
                         <TooltipTrigger asChild>
                           <button
                             onClick={(e) =>
-                              handleProfileClick(e, collection.author)
+                              handleProfileClick(e, collection.authorUsername)
                             }
                             className="text-muted-foreground hover:text-primary truncate max-w-[80px]"
                           >
