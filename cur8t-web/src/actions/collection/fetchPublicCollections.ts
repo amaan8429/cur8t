@@ -5,6 +5,11 @@ import { CollectionsTable, UsersTable } from "@/schema";
 import { Collection } from "@/types/types";
 import { eq, desc } from "drizzle-orm";
 import { sql } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export type PaginationParams = {
   page: number;
@@ -23,6 +28,18 @@ export async function fetchPublicCollections({
   limit = 9,
   sortBy = "trending",
 }: PaginationParams) {
+  // IP-based rate limiting for public endpoint
+  const identifier = await getClientIdFromHeaders(); // no userId, uses IP
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getPublicProfileLimiter, // Using public profile limiter for public endpoints
+    identifier,
+    "Too many requests to fetch public collections. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
+  }
+
   // Calculate offset
   const offset = (page - 1) * limit;
 

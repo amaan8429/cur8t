@@ -6,6 +6,7 @@ import { GitHubSettingsTable, CollectionsTable, LinksTable } from "@/schema";
 import { Collection, Link } from "@/types/types";
 import { auth } from "@clerk/nextjs/server";
 import { RequestError } from "@octokit/request-error";
+import { getClientId, checkRateLimit, rateLimiters } from "@/lib/ratelimit";
 
 function convertToMarkdown(collection: Collection, links: Link[]) {
   let markdown = `# ${collection.title}\n\n`;
@@ -88,6 +89,20 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: "User not found", showToast: true },
         { status: 404 }
+      );
+    }
+
+    const identifier = getClientId(req, userId);
+    const rateLimitResult = await checkRateLimit(
+      rateLimiters.githubSyncLimiter,
+      identifier,
+      "Too many requests to GitHub sync. Please try again later."
+    );
+    if (!rateLimitResult.success) {
+      const retryAfter = rateLimitResult.retryAfter ?? 60;
+      return NextResponse.json(
+        { error: rateLimitResult.error, retryAfter },
+        { status: 429, headers: { "Retry-After": retryAfter.toString() } }
       );
     }
 

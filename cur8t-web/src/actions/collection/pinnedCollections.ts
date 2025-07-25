@@ -4,12 +4,28 @@ import { db } from "@/db";
 import { auth } from "@clerk/nextjs/server";
 import { UsersTable, CollectionsTable } from "@/schema";
 import { eq, and, inArray } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function getPinnedCollections() {
   const { userId } = await auth();
 
   if (!userId) {
     return { error: "User not authenticated" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getCollectionsLimiter,
+    identifier,
+    "Too many requests to get pinned collections. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   try {
@@ -65,6 +81,17 @@ export async function addPinnedCollection(collectionId: string) {
 
   if (!userId) {
     return { error: "User not authenticated" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.userUpdateLimiter, // Using user update limiter for modification operations
+    identifier,
+    "Too many requests to pin collection. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   try {
@@ -128,6 +155,17 @@ export async function removePinnedCollection(collectionId: string) {
     return { error: "User not authenticated" };
   }
 
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.userUpdateLimiter, // Using user update limiter for modification operations
+    identifier,
+    "Too many requests to unpin collection. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
+  }
+
   try {
     // Get current pinned collections
     const user = await db
@@ -161,6 +199,17 @@ export async function setPinnedCollections(collectionIds: string[]) {
 
   if (!userId) {
     return { error: "User not authenticated" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.userUpdateLimiter, // Using user update limiter for modification operations
+    identifier,
+    "Too many requests to set pinned collections. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (collectionIds.length > 3) {

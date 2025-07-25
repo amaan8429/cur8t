@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { UsersTable } from "@/schema";
 import { eq } from "drizzle-orm";
+import { checkRateLimit, getClientId, rateLimiters } from "@/lib/ratelimit";
 
 async function upsertUserProfile(
   userId: string,
@@ -32,6 +33,20 @@ export async function PUT(req: Request) {
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const identifier = getClientId(req, userId);
+    const rateLimitResult = await checkRateLimit(
+      rateLimiters.profileUpdateLimiter,
+      identifier,
+      "Too many requests to update profile. Please try again later."
+    );
+    if (!rateLimitResult.success) {
+      const retryAfter = rateLimitResult.retryAfter ?? 60;
+      return NextResponse.json(
+        { error: rateLimitResult.error, retryAfter },
+        { status: 429, headers: { "Retry-After": retryAfter.toString() } }
+      );
     }
 
     const body = await req.json();

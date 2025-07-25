@@ -4,8 +4,25 @@ import { db } from "@/db";
 import { CollectionsTable, UsersTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function getSingleCollectionAction(collectionId: string) {
+  // IP-based rate limiting for public endpoint
+  const identifier = await getClientIdFromHeaders(); // no userId, uses IP
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getSingleCollectionLimiter,
+    identifier,
+    "Too many requests to get collection. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
+  }
+
   const { userId } = await auth();
 
   if (!collectionId) {

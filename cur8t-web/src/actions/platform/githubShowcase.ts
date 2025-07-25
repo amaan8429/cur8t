@@ -3,8 +3,25 @@
 import { db } from "@/db";
 import { CollectionsTable, LinksTable, UsersTable } from "@/schema";
 import { eq, and, ilike, desc } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function getGitHubShowcase() {
+  // IP-based rate limiting for public platform endpoint
+  const identifier = await getClientIdFromHeaders(); // no userId, uses IP
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getPlatformStatsLimiter,
+    identifier,
+    "Too many requests to get GitHub showcase. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
+  }
+
   try {
     // Get collections that have GitHub-related content
     const githubCollections = await db

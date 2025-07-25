@@ -4,12 +4,28 @@ import { db } from "@/db";
 import { CollectionsTable, CollectionLikesTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq, and, sql } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function likeCollectionAction(collectionId: string) {
   const { userId } = await auth();
 
   if (!userId) {
     return { error: "Authentication required" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.likeCollectionLimiter,
+    identifier,
+    "Too many requests to like collection. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (!collectionId) {
@@ -58,6 +74,17 @@ export async function unlikeCollectionAction(collectionId: string) {
 
   if (!userId) {
     return { error: "Authentication required" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.likeCollectionLimiter,
+    identifier,
+    "Too many requests to unlike collection. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (!collectionId) {
@@ -110,6 +137,16 @@ export async function checkIfLikedAction(collectionId: string) {
 
   if (!userId) {
     return { isLiked: false };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getCollectionsLimiter, // Using get limiter for read operation
+    identifier,
+    "Too many requests to check like status. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    return { isLiked: false }; // Fail silently for status checks
   }
 
   if (!collectionId) {

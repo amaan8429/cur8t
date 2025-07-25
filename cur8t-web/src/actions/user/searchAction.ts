@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { CollectionsTable, LinksTable } from "@/schema";
 import { eq, and, or, ilike, sql, inArray } from "drizzle-orm";
+import { checkRateLimit, getClientIdFromHeaders, rateLimiters } from "@/lib/ratelimit";
 
 export interface SearchResult {
   id: string;
@@ -15,15 +16,29 @@ export interface SearchResult {
 }
 
 export async function searchAction(query: string): Promise<SearchResult[]> {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return [];
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.searchLimiter,
+    identifier,
+    "Too many search requests. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    throw new Error(rateLimitResult.error);
+  }
+
+  if (!query || query.trim().length === 0) {
+    return [];
+  }
+
+  const searchTerm = `%${query.toLowerCase()}%`;
+
   try {
-    const { userId } = await auth();
-
-    if (!userId || !query.trim()) {
-      return [];
-    }
-
-    const searchTerm = `%${query.trim()}%`;
-
     // Search collections
     const collections = await db
       .select({
@@ -61,54 +76,45 @@ export async function searchAction(query: string): Promise<SearchResult[]> {
           )
         )
       )
-      .limit(15);
+      .limit(10);
 
     // Get collection titles for links
-    const collectionIds = [
-      ...new Set(links.map((link) => link.collectionId).filter(Boolean)),
-    ];
-    const collectionTitles = new Map<string, string>();
+    const collectionIds = links.map((link) => link.collectionId);
+    const collectionTitles =
+      collectionIds.length > 0
+        ? await db
+            .select({
+              id: CollectionsTable.id,
+              title: CollectionsTable.title,
+            })
+            .from(CollectionsTable)
+            .where(inArray(CollectionsTable.id, collectionIds))
+        : [];
 
-    if (collectionIds.length > 0) {
-      const collectionsForLinks = await db
-        .select({
-          id: CollectionsTable.id,
-          title: CollectionsTable.title,
-        })
-        .from(CollectionsTable)
-        .where(
-          and(
-            eq(CollectionsTable.userId, userId),
-            inArray(CollectionsTable.id, collectionIds)
-          )
-        );
+    const collectionTitleMap = new Map(
+      collectionTitles.map((col) => [col.id, col.title])
+    );
 
-      collectionsForLinks.forEach((collection) => {
-        collectionTitles.set(collection.id, collection.title);
-      });
-    }
-
+    // Combine and format results
     const results: SearchResult[] = [
-      ...collections.map((collection) => ({
-        id: collection.id,
-        title: collection.title,
+      ...collections.map((col) => ({
+        id: col.id,
+        title: col.title,
         type: "collection" as const,
-        description: collection.description || undefined,
+        description: col.description || undefined,
       })),
       ...links.map((link) => ({
         id: link.id,
         title: link.title,
         type: "link" as const,
         url: link.url,
-        collectionTitle: link.collectionId
-          ? collectionTitles.get(link.collectionId)
-          : undefined,
+        collectionTitle: collectionTitleMap.get(link.collectionId),
       })),
     ];
 
     return results;
   } catch (error) {
-    console.error("Error searching:", error);
+    console.error("Search error:", error);
     return [];
   }
 }

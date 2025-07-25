@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { CollectionsTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
+import { checkRateLimit, getClientIdFromHeaders, rateLimiters } from "@/lib/ratelimit";
 
 export async function ChangeCollectionVisibilityAction(
   collectionId: string,
@@ -14,6 +15,16 @@ export async function ChangeCollectionVisibilityAction(
 
   if (!userId) {
     throw new Error("Not authenticated");
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.changeCollectionVisibilityLimiter,
+    identifier,
+    "Too many requests to change collection visibility. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    throw new Error(rateLimitResult.error);
   }
 
   if (!collectionId) {

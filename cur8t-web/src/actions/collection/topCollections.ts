@@ -4,12 +4,28 @@ import { db } from "@/db";
 import { auth } from "@clerk/nextjs/server";
 import { UsersTable, CollectionsTable } from "@/schema";
 import { eq, and, inArray } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function getTopCollections() {
   const { userId } = await auth();
 
   if (!userId) {
     return { error: "User not authenticated" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getCollectionsLimiter,
+    identifier,
+    "Too many requests to get top collections. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   try {
@@ -67,6 +83,17 @@ export async function getUserCollections() {
     return { error: "User not authenticated" };
   }
 
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getCollectionsLimiter,
+    identifier,
+    "Too many requests to get user collections. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
+  }
+
   try {
     const collections = await db
       .select({
@@ -92,6 +119,17 @@ export async function setTopCollections(collectionIds: string[]) {
 
   if (!userId) {
     return { error: "User not authenticated" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.userUpdateLimiter, // Using user update limiter for modification operations
+    identifier,
+    "Too many requests to set top collections. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (collectionIds.length > 5) {

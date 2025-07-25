@@ -3,13 +3,28 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { UsersTable } from "@/schema";
 import { eq } from "drizzle-orm";
+import { checkRateLimit, getClientId, rateLimiters } from "@/lib/ratelimit";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const { userId } = await auth();
 
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const identifier = getClientId(req, userId);
+    const rateLimitResult = await checkRateLimit(
+      rateLimiters.getUserInfoLimiter,
+      identifier,
+      "Too many requests to get user info. Please try again later."
+    );
+    if (!rateLimitResult.success) {
+      const retryAfter = rateLimitResult.retryAfter ?? 60;
+      return NextResponse.json(
+        { error: rateLimitResult.error, retryAfter },
+        { status: 429, headers: { "Retry-After": retryAfter.toString() } }
+      );
     }
 
     const users = await db

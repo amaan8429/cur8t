@@ -8,8 +8,25 @@ import {
   SavedCollectionsTable,
 } from "@/schema";
 import { eq, gte, sql } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function getPlatformStats() {
+  // IP-based rate limiting for public platform endpoint
+  const identifier = await getClientIdFromHeaders(); // no userId, uses IP
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getPlatformStatsLimiter,
+    identifier,
+    "Too many requests to get platform stats. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
+  }
+
   try {
     // Get total collections count
     const totalCollectionsResult = await db

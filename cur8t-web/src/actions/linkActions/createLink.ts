@@ -7,6 +7,11 @@ import { FrontendLinkSchema } from "@/types/types";
 import { extractTitleFromUrl, generateFallbackTitle } from "@/lib/extractTitle";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function createLinkAction(
   linkCollectionId: string,
@@ -17,6 +22,17 @@ export async function createLinkAction(
 
   if (!userId) {
     return { error: "User not found" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.createLinkLimiter,
+    identifier,
+    "Too many requests to create link. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (!linkCollectionId) {

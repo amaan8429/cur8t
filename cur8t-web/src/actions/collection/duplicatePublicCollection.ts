@@ -5,6 +5,7 @@ import { totalCollectionsCount } from "@/lib/totalCollectionCount";
 import { CollectionsTable, UsersTable, LinksTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
+import { checkRateLimit, getClientIdFromHeaders, rateLimiters } from "@/lib/ratelimit";
 
 export async function duplicatePublicCollectionAction(
   sourceCollectionId: string,
@@ -20,6 +21,17 @@ export async function duplicatePublicCollectionAction(
       error:
         "Authentication required. Please sign in to duplicate this collection.",
     };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.duplicatePublicLinkLimiter,
+    identifier,
+    "Too many requests to duplicate collection. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (!sourceCollectionId) {

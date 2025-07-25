@@ -3,8 +3,9 @@ import { UsersTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { rateLimiters, checkRateLimit, getClientId } from "@/lib/ratelimit";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     // Authenticate the user and get their ID
     const { userId } = await auth();
@@ -14,6 +15,21 @@ export async function GET() {
       return NextResponse.json(
         { error: "Unauthorized: Missing user ID" },
         { status: 401 }
+      );
+    }
+
+    // Rate limiting: use userId as identifier
+    const identifier = getClientId(request, userId);
+    const rateLimitResult = await checkRateLimit(
+      rateLimiters.getGithubStatusLimiter,
+      identifier,
+      "Too many requests to GitHub status. Please try again later."
+    );
+    if (!rateLimitResult.success) {
+      const retryAfter = rateLimitResult.retryAfter ?? 60;
+      return NextResponse.json(
+        { error: rateLimitResult.error, retryAfter },
+        { status: 429, headers: { "Retry-After": retryAfter.toString() } }
       );
     }
 

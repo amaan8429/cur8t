@@ -3,9 +3,21 @@
 import { db } from "@/db";
 import { CollectionsTable, UsersTable } from "@/schema";
 import { eq, ilike, or, and } from "drizzle-orm";
+import { checkRateLimit, getClientIdFromHeaders, rateLimiters } from "@/lib/ratelimit";
 
 export async function quickSearch(query: string) {
   try {
+    // IP-based rate limiting for public search
+    const identifier = await getClientIdFromHeaders(); // no userId, uses IP
+    const rateLimitResult = await checkRateLimit(
+      rateLimiters.searchLimiter,
+      identifier,
+      "Too many search requests. Please try again later."
+    );
+    if (!rateLimitResult.success) {
+      return { error: rateLimitResult.error };
+    }
+
     if (!query || query.trim().length < 2) {
       return {
         success: true,

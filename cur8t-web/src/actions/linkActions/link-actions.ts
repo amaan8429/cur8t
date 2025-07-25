@@ -7,6 +7,11 @@ import { extractTitleFromUrl, generateFallbackTitle } from "@/lib/extractTitle";
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 interface AddLinkData {
   title?: string;
@@ -18,6 +23,17 @@ export async function addLinkAction(data: AddLinkData, collectionId: string) {
 
   if (!userId) {
     return { error: "User not found" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.createLinkLimiter,
+    identifier,
+    "Too many requests to add link. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (!collectionId) {
@@ -76,6 +92,17 @@ export async function deleteLinkAction(id: string) {
     return { error: "User not found" };
   }
 
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.deleteLinkLimiter,
+    identifier,
+    "Too many requests to delete link. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
+  }
+
   if (!id) {
     return { error: "Link ID is required" };
   }
@@ -132,6 +159,17 @@ export async function updateLinkAction(
 
   if (!userId) {
     return { error: "User not found" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.userUpdateLimiter, // Using user update limiter for modification operations
+    identifier,
+    "Too many requests to update link. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (!id) {

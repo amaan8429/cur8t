@@ -5,6 +5,11 @@ import { totalCollectionsCount } from "@/lib/totalCollectionCount";
 import { CollectionsTable, UsersTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function createCollectionAction(
   collectionName: string,
@@ -15,6 +20,17 @@ export async function createCollectionAction(
 
   if (!userId) {
     return { error: "User not found" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.createCollectionLimiter,
+    identifier,
+    "Too many requests to create collection. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (!collectionName) {

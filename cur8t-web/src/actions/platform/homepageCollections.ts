@@ -4,6 +4,11 @@ import { db } from "@/db";
 import { CollectionsTable, UsersTable } from "@/schema";
 import { eq, desc, gte, and } from "drizzle-orm";
 import { Collection } from "@/types/types";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 // Type for homepage collection that includes author info from the join
 export interface HomepageCollection extends Collection {
@@ -12,6 +17,18 @@ export interface HomepageCollection extends Collection {
 }
 
 export async function getHomepageCollections() {
+  // IP-based rate limiting for public platform endpoint
+  const identifier = await getClientIdFromHeaders(); // no userId, uses IP
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getPlatformStatsLimiter,
+    identifier,
+    "Too many requests to get homepage collections. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
+  }
+
   try {
     // Get trending collections (most liked public collections)
     const trendingCollections = await db

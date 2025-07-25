@@ -3,8 +3,25 @@
 import { db } from "@/db";
 import { CollectionsTable, UsersTable } from "@/schema";
 import { eq, desc, sql, and } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function getFeaturedUsers() {
+  // IP-based rate limiting for public platform endpoint
+  const identifier = await getClientIdFromHeaders(); // no userId, uses IP
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getPlatformStatsLimiter,
+    identifier,
+    "Too many requests to get featured users. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
+  }
+
   try {
     // Get users with the most public collections and total likes
     const featuredUsers = await db

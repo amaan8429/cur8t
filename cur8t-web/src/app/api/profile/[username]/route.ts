@@ -1,14 +1,30 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { UsersTable, CollectionsTable } from "@/schema";
 import { eq, and } from "drizzle-orm";
+import { getClientId, checkRateLimit, rateLimiters } from "@/lib/ratelimit";
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ username: string }> }
+  request: Request,
+  { params }: { params: { username: string } }
 ) {
+  // IP-based rate limiting
+  const identifier = getClientId(request); // uses IP
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getPublicProfileLimiter,
+    identifier,
+    "Too many requests to get public profile. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return NextResponse.json(
+      { error: rateLimitResult.error, retryAfter },
+      { status: 429, headers: { "Retry-After": retryAfter.toString() } }
+    );
+  }
+
   try {
-    const { username } = await params;
+    const { username } = params;
 
     if (!username) {
       return NextResponse.json(

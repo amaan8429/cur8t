@@ -4,12 +4,28 @@ import { db } from "@/db";
 import { SavedCollectionsTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq, and } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function saveCollectionAction(collectionId: string) {
   const { userId } = await auth();
 
   if (!userId) {
     return { error: "Authentication required" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.likeCollectionLimiter, // Using like limiter as it's similar action
+    identifier,
+    "Too many requests to save collection. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (!collectionId) {
@@ -50,6 +66,17 @@ export async function unsaveCollectionAction(collectionId: string) {
 
   if (!userId) {
     return { error: "Authentication required" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.likeCollectionLimiter, // Using like limiter as it's similar action
+    identifier,
+    "Too many requests to unsave collection. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (!collectionId) {
@@ -93,6 +120,16 @@ export async function checkIfSavedAction(collectionId: string) {
   const { userId } = await auth();
 
   if (!userId) {
+    return { isSaved: false };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getCollectionsLimiter, // Using get limiter for read operation
+    identifier,
+    "Too many requests to check save status. Please try again later."
+  );
+  if (!rateLimitResult.success) {
     return { isSaved: false };
   }
 

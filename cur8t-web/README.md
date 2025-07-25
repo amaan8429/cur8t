@@ -110,3 +110,127 @@ Miscs
 - [ ] add a copy the collection button on the collection page
 - [ ] explore collections page
 - [ ] custom url for the collection
+
+## 🚧 Pending Tasks
+
+### Core Features
+
+- [ ] add a tweet section
+- [ ] add a usage section
+- [ ] add a footer
+- [ ] CLAUDE LINK ADD option to a custum collection
+- [ ] Chatgpt LINK add option to a custum collection
+- [ ] CLI tool for the entire app
+- [ ] vs code EXTENSIONS SHARE KARNE KA TARIKA WHERE ALL EXTENSIONS CAN BE COLLECTED IN A COLLECTION api key or something
+- [ ] youtube playlist collection where a small icon should be present near the default "add to playlists" on the yt playlist page
+- [ ] add movies to the collection
+- [ ] donate to the guy who made the collection
+
+### Pricing & Monetization
+
+- [ ] Design pricing tiers and structure
+- [ ] Create pricing page UI components
+- [ ] Implement pricing display on landing page
+- [ ] Set up payment gateway integration
+- [ ] Create subscription management system
+- [ ] Add billing dashboard for users
+- [ ] Implement token-based pricing logic
+- [ ] Create token purchase flow
+- [ ] Add token usage tracking
+- [ ] Implement token consumption for API calls
+- [ ] Add token balance display in dashboard
+
+### Landing Page & Marketing
+
+- [ ] Design landing page wireframe
+- [ ] Create hero section with value proposition
+- [ ] Add features showcase section
+- [ ] Create testimonials/social proof section
+- [ ] Add call-to-action buttons
+- [ ] Implement responsive design for landing page
+- [ ] Add SEO optimization
+- [ ] Create demo/preview section
+
+### Database & Infrastructure
+
+- [ ] Fix Database Configuration
+- [ ] Design custom database connection UI
+- [ ] Implement database connection validation
+- [ ] Add support for multiple database types (PostgreSQL, MySQL, etc.)
+- [ ] Create database connection management in settings
+- [ ] Add database health monitoring
+- [ ] Implement API rate limiting middleware
+- [ ] Configure rate limits per user tier
+- [ ] Add rate limit tracking and analytics
+- [ ] Create rate limit exceeded error handling
+
+### Authentication & User Management
+
+- [ ] Research Clerk alternatives
+- [ ] Plan migration strategy from Clerk
+- [ ] Implement custom authentication system
+- [ ] Create new signup flow wireframe
+- [ ] Design improved user registration form
+- [ ] Add email verification step
+- [ ] Implement password reset functionality
+- [ ] Convert Profile Page to GitHub Login Page
+- [ ] Add GitHub OAuth integration
+- [ ] Create user preference management
+
+### Wallet Integration
+
+- [ ] Research Solana wallet integration libraries
+- [ ] Design wallet connection UI
+- [ ] Implement Solana wallet connection
+- [ ] Add wallet balance display
+- [ ] Create transaction history view
+- [ ] Implement wallet-based authentication
+- [ ] Add multi-wallet support
+
+### Onboarding & User Experience
+
+- [ ] Design onboarding flow wireframe
+- [ ] Create welcome step component
+- [ ] Add feature introduction tour
+- [ ] Implement progress tracking
+- [ ] Create onboarding completion tracking
+- [ ] Add skip onboarding option
+- [ ] Design personalization questions
+- [ ] Modify input form (clarify requirements)
+
+### Email & Communication
+
+- [ ] Set up Resend account and API keys
+- [ ] Create email templates for different scenarios
+- [ ] Implement welcome email flow
+- [ ] Add notification preference settings
+- [ ] Create email verification system
+- [ ] Add password reset emails
+- [ ] Implement marketing email subscription
+
+### AI Features & Testing
+
+- [ ] Design AI feature demo interface
+- [ ] Create sample data for AI testing
+- [ ] Implement AI feature preview/demo mode
+- [ ] Add AI feature documentation
+- [ ] Create testing scenarios for AI features
+- [ ] Add AI feature usage analytics
+
+### Monitoring & Status
+
+- [ ] Design status page layout
+- [ ] Set up monitoring for key services
+- [ ] Implement uptime tracking
+- [ ] Create incident reporting system
+- [ ] Add performance metrics display
+- [ ] Implement automated status updates
+- [ ] Add status page API endpoints
+
+### Technical Improvements
+
+- [ ] / page design
+- [ ] 2 way sync with github
+- [ ] resend mail when creation of account
+- [ ] link you metamask account in the settings
+- [ ] custom url for the collection

@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     // This prevents abuse and protects your database from spam requests
     const clientId = getClientId(request, userId); // Creates unique ID like "user:clerk_123"
     const rateLimitResult = await checkRateLimit(
-      rateLimiters.username, // Using our username-specific rate limiter (5 req/15min)
+      rateLimiters.usernameChangeLimiter, // Using our username-specific rate limiter (5 req/15min)
       clientId,
       "Too many username change attempts. Please try again later."
     );

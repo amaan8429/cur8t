@@ -10,7 +10,7 @@ import {
 export async function publicApiRateLimit(request: NextRequest) {
   const clientId = getClientId(request); // Uses IP since no userId
   const result = await checkRateLimit(
-    rateLimiters.publicApi,
+    rateLimiters.publicApiLimiter,
     clientId,
     "API rate limit exceeded. Please slow down."
   );
@@ -41,7 +41,7 @@ export async function authRateLimit(request: NextRequest) {
   const clientId = getClientId(request);
 
   return await checkRateLimit(
-    rateLimiters.auth,
+    rateLimiters.authLimiter,
     clientId,
     "Too many authentication attempts. Please try again later."
   );
@@ -55,7 +55,7 @@ export async function userSpecificRateLimit(
   const clientId = getClientId(request, userId);
 
   return await checkRateLimit(
-    rateLimiters.userUpdate,
+    rateLimiters.userUpdateLimiter,
     clientId,
     userId
       ? "Too many requests from your account. Please slow down."
@@ -65,7 +65,7 @@ export async function userSpecificRateLimit(
 
 // Example 4: Middleware-style rate limiter
 export const usernameRateLimitMiddleware = createRateLimitMiddleware(
-  rateLimiters.username,
+  rateLimiters.usernameChangeLimiter,
   (req, userId) => getClientId(req, userId),
   "Username changes are limited. Please try again later."
 );
@@ -140,7 +140,7 @@ export function getComplexityScore(
 export async function distributedRateLimit(identifier: string) {
   // This would be used with multiple Redis instances for high availability
   try {
-    return await rateLimiters.publicApi.limit(identifier);
+    return await rateLimiters.publicApiLimiter.limit(identifier);
   } catch (error) {
     console.error("Primary rate limiter failed:", error);
     // Fallback to in-memory or secondary Redis instance

@@ -6,6 +6,7 @@ import { totalLinksCount } from "@/lib/totalLinksCount";
 import { CollectionsTable, LinksTable, UsersTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
+import { checkRateLimit, getClientIdFromHeaders, rateLimiters } from "@/lib/ratelimit";
 
 interface ExtractedLink {
   title: string;
@@ -28,6 +29,17 @@ export async function saveExtractedCollectionAction(
 
   if (!userId) {
     return { error: "User not found" };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.saveExtractedCollectionLimiter,
+    identifier,
+    "Too many requests to save extracted collection. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (!data.collection_name?.trim()) {

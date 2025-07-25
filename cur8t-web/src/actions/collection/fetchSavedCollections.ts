@@ -6,6 +6,11 @@ import { Collection } from "@/types/types";
 import { auth } from "@clerk/nextjs/server";
 import { eq, desc } from "drizzle-orm";
 import { sql } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export type PaginationParams = {
   page: number;
@@ -33,6 +38,17 @@ export async function fetchSavedCollections({
     return {
       error: "User not found",
     };
+  }
+
+  const identifier = await getClientIdFromHeaders(userId);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getCollectionsLimiter,
+    identifier,
+    "Too many requests to fetch saved collections. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   // Get sort column based on sortBy parameter

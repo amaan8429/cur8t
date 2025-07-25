@@ -4,6 +4,11 @@ import { db } from "@/db";
 import { CollectionsTable, UsersTable } from "@/schema";
 import { eq, ilike, or } from "drizzle-orm";
 import { Collection } from "@/types/types";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 // Define categories with their keywords
 const CATEGORIES = {
@@ -123,6 +128,18 @@ const CATEGORIES = {
 };
 
 export async function getCategorizedCollections() {
+  // IP-based rate limiting for public platform endpoint
+  const identifier = await getClientIdFromHeaders(); // no userId, uses IP
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getPlatformStatsLimiter,
+    identifier,
+    "Too many requests to get categorized collections. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
+  }
+
   try {
     const categorizedCollections: Record<string, Collection[]> = {};
 

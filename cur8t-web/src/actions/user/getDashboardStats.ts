@@ -4,6 +4,11 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { UsersTable, CollectionsTable, LinksTable } from "@/schema";
 import { eq, and, desc, sql, inArray } from "drizzle-orm";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export interface DashboardStats {
   totalCollections: number;
@@ -25,6 +30,20 @@ export async function getDashboardStatsAction(): Promise<DashboardStats | null> 
 
     if (!userId) {
       return null;
+    }
+
+    const identifier = await getClientIdFromHeaders(userId);
+    const rateLimitResult = await checkRateLimit(
+      rateLimiters.getUserInfoLimiter,
+      identifier,
+      "Too many requests to get dashboard stats. Please try again later."
+    );
+    if (!rateLimitResult.success) {
+      console.warn(
+        "Rate limit exceeded for dashboard stats:",
+        rateLimitResult.error
+      );
+      return null; // Fail silently for dashboard stats
     }
 
     // Get user info

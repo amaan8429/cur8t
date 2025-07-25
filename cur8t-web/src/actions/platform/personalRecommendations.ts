@@ -4,11 +4,28 @@ import { db } from "@/db";
 import { CollectionsTable, SavedCollectionsTable, UsersTable } from "@/schema";
 import { eq, and, ne, inArray, desc } from "drizzle-orm";
 import { auth } from "@clerk/nextjs/server";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function getPersonalRecommendations() {
-  try {
-    const { userId } = await auth();
+  const { userId } = await auth();
 
+  // Rate limiting - use IP-based for unauthenticated, user-based for authenticated
+  const identifier = await getClientIdFromHeaders(userId || undefined);
+  const rateLimitResult = await checkRateLimit(
+    rateLimiters.getPlatformStatsLimiter,
+    identifier,
+    "Too many requests to get personal recommendations. Please try again later."
+  );
+  if (!rateLimitResult.success) {
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
+  }
+
+  try {
     if (!userId) {
       return {
         success: true,
