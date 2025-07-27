@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
+import QueryProvider from "@/components/providers/QueryProvider";
 import { Inter } from "next/font/google";
 
 export const metadata = {
@@ -24,8 +25,10 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={`${inter.variable}`}>
           <ThemeProvider attribute="class" defaultTheme="system">
-            <main>{children}</main>
-            <Toaster />
+            <QueryProvider>
+              <main>{children}</main>
+              <Toaster />
+            </QueryProvider>
           </ThemeProvider>
         </body>
       </html>
