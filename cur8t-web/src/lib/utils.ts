@@ -7,6 +7,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Type for rate limit responses from server actions
+type RateLimitResponse =
+  | {
+      error?: string;
+      retryAfter?: number;
+    }
+  | unknown;
+
 /**
  * Checks if a response or result indicates rate limiting and shows appropriate toast
  * @param result - Response from API call or server action
@@ -14,15 +22,17 @@ export function cn(...inputs: ClassValue[]) {
  * @returns boolean indicating if rate limited
  */
 export function handleRateLimitResponse(
-  result: any,
+  result: RateLimitResponse,
   defaultMessage: string = "Something went wrong, please try again later"
 ): boolean {
   // Check for rate limit in server action responses
   if (result && typeof result === "object") {
+    const response = result as { error?: string; retryAfter?: number };
+
     // Server actions return { error: string, retryAfter?: number }
-    if (result.error && result.retryAfter) {
+    if (response.error && response.retryAfter) {
       showRateLimitToast({
-        retryAfter: result.retryAfter * 60, // Convert minutes to seconds
+        retryAfter: response.retryAfter * 60, // Convert minutes to seconds
         message: defaultMessage,
       });
       return true;
@@ -30,10 +40,10 @@ export function handleRateLimitResponse(
 
     // Some rate limit errors might not have retryAfter
     if (
-      result.error &&
-      (result.error.includes("rate limit") ||
-        result.error.includes("Too many requests") ||
-        result.error.includes("please try again later"))
+      response.error &&
+      (response.error.includes("rate limit") ||
+        response.error.includes("Too many requests") ||
+        response.error.includes("please try again later"))
     ) {
       showRateLimitToast({
         retryAfter: 60, // Default 1 minute
