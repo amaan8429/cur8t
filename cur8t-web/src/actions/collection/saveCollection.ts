@@ -33,26 +33,19 @@ export async function saveCollectionAction(collectionId: string) {
   }
 
   try {
-    // Check if already saved
-    const existingSave = await db
-      .select()
-      .from(SavedCollectionsTable)
-      .where(
-        and(
-          eq(SavedCollectionsTable.userId, userId),
-          eq(SavedCollectionsTable.collectionId, collectionId)
-        )
-      );
+    // Use upsert to handle race conditions and duplicate saves gracefully
+    const result = await db.insert(SavedCollectionsTable)
+      .values({
+        userId,
+        collectionId,
+      })
+      .onConflictDoNothing()
+      .returning({ id: SavedCollectionsTable.id });
 
-    if (existingSave.length > 0) {
-      return { error: "Collection already saved" };
+    // If result is empty, it means the collection was already saved
+    if (result.length === 0) {
+      return { success: true, message: "Collection already saved" };
     }
-
-    // Save collection
-    await db.insert(SavedCollectionsTable).values({
-      userId,
-      collectionId,
-    });
 
     return { success: true, message: "Collection saved successfully" };
   } catch (error) {

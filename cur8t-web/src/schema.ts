@@ -4,6 +4,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -97,10 +98,12 @@ export const SavedCollectionsTable = pgTable("saved_collections", {
     .references(() => UsersTable.id, { onDelete: "cascade" }),
   collectionId: uuid("collection_id")
     .notNull()
-    .unique()
     .references(() => CollectionsTable.id, { onDelete: "cascade" }),
   savedAt: timestamp("saved_at").notNull().defaultNow(),
-});
+}, (table) => ({
+  // Composite unique constraint: one user can save a collection only once
+  userCollectionUnique: unique().on(table.userId, table.collectionId),
+}));
 
 export const CollectionLikesTable = pgTable("collection_likes", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
