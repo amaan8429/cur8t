@@ -6,7 +6,7 @@ import { getClientId, checkRateLimit, rateLimiters } from "@/lib/ratelimit";
 
 export async function GET(
   request: Request,
-  { params }: { params: { username: string } }
+  { params }: { params: Promise<{ username: string }> }
 ) {
   // IP-based rate limiting
   const identifier = getClientId(request); // uses IP
@@ -24,7 +24,8 @@ export async function GET(
   }
 
   try {
-    const { username } = params;
+    // Await the params in Next.js 15
+    const { username } = await params;
 
     if (!username) {
       return NextResponse.json(
