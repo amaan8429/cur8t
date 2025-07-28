@@ -13,6 +13,8 @@ import {
   HomepageCollection,
 } from "@/actions/platform/homepageCollections";
 import { getUserInfoAction } from "@/actions/user/getUserInfo";
+import { showRateLimitToast } from "@/components/ui/rate-limit-toast";
+import { toast } from "@/hooks/use-toast";
 
 export interface UseExploreDataReturn {
   trendingCollections: PublicCollection[];
@@ -30,7 +32,7 @@ export interface UseExploreDataReturn {
     username: string | null;
     totalCollections: number;
   } | null;
-  error: string | null;
+  hasErrors: boolean;
   refetch: () => void;
 }
 
@@ -42,6 +44,7 @@ export const useExploreData = (): UseExploreDataReturn => {
     data: trendingData,
     isLoading: trendingLoading,
     error: trendingError,
+    refetch: refetchTrending,
   } = useQuery({
     queryKey: ["trending-collections"],
     queryFn: async () => {
@@ -51,8 +54,32 @@ export const useExploreData = (): UseExploreDataReturn => {
         sortBy: "likes",
       });
 
-      if ("error" in response) {
-        throw new Error(response.error);
+      if ("error" in response && response.error) {
+        // Handle rate limiting with toast instead of throwing
+        if (response.error.includes("Too many requests")) {
+          showRateLimitToast({
+            retryAfter: response.retryAfter,
+            message:
+              "Trending collections temporarily unavailable due to rate limiting.",
+          });
+          // Return empty data instead of throwing
+          return {
+            data: [],
+            pagination: { total: 0, totalPages: 0, currentPage: 1, limit: 5 },
+          };
+        }
+
+        // For other errors, show a toast and return empty data
+        toast({
+          title: "Failed to load trending collections",
+          description: response.error,
+          variant: "destructive",
+          duration: 5000,
+        });
+        return {
+          data: [],
+          pagination: { total: 0, totalPages: 0, currentPage: 1, limit: 5 },
+        };
       }
 
       return response;
@@ -63,9 +90,9 @@ export const useExploreData = (): UseExploreDataReturn => {
       if (error?.message?.includes("Too many requests")) {
         return false;
       }
-      return failureCount < 3;
+      return failureCount < 2; // Reduced retries
     },
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 
   // Query for recent collections
@@ -73,6 +100,7 @@ export const useExploreData = (): UseExploreDataReturn => {
     data: recentData,
     isLoading: recentLoading,
     error: recentError,
+    refetch: refetchRecent,
   } = useQuery({
     queryKey: ["recent-collections"],
     queryFn: async () => {
@@ -82,8 +110,29 @@ export const useExploreData = (): UseExploreDataReturn => {
         sortBy: "recent",
       });
 
-      if ("error" in response) {
-        throw new Error(response.error);
+      if ("error" in response && response.error) {
+        if (response.error.includes("Too many requests")) {
+          showRateLimitToast({
+            retryAfter: response.retryAfter,
+            message:
+              "Recent collections temporarily unavailable due to rate limiting.",
+          });
+          return {
+            data: [],
+            pagination: { total: 0, totalPages: 0, currentPage: 1, limit: 6 },
+          };
+        }
+
+        toast({
+          title: "Failed to load recent collections",
+          description: response.error,
+          variant: "destructive",
+          duration: 5000,
+        });
+        return {
+          data: [],
+          pagination: { total: 0, totalPages: 0, currentPage: 1, limit: 6 },
+        };
       }
 
       return response;
@@ -93,9 +142,9 @@ export const useExploreData = (): UseExploreDataReturn => {
       if (error?.message?.includes("Too many requests")) {
         return false;
       }
-      return failureCount < 3;
+      return failureCount < 2;
     },
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 
   // Query for homepage collections (new collections)
@@ -103,12 +152,29 @@ export const useExploreData = (): UseExploreDataReturn => {
     data: homepageData,
     isLoading: homepageLoading,
     error: homepageError,
+    refetch: refetchHomepage,
   } = useQuery({
     queryKey: ["homepage-collections"],
-    queryFn: getHomepageCollections,
+    queryFn: async () => {
+      try {
+        return await getHomepageCollections();
+      } catch (error: unknown) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Unable to load new collections timeline.";
+        toast({
+          title: "Failed to load new collections",
+          description: errorMessage,
+          variant: "destructive",
+          duration: 5000,
+        });
+        return { success: false, data: null };
+      }
+    },
     enabled: isLoaded,
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 
   // Query for user info (only when authenticated)
@@ -116,12 +182,21 @@ export const useExploreData = (): UseExploreDataReturn => {
     data: databaseUser,
     isLoading: userInfoLoading,
     error: userInfoError,
+    refetch: refetchUserInfo,
   } = useQuery({
     queryKey: ["user-info", user?.id],
-    queryFn: getUserInfoAction,
+    queryFn: async () => {
+      try {
+        return await getUserInfoAction();
+      } catch (error: unknown) {
+        // Don't show toast for user info errors, handle silently
+        console.warn("Failed to load user info:", error);
+        return null;
+      }
+    },
     enabled: isLoaded && !!user,
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retry: 1,
+    retryDelay: 5000,
   });
 
   // Query for saved collections (only when authenticated)
@@ -129,6 +204,7 @@ export const useExploreData = (): UseExploreDataReturn => {
     data: savedData,
     isLoading: savedLoading,
     error: savedError,
+    refetch: refetchSaved,
   } = useQuery({
     queryKey: ["saved-collections", user?.id],
     queryFn: async () => {
@@ -138,15 +214,41 @@ export const useExploreData = (): UseExploreDataReturn => {
         sortBy: "recent",
       });
 
-      if ("error" in response) {
-        throw new Error(response.error);
+      if ("error" in response && response.error) {
+        if (response.error.includes("Too many requests")) {
+          showRateLimitToast({
+            retryAfter: response.retryAfter,
+            message:
+              "Saved collections temporarily unavailable due to rate limiting.",
+          });
+          return {
+            data: [],
+            pagination: { total: 0, totalPages: 0, currentPage: 1, limit: 5 },
+          };
+        }
+
+        toast({
+          title: "Failed to load saved collections",
+          description: response.error,
+          variant: "destructive",
+          duration: 5000,
+        });
+        return {
+          data: [],
+          pagination: { total: 0, totalPages: 0, currentPage: 1, limit: 5 },
+        };
       }
 
       return response;
     },
     enabled: isLoaded && !!user,
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    retry: (failureCount, error) => {
+      if (error?.message?.includes("Too many requests")) {
+        return false;
+      }
+      return failureCount < 2;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
   });
 
   // Combine loading states
@@ -156,20 +258,24 @@ export const useExploreData = (): UseExploreDataReturn => {
     homepageLoading ||
     (!!user && (userInfoLoading || savedLoading));
 
-  // Combine errors
-  const error =
-    trendingError?.message ||
-    recentError?.message ||
-    homepageError?.message ||
-    userInfoError?.message ||
-    savedError?.message ||
-    null;
+  // Check if there are any errors (for UI feedback)
+  const hasErrors = !!(
+    trendingError ||
+    recentError ||
+    homepageError ||
+    userInfoError ||
+    savedError
+  );
 
-  // Refetch function for manual refresh
+  // Combined refetch function
   const refetch = () => {
-    // Note: Individual query refetch functions would be used here
-    // This is a simplified version
-    window.location.reload();
+    refetchTrending();
+    refetchRecent();
+    refetchHomepage();
+    if (user) {
+      refetchUserInfo();
+      refetchSaved();
+    }
   };
 
   return {
@@ -182,7 +288,7 @@ export const useExploreData = (): UseExploreDataReturn => {
       totalSavedCollections: savedData?.pagination?.total || 0,
     },
     databaseUser: databaseUser || null,
-    error,
+    hasErrors,
     refetch,
   };
 };

@@ -173,7 +173,7 @@ export const rateLimiters = {
   // Get public profile
   getPublicProfileLimiter: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(500, "1 h"),
+    limiter: Ratelimit.slidingWindow(200, "1 h"),
     analytics: true,
     prefix: "ratelimit:get-public-profile",
   }),

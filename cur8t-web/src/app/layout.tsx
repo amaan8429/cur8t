@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import QueryProvider from "@/components/providers/QueryProvider";
+import { ErrorBoundary } from "@/components/providers/ErrorBoundary";
 import { Inter } from "next/font/google";
 
 export const metadata = {
@@ -26,8 +27,10 @@ export default function RootLayout({
         <body className={`${inter.variable}`}>
           <ThemeProvider attribute="class" defaultTheme="system">
             <QueryProvider>
-              <main>{children}</main>
-              <Toaster />
+              <ErrorBoundary>
+                <main>{children}</main>
+                <Toaster />
+              </ErrorBoundary>
             </QueryProvider>
           </ThemeProvider>
         </body>

@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/layout/ModeToggle";
 import { Footer } from "@/components/layout/Footer";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle, RefreshCw } from "lucide-react";
 import { useExploreData } from "@/hooks/useExploreData";
 
 // Import new components
@@ -26,7 +24,7 @@ export default function ExplorePage() {
     isLoading,
     userStats,
     databaseUser,
-    error,
+    hasErrors,
     refetch,
   } = useExploreData();
 
@@ -66,25 +64,6 @@ export default function ExplorePage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Error Alert */}
-        {error && (
-          <Alert className="mb-6 border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription className="flex items-center justify-between">
-              <span>{error}</span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={refetch}
-                className="ml-4"
-              >
-                <RefreshCw className="h-3 w-3 mr-1" />
-                Retry
-              </Button>
-            </AlertDescription>
-          </Alert>
-        )}
-
         <div className="flex gap-8">
           {/* Left Sidebar - User Profile */}
           <div className="w-80 flex-shrink-0">
