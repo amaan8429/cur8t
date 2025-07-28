@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HomepageCollection } from "@/actions/platform/homepageCollections";
-import { TimelineCard } from "./TimelineCard";
+import { UnifiedCollectionCard } from "./UnifiedCollectionCard";
 
 interface EventsTimelineSectionProps {
   newCollections: HomepageCollection[];
@@ -56,7 +56,12 @@ export const EventsTimelineSection: React.FC<EventsTimelineSectionProps> = ({
           ))
         ) : newCollections.length > 0 ? (
           newCollections.map((collection) => (
-            <TimelineCard key={collection.id} collection={collection} />
+            <UnifiedCollectionCard
+              key={collection.id}
+              collection={collection}
+              variant="timeline"
+              showCreateDate={true}
+            />
           ))
         ) : (
           <div className="text-center py-12">

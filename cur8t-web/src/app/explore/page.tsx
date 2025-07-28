@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/layout/ModeToggle";
 import { Footer } from "@/components/layout/Footer";
-import { useExploreData } from "@/hooks/useExploreData";
+import { useExploreDataOptimized } from "@/hooks/useExploreDataOptimized";
 
 // Import new components
 import { UserProfileSection } from "@/components/explore/UserProfileSection";
@@ -21,12 +21,14 @@ export default function ExplorePage() {
     recentCollections,
     savedCollections,
     newCollections,
-    isLoading,
+    isMainDataLoading,
+    isUserDataLoading,
+    isFullyLoaded,
     userStats,
     databaseUser,
     hasErrors,
     refetch,
-  } = useExploreData();
+  } = useExploreDataOptimized();
 
   return (
     <div className="min-h-screen bg-background">
@@ -73,34 +75,34 @@ export default function ExplorePage() {
             />
           </div>
 
-          {/* Main Content */}
+          {/* Main Content - Shows immediately when main data loads */}
           <div className="flex-1 max-w-3xl">
             {activeTab === "explore" ? (
               <div className="space-y-8">
                 <FeaturedSection
                   recentCollections={recentCollections}
-                  isLoading={isLoading}
+                  isLoading={isMainDataLoading}
                 />
               </div>
             ) : (
               <div className="space-y-8">
                 <EventsTimelineSection
                   newCollections={newCollections}
-                  isLoading={isLoading}
+                  isLoading={isMainDataLoading}
                 />
               </div>
             )}
           </div>
 
-          {/* Right Sidebar */}
+          {/* Right Sidebar - Shows immediately when main data loads */}
           <div className="w-80 flex-shrink-0 space-y-8">
             <TrendingSection
               trendingCollections={trendingCollections}
-              isLoading={isLoading}
+              isLoading={isMainDataLoading}
             />
             <SavedCollectionsSection
               savedCollections={savedCollections}
-              isLoading={isLoading}
+              isLoading={isUserDataLoading} // Separate loading state for user data
             />
           </div>
         </div>

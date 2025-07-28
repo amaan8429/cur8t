@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PublicCollection } from "@/actions/collection/fetchPublicCollections";
-import { CollectionCard } from "./CollectionCard";
+import { UnifiedCollectionCard } from "./UnifiedCollectionCard";
 
 interface FeaturedSectionProps {
   recentCollections: PublicCollection[];
@@ -45,7 +45,14 @@ export const FeaturedSection: React.FC<FeaturedSectionProps> = ({
           : recentCollections
               .slice(0, 3)
               .map((collection) => (
-                <CollectionCard key={collection.id} collection={collection} />
+                <UnifiedCollectionCard 
+                  key={collection.id} 
+                  collection={{
+                    ...collection,
+                    visibility: "public"
+                  }} 
+                  variant="featured" 
+                />
               ))}
       </div>
     </CardContent>
