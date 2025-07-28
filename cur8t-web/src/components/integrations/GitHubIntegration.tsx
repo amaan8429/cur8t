@@ -99,6 +99,26 @@ const GitHubIntegrationComponent = () => {
   const checkGithubStatus = async () => {
     try {
       const response = await fetch("/api/github/status");
+      
+      // Check for rate limiting first
+      if (response.status === 429) {
+        const data = await response.json().catch(() => ({}));
+        const retryAfter =
+          response.headers.get("retry-after") || data.retryAfter || 60;
+
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter:
+            typeof retryAfter === "string"
+              ? parseInt(retryAfter) * 60
+              : retryAfter * 60,
+          message: "Too many GitHub status requests. Please try again later.",
+        });
+        return;
+      }
+      
       if (!response.ok) {
         throw new Error("Failed to fetch GitHub status");
       }

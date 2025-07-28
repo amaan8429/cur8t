@@ -102,6 +102,19 @@ export function DashboardOverview() {
     async function fetchStats() {
       try {
         const dashboardStats = await getDashboardStatsAction();
+
+        // Check for rate limiting
+        if (dashboardStats && dashboardStats.error && dashboardStats.retryAfter) {
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: dashboardStats.retryAfter * 60,
+            message: "Too many dashboard requests. Please try again later.",
+          });
+          return;
+        }
+
         setStats(dashboardStats);
       } catch (error) {
         console.error("Error fetching dashboard stats:", error);

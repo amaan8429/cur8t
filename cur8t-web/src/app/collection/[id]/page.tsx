@@ -106,6 +106,19 @@ export default function CollectionPage() {
       try {
         const result = await getSingleCollectionAction(collectionId);
 
+        // Check for rate limiting
+        if (result.error && result.retryAfter) {
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: result.retryAfter * 60,
+            message: "Too many collection requests. Please try again later.",
+          });
+          setIsLoading(false);
+          return;
+        }
+
         if (result.error) {
           setError(result.error);
           setIsLoading(false);
@@ -122,6 +135,20 @@ export default function CollectionPage() {
           // Fetch links if we have access to the collection
           setIsLinksLoading(true);
           const linksResult = await getCollectionLinksAction(collectionId);
+
+          // Check for rate limiting
+          if (linksResult.error && linksResult.retryAfter) {
+            const { showRateLimitToast } = await import(
+              "@/components/ui/rate-limit-toast"
+            );
+            showRateLimitToast({
+              retryAfter: linksResult.retryAfter * 60,
+              message: "Too many link requests. Please try again later.",
+            });
+            setIsLinksLoading(false);
+            return;
+          }
+
           if (linksResult.success && linksResult.data) {
             setLinks(linksResult.data);
           }

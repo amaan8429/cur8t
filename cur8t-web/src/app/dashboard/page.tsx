@@ -29,7 +29,19 @@ export default async function Page({
   // Check if user has a username set
   const userInfo = await getUserInfoAction();
 
-  if (userInfo && !userInfo.username) {
+  // Check for rate limiting on getUserInfoAction
+  if (userInfo && 'error' in userInfo && 'retryAfter' in userInfo) {
+    console.error(
+      "Rate limited while fetching user info:",
+      userInfo.error,
+      "Retry after:",
+      userInfo.retryAfter
+    );
+    // For rate limiting, redirect to a generic dashboard page
+    redirect("/dashboard");
+  }
+
+  if (userInfo && 'username' in userInfo && !userInfo.username) {
     redirect("/onboarding/username");
   }
 
@@ -43,6 +55,19 @@ export default async function Page({
   if (activeCollectionId) {
     const collectionNameResult =
       await getSingleCollectionNameAction(activeCollectionId);
+    
+    // Check for rate limiting
+    if (collectionNameResult.error && collectionNameResult.retryAfter) {
+      console.error(
+        "Rate limited while fetching collection name:",
+        collectionNameResult.error,
+        "Retry after:",
+        collectionNameResult.retryAfter
+      );
+      // Handle rate limiting gracefully - redirect to dashboard without collection
+      redirect("/dashboard");
+    }
+    
     if (collectionNameResult.success) {
       activeCollectionName = collectionNameResult.data;
     } else {

@@ -21,7 +21,8 @@ export async function getUserInfoAction() {
       "Too many requests to get user info. Please try again later."
     );
     if (!rateLimitResult.success) {
-      throw new Error(rateLimitResult.error);
+      const retryAfter = rateLimitResult.retryAfter ?? 60;
+      return { error: rateLimitResult.error, retryAfter };
     }
 
     const users = await db

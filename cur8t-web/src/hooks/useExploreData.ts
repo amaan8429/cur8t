@@ -187,7 +187,21 @@ export const useExploreData = (): UseExploreDataReturn => {
     queryKey: ["user-info", user?.id],
     queryFn: async () => {
       try {
-        return await getUserInfoAction();
+        const result = await getUserInfoAction();
+
+        // Check for rate limiting
+        if (result && "error" in result && "retryAfter" in result) {
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: result.retryAfter * 60,
+            message: "Too many user info requests. Please try again later.",
+          });
+          return null;
+        }
+
+        return result;
       } catch (error: unknown) {
         // Don't show toast for user info errors, handle silently
         console.warn("Failed to load user info:", error);

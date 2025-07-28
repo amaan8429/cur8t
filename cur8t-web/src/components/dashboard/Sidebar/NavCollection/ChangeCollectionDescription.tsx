@@ -55,6 +55,18 @@ const ChangeCollectionDescription = ({
         data.description
       );
 
+      // Check for rate limiting
+      if (result.error && result.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: result.retryAfter * 60,
+          message: "Too many description update attempts. Please try again later.",
+        });
+        return;
+      }
+
       if (result.success) {
         await updateCollectionDescription(collectionId, data.description);
         toast({

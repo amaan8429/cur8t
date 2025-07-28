@@ -98,6 +98,26 @@ export default function ProfilePage({
       try {
         // Fetch user data
         const userResponse = await fetch(`/api/profile/${username}`);
+        
+        // Check for rate limiting first
+        if (userResponse.status === 429) {
+          const data = await userResponse.json().catch(() => ({}));
+          const retryAfter =
+            userResponse.headers.get("retry-after") || data.retryAfter || 60;
+
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter:
+              typeof retryAfter === "string"
+                ? parseInt(retryAfter) * 60
+                : retryAfter * 60,
+            message: "Too many profile requests. Please try again later.",
+          });
+          return;
+        }
+        
         if (!userResponse.ok) {
           if (userResponse.status === 404) {
             notFound();

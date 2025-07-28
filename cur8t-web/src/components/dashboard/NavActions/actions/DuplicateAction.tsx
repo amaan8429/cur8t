@@ -90,6 +90,18 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
         duplicateVisibility
       );
 
+      // Check for rate limiting
+      if (result.error && result.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: result.retryAfter * 60,
+          message: "Too many duplicate attempts. Please try again later.",
+        });
+        return;
+      }
+
       if (!result.success) {
         toastError({
           title: "Duplicate Failed",
@@ -106,10 +118,35 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
       // Copy links if includeContents is true
       if (includeContents) {
         const linksResult = await getLinksAction(activeCollectionId);
+
+        // Check for rate limiting on getLinksAction
+        if (linksResult.error && linksResult.retryAfter) {
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: linksResult.retryAfter * 60,
+            message: "Too many link fetch attempts. Please try again later.",
+          });
+          return;
+        }
+
         if (linksResult.success && linksResult.data) {
           // Copy each link to the new collection
           for (const link of linksResult.data) {
-            await createLinkAction(newCollection.id, link.title, link.url);
+            const linkResult = await createLinkAction(newCollection.id, link.title, link.url);
+            
+            // Check for rate limiting on createLinkAction
+            if (linkResult.error && linkResult.retryAfter) {
+              const { showRateLimitToast } = await import(
+                "@/components/ui/rate-limit-toast"
+              );
+              showRateLimitToast({
+                retryAfter: linkResult.retryAfter * 60,
+                message: "Too many link creation attempts. Please try again later.",
+              });
+              return;
+            }
           }
         }
       }

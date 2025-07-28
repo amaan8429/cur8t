@@ -58,6 +58,19 @@ export const ExportAction: React.FC<ExportActionProps> = ({
 
       // Get collection links
       const linksResult = await getLinksAction(activeCollectionId);
+
+      // Check for rate limiting
+      if (linksResult.error && linksResult.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: linksResult.retryAfter * 60,
+          message: "Too many export attempts. Please try again later.",
+        });
+        return;
+      }
+
       if (!linksResult.success) {
         toast({
           title: "Failed to fetch collection data",
