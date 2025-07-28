@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useCollectionStore } from "@/store/collection-store";
 import { ChangeCollectionDescriptionAction } from "@/actions/collection/changeCollectionDescription";
+import { VALIDATION_LIMITS } from "@/types/types";
 import { FileText } from "lucide-react";
 import React from "react";
 
@@ -39,10 +40,12 @@ const ChangeCollectionDescription = ({
       return;
     }
 
-    if (data.description.length > 200) {
+    if (
+      data.description.length > VALIDATION_LIMITS.COLLECTION_DESCRIPTION_MAX
+    ) {
       toast({
         title: "Description is too long",
-        description: "Please enter a description with 200 characters or less",
+        description: `Please enter a description with ${VALIDATION_LIMITS.COLLECTION_DESCRIPTION_MAX} characters or less`,
         variant: "destructive",
       });
       return;
@@ -62,7 +65,8 @@ const ChangeCollectionDescription = ({
         );
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
-          message: "Too many description update attempts. Please try again later.",
+          message:
+            "Too many description update attempts. Please try again later.",
         });
         return;
       }

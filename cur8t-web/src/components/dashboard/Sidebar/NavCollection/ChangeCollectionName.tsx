@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useCollectionStore } from "@/store/collection-store";
 import { EditIcon } from "lucide-react";
+import { VALIDATION_LIMITS } from "@/types/types";
 import React from "react";
 
 const ChangeCollectionName = ({
@@ -50,10 +51,10 @@ const ChangeCollectionName = ({
       return;
     }
 
-    if (data.title.length > 50) {
+    if (data.title.length > VALIDATION_LIMITS.COLLECTION_NAME_MAX) {
       toastWarning({
         title: "Name Too Long",
-        description: "Please enter a title with 50 characters or less",
+        description: `Please enter a title with ${VALIDATION_LIMITS.COLLECTION_NAME_MAX} characters or less`,
       });
       return;
     }

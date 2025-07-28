@@ -9,6 +9,7 @@ import {
   getClientIdFromHeaders,
   rateLimiters,
 } from "@/lib/ratelimit";
+import { FrontendCollectionSchema } from "@/types/types";
 
 export async function ChangeCollectionDescriptionAction(
   collectionId: string,
@@ -33,6 +34,19 @@ export async function ChangeCollectionDescriptionAction(
 
   if (!collectionId) {
     return { error: "Collection Id is required" };
+  }
+
+  // Validate the new description using schema
+  const validationResult = FrontendCollectionSchema.safeParse({
+    title: "placeholder", // Required field but not being changed
+    description: newDescription,
+  });
+
+  if (!validationResult.success) {
+    const errorMessage =
+      validationResult.error.errors.find((e) => e.path.includes("description"))
+        ?.message || "Invalid description";
+    return { error: errorMessage };
   }
 
   const collection = await db

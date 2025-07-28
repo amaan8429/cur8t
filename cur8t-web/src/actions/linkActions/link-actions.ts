@@ -12,6 +12,7 @@ import {
   getClientIdFromHeaders,
   rateLimiters,
 } from "@/lib/ratelimit";
+import { FrontendLinkSchema } from "@/types/types";
 
 interface AddLinkData {
   title?: string;
@@ -40,8 +41,16 @@ export async function addLinkAction(data: AddLinkData, collectionId: string) {
     return { error: "Collection Id is required" };
   }
 
-  if (!data.url) {
-    return { error: "URL is required" };
+  // Validate link data using schema
+  const validationResult = FrontendLinkSchema.safeParse({
+    title: data.title,
+    url: data.url,
+  });
+
+  if (!validationResult.success) {
+    const errorMessage =
+      validationResult.error.errors[0]?.message || "Invalid link data";
+    return { error: errorMessage };
   }
 
   // Extract title if not provided
@@ -174,6 +183,44 @@ export async function updateLinkAction(
 
   if (!id) {
     return { error: "Link ID is required" };
+  }
+
+  // Validate link data using schema (only validate fields that are provided)
+  if (data.title !== undefined || data.url !== undefined) {
+    const validationData: any = {};
+    if (data.title !== undefined) validationData.title = data.title;
+    if (data.url !== undefined) validationData.url = data.url;
+
+    // For partial updates, we need to check if url is valid when provided
+    if (data.url !== undefined) {
+      const validationResult = FrontendLinkSchema.safeParse({
+        title: data.title || "placeholder", // Required field for schema
+        url: data.url,
+      });
+
+      if (!validationResult.success) {
+        const errorMessage =
+          validationResult.error.errors[0]?.message || "Invalid link data";
+        return { error: errorMessage };
+      }
+    }
+
+    // Validate title length if provided
+    if (data.title !== undefined) {
+      const titleValidation = FrontendLinkSchema.safeParse({
+        title: data.title,
+        url: "https://placeholder.com", // Required field for schema
+      });
+
+      if (!titleValidation.success) {
+        const titleError = titleValidation.error.errors.find((e) =>
+          e.path.includes("title")
+        );
+        if (titleError) {
+          return { error: titleError.message };
+        }
+      }
+    }
   }
 
   try {

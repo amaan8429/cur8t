@@ -13,6 +13,7 @@ import { useCollectionStore } from "@/store/collection-store";
 import { useToast } from "@/hooks/use-toast";
 import { createCollectionAction } from "@/actions/collection/createCollection";
 import { useActiveState } from "@/store/activeStateStore";
+import { VALIDATION_LIMITS } from "@/types/types";
 
 interface CreateCollectionComponentProps {
   onSuccess?: (collectionId: string) => void;
@@ -53,10 +54,10 @@ export function CreateCollectionComponent({
       return;
     }
 
-    if (collectionName.length > 50) {
+    if (collectionName.length > VALIDATION_LIMITS.COLLECTION_NAME_MAX) {
       toastWarning({
         title: "Name Too Long",
-        description: "Collection name must be 50 characters or less.",
+        description: `Collection name must be ${VALIDATION_LIMITS.COLLECTION_NAME_MAX} characters or less.`,
       });
       return;
     }
@@ -265,7 +266,7 @@ export function CreateCollectionComponent({
                 disabled={isLoading}
               />
               <span className="absolute right-4 top-5 text-muted-foreground text-sm">
-                {collectionName.length}/50
+                {collectionName.length}/{VALIDATION_LIMITS.COLLECTION_NAME_MAX}
               </span>
             </div>
 

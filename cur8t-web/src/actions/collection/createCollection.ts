@@ -10,6 +10,7 @@ import {
   getClientIdFromHeaders,
   rateLimiters,
 } from "@/lib/ratelimit";
+import { FrontendCollectionSchema } from "@/types/types";
 
 export async function createCollectionAction(
   collectionName: string,
@@ -33,8 +34,16 @@ export async function createCollectionAction(
     return { error: rateLimitResult.error, retryAfter };
   }
 
-  if (!collectionName) {
-    return { error: "Collection name is required" };
+  // Validate input using schema
+  const validationResult = FrontendCollectionSchema.safeParse({
+    title: collectionName,
+    description: description,
+  });
+
+  if (!validationResult.success) {
+    const errorMessage =
+      validationResult.error.errors[0]?.message || "Invalid input data";
+    return { error: errorMessage };
   }
 
   if (!visiblity) {

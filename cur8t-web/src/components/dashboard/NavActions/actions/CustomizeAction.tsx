@@ -7,6 +7,7 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { useCollectionStore } from "@/store/collection-store";
 import { useActiveState } from "@/store/activeStateStore";
 import { Loader2 } from "lucide-react";
+import { VALIDATION_LIMITS } from "@/types/types";
 
 interface CustomizeActionProps {
   pageTitle: string;
@@ -72,7 +73,7 @@ export const CustomizeAction: React.FC<CustomizeActionProps> = ({
             onChange={(e) => setPageTitle(e.target.value)}
             className="col-span-3"
             placeholder="Enter collection title"
-            maxLength={50}
+            maxLength={VALIDATION_LIMITS.COLLECTION_NAME_MAX}
           />
         </div>
 
@@ -87,10 +88,11 @@ export const CustomizeAction: React.FC<CustomizeActionProps> = ({
               onChange={(e) => setPageDescription(e.target.value)}
               placeholder="Enter collection description (optional)"
               className="min-h-[100px] resize-none"
-              maxLength={200}
+              maxLength={VALIDATION_LIMITS.COLLECTION_DESCRIPTION_MAX}
             />
             <span className="absolute right-3 bottom-3 text-muted-foreground text-sm">
-              {pageDescription.length}/200
+              {pageDescription.length}/
+              {VALIDATION_LIMITS.COLLECTION_DESCRIPTION_MAX}
             </span>
           </div>
         </div>
