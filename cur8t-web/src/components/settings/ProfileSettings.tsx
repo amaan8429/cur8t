@@ -111,6 +111,26 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
         }),
       });
 
+      // Check for rate limiting first
+      if (response.status === 429) {
+        loadingToast.dismiss();
+        const data = await response.json();
+        const retryAfter =
+          response.headers.get("retry-after") || data.retryAfter || 60;
+
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter:
+            typeof retryAfter === "string"
+              ? parseInt(retryAfter) * 60
+              : retryAfter * 60,
+          message: "Too many profile update attempts. Please try again later.",
+        });
+        return;
+      }
+
       if (!response.ok) {
         throw new Error("Failed to save changes");
       }
@@ -165,10 +185,19 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
         // Handle rate limiting specifically
         if (response.status === 429) {
           loadingToast.dismiss();
-          toast({
-            title: "Too many requests, try again later",
-            description:
-              "Please wait before attempting another username change.",
+          const retryAfter =
+            response.headers.get("retry-after") || data.retryAfter || 60;
+
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter:
+              typeof retryAfter === "string"
+                ? parseInt(retryAfter) * 60
+                : retryAfter * 60,
+            message:
+              "Too many username change attempts. Please try again later.",
           });
           return;
         }

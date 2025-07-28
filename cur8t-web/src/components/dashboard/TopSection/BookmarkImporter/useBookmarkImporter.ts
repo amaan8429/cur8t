@@ -211,6 +211,20 @@ export function useBookmarkImporter() {
           category.description || "",
           "private"
         );
+
+        // Check for rate limiting
+        if (collectionResult.error && collectionResult.retryAfter) {
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: collectionResult.retryAfter * 60,
+            message:
+              "Too many collection creation attempts. Please try again later.",
+          });
+          return;
+        }
+
         if (collectionResult.error) {
           throw new Error(
             `Failed to create collection "${collectionName}": ${collectionResult.error}`
@@ -225,6 +239,20 @@ export function useBookmarkImporter() {
               bookmark.title,
               bookmark.url
             );
+
+            // Check for rate limiting
+            if (linkResult.error && linkResult.retryAfter) {
+              const { showRateLimitToast } = await import(
+                "@/components/ui/rate-limit-toast"
+              );
+              showRateLimitToast({
+                retryAfter: linkResult.retryAfter * 60,
+                message:
+                  "Too many link creation attempts. Please try again later.",
+              });
+              return;
+            }
+
             if (linkResult.success) {
               successfulLinks++;
             }

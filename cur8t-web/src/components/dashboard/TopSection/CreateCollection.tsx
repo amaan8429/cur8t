@@ -175,6 +175,19 @@ export function CreateCollectionComponent({
         "private"
       );
 
+      // Check for rate limiting
+      if (result.error && result.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: result.retryAfter * 60,
+          message:
+            "Too many collection creation attempts. Please try again later.",
+        });
+        return;
+      }
+
       if (result.success) {
         const newCollection = result.data;
         await createACollection(newCollection);

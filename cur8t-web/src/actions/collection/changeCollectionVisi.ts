@@ -24,7 +24,8 @@ export async function ChangeCollectionVisibilityAction(
     "Too many requests to change collection visibility. Please try again later."
   );
   if (!rateLimitResult.success) {
-    throw new Error(rateLimitResult.error);
+    const retryAfter = rateLimitResult.retryAfter ?? 60;
+    return { error: rateLimitResult.error, retryAfter };
   }
 
   if (!collectionId) {

@@ -74,6 +74,25 @@ export default function UsernamePage() {
         body: JSON.stringify({ username }),
       });
 
+      // Check for rate limiting first
+      if (response.status === 429) {
+        const data = await response.json();
+        const retryAfter =
+          response.headers.get("retry-after") || data.retryAfter || 60;
+
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter:
+            typeof retryAfter === "string"
+              ? parseInt(retryAfter) * 60
+              : retryAfter * 60,
+          message: "Too many username change attempts. Please try again later.",
+        });
+        return;
+      }
+
       const data = await response.json();
 
       if (!response.ok) {

@@ -241,6 +241,18 @@ export function ArticleExtractorDialog({
         article_title: extractedData.article_title,
       });
 
+      // Check for rate limiting
+      if (result.error && result.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: result.retryAfter * 60,
+          message: "Too many save attempts. Please try again later.",
+        });
+        return;
+      }
+
       if (result.error) {
         toastError({
           title: "Save Failed",

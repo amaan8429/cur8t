@@ -243,6 +243,23 @@ export default function CollectionPage() {
     try {
       if (isLiked) {
         const result = await unlikeCollectionAction(collectionId);
+
+        // Check for rate limiting
+        if (result.error && result.retryAfter) {
+          setIsLiked(previousIsLiked);
+          setCollection((prev) =>
+            prev ? { ...prev, likes: previousLikes } : null
+          );
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: result.retryAfter * 60,
+            message: "Too many unlike attempts. Please try again later.",
+          });
+          return;
+        }
+
         if (!result.success) {
           // Revert optimistic update
           setIsLiked(previousIsLiked);
@@ -256,6 +273,23 @@ export default function CollectionPage() {
         }
       } else {
         const result = await likeCollectionAction(collectionId);
+
+        // Check for rate limiting
+        if (result.error && result.retryAfter) {
+          setIsLiked(previousIsLiked);
+          setCollection((prev) =>
+            prev ? { ...prev, likes: previousLikes } : null
+          );
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: result.retryAfter * 60,
+            message: "Too many like attempts. Please try again later.",
+          });
+          return;
+        }
+
         if (!result.success) {
           // Revert optimistic update
           setIsLiked(previousIsLiked);
@@ -296,6 +330,18 @@ export default function CollectionPage() {
         includeLinks: true,
         visibility: "private",
       });
+
+      // Check for rate limiting
+      if (result.error && result.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: result.retryAfter * 60,
+          message: "Too many duplicate attempts. Please try again later.",
+        });
+        return;
+      }
 
       if (result.success) {
         toastSuccess({
@@ -341,6 +387,20 @@ export default function CollectionPage() {
         console.log("About to call unsaveCollectionAction");
         const result = await unsaveCollectionAction(collectionId);
         console.log("Unsave action result:", result);
+
+        // Check for rate limiting
+        if (result.error && result.retryAfter) {
+          setIsSaved(previousIsSaved);
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: result.retryAfter * 60,
+            message: "Too many unsave attempts. Please try again later.",
+          });
+          return;
+        }
+
         if (!result.success) {
           // Revert optimistic update
           setIsSaved(previousIsSaved);
@@ -360,6 +420,20 @@ export default function CollectionPage() {
         console.log("About to call saveCollectionAction");
         const result = await saveCollectionAction(collectionId);
         console.log("Save action result:", result);
+
+        // Check for rate limiting
+        if (result.error && result.retryAfter) {
+          setIsSaved(previousIsSaved);
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: result.retryAfter * 60,
+            message: "Too many save attempts. Please try again later.",
+          });
+          return;
+        }
+
         if (!result.success) {
           // Revert optimistic update
           setIsSaved(previousIsSaved);

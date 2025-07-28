@@ -78,6 +78,19 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
         sharedEmails
       );
 
+      // Check for rate limiting
+      if (response.error && response.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: response.retryAfter * 60,
+          message:
+            "Too many visibility change attempts. Please try again later.",
+        });
+        return;
+      }
+
       if (response.success) {
         set((state) => ({
           collections:
@@ -103,6 +116,19 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
   deleteCollection: async (collectionId) => {
     try {
       const result = await deleteCollectionAction(collectionId);
+
+      // Check for rate limiting
+      if (result.error && result.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: result.retryAfter * 60,
+          message: "Too many delete attempts. Please try again later.",
+        });
+        return { error: result.error as string };
+      }
+
       if ("error" in result) {
         console.log(result.error);
         return { error: result.error as string };
@@ -124,6 +150,19 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
   updateCollectionName: async (collectionId, newName) => {
     try {
       const response = await ChangeCollectionAction(collectionId, newName);
+
+      // Check for rate limiting
+      if (response.error && response.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: response.retryAfter * 60,
+          message: "Too many name change attempts. Please try again later.",
+        });
+        return;
+      }
+
       if (response.success) {
         set((state) => ({
           collections:
@@ -146,6 +185,20 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
         collectionId,
         newDescription
       );
+
+      // Check for rate limiting
+      if (response.error && response.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: response.retryAfter * 60,
+          message:
+            "Too many description change attempts. Please try again later.",
+        });
+        return;
+      }
+
       if (response.success) {
         set((state) => ({
           collections:

@@ -143,6 +143,31 @@ class AgentsApiService {
         ...options,
       });
 
+      // Handle rate limiting with toast notification
+      if (response.status === 429) {
+        const data = await response.json().catch(() => ({}));
+        const retryAfter =
+          response.headers.get("retry-after") || data.retryAfter || 60;
+
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter:
+            typeof retryAfter === "string"
+              ? parseInt(retryAfter) * 60
+              : retryAfter * 60,
+          message: "Too many requests to agents API. Please try again later.",
+        });
+
+        throw new AgentsApiError(
+          "Rate limit exceeded. Please try again later.",
+          429,
+          data.details,
+          data.error_code
+        );
+      }
+
       if (!response.ok) {
         let errorData: ApiError;
         try {
@@ -259,6 +284,31 @@ class AgentsApiService {
         body: formData,
       }
     );
+
+    // Handle rate limiting with toast notification
+    if (response.status === 429) {
+      const data = await response.json().catch(() => ({}));
+      const retryAfter =
+        response.headers.get("retry-after") || data.retryAfter || 60;
+
+      const { showRateLimitToast } = await import(
+        "@/components/ui/rate-limit-toast"
+      );
+      showRateLimitToast({
+        retryAfter:
+          typeof retryAfter === "string"
+            ? parseInt(retryAfter) * 60
+            : retryAfter * 60,
+        message: "Too many bookmark upload attempts. Please try again later.",
+      });
+
+      throw new AgentsApiError(
+        "Rate limit exceeded. Please try again later.",
+        429,
+        data.details,
+        data.error_code
+      );
+    }
 
     if (!response.ok) {
       let errorData: ApiError;

@@ -184,6 +184,26 @@ export default function SocialMediaSettings() {
         body: JSON.stringify(formData),
       });
 
+      // Check for rate limiting first
+      if (response.status === 429) {
+        const data = await response.json();
+        const retryAfter =
+          response.headers.get("retry-after") || data.retryAfter || 60;
+
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter:
+            typeof retryAfter === "string"
+              ? parseInt(retryAfter) * 60
+              : retryAfter * 60,
+          message:
+            "Too many social media update attempts. Please try again later.",
+        });
+        return;
+      }
+
       if (response.ok) {
         setHasChanges(false);
         toast({

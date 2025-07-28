@@ -85,6 +85,23 @@ export const useLinkStore = create<LinkStore>((set) => ({
       // Make the actual API call in the background
       const createdLink = await addLinkAction(newLink, collectionId);
 
+      // Check for rate limiting
+      if (createdLink.error && createdLink.retryAfter) {
+        // Remove optimistic link and show rate limit toast
+        set((state) => ({
+          links: state.links.filter((link) => link.id !== optimisticId),
+        }));
+
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: createdLink.retryAfter * 60,
+          message: "Too many link creation attempts. Please try again later.",
+        });
+        return;
+      }
+
       if ("error" in createdLink) {
         // Remove optimistic link and show error
         set((state) => ({
@@ -114,7 +131,20 @@ export const useLinkStore = create<LinkStore>((set) => ({
   deleteLink: async (id) => {
     try {
       set({ isLoading: true });
-      await deleteLinkAction(id);
+      const result = await deleteLinkAction(id);
+
+      // Check for rate limiting
+      if (result && result.error && result.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: result.retryAfter * 60,
+          message: "Too many delete attempts. Please try again later.",
+        });
+        return;
+      }
+
       set((state) => ({
         links: state.links.filter((link) => link.id !== id),
       }));
@@ -127,7 +157,20 @@ export const useLinkStore = create<LinkStore>((set) => ({
   updateLink: async (id, data) => {
     try {
       // set({ isLoading: true });
-      await updateLinkAction(id, data);
+      const result = await updateLinkAction(id, data);
+
+      // Check for rate limiting
+      if (result && result.error && result.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: result.retryAfter * 60,
+          message: "Too many update attempts. Please try again later.",
+        });
+        return;
+      }
+
       set((state) => ({
         links: state.links.map((link) =>
           link.id === id ? { ...link, ...data, updatedAt: new Date() } : link
