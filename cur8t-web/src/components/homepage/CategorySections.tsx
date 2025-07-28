@@ -31,6 +31,20 @@ export default function CategorySections() {
     async function loadCategorizedCollections() {
       try {
         const response = await getCategorizedCollections();
+
+        // Check for rate limiting
+        if (response.error && response.retryAfter) {
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: response.retryAfter * 60,
+            message: "Too many category requests. Please try again later.",
+          });
+          setLoading(false);
+          return;
+        }
+
         if (response.success && response.data) {
           setData(response.data);
           // Auto-expand first category if it has collections

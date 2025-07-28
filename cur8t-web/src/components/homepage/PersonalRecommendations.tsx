@@ -31,6 +31,21 @@ export default function PersonalRecommendations() {
 
       try {
         const response = await getPersonalRecommendations();
+
+        // Check for rate limiting
+        if (response.error && response.retryAfter) {
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: response.retryAfter * 60,
+            message:
+              "Too many recommendation requests. Please try again later.",
+          });
+          setLoading(false);
+          return;
+        }
+
         if (response.success && response.data) {
           setCollections(response.data);
           setMessage(response.message || "");

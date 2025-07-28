@@ -34,6 +34,21 @@ const PlatformStats = () => {
       setIsLoading(true);
       try {
         const response = await getPlatformStats();
+
+        // Check for rate limiting
+        if (response.error && response.retryAfter) {
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: response.retryAfter * 60,
+            message:
+              "Too many platform stats requests. Please try again later.",
+          });
+          setIsLoading(false);
+          return;
+        }
+
         if (response.success && response.data) {
           setStats(response.data);
         }

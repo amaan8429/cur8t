@@ -59,6 +59,30 @@ const TopCollectionsSettings = () => {
         getUserCollections(),
       ]);
 
+      // Check for rate limiting on topCollectionsResult
+      if (topCollectionsResult.error && topCollectionsResult.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: topCollectionsResult.retryAfter * 60,
+          message: "Too many top collections requests. Please try again later.",
+        });
+        return;
+      }
+
+      // Check for rate limiting on allCollectionsResult
+      if (allCollectionsResult.error && allCollectionsResult.retryAfter) {
+        const { showRateLimitToast } = await import(
+          "@/components/ui/rate-limit-toast"
+        );
+        showRateLimitToast({
+          retryAfter: allCollectionsResult.retryAfter * 60,
+          message: "Too many collections requests. Please try again later.",
+        });
+        return;
+      }
+
       if (topCollectionsResult.error) {
         toast({
           title: "Error",

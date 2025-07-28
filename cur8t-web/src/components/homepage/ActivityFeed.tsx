@@ -33,6 +33,20 @@ const ActivityFeed = () => {
       setIsLoading(true);
       try {
         const response = await getHomepageCollections();
+
+        // Check for rate limiting
+        if (response.error && response.retryAfter) {
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: response.retryAfter * 60,
+            message: "Too many homepage requests. Please try again later.",
+          });
+          setIsLoading(false);
+          return;
+        }
+
         if (response.success && response.data) {
           // Combine recent and new collections for activity feed
           const allActivity = [

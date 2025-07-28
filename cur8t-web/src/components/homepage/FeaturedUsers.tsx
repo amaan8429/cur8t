@@ -33,6 +33,21 @@ export default function FeaturedUsers() {
     async function loadFeaturedUsers() {
       try {
         const response = await getFeaturedUsers();
+
+        // Check for rate limiting
+        if (response.error && response.retryAfter) {
+          const { showRateLimitToast } = await import(
+            "@/components/ui/rate-limit-toast"
+          );
+          showRateLimitToast({
+            retryAfter: response.retryAfter * 60,
+            message:
+              "Too many featured users requests. Please try again later.",
+          });
+          setLoading(false);
+          return;
+        }
+
         if (response.success && response.data) {
           setUsers(response.data);
         }
