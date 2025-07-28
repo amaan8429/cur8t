@@ -187,7 +187,7 @@ export async function updateLinkAction(
 
   // Validate link data using schema (only validate fields that are provided)
   if (data.title !== undefined || data.url !== undefined) {
-    const validationData: any = {};
+    const validationData: { title?: string; url?: string } = {};
     if (data.title !== undefined) validationData.title = data.title;
     if (data.url !== undefined) validationData.url = data.url;
 
