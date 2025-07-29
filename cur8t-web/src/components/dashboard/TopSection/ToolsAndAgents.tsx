@@ -28,65 +28,47 @@ const agents = [
   {
     id: 1,
     title: "Article Link Extractor",
-    description:
-      "Give it a link to an article and it will extract all links from it and create a collection",
+    description: "Extract all links from any article and create a collection",
     icon: FileText,
     status: "Active",
-    features: [
-      "Smart link detection",
-      "Auto collection creation",
-      "Content analysis",
-    ],
+    features: ["Smart detection", "Auto collections", "Content analysis"],
   },
   {
     id: 6,
     title: "Bookmark File Importer",
-    description:
-      "Import your bookmarks file and automatically sort them into organized collections",
+    description: "Import bookmarks and sort them into organized collections",
     icon: Upload,
     status: "Active",
-    features: [
-      "Multiple browsers",
-      "AI-powered categorization",
-      "Smart organization",
-    ],
+    features: ["Multiple browsers", "AI categorization", "Smart sorting"],
   },
   {
     id: 2,
     title: "Smart Export Guide",
-    description:
-      "Export your collection as a detailed, formatted guide with descriptions and categories",
+    description: "Export collections as formatted guides with descriptions",
     icon: Download,
     status: "Coming Soon",
-    features: ["Detailed formatting", "Custom templates", "Multiple formats"],
+    features: ["Custom formatting", "Templates", "Multiple formats"],
   },
   {
     id: 3,
-    title: "Smart Collection Generator",
-    description:
-      "AI-powered collection creation based on topics, interests, or specific criteria",
+    title: "Collection Generator",
+    description: "AI-powered collection creation based on topics and interests",
     icon: Sparkles,
     status: "Coming Soon",
-    features: [
-      "Topic-based generation",
-      "Interest matching",
-      "Auto categorization",
-    ],
+    features: ["Topic-based", "Interest matching", "Auto categorization"],
   },
   {
     id: 4,
     title: "YouTube Link Extractor",
-    description:
-      "Takes a YouTube video and extracts all links mentioned in the description and comments",
+    description: "Extract links from YouTube video descriptions and comments",
     icon: Youtube,
     status: "Coming Soon",
-    features: ["Description parsing", "Comment scanning", "Timestamp linking"],
+    features: ["Description parsing", "Comment scanning", "Timestamps"],
   },
   {
     id: 5,
     title: "Watch Later Organizer",
-    description:
-      "Sort your Watch Later playlist into organized collections based on topics and themes",
+    description: "Sort Watch Later playlists into topic-based collections",
     icon: PlayCircle,
     status: "Coming Soon",
     features: ["Topic detection", "Auto sorting", "Custom playlists"],
@@ -173,8 +155,7 @@ export default function ToolsAndAgents() {
           <Bot className="h-8 w-8 mx-auto text-muted-foreground" />
           <h3 className="text-lg font-semibold">More Agents Coming Soon</h3>
           <p className="text-muted-foreground text-sm max-w-md mx-auto">
-            We&apos;re continuously developing new AI agents to enhance your
-            bookmark management experience. Stay tuned for more powerful tools!
+            New AI agents in development to enhance your bookmark management.
           </p>
         </div>
       </div>

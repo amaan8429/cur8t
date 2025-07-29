@@ -114,7 +114,7 @@ export function BookmarkCompleteStep({ importer, onOpenChange }: Props) {
         </Button>
         <Button
           onClick={() => {
-            window.open("/dashboard", "_blank");
+            window.open("/dashboard/?item=Overview", "_blank");
             onOpenChange(false);
           }}
           className="flex-1 h-11 bg-primary hover:bg-primary/90"

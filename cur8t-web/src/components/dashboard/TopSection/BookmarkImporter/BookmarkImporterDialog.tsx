@@ -26,9 +26,17 @@ export function BookmarkImporterDialog({
     if (!open) importer.resetDialog();
   }, [open]);
 
+  // Dynamic sizing based on current step
+  const dialogSize =
+    importer.currentStep === "preview"
+      ? "max-w-[95vw] max-h-[95vh]"
+      : "max-w-4xl max-h-[90vh]";
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        className={`${dialogSize} overflow-y-auto transition-all duration-300 ease-in-out`}
+      >
         <DialogHeader>
           <DialogTitle>Bookmark Importer</DialogTitle>
           <DialogDescription>

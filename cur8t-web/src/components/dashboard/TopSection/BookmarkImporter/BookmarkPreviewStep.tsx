@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -22,6 +22,8 @@ import {
   ExternalLink,
   GripVertical,
   FileText,
+  FolderOpen,
+  ChevronRight,
 } from "lucide-react";
 import { motion, AnimatePresence, Reorder } from "framer-motion";
 import { useBookmarkImporter } from "./useBookmarkImporter";
@@ -52,280 +54,357 @@ export function BookmarkPreviewStep({ importer }: Props) {
     setCurrentStep,
   } = importer;
 
+  const [selectedCategoryForDetail, setSelectedCategoryForDetail] = useState<
+    string | null
+  >(enhancedCategories.length > 0 ? enhancedCategories[0].name : null);
+
   if (!enhancedCategories.length) return null;
+
+  const selectedCategory = enhancedCategories.find(
+    (cat) => cat.name === selectedCategoryForDetail
+  );
+  const selectedCategoryIndex = enhancedCategories.findIndex(
+    (cat) => cat.name === selectedCategoryForDetail
+  );
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Eye className="h-4 w-4" />
-            Interactive Preview & Editor
-          </CardTitle>
-          <CardDescription>
-            Review, edit, and organize your bookmarks. Drag links between
-            categories, edit titles/URLs, or delete unwanted links.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="p-3 bg-muted/50 rounded">
-              <div className="text-lg font-semibold">
-                {enhancedCategories.length}
+      {/* Main Content - Split View */}
+      <div className="grid grid-cols-5 gap-6 min-h-[600px]">
+        {/* Left Panel - Categories Master List */}
+        <div className="col-span-2 space-y-4">
+          {/* Stats Summary */}
+          <Card>
+            <CardContent className="pt-4">
+              <div className="grid grid-cols-1 gap-3">
+                <div className="flex justify-between items-center p-2 bg-muted/30 rounded">
+                  <span className="text-sm text-muted-foreground">
+                    Categories
+                  </span>
+                  <span className="font-semibold">
+                    {enhancedCategories.length}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-muted/30 rounded">
+                  <span className="text-sm text-muted-foreground">
+                    Total Links
+                  </span>
+                  <span className="font-semibold">
+                    {enhancedCategories.reduce(
+                      (sum, cat) => sum + cat.bookmarks.length,
+                      0
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center p-2 bg-muted/30 rounded">
+                  <span className="text-sm text-muted-foreground">
+                    Selected
+                  </span>
+                  <span className="font-semibold">
+                    {selectedCategories.length}
+                  </span>
+                </div>
               </div>
-              <div className="text-sm text-muted-foreground">Categories</div>
-            </div>
-            <div className="p-3 bg-muted/50 rounded">
-              <div className="text-lg font-semibold">
-                {enhancedCategories.reduce(
-                  (sum, cat) => sum + cat.bookmarks.length,
-                  0
-                )}
-              </div>
-              <div className="text-sm text-muted-foreground">Total Links</div>
-            </div>
-            <div className="p-3 bg-muted/50 rounded">
-              <div className="text-lg font-semibold">
-                {selectedCategories.length}
-              </div>
-              <div className="text-sm text-muted-foreground">Selected</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-      <div className="space-y-4">
-        {enhancedCategories.map((category, categoryIndex) => (
-          <motion.div
-            key={category.name}
-            layout
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Card
-              className={`border-l-4 transition-all duration-200 ${selectedCategories.includes(category.name) ? "border-l-primary bg-primary/5 shadow-md hover:shadow-lg" : "border-l-muted-foreground/30 hover:border-l-primary/50 hover:bg-muted/30"}`}
-            >
-              <CardContent className="pt-4">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <Checkbox
-                      checked={selectedCategories.includes(category.name)}
-                      onCheckedChange={() =>
-                        handleCategoryToggle(category.name)
-                      }
-                    />
-                    <div>
-                      <h4 className="font-medium">{category.name}</h4>
-                      <p className="text-sm text-muted-foreground">
-                        {category.description}
-                      </p>
+            </CardContent>
+          </Card>
+
+          {/* Categories List */}
+          <Card className="flex-1">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium">Categories</CardTitle>
+              <CardDescription className="text-xs">
+                Select categories to create collections
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                {enhancedCategories.map((category) => (
+                  <div
+                    key={category.name}
+                    className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
+                      selectedCategoryForDetail === category.name
+                        ? "border-primary bg-primary/5 shadow-sm"
+                        : "border-border hover:border-border/60 hover:bg-muted/30"
+                    }`}
+                    onClick={() => setSelectedCategoryForDetail(category.name)}
+                  >
+                    <div className="flex items-start gap-3">
+                      <Checkbox
+                        checked={selectedCategories.includes(category.name)}
+                        onCheckedChange={() =>
+                          handleCategoryToggle(category.name)
+                        }
+                        onClick={(e) => e.stopPropagation()}
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium text-sm truncate">
+                            {category.name}
+                          </h4>
+                          <ChevronRight
+                            className={`h-4 w-4 text-muted-foreground transition-transform ${
+                              selectedCategoryForDetail === category.name
+                                ? "rotate-90"
+                                : ""
+                            }`}
+                          />
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                          {category.description}
+                        </p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge variant="secondary" className="text-xs">
+                            {category.bookmarks.length} links
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {(category.confidence_score * 100).toFixed(0)}%
+                          </Badge>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary">
-                      {category.bookmarks.length} links
-                    </Badge>
-                    <Badge variant="outline">
-                      {(category.confidence_score * 100).toFixed(0)}% confidence
-                    </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Panel - Category Detail View */}
+        <div className="col-span-3">
+          {selectedCategory ? (
+            <Card className="h-full">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FolderOpen className="h-4 w-4" />
+                  {selectedCategory.name}
+                </CardTitle>
+                <CardDescription>
+                  {selectedCategory.description}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Custom Collection Name */}
+                <div>
+                  <Label htmlFor={`custom-name-${selectedCategory.name}`}>
+                    Custom Collection Name
+                  </Label>
+                  <Input
+                    id={`custom-name-${selectedCategory.name}`}
+                    placeholder={selectedCategory.suggested_collection_name}
+                    value={customNames[selectedCategory.name] || ""}
+                    onChange={(e) =>
+                      updateCustomName(selectedCategory.name, e.target.value)
+                    }
+                    className="mt-1"
+                  />
+                </div>
+
+                {/* Keywords */}
+                <div>
+                  <Label className="text-sm font-medium">Keywords</Label>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {selectedCategory.keywords.map((keyword) => (
+                      <Badge
+                        key={keyword}
+                        variant="outline"
+                        className="text-xs"
+                      >
+                        {keyword}
+                      </Badge>
+                    ))}
                   </div>
                 </div>
-                {selectedCategories.includes(category.name) && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="space-y-4"
-                  >
-                    <div>
-                      <Label htmlFor={`custom-name-${category.name}`}>
-                        Custom Collection Name
-                      </Label>
-                      <Input
-                        id={`custom-name-${category.name}`}
-                        placeholder={category.suggested_collection_name}
-                        value={customNames[category.name] || ""}
-                        onChange={(e) =>
-                          updateCustomName(category.name, e.target.value)
-                        }
-                      />
-                    </div>
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {category.keywords.map((keyword) => (
-                        <Badge
-                          key={keyword}
-                          variant="outline"
-                          className="text-xs"
-                        >
-                          {keyword}
-                        </Badge>
-                      ))}
-                    </div>
-                    <div className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-4 bg-muted/10 hover:bg-muted/20 transition-colors duration-200">
-                      <h5 className="font-semibold mb-4 flex items-center gap-2 text-foreground">
-                        <GripVertical className="h-4 w-4 text-muted-foreground" />
-                        Links ({category.bookmarks.length})
-                      </h5>
+
+                {/* Bookmarks Section */}
+                <div className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-4 bg-muted/10">
+                  <h5 className="font-semibold mb-4 flex items-center gap-2">
+                    <GripVertical className="h-4 w-4 text-muted-foreground" />
+                    Links ({selectedCategory.bookmarks.length})
+                  </h5>
+
+                  <div className="max-h-[300px] overflow-y-auto">
+                    {selectedCategory.bookmarks.length > 0 ? (
                       <Reorder.Group
                         axis="y"
-                        values={category.bookmarks}
+                        values={selectedCategory.bookmarks}
                         onReorder={(newBookmarks) =>
-                          reorderLinksInCategory(categoryIndex, newBookmarks)
+                          reorderLinksInCategory(
+                            selectedCategoryIndex,
+                            newBookmarks
+                          )
                         }
                         className="space-y-2"
                       >
                         <AnimatePresence>
-                          {category.bookmarks.map((bookmark, linkIndex) => (
-                            <Reorder.Item
-                              key={bookmark.url}
-                              value={bookmark}
-                              className="group"
-                            >
-                              <motion.div
-                                layout
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.8 }}
-                                className="p-4 bg-card border border-border rounded-xl cursor-move hover:shadow-md hover:border-primary/30 transition-all duration-200 group-hover:bg-accent/50"
+                          {selectedCategory.bookmarks.map(
+                            (bookmark, linkIndex) => (
+                              <Reorder.Item
+                                key={bookmark.url}
+                                value={bookmark}
+                                className="group"
                               >
-                                {editingLink?.categoryIndex === categoryIndex &&
-                                editingLink?.linkIndex === linkIndex ? (
-                                  <div className="space-y-3">
-                                    <div>
-                                      <Label className="text-sm font-semibold text-foreground">
-                                        Title
-                                      </Label>
-                                      <Input
-                                        value={editedTitle}
-                                        onChange={(e) =>
-                                          setEditedTitle(e.target.value)
-                                        }
-                                        placeholder="Enter link title"
-                                        className="mt-1 border-primary/20 focus:border-primary/50 bg-background"
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label className="text-sm font-semibold text-foreground">
-                                        URL
-                                      </Label>
-                                      <Input
-                                        value={editedUrl}
-                                        onChange={(e) =>
-                                          setEditedUrl(e.target.value)
-                                        }
-                                        placeholder="Enter link URL"
-                                        className="mt-1 border-primary/20 focus:border-primary/50 bg-background font-mono text-sm"
-                                      />
-                                    </div>
-                                    <div className="flex gap-2">
-                                      <Button
-                                        size="sm"
-                                        onClick={saveEditedLink}
-                                        className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
-                                      >
-                                        <Save className="h-4 w-4 mr-2" />
-                                        Save Changes
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={cancelEditingLink}
-                                        className="border-muted-foreground/30 hover:bg-muted/50"
-                                      >
-                                        <X className="h-4 w-4 mr-2" />
-                                        Cancel
-                                      </Button>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                                      <GripVertical className="h-5 w-5 text-muted-foreground/60 opacity-0 group-hover:opacity-100 transition-all duration-200" />
-                                      <div className="flex-1 min-w-0">
-                                        <div className="font-semibold text-foreground truncate text-sm">
-                                          {bookmark.title}
-                                        </div>
-                                        <div className="text-xs text-muted-foreground/80 truncate mt-1 font-mono">
-                                          {bookmark.url}
-                                        </div>
+                                <motion.div
+                                  layout
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  exit={{ opacity: 0, scale: 0.8 }}
+                                  className="p-3 bg-card border border-border rounded-lg cursor-move hover:shadow-sm hover:border-primary/30 transition-all duration-200"
+                                >
+                                  {editingLink?.categoryIndex ===
+                                    selectedCategoryIndex &&
+                                  editingLink?.linkIndex === linkIndex ? (
+                                    <div className="space-y-3">
+                                      <div>
+                                        <Label className="text-sm font-semibold">
+                                          Title
+                                        </Label>
+                                        <Input
+                                          value={editedTitle}
+                                          onChange={(e) =>
+                                            setEditedTitle(e.target.value)
+                                          }
+                                          placeholder="Enter link title"
+                                          className="mt-1"
+                                        />
+                                      </div>
+                                      <div>
+                                        <Label className="text-sm font-semibold">
+                                          URL
+                                        </Label>
+                                        <Input
+                                          value={editedUrl}
+                                          onChange={(e) =>
+                                            setEditedUrl(e.target.value)
+                                          }
+                                          placeholder="Enter link URL"
+                                          className="mt-1 font-mono text-sm"
+                                        />
+                                      </div>
+                                      <div className="flex gap-2">
+                                        <Button
+                                          size="sm"
+                                          onClick={saveEditedLink}
+                                          className="flex-1"
+                                        >
+                                          <Save className="h-4 w-4 mr-2" />
+                                          Save
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={cancelEditingLink}
+                                        >
+                                          <X className="h-4 w-4 mr-2" />
+                                          Cancel
+                                        </Button>
                                       </div>
                                     </div>
-                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
-                                      <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        onClick={() =>
-                                          window.open(bookmark.url, "_blank")
-                                        }
-                                        title="Open link"
-                                        className="h-8 w-8 p-0 hover:bg-primary/10 hover:text-primary"
-                                      >
-                                        <ExternalLink className="h-4 w-4" />
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        onClick={() =>
-                                          startEditingLink(
-                                            categoryIndex,
-                                            linkIndex
-                                          )
-                                        }
-                                        title="Edit link"
-                                        className="h-8 w-8 p-0 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950 dark:hover:text-blue-400"
-                                      >
-                                        <Edit2 className="h-4 w-4" />
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        onClick={() =>
-                                          deleteLink(categoryIndex, linkIndex)
-                                        }
-                                        title="Delete link"
-                                        className="h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                                      >
-                                        <Trash2 className="h-4 w-4" />
-                                      </Button>
+                                  ) : (
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                                        <GripVertical className="h-4 w-4 text-muted-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <div className="flex-1 min-w-0">
+                                          <div className="font-medium text-sm truncate">
+                                            {bookmark.title}
+                                          </div>
+                                          <div className="text-xs text-muted-foreground truncate mt-1 font-mono">
+                                            {bookmark.url}
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Button
+                                          size="sm"
+                                          variant="ghost"
+                                          onClick={() =>
+                                            window.open(bookmark.url, "_blank")
+                                          }
+                                          title="Open link"
+                                          className="h-8 w-8 p-0"
+                                        >
+                                          <ExternalLink className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="ghost"
+                                          onClick={() =>
+                                            startEditingLink(
+                                              selectedCategoryIndex,
+                                              linkIndex
+                                            )
+                                          }
+                                          title="Edit link"
+                                          className="h-8 w-8 p-0"
+                                        >
+                                          <Edit2 className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="ghost"
+                                          onClick={() =>
+                                            deleteLink(
+                                              selectedCategoryIndex,
+                                              linkIndex
+                                            )
+                                          }
+                                          title="Delete link"
+                                          className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                                        >
+                                          <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                      </div>
                                     </div>
-                                  </div>
-                                )}
-                              </motion.div>
-                            </Reorder.Item>
-                          ))}
+                                  )}
+                                </motion.div>
+                              </Reorder.Item>
+                            )
+                          )}
                         </AnimatePresence>
                       </Reorder.Group>
-                      {category.bookmarks.length === 0 && (
-                        <div className="text-center py-12 text-muted-foreground">
-                          <FileText className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                          <p className="text-sm font-medium">
-                            No links in this category
-                          </p>
-                          <p className="text-xs mt-1 opacity-70">
-                            All links have been removed or moved
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
+                    ) : (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <FileText className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                        <p className="text-sm font-medium">
+                          No links in this category
+                        </p>
+                        <p className="text-xs mt-1 opacity-70">
+                          All links have been removed or moved
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </CardContent>
             </Card>
-          </motion.div>
-        ))}
+          ) : (
+            <Card className="h-full flex items-center justify-center">
+              <CardContent>
+                <div className="text-center text-muted-foreground">
+                  <FolderOpen className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                  <p className="font-medium">
+                    Select a category to view details
+                  </p>
+                  <p className="text-sm mt-1 opacity-70">
+                    Choose a category from the left to preview and edit its
+                    bookmarks
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
+
+      {/* Action Buttons */}
       <div className="flex gap-3">
-        <Button
-          variant="outline"
-          onClick={() => setCurrentStep("analyze")}
-          className="border-muted-foreground/30 hover:bg-muted/50"
-        >
+        <Button variant="outline" onClick={() => setCurrentStep("analyze")}>
           Back to Analysis
         </Button>
         <Button
           onClick={createCollections}
           disabled={selectedCategories.length === 0 || isLoading}
-          className="flex-1 h-11 bg-primary hover:bg-primary/90 text-primary-foreground disabled:bg-muted disabled:text-muted-foreground"
+          className="flex-1"
         >
           {isLoading ? (
             <>
