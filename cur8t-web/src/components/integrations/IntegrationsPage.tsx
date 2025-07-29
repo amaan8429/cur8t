@@ -6,123 +6,179 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { Github, Code, Terminal, Chrome } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Github,
+  Code,
+  Terminal,
+  Chrome,
+  ExternalLink,
+  Download,
+  Zap,
+  Clock,
+} from "lucide-react";
 import React from "react";
 import GitHubIntegrationComponent from "./GitHubIntegration";
 
 const IntegrationsPage = () => {
+  const handleChromeExtensionClick = () => {
+    window.open(
+      "https://chrome.google.com/webstore/detail/cur8t/YOUR_ACTUAL_EXTENSION_ID_HERE",
+      "_blank"
+    );
+  };
+
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Integrations</h1>
-        <p className="text-muted-foreground">
-          Connect your favorite tools and enhance your workflow
-        </p>
-      </div>
-
-      {/* GitHub Section */}
+      {/* GitHub Integration - Enhanced */}
       <GitHubIntegrationComponent />
 
-      {/* VS Code Section */}
-      <Card>
+      {/* VS Code Extension */}
+      <Card className="relative overflow-hidden">
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <Code className="h-6 w-6" />
-            <div>
-              <CardTitle>VS Code Extension</CardTitle>
-              <CardDescription>
-                Extension to add your VS Code extensions directly as a
-                collection.
-              </CardDescription>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <Code className="h-6 w-6 text-blue-600" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <CardTitle>VS Code Extension</CardTitle>
+                  <Badge
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
+                    <Clock className="h-3 w-3" />
+                    Coming Soon
+                  </Badge>
+                </div>
+                <CardDescription>
+                  Manage your VS Code extensions as collections
+                </CardDescription>
+              </div>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Quick access
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Code snippets
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Extension management
-              </li>
-            </ul>
-            <Button className="w-full">Install Extension</Button>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <Zap className="h-5 w-5 mx-auto mb-1 text-blue-600" />
+                <div className="text-sm font-medium">Quick Access</div>
+              </div>
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <Code className="h-5 w-5 mx-auto mb-1 text-blue-600" />
+                <div className="text-sm font-medium">Snippets</div>
+              </div>
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <Download className="h-5 w-5 mx-auto mb-1 text-blue-600" />
+                <div className="text-sm font-medium">Auto-Install</div>
+              </div>
+            </div>
+            <Button className="w-full" disabled>
+              <Code className="mr-2 h-4 w-4" />
+              Available Soon
+            </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* CLI Section */}
-      <Card>
+      {/* CLI Tool */}
+      <Card className="relative overflow-hidden">
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <Terminal className="h-6 w-6" />
-            <div>
-              <CardTitle>CLI Tool</CardTitle>
-              <CardDescription>
-                Use the CLI tool to interact with your collections using the
-                terminal.
-              </CardDescription>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-500/10 rounded-lg">
+                <Terminal className="h-6 w-6 text-green-600" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <CardTitle>CLI Tool</CardTitle>
+                  <Badge
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
+                    <Clock className="h-3 w-3" />
+                    Coming Soon
+                  </Badge>
+                </div>
+                <CardDescription>
+                  Command-line interface for power users
+                </CardDescription>
+              </div>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Command-line access
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Batch operations
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Automation support
-              </li>
-            </ul>
-            <Button className="w-full">Download CLI</Button>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <Terminal className="h-5 w-5 mx-auto mb-1 text-green-600" />
+                <div className="text-sm font-medium">Scripts</div>
+              </div>
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <Zap className="h-5 w-5 mx-auto mb-1 text-green-600" />
+                <div className="text-sm font-medium">Batch Ops</div>
+              </div>
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <Code className="h-5 w-5 mx-auto mb-1 text-green-600" />
+                <div className="text-sm font-medium">Automation</div>
+              </div>
+            </div>
+            <Button className="w-full" disabled>
+              <Terminal className="mr-2 h-4 w-4" />
+              Available Soon
+            </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Browser Extension Section */}
-      <Card>
+      {/* Browser Extension */}
+      <Card className="relative overflow-hidden">
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <Chrome className="h-6 w-6" />
-            <div>
-              <CardTitle>Browser Extension</CardTitle>
-              <CardDescription>
-                Add links to your collections directly from your browser.
-              </CardDescription>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-orange-500/10 rounded-lg">
+                <Chrome className="h-6 w-6 text-orange-600" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <CardTitle>Browser Extension</CardTitle>
+                  <Badge
+                    variant="default"
+                    className="bg-green-500/10 text-green-700 border-green-200"
+                  >
+                    Available
+                  </Badge>
+                </div>
+                <CardDescription>
+                  Save links directly from any webpage
+                </CardDescription>
+              </div>
             </div>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                One-click saving
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Quick access
-              </li>
-              <li className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Web clipper
-              </li>
-            </ul>
-            <Button className="w-full">Add to Browser</Button>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <Zap className="h-5 w-5 mx-auto mb-1 text-orange-600" />
+                <div className="text-sm font-medium">One-Click</div>
+              </div>
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <Code className="h-5 w-5 mx-auto mb-1 text-orange-600" />
+                <div className="text-sm font-medium">Web Clipper</div>
+              </div>
+              <div className="text-center p-3 bg-muted/30 rounded-lg">
+                <Chrome className="h-5 w-5 mx-auto mb-1 text-orange-600" />
+                <div className="text-sm font-medium">Quick Access</div>
+              </div>
+            </div>
+            <Button className="w-full" onClick={handleChromeExtensionClick}>
+              <Chrome className="mr-2 h-4 w-4" />
+              Add to Chrome
+              <ExternalLink className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         </CardContent>
       </Card>

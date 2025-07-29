@@ -234,6 +234,12 @@ export async function POST(req: Request) {
       sha: newCommit.sha,
     });
 
+    // Update the lastSync timestamp in GitHubSettingsTable
+    await db
+      .update(GitHubSettingsTable)
+      .set({ updatedAt: new Date() })
+      .where(eq(GitHubSettingsTable.userId, userId));
+
     return NextResponse.json({
       message: `Successfully synced ${changedFiles.length} updated collections`,
       showToast: true,

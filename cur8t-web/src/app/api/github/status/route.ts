@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { UsersTable } from "@/schema";
+import { UsersTable, GitHubSettingsTable } from "@/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -37,6 +37,7 @@ export async function GET(request: Request) {
     const userStatus = await db
       .select({
         githubConnected: UsersTable.githubConnected,
+        githubUsername: UsersTable.githubUsername,
       })
       .from(UsersTable)
       .where(eq(UsersTable.id, userId));
@@ -49,10 +50,40 @@ export async function GET(request: Request) {
       );
     }
 
-    // Return the GitHub connection status
-    return NextResponse.json({
-      githubConnected: userStatus[0].githubConnected,
-    });
+    const user = userStatus[0];
+
+    // If GitHub is connected, fetch additional details
+    let gitHubSettings = null;
+    if (user.githubConnected) {
+      const settings = await db
+        .select({
+          repoName: GitHubSettingsTable.repoName,
+          updatedAt: GitHubSettingsTable.updatedAt,
+        })
+        .from(GitHubSettingsTable)
+        .where(eq(GitHubSettingsTable.userId, userId));
+
+      if (settings && settings.length > 0) {
+        gitHubSettings = settings[0];
+      }
+    }
+
+    // Construct the response
+    const response: any = {
+      githubConnected: user.githubConnected,
+    };
+
+    if (user.githubConnected && user.githubUsername) {
+      response.username = user.githubUsername;
+
+      if (gitHubSettings) {
+        response.lastSync = gitHubSettings.updatedAt?.toISOString();
+        response.repositoryUrl = `https://github.com/${user.githubUsername}/${gitHubSettings.repoName || "bukmarksCollection"}`;
+      }
+    }
+
+    // Return the GitHub connection status with additional details
+    return NextResponse.json(response);
   } catch (error) {
     console.error("Error fetching GitHub connection status:", error);
     return NextResponse.json(
