@@ -15,11 +15,15 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Collection } from "@/types/types";
 import { useCollectionStore } from "@/store/collection-store";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { useActiveState } from "@/store/activeStateStore";
 
 const DeleteCollectionOption = ({ collection }: { collection: Collection }) => {
   const [loading, setLoading] = React.useState(false);
   const { deleteCollection } = useCollectionStore();
   const { toast, success: toastSuccess, error: toastError } = useToast();
+  const router = useRouter();
+  const { activeCollectionId } = useActiveState();
 
   const handleDeleteCollection = async () => {
     try {
@@ -37,6 +41,11 @@ const DeleteCollectionOption = ({ collection }: { collection: Collection }) => {
         title: "Collection Deleted",
         description: "Your collection has been successfully deleted.",
       });
+
+      // Redirect to overview if the deleted collection was currently active
+      if (activeCollectionId === collection.id) {
+        router.push("/dashboard?item=Overview");
+      }
     } catch (error) {
       console.error("Failed to delete collection: ", error);
       toastError({

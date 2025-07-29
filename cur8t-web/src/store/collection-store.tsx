@@ -5,6 +5,7 @@ import { ChangeCollectionAction } from "@/actions/collection/changeCollectionNam
 import { ChangeCollectionDescriptionAction } from "@/actions/collection/changeCollectionDescription";
 import { Collection } from "@/types/types";
 import { ChangeCollectionVisibilityAction } from "@/actions/collection/changeCollectionVisi";
+import { showRateLimitToast } from "@/components/ui/rate-limit-toast";
 
 interface CollectionStore {
   collections: Collection[] | null;
@@ -80,9 +81,6 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
 
       // Check for rate limiting
       if (response.error && response.retryAfter) {
-        const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
-        );
         showRateLimitToast({
           retryAfter: response.retryAfter * 60,
           message:
@@ -119,9 +117,6 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
 
       // Check for rate limiting
       if (result.error && result.retryAfter) {
-        const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
-        );
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
           message: "Too many delete attempts. Please try again later.",
@@ -153,9 +148,6 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
 
       // Check for rate limiting
       if (response.error && response.retryAfter) {
-        const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
-        );
         showRateLimitToast({
           retryAfter: response.retryAfter * 60,
           message: "Too many name change attempts. Please try again later.",
@@ -188,9 +180,6 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
 
       // Check for rate limiting
       if (response.error && response.retryAfter) {
-        const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
-        );
         showRateLimitToast({
           retryAfter: response.retryAfter * 60,
           message:
