@@ -43,7 +43,7 @@ export function BookmarkUploadStep({ importer }: Props) {
         target: {
           files: [file],
         },
-      } as any;
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
 
       handleFileSelect(event);
     } catch (error) {

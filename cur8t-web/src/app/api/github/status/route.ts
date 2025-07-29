@@ -69,7 +69,12 @@ export async function GET(request: Request) {
     }
 
     // Construct the response
-    const response: any = {
+    const response: {
+      githubConnected: boolean;
+      username?: string;
+      lastSync?: string;
+      repositoryUrl?: string;
+    } = {
       githubConnected: user.githubConnected,
     };
 
