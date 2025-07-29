@@ -33,7 +33,7 @@ export async function getExploreData(): Promise<
 > {
   // Rate limiting
   const { userId } = await auth();
-  const identifier = await getClientIdFromHeaders(userId);
+  const identifier = await getClientIdFromHeaders(userId ?? undefined);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getPlatformStatsLimiter,
     identifier,
@@ -42,7 +42,7 @@ export async function getExploreData(): Promise<
 
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
-    return { error: rateLimitResult.error, retryAfter };
+    return { error: rateLimitResult.error ?? "Unknown error", retryAfter };
   }
 
   try {

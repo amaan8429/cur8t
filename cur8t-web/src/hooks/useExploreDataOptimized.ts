@@ -49,7 +49,13 @@ export const useExploreDataOptimized = (): UseExploreDataReturn => {
     refetch: refetchExplore,
   } = useQuery({
     queryKey: ["explore-data", user?.id],
-    queryFn: async () => {
+    queryFn: async (): Promise<{
+      trending: ExploreCollection[];
+      recent: ExploreCollection[];
+      newCollections: ExploreCollection[];
+      savedCollections: ExploreCollection[];
+      userStats: { totalSavedCollections: number };
+    }> => {
       const response = await getExploreData();
 
       if ("error" in response) {
@@ -85,11 +91,17 @@ export const useExploreDataOptimized = (): UseExploreDataReturn => {
         };
       }
 
-      return response.data;
+      return {
+        trending: response.data.trending || [],
+        recent: response.data.recent || [],
+        newCollections: response.data.newCollections || [],
+        savedCollections: response.data.savedCollections || [],
+        userStats: response.data.userStats || { totalSavedCollections: 0 },
+      };
     },
     enabled: isLoaded,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
     retry: (failureCount, error) => {
       if (error?.message?.includes("Too many requests")) {
         return false;
@@ -108,7 +120,13 @@ export const useExploreDataOptimized = (): UseExploreDataReturn => {
     refetch: refetchUserInfo,
   } = useQuery({
     queryKey: ["user-info", user?.id],
-    queryFn: async () => {
+    queryFn: async (): Promise<{
+      id: string;
+      name: string;
+      email: string;
+      username: string | null;
+      totalCollections: number;
+    } | null> => {
       try {
         const result = await getUserInfoAction();
 
@@ -128,7 +146,7 @@ export const useExploreDataOptimized = (): UseExploreDataReturn => {
     },
     enabled: isLoaded && !!user,
     staleTime: 10 * 60 * 1000, // 10 minutes - user info changes less frequently
-    cacheTime: 15 * 60 * 1000, // 15 minutes
+    gcTime: 15 * 60 * 1000, // 15 minutes (formerly cacheTime)
     retry: 1,
     retryDelay: 5000,
     refetchOnWindowFocus: false,

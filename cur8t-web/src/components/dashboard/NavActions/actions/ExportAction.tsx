@@ -85,7 +85,6 @@ export const ExportAction: React.FC<ExportActionProps> = ({
           id: active.id,
           title: active.title,
           description: active.description,
-          author: active.author,
           visibility: active.visibility,
           createdAt: active.createdAt,
           totalLinks: links.length,
