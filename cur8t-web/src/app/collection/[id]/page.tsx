@@ -23,8 +23,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { ModeToggle } from "@/components/layout/ModeToggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import Link from "next/link";
 import {
   Dialog,
   DialogContent,
@@ -49,7 +49,7 @@ import {
 } from "@/actions/collection/saveCollection";
 import { ReadOnlyLinkGrid } from "@/components/collection/ReadOnlyLinkGrid";
 import { AccessDenied } from "@/components/collection/AccessDenied";
-import { Link } from "@/types/types";
+import { Link as LinkType } from "@/types/types";
 import { Footer } from "@/components/layout/Footer";
 
 interface Collection {
@@ -77,7 +77,7 @@ export default function CollectionPage() {
     info: toastInfo,
   } = useToast();
   const [collection, setCollection] = useState<Collection | null>(null);
-  const [links, setLinks] = useState<Link[]>([]);
+  const [links, setLinks] = useState<LinkType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [isLinksLoading, setIsLinksLoading] = useState(false);
@@ -493,26 +493,49 @@ export default function CollectionPage() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-        <div className="container mx-auto p-6 max-w-7xl">
+      <div className="min-h-screen bg-background">
+        {/* Simple Navigation Header */}
+        <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
+          <div className="container mx-auto px-4 flex h-14 items-center justify-between">
+            <Link href="/" className="font-bold text-xl">
+              Cur8t
+            </Link>
+            <nav className="flex items-center space-x-6">
+              <Link
+                href="/add-extension"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Add Extension
+              </Link>
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Dashboard
+              </Link>
+            </nav>
+          </div>
+        </header>
+
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="space-y-8">
             {/* Header skeleton */}
             <div className="space-y-6">
               <div className="space-y-4">
-                <Skeleton className="h-12 w-3/4" />
-                <Skeleton className="h-6 w-1/2" />
+                <Skeleton className="h-10 w-3/4" />
+                <Skeleton className="h-5 w-1/2" />
               </div>
-              <div className="flex flex-wrap gap-4">
-                <Skeleton className="h-10 w-32" />
-                <Skeleton className="h-10 w-28" />
-                <Skeleton className="h-10 w-24" />
-                <Skeleton className="h-10 w-20" />
+              <div className="flex flex-wrap gap-3">
+                <Skeleton className="h-9 w-24" />
+                <Skeleton className="h-9 w-20" />
+                <Skeleton className="h-9 w-18" />
+                <Skeleton className="h-9 w-16" />
               </div>
-              <div className="flex flex-wrap gap-4">
-                <Skeleton className="h-6 w-24" />
-                <Skeleton className="h-6 w-32" />
-                <Skeleton className="h-6 w-28" />
-                <Skeleton className="h-6 w-36" />
+              <div className="flex flex-wrap gap-3">
+                <Skeleton className="h-5 w-20" />
+                <Skeleton className="h-5 w-24" />
+                <Skeleton className="h-5 w-22" />
+                <Skeleton className="h-5 w-28" />
               </div>
             </div>
 
@@ -541,26 +564,49 @@ export default function CollectionPage() {
   const visibilityInfo = getVisibilityInfo();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto p-6 max-w-7xl">
+    <div className="min-h-screen bg-background">
+      {/* Simple Navigation Header */}
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
+        <div className="container mx-auto px-4 flex h-14 items-center justify-between">
+          <Link href="/" className="font-bold text-xl">
+            Cur8t
+          </Link>
+          <nav className="flex items-center space-x-6">
+            <Link
+              href="/add-extension"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Add Extension
+            </Link>
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Dashboard
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="space-y-8">
           {/* Collection Header */}
           <div className="space-y-6">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
               <div className="space-y-4 flex-1">
                 <div className="space-y-3">
-                  <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  <h1 className="text-3xl font-bold tracking-tight text-foreground">
                     {collection.title}
                   </h1>
                   {collection.description && (
-                    <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl">
+                    <p className="text-base text-muted-foreground leading-relaxed max-w-4xl">
                       {collection.description}
                     </p>
                   )}
                 </div>
 
                 {/* Collection Metadata */}
-                <div className="flex flex-wrap items-center gap-6 text-sm">
+                <div className="flex flex-wrap items-center gap-4 text-sm">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     {collection.authorUsername ? (
                       <button
@@ -572,50 +618,44 @@ export default function CollectionPage() {
                         }
                         className="flex items-center gap-2 hover:text-foreground transition-colors group"
                       >
-                        <Avatar className="h-6 w-6 group-hover:ring-2 group-hover:ring-primary/20 transition-all">
-                          <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                        <Avatar className="h-5 w-5 group-hover:ring-1 group-hover:ring-primary/20 transition-all">
+                          <AvatarFallback className="text-xs bg-muted text-muted-foreground">
                             {collection.author?.charAt(0)?.toUpperCase() || "?"}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="font-medium">
-                          By {collection.author}
-                        </span>
+                        <span className="text-sm">By {collection.author}</span>
                       </button>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <div className="p-1.5 rounded-full bg-muted">
-                          <User className="h-4 w-4" />
+                        <div className="p-1 rounded-full bg-muted">
+                          <User className="h-3.5 w-3.5" />
                         </div>
-                        <span className="font-medium">
-                          By {collection.author}
-                        </span>
+                        <span className="text-sm">By {collection.author}</span>
                       </div>
                     )}
                   </div>
 
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <div className="p-1.5 rounded-full bg-muted">
-                      <Link2 className="h-4 w-4" />
+                    <div className="p-1 rounded-full bg-muted">
+                      <Link2 className="h-3.5 w-3.5" />
                     </div>
-                    <span className="font-medium">
+                    <span className="text-sm">
                       {collection.totalLinks} links
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <div className="p-1.5 rounded-full bg-muted">
-                      <Heart className="h-4 w-4" />
+                    <div className="p-1 rounded-full bg-muted">
+                      <Heart className="h-3.5 w-3.5" />
                     </div>
-                    <span className="font-medium">
-                      {collection.likes} likes
-                    </span>
+                    <span className="text-sm">{collection.likes} likes</span>
                   </div>
 
                   <div className="flex items-center gap-2 text-muted-foreground">
-                    <div className="p-1.5 rounded-full bg-muted">
-                      <Clock className="h-4 w-4" />
+                    <div className="p-1 rounded-full bg-muted">
+                      <Clock className="h-3.5 w-3.5" />
                     </div>
-                    <span className="font-medium">
+                    <span className="text-sm">
                       Updated {collection.updatedAt.toLocaleDateString()}
                     </span>
                   </div>
@@ -623,12 +663,10 @@ export default function CollectionPage() {
                   {visibilityInfo && (
                     <Badge
                       variant="secondary"
-                      className={`flex items-center gap-2 px-3 py-1.5 ${visibilityInfo.color}`}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 text-xs ${visibilityInfo.color}`}
                     >
                       {visibilityInfo.icon}
-                      <span className="font-medium">
-                        {visibilityInfo.label}
-                      </span>
+                      <span className="text-xs">{visibilityInfo.label}</span>
                     </Badge>
                   )}
                 </div>
@@ -636,44 +674,34 @@ export default function CollectionPage() {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3">
-                <ModeToggle />
-
                 <Button
                   variant="outline"
-                  size="default"
+                  size="sm"
                   onClick={copyLink}
-                  className="flex items-center gap-2 hover:bg-accent/50 transition-all"
+                  className="flex items-center gap-2 hover:bg-muted transition-colors text-sm"
                   disabled={linkCopied}
                 >
                   {linkCopied ? (
-                    <Check className="h-4 w-4 text-primary" />
+                    <Check className="h-3.5 w-3.5 text-primary" />
                   ) : (
-                    <Copy className="h-4 w-4" />
+                    <Copy className="h-3.5 w-3.5" />
                   )}
                   {linkCopied ? "Copied!" : "Copy Link"}
                 </Button>
 
                 {/* Save Button - Show skeleton while checking status */}
                 {isCheckingStatus ? (
-                  <Skeleton className="h-10 w-20" />
+                  <Skeleton className="h-9 w-16" />
                 ) : (
                   <Button
                     variant={isSaved ? "default" : "outline"}
-                    size="default"
+                    size="sm"
                     onClick={handleSave}
                     disabled={isSaving}
-                    className={`flex items-center gap-2 transition-all ${
-                      isSaved
-                        ? "bg-primary hover:bg-primary/90 text-primary-foreground border-primary shadow-sm"
-                        : "hover:bg-accent/50 hover:border-primary/30 hover:shadow-sm"
-                    }`}
+                    className="flex items-center gap-2 transition-colors text-sm"
                   >
                     <Bookmark
-                      className={`h-4 w-4 transition-all ${
-                        isSaved
-                          ? "text-primary-foreground"
-                          : "hover:text-primary"
-                      }`}
+                      className="h-3.5 w-3.5 transition-colors"
                       style={{
                         fill: isSaved ? "currentColor" : "none",
                       }}
@@ -686,25 +714,17 @@ export default function CollectionPage() {
                   <>
                     {/* Like Button - Show skeleton while checking status */}
                     {isCheckingStatus ? (
-                      <Skeleton className="h-10 w-20" />
+                      <Skeleton className="h-9 w-16" />
                     ) : (
                       <Button
                         variant={isLiked ? "default" : "outline"}
-                        size="default"
+                        size="sm"
                         onClick={handleLike}
                         disabled={isLiking}
-                        className={`flex items-center gap-2 transition-all ${
-                          isLiked
-                            ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground border-destructive shadow-sm"
-                            : "hover:bg-accent/50 hover:border-destructive/30 hover:shadow-sm"
-                        }`}
+                        className="flex items-center gap-2 transition-colors text-sm"
                       >
                         <Heart
-                          className={`h-4 w-4 transition-all ${
-                            isLiked
-                              ? "text-destructive-foreground"
-                              : "hover:text-destructive"
-                          }`}
+                          className="h-3.5 w-3.5 transition-colors"
                           style={{
                             fill: isLiked ? "currentColor" : "none",
                           }}
@@ -721,19 +741,19 @@ export default function CollectionPage() {
                         <DialogTrigger asChild>
                           <Button
                             variant="outline"
-                            size="default"
-                            className="flex items-center gap-2 hover:bg-accent/50 transition-all hover:shadow-sm"
+                            size="sm"
+                            className="flex items-center gap-2 hover:bg-muted transition-colors text-sm"
                           >
-                            <Download className="h-4 w-4" />
+                            <Download className="h-3.5 w-3.5" />
                             Duplicate
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-md">
                           <DialogHeader>
-                            <DialogTitle className="text-xl">
+                            <DialogTitle className="text-lg">
                               Duplicate Collection
                             </DialogTitle>
-                            <DialogDescription className="text-base leading-relaxed">
+                            <DialogDescription className="text-sm leading-relaxed">
                               This will create a copy of &ldquo;
                               {collection?.title}
                               &rdquo; in your account with all its links.
@@ -761,11 +781,11 @@ export default function CollectionPage() {
                     ) : (
                       <Button
                         variant="outline"
-                        size="default"
+                        size="sm"
                         onClick={handleDuplicate}
-                        className="flex items-center gap-2 hover:bg-accent/50 transition-all hover:shadow-sm"
+                        className="flex items-center gap-2 hover:bg-muted transition-colors text-sm"
                       >
-                        <Download className="h-4 w-4" />
+                        <Download className="h-3.5 w-3.5" />
                         Duplicate
                       </Button>
                     )}
@@ -779,26 +799,27 @@ export default function CollectionPage() {
           <div className="space-y-8">
             {/* Owner Actions */}
             {isOwner && (
-              <div className="flex flex-col sm:flex-row gap-4 p-6 border border-border/30 rounded-xl bg-gradient-to-r from-accent/50 to-accent/30">
-                <div className="flex-1 space-y-2">
-                  <h3 className="font-semibold text-lg flex items-center gap-2">
-                    <Settings className="h-5 w-5 text-primary" />
+              <div className="flex flex-col sm:flex-row gap-4 p-4 border border-border rounded-lg bg-muted/50">
+                <div className="flex-1 space-y-1">
+                  <h3 className="font-semibold text-base flex items-center gap-2">
+                    <Settings className="h-4 w-4 text-primary" />
                     Collection Owner
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     Manage this collection in your dashboard to add links,
                     change settings, and more.
                   </p>
                 </div>
                 <Button
                   asChild
-                  className="shrink-0 shadow-sm hover:shadow-sm transition-all"
+                  className="shrink-0 transition-colors"
+                  size="sm"
                 >
                   <a
                     href={`/dashboard?collectionId=${encodeURIComponent(collectionId)}`}
                     className="flex items-center gap-2"
                   >
-                    <Settings className="h-4 w-4" />
+                    <Settings className="h-3.5 w-3.5" />
                     Manage in Dashboard
                     <ExternalLink className="h-3 w-3" />
                   </a>
