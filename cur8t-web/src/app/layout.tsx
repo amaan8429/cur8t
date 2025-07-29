@@ -4,7 +4,12 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import QueryProvider from "@/components/providers/QueryProvider";
 import { ErrorBoundary } from "@/components/providers/ErrorBoundary";
-import { Inter } from "next/font/google";
+import {
+  Inter,
+  Poppins,
+  Libre_Baskerville,
+  IBM_Plex_Mono,
+} from "next/font/google";
 
 export const metadata = {
   title: "Cur8t",
@@ -16,6 +21,24 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const poppins = Poppins({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+
+const libreBaskerville = Libre_Baskerville({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
+});
+
 export default function RootLayout({
   children,
 }: {
@@ -24,7 +47,9 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.variable}`}>
+        <body
+          className={`${inter.variable} ${poppins.variable} ${libreBaskerville.variable} ${ibmPlexMono.variable} theme font-sans`}
+        >
           <ThemeProvider attribute="class" defaultTheme="system">
             <QueryProvider>
               <ErrorBoundary>

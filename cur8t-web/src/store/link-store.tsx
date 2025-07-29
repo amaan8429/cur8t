@@ -7,6 +7,7 @@ import {
   updateLinkAction,
 } from "@/actions/linkActions/link-actions";
 import { generateFallbackTitle } from "@/lib/extractTitle";
+import { showRateLimitToast } from "@/components/ui/rate-limit-toast";
 
 interface LinkStore {
   links: Link[];
@@ -92,9 +93,6 @@ export const useLinkStore = create<LinkStore>((set) => ({
           links: state.links.filter((link) => link.id !== optimisticId),
         }));
 
-        const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
-        );
         showRateLimitToast({
           retryAfter: createdLink.retryAfter * 60,
           message: "Too many link creation attempts. Please try again later.",
@@ -129,15 +127,28 @@ export const useLinkStore = create<LinkStore>((set) => ({
     }
   },
   deleteLink: async (id) => {
+    // Store the link being deleted for potential rollback
+    const linkToDelete = useLinkStore
+      .getState()
+      .links.find((link) => link.id === id);
+
+    // Optimistically remove from UI immediately
+    set((state) => ({
+      links: state.links.filter((link) => link.id !== id),
+    }));
+
     try {
-      set({ isLoading: true });
       const result = await deleteLinkAction(id);
 
       // Check for rate limiting
       if (result && result.error && result.retryAfter) {
-        const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
-        );
+        // Restore the link if rate limited
+        if (linkToDelete) {
+          set((state) => ({
+            links: [...state.links, linkToDelete],
+          }));
+        }
+
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
           message: "Too many delete attempts. Please try again later.",
@@ -145,13 +156,23 @@ export const useLinkStore = create<LinkStore>((set) => ({
         return;
       }
 
-      set((state) => ({
-        links: state.links.filter((link) => link.id !== id),
-      }));
+      // If there's an error, restore the link
+      if (result && result.error) {
+        if (linkToDelete) {
+          set((state) => ({
+            links: [...state.links, linkToDelete],
+          }));
+        }
+        console.error("Failed to delete link:", result.error);
+      }
     } catch (error) {
+      // Restore the link on error
+      if (linkToDelete) {
+        set((state) => ({
+          links: [...state.links, linkToDelete],
+        }));
+      }
       console.error("Failed to delete link:", error);
-    } finally {
-      set({ isLoading: false });
     }
   },
   updateLink: async (id, data) => {
@@ -161,9 +182,6 @@ export const useLinkStore = create<LinkStore>((set) => ({
 
       // Check for rate limiting
       if (result && result.error && result.retryAfter) {
-        const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
-        );
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
           message: "Too many update attempts. Please try again later.",
