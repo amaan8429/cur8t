@@ -91,19 +91,23 @@ export const LinksTable = pgTable("links", {
     .$onUpdate(() => new Date()),
 });
 
-export const SavedCollectionsTable = pgTable("saved_collections", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => UsersTable.id, { onDelete: "cascade" }),
-  collectionId: uuid("collection_id")
-    .notNull()
-    .references(() => CollectionsTable.id, { onDelete: "cascade" }),
-  savedAt: timestamp("saved_at").notNull().defaultNow(),
-}, (table) => ({
-  // Composite unique constraint: one user can save a collection only once
-  userCollectionUnique: unique().on(table.userId, table.collectionId),
-}));
+export const SavedCollectionsTable = pgTable(
+  "saved_collections",
+  {
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => UsersTable.id, { onDelete: "cascade" }),
+    collectionId: uuid("collection_id")
+      .notNull()
+      .references(() => CollectionsTable.id, { onDelete: "cascade" }),
+    savedAt: timestamp("saved_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    // Composite unique constraint: one user can save a collection only once
+    userCollectionUnique: unique().on(table.userId, table.collectionId),
+  })
+);
 
 export const CollectionLikesTable = pgTable("collection_likes", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
@@ -115,6 +119,33 @@ export const CollectionLikesTable = pgTable("collection_likes", {
     .references(() => CollectionsTable.id, { onDelete: "cascade" }),
   likedAt: timestamp("liked_at").notNull().defaultNow(),
 });
+
+export const AccessRequestsTable = pgTable(
+  "access_requests",
+  {
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    requesterId: text("requester_id")
+      .notNull()
+      .references(() => UsersTable.id, { onDelete: "cascade" }),
+    collectionId: uuid("collection_id")
+      .notNull()
+      .references(() => CollectionsTable.id, { onDelete: "cascade" }),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => UsersTable.id, { onDelete: "cascade" }),
+    message: text("message").default("").notNull(),
+    status: text("status").notNull().default("pending"), // pending, approved, denied
+    requestedAt: timestamp("requested_at").notNull().defaultNow(),
+    respondedAt: timestamp("responded_at"),
+  },
+  (table) => ({
+    // Composite unique constraint: one user can request access to a collection only once
+    userCollectionRequestUnique: unique().on(
+      table.requesterId,
+      table.collectionId
+    ),
+  })
+);
 
 // Infer types for users
 export type InsertUser = typeof UsersTable.$inferInsert;
@@ -135,3 +166,7 @@ export type SelectSavedCollection = typeof SavedCollectionsTable.$inferSelect;
 // Infer types for collection likes
 export type InsertCollectionLike = typeof CollectionLikesTable.$inferInsert;
 export type SelectCollectionLike = typeof CollectionLikesTable.$inferSelect;
+
+// Infer types for access requests
+export type InsertAccessRequest = typeof AccessRequestsTable.$inferInsert;
+export type SelectAccessRequest = typeof AccessRequestsTable.$inferSelect;

@@ -21,6 +21,7 @@ import {
   Save,
   PlusCircle,
   CreditCard,
+  Bell,
 } from "lucide-react";
 
 import { NavCollection } from "@/components/dashboard/Sidebar/NavCollection/NavCollections";
@@ -54,7 +55,10 @@ const data = {
       title: "Integrations",
       icon: Workflow,
     },
-
+    {
+      title: "Notifications",
+      icon: Bell,
+    },
     {
       title: "Manage Subscription",
       icon: CreditCard,

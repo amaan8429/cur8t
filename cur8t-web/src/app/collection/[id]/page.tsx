@@ -553,12 +553,20 @@ export default function CollectionPage() {
 
   // Show error state (access denied, not found, etc.)
   if (error) {
-    return <AccessDenied error={error} collectionTitle={collection?.title} />;
+    return (
+      <AccessDenied
+        error={error}
+        collectionTitle={collection?.title}
+        collectionId={collectionId}
+      />
+    );
   }
 
   // Show not found if no collection
   if (!collection) {
-    return <AccessDenied error="Collection not found" />;
+    return (
+      <AccessDenied error="Collection not found" collectionId={collectionId} />
+    );
   }
 
   const visibilityInfo = getVisibilityInfo();

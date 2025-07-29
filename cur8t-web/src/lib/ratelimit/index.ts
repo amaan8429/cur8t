@@ -66,6 +66,14 @@ export const rateLimiters = {
     prefix: "ratelimit:create-link-action",
   }),
 
+  // Access requests: 5 attempts per hour per user to prevent spam
+  accessRequestLimiter: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(5, "1 h"),
+    analytics: true,
+    prefix: "ratelimit:access-request",
+  }),
+
   // Save extracted collection
   saveExtractedCollectionLimiter: new Ratelimit({
     redis,
