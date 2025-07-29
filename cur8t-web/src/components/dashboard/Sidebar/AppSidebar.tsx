@@ -20,6 +20,7 @@ import {
   Wallpaper,
   Save,
   PlusCircle,
+  CreditCard,
 } from "lucide-react";
 
 import { NavCollection } from "@/components/dashboard/Sidebar/NavCollection/NavCollections";
@@ -47,16 +48,16 @@ const data = {
       icon: Home,
       isActive: true,
     },
-    {
-      title: "Profile",
-      url: "#",
-      icon: User,
-    },
   ],
   navSecondary: [
     {
       title: "Integrations",
       icon: Workflow,
+    },
+
+    {
+      title: "Manage Subscription",
+      icon: CreditCard,
     },
     {
       title: "Saved Collections",

@@ -9,6 +9,7 @@ import SavedCollections from "../TopSection/SavedCollections";
 import ToolsAndAgents from "../TopSection/ToolsAndAgents";
 import { DashboardOverview } from "../Overview/DashboardOverview";
 import ExplorePage from "@/app/explore/page";
+import ProfilePage from "@/app/profile/[username]/page";
 
 export function ContentArea() {
   // Use the hook to subscribe to state changes, not .getState()
@@ -21,10 +22,6 @@ export function ContentArea() {
   return (
     <div className="p-6">
       {activeItem === "Overview" && <DashboardOverview />}
-      {activeItem === "New" && <CreateCollectionComponent />}
-      {activeItem === "Explore Collections" && <ExplorePage />}
-      {activeItem === "Saved" && <SavedCollections />}
-      {activeItem === "Tools and Agents" && <ToolsAndAgents />}
 
       {activeCollectionId && (
         <ManageCollectionLinks collectionId={activeCollectionId} />
