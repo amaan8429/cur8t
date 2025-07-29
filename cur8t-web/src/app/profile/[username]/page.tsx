@@ -27,7 +27,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { ModeToggle } from "@/components/layout/ModeToggle";
 import Link from "next/link";
 import {
   Heart,
@@ -46,6 +45,13 @@ import {
   Twitter,
   Facebook,
   Linkedin,
+  Github,
+  Instagram,
+  Globe,
+  Pin,
+  Book,
+  MapPin,
+  Mail,
 } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 
@@ -54,6 +60,15 @@ interface User {
   name: string;
   email: string;
   username: string;
+  bio?: string;
+  twitterUsername?: string;
+  linkedinUsername?: string;
+  githubUsername?: string;
+  instagramUsername?: string;
+  personalWebsite?: string;
+  showSocialLinks?: boolean;
+  pinnedCollections?: string[];
+  totalCollections?: number;
 }
 
 interface Collection {
@@ -73,7 +88,7 @@ interface Collection {
 type SortOption = "recent" | "likes" | "links" | "alphabetical";
 type ViewMode = "grid" | "list";
 
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 6;
 
 export default function ProfilePage({
   params,
@@ -83,6 +98,10 @@ export default function ProfilePage({
   const { username } = use(params);
   const [user, setUser] = useState<User | null>(null);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [pinnedCollections, setPinnedCollections] = useState<Collection[]>([]);
+  const [unpinnedCollections, setUnpinnedCollections] = useState<Collection[]>(
+    []
+  );
   const [filteredCollections, setFilteredCollections] = useState<Collection[]>(
     []
   );
@@ -98,7 +117,7 @@ export default function ProfilePage({
       try {
         // Fetch user data
         const userResponse = await fetch(`/api/profile/${username}`);
-        
+
         // Check for rate limiting first
         if (userResponse.status === 429) {
           const data = await userResponse.json().catch(() => ({}));
@@ -117,7 +136,7 @@ export default function ProfilePage({
           });
           return;
         }
-        
+
         if (!userResponse.ok) {
           if (userResponse.status === 404) {
             notFound();
@@ -139,6 +158,18 @@ export default function ProfilePage({
         );
 
         setCollections(collectionsData);
+
+        // Separate pinned and unpinned collections
+        const pinnedIds = userData.user.pinnedCollections || [];
+        const pinned = collectionsData.filter((c: Collection) =>
+          pinnedIds.includes(c.id)
+        );
+        const unpinned = collectionsData.filter(
+          (c: Collection) => !pinnedIds.includes(c.id)
+        );
+
+        setPinnedCollections(pinned);
+        setUnpinnedCollections(unpinned);
       } catch (error) {
         console.error("Error fetching profile data:", error);
         toast({
@@ -154,9 +185,9 @@ export default function ProfilePage({
     fetchData();
   }, [username, toast]);
 
-  // Apply sorting whenever collections or sortBy changes
+  // Apply sorting whenever unpinned collections or sortBy changes
   useEffect(() => {
-    const sorted = [...collections].sort((a, b) => {
+    const sorted = [...unpinnedCollections].sort((a, b) => {
       switch (sortBy) {
         case "recent":
           return (
@@ -174,7 +205,7 @@ export default function ProfilePage({
     });
     setFilteredCollections(sorted);
     setCurrentPage(1); // Reset to first page when sorting changes
-  }, [collections, sortBy]);
+  }, [unpinnedCollections, sortBy]);
 
   const totalPages = Math.ceil(filteredCollections.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -224,20 +255,145 @@ export default function ProfilePage({
     }
   };
 
+  const getSocialIcon = (platform: string) => {
+    switch (platform) {
+      case "twitter":
+        return <Twitter className="h-4 w-4" />;
+      case "linkedin":
+        return <Linkedin className="h-4 w-4" />;
+      case "github":
+        return <Github className="h-4 w-4" />;
+      case "instagram":
+        return <Instagram className="h-4 w-4" />;
+      case "website":
+        return <Globe className="h-4 w-4" />;
+      default:
+        return <ExternalLink className="h-4 w-4" />;
+    }
+  };
+
+  const getSocialUrl = (platform: string, username: string) => {
+    switch (platform) {
+      case "twitter":
+        return `https://twitter.com/${username}`;
+      case "linkedin":
+        return `https://linkedin.com/in/${username}`;
+      case "github":
+        return `https://github.com/${username}`;
+      case "instagram":
+        return `https://instagram.com/${username}`;
+      case "website":
+        return username.startsWith("http") ? username : `https://${username}`;
+      default:
+        return username;
+    }
+  };
+
+  const renderCollectionCard = (collection: Collection, isPinned = false) => (
+    <div
+      key={collection.id}
+      className={`p-4 border border-border rounded-md hover:bg-muted/50 transition-colors min-h-[120px] flex flex-col ${
+        isPinned ? "border-l-4 border-l-primary" : ""
+      }`}
+    >
+      <div className="flex-1">
+        <div className="flex items-center gap-2 mb-2">
+          {isPinned && (
+            <Pin className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+          )}
+          <Link
+            href={`/collection/${collection.id}`}
+            className="font-semibold text-foreground hover:text-primary transition-colors truncate"
+          >
+            {collection.title}
+          </Link>
+          <Badge variant="outline" className="text-xs flex-shrink-0">
+            Public
+          </Badge>
+        </div>
+
+        <div className="mb-3 min-h-[40px] flex items-start">
+          {collection.description ? (
+            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+              {collection.description}
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground/60 italic">
+              No description provided
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4 text-xs text-muted-foreground mt-auto">
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <Link2 className="h-3 w-3" />
+          <span>{collection.totalLinks} links</span>
+        </div>
+
+        {collection.likes > 0 && (
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <Heart className="h-3 w-3" />
+            <span>{collection.likes}</span>
+          </div>
+        )}
+
+        <div className="flex items-center gap-1 flex-shrink-0 ml-auto">
+          <Calendar className="h-3 w-3" />
+          <span className="truncate">
+            Updated {new Date(collection.updatedAt).toLocaleDateString()}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
+        {/* Simple Navigation Header */}
+        <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
+          <div className="container mx-auto px-4 flex h-14 items-center justify-between">
+            <Link href="/" className="font-bold text-xl">
+              Cur8t
+            </Link>
+            <nav className="flex items-center space-x-6">
+              <Link
+                href="/add-extension"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Add Extension
+              </Link>
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Dashboard
+              </Link>
+            </nav>
+          </div>
+        </header>
         <div className="container mx-auto px-4 py-8 max-w-7xl">
-          <div className="animate-pulse space-y-8">
-            <div className="text-center">
-              <div className="w-24 h-24 bg-muted rounded-full mx-auto mb-6"></div>
-              <div className="h-8 bg-muted rounded w-48 mx-auto mb-3"></div>
-              <div className="h-6 bg-muted rounded w-32 mx-auto"></div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="h-48 bg-muted rounded-lg"></div>
-              ))}
+          <div className="animate-pulse">
+            <div className="flex gap-6">
+              <div className="w-72 space-y-4">
+                <div className="w-20 h-20 bg-muted rounded-full"></div>
+                <div className="space-y-2">
+                  <div className="h-6 bg-muted rounded w-32"></div>
+                  <div className="h-4 bg-muted rounded w-24"></div>
+                  <div className="h-3 bg-muted rounded w-40"></div>
+                </div>
+              </div>
+              <div className="flex-1 space-y-4">
+                <div className="space-y-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className="h-[120px] bg-muted rounded-md"
+                    ></div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -249,301 +405,298 @@ export default function ProfilePage({
     notFound();
   }
 
+  const socialLinks = [];
+  if (user.showSocialLinks) {
+    if (user.twitterUsername)
+      socialLinks.push({ platform: "twitter", username: user.twitterUsername });
+    if (user.linkedinUsername)
+      socialLinks.push({
+        platform: "linkedin",
+        username: user.linkedinUsername,
+      });
+    if (user.githubUsername)
+      socialLinks.push({ platform: "github", username: user.githubUsername });
+    if (user.instagramUsername)
+      socialLinks.push({
+        platform: "instagram",
+        username: user.instagramUsername,
+      });
+    if (user.personalWebsite)
+      socialLinks.push({ platform: "website", username: user.personalWebsite });
+  }
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Simple Navigation Header */}
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
+        <div className="container mx-auto px-4 flex h-14 items-center justify-between">
+          <Link href="/" className="font-bold text-xl">
+            Cur8t
+          </Link>
+          <nav className="flex items-center space-x-6">
+            <Link
+              href="/add-extension"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Add Extension
+            </Link>
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Dashboard
+            </Link>
+          </nav>
+        </div>
+      </header>
+
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header with Theme Toggle */}
-        <div className="flex justify-end mb-6">
-          <ModeToggle />
-        </div>
+        <div className="flex gap-6">
+          {/* Left Sidebar - Profile Info */}
+          <div className="w-72 flex-shrink-0">
+            <div className="sticky top-8">
+              {/* Avatar and Name */}
+              <div className="mb-6">
+                <Avatar className="h-20 w-20 mb-3">
+                  <AvatarFallback className="text-lg bg-muted text-muted-foreground font-medium">
+                    {user.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
 
-        {/* Profile Header */}
-        <div className="mb-12">
-          <div className="text-center mb-8">
-            <Avatar className="mx-auto h-24 w-24 mb-6 ring-4 ring-border shadow-sm">
-              <AvatarFallback className="text-2xl bg-primary/10 text-primary font-semibold">
-                {user.name.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+                <h1 className="text-2xl font-bold mb-1 text-foreground">
+                  {user.name}
+                </h1>
 
-            <h1 className="text-4xl font-bold mb-3 text-foreground">
-              {user.name}
-            </h1>
-
-            <p className="text-xl text-muted-foreground mb-6">
-              @{user.username}
-            </p>
-
-            <div className="flex justify-center items-center gap-6 text-muted-foreground mb-6">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-full bg-muted">
-                  <Link2 className="h-4 w-4" />
-                </div>
-                <span className="font-medium">
-                  {collections.length} Public Collections
-                </span>
-              </div>
-
-              <Separator orientation="vertical" className="h-6" />
-
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-full bg-muted">
-                  <Heart className="h-4 w-4" />
-                </div>
-                <span className="font-medium">
-                  {collections.reduce(
-                    (total, collection) => total + collection.likes,
-                    0
-                  )}{" "}
-                  Total Likes
-                </span>
-              </div>
-            </div>
-
-            {/* Share Profile Button */}
-            <div className="flex justify-center gap-3">
-              <Button
-                variant="outline"
-                onClick={handleShareProfile}
-                disabled={copied}
-                className="flex items-center gap-2"
-              >
-                {copied ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
-                {copied ? "Copied!" : "Copy Profile Link"}
-              </Button>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex items-center gap-2">
-                    <Share className="h-4 w-4" />
-                    Share Profile
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    onClick={() => handleSocialShare("twitter")}
-                  >
-                    <Twitter className="h-4 w-4 mr-2" />
-                    Twitter
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => handleSocialShare("facebook")}
-                  >
-                    <Facebook className="h-4 w-4 mr-2" />
-                    Facebook
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => handleSocialShare("linkedin")}
-                  >
-                    <Linkedin className="h-4 w-4 mr-2" />
-                    LinkedIn
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </div>
-
-        {/* Collections Section */}
-        <div className="space-y-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <h2 className="text-3xl font-semibold text-foreground">
-                Public Collections
-              </h2>
-              <Badge variant="secondary" className="text-sm">
-                {collections.length}
-              </Badge>
-            </div>
-
-            {/* Controls */}
-            <div className="flex items-center gap-3">
-              {/* Sort Options */}
-              <Select
-                value={sortBy}
-                onValueChange={(value: SortOption) => setSortBy(value)}
-              >
-                <SelectTrigger className="w-40">
-                  <SortAsc className="h-4 w-4 mr-2" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="recent">Most Recent</SelectItem>
-                  <SelectItem value="likes">Most Liked</SelectItem>
-                  <SelectItem value="links">Most Links</SelectItem>
-                  <SelectItem value="alphabetical">A-Z</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* View Mode Toggle */}
-              <div className="flex items-center border rounded-md">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                  className="rounded-r-none"
-                >
-                  <Grid3X3 className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                  className="rounded-l-none border-l"
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {collections.length === 0 ? (
-            <Card className="border-dashed border-border/30">
-              <CardContent className="text-center py-16">
-                <div className="p-4 rounded-full bg-muted/50 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <User className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  No Public Collections Yet
-                </h3>
-                <p className="text-muted-foreground max-w-md mx-auto">
-                  This user hasn&apos;t made any collections public yet. Check
-                  back later to see their awesome bookmarks!
+                <p className="text-lg text-muted-foreground mb-3">
+                  {user.username}
                 </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <>
-              {/* Collections Grid/List */}
-              <div
-                className={`${
-                  viewMode === "grid"
-                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                    : "space-y-4"
-                }`}
-              >
-                {paginatedCollections.map((collection) => (
-                  <Link
-                    key={collection.id}
-                    href={`/collection/${collection.id}`}
-                  >
-                    <Card
-                      className={`group hover:shadow-sm transition-all duration-300 cursor-pointer border-border/30 hover:border-border/50 ${
-                        viewMode === "list" ? "flex flex-row" : "h-full"
-                      }`}
-                    >
-                      <CardHeader
-                        className={`${viewMode === "list" ? "flex-1" : "pb-3"}`}
+
+                {/* Bio */}
+                {user.bio && (
+                  <p className="text-sm text-foreground mb-4 leading-relaxed">
+                    {user.bio}
+                  </p>
+                )}
+
+                {/* Social Links */}
+                {socialLinks.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {socialLinks.map((link, index) => (
+                      <a
+                        key={index}
+                        href={getSocialUrl(link.platform, link.username)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-md hover:bg-muted transition-colors"
+                        aria-label={`${link.platform} profile`}
                       >
-                        <div className="flex items-start justify-between">
-                          <div
-                            className={`flex-1 ${viewMode === "grid" ? "space-y-2" : ""}`}
-                          >
-                            <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
-                              {collection.title}
-                            </CardTitle>
-                            <CardDescription className="line-clamp-3 text-muted-foreground">
-                              {collection.description ||
-                                "No description provided"}
-                            </CardDescription>
-                          </div>
-                        </div>
-                      </CardHeader>
+                        {getSocialIcon(link.platform)}
+                      </a>
+                    ))}
+                  </div>
+                )}
 
-                      <CardContent
-                        className={`${viewMode === "list" ? "flex items-center" : "pt-0"}`}
-                      >
-                        <div
-                          className={`${
-                            viewMode === "list"
-                              ? "flex items-center gap-6"
-                              : "space-y-3"
-                          }`}
-                        >
-                          <div className="flex items-center gap-4 text-sm">
-                            <div className="flex items-center gap-1.5 text-muted-foreground">
-                              <Link2 className="h-3.5 w-3.5" />
-                              <span>{collection.totalLinks}</span>
-                            </div>
-
-                            {collection.likes > 0 && (
-                              <div className="flex items-center gap-1.5 text-muted-foreground">
-                                <Heart className="h-3.5 w-3.5" />
-                                <span>{collection.likes}</span>
-                              </div>
-                            )}
-
-                            <Badge variant="outline" className="text-xs">
-                              Public
-                            </Badge>
-                          </div>
-
-                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <Calendar className="h-3 w-3" />
-                            <span>
-                              Updated{" "}
-                              {new Date(
-                                collection.updatedAt
-                              ).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-8">
+                {/* Share Profile Buttons */}
+                <div className="space-y-2 mb-6">
                   <Button
                     variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.max(prev - 1, 1))
-                    }
-                    disabled={currentPage === 1}
+                    onClick={handleShareProfile}
+                    disabled={copied}
+                    className="w-full justify-start gap-2 h-8 text-sm"
                   >
-                    <ChevronLeft className="h-4 w-4" />
-                    Previous
+                    {copied ? (
+                      <Check className="h-3.5 w-3.5" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                    {copied ? "Copied!" : "Copy Profile Link"}
                   </Button>
 
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                      (page) => (
-                        <Button
-                          key={page}
-                          variant={currentPage === page ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setCurrentPage(page)}
-                          className="w-10"
-                        >
-                          {page}
-                        </Button>
-                      )
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start gap-2 h-8 text-sm"
+                      >
+                        <Share className="h-3.5 w-3.5" />
+                        Share Profile
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem
+                        onClick={() => handleSocialShare("twitter")}
+                      >
+                        <Twitter className="h-4 w-4 mr-2" />
+                        Twitter
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleSocialShare("facebook")}
+                      >
+                        <Facebook className="h-4 w-4 mr-2" />
+                        Facebook
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleSocialShare("linkedin")}
+                      >
+                        <Linkedin className="h-4 w-4 mr-2" />
+                        LinkedIn
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                {/* Stats */}
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Book className="h-4 w-4 text-muted-foreground" />
+                    <span>
+                      <strong>{collections.length}</strong> public repositories
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Heart className="h-4 w-4 text-muted-foreground" />
+                    <span>
+                      <strong>
+                        {collections.reduce(
+                          (total, collection) => total + collection.likes,
+                          0
+                        )}
+                      </strong>{" "}
+                      total likes
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Link2 className="h-4 w-4 text-muted-foreground" />
+                    <span>
+                      <strong>
+                        {collections.reduce(
+                          (total, collection) => total + collection.totalLinks,
+                          0
+                        )}
+                      </strong>{" "}
+                      total links
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="flex-1">
+            {/* Pinned Collections */}
+            {pinnedCollections.length > 0 && (
+              <section className="mb-8">
+                <h2 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <Pin className="h-4 w-4" />
+                  Pinned
+                </h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {pinnedCollections.map((collection) =>
+                    renderCollectionCard(collection, true)
+                  )}
+                </div>
+              </section>
+            )}
+
+            {/* Collections Section */}
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-semibold text-foreground">
+                  Repositories
+                </h2>
+
+                {/* Sort Options */}
+                <Select
+                  value={sortBy}
+                  onValueChange={(value: SortOption) => setSortBy(value)}
+                >
+                  <SelectTrigger className="w-36 h-8 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="recent">Recently updated</SelectItem>
+                    <SelectItem value="likes">Most liked</SelectItem>
+                    <SelectItem value="links">Most links</SelectItem>
+                    <SelectItem value="alphabetical">Name</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {filteredCollections.length === 0 ? (
+                <Card className="border-dashed">
+                  <CardContent className="text-center py-12">
+                    <User className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                    <h3 className="text-base font-medium text-foreground mb-2">
+                      No public repositories
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      This user hasn&apos;t made any collections public yet.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <>
+                  {/* Collections List */}
+                  <div className="space-y-4">
+                    {paginatedCollections.map((collection) =>
+                      renderCollectionCard(collection)
                     )}
                   </div>
 
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                    }
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-2 mt-6">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          setCurrentPage((prev) => Math.max(prev - 1, 1))
+                        }
+                        disabled={currentPage === 1}
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                        Previous
+                      </Button>
+
+                      <div className="flex items-center gap-1">
+                        {Array.from(
+                          { length: totalPages },
+                          (_, i) => i + 1
+                        ).map((page) => (
+                          <Button
+                            key={page}
+                            variant={
+                              currentPage === page ? "default" : "outline"
+                            }
+                            size="sm"
+                            onClick={() => setCurrentPage(page)}
+                            className="w-8 h-8"
+                          >
+                            {page}
+                          </Button>
+                        ))}
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          setCurrentPage((prev) =>
+                            Math.min(prev + 1, totalPages)
+                          )
+                        }
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                </>
               )}
-            </>
-          )}
+            </section>
+          </div>
         </div>
       </div>
       <Footer />

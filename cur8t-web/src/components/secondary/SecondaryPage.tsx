@@ -5,6 +5,7 @@ import { useActiveState } from "@/store/activeStateStore";
 import SavedCollections from "../dashboard/TopSection/SavedCollections";
 import ToolsAndAgents from "../dashboard/TopSection/ToolsAndAgents";
 import ManageSubscription from "../settings/ManageSubscription";
+import Notifications from "../settings/Notifications";
 
 const SecondaryPage = () => {
   // Use the proper hook instead of getState() during render
@@ -22,6 +23,8 @@ const SecondaryPage = () => {
     return <IntegrationsPage />;
   } else if (activeSecondary === "Settings") {
     return <SettingsPage />;
+  } else if (activeSecondary === "Notifications") {
+    return <Notifications />;
   } else if (activeSecondary === "Manage Subscription") {
     return <ManageSubscription />;
   } else if (activeSecondary === "Saved Collections") {

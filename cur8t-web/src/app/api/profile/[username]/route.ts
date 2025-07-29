@@ -41,6 +41,15 @@ export async function GET(
         name: UsersTable.name,
         email: UsersTable.email,
         username: UsersTable.username,
+        bio: UsersTable.bio,
+        twitterUsername: UsersTable.twitterUsername,
+        linkedinUsername: UsersTable.linkedinUsername,
+        githubUsername: UsersTable.githubUsername,
+        instagramUsername: UsersTable.instagramUsername,
+        personalWebsite: UsersTable.personalWebsite,
+        showSocialLinks: UsersTable.showSocialLinks,
+        pinnedCollections: UsersTable.pinnedCollections,
+        totalCollections: UsersTable.totalCollections,
       })
       .from(UsersTable)
       .where(eq(UsersTable.username, username))
