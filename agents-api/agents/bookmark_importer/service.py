@@ -11,7 +11,7 @@ from typing import List, Dict, Optional, Tuple, Any
 from datetime import datetime
 from urllib.parse import urlparse, urljoin
 from bs4 import BeautifulSoup
-import google.generativeai as genai
+from openai import OpenAI
 
 from .models import (
     BookmarkItem, BookmarkCategory, BookmarkUploadResponse, BookmarkAnalysisResponse,
@@ -23,20 +23,20 @@ from core.utils import is_valid_url, get_domain_from_url, clean_text
 from config.settings import settings
 
 class BookmarkImporterService:
-    """Service for importing and categorizing bookmarks using Gemini AI"""
+    """Service for importing and categorizing bookmarks using OpenAI"""
     
     def __init__(self):
         self.sessions: Dict[str, Dict[str, Any]] = {}  # In-memory session storage
-        self._initialize_gemini()
+        self._initialize_openai()
     
-    def _initialize_gemini(self):
-        """Initialize Gemini AI client"""
-        api_key = settings.gemini_api_key or os.getenv("GEMINI_API_KEY")
+    def _initialize_openai(self):
+        """Initialize OpenAI client"""
+        api_key = settings.openai_api_key or os.getenv("OPENAI_API_KEY")
         if not api_key:
-            raise ValueError("Gemini API key not configured. Set GEMINI_API_KEY environment variable")
+            raise ValueError("OpenAI API key not configured. Set OPENAI_API_KEY environment variable")
         
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel(settings.gemini_model)
+        self.client = OpenAI(api_key=api_key)
+        self.model = settings.openai_model
     
     async def upload_bookmarks(
         self, 
@@ -245,7 +245,7 @@ class BookmarkImporterService:
         merge_similar_categories: bool = True
     ) -> Tuple[Optional[BookmarkAnalysisResponse], Optional[ErrorResponse]]:
         """
-        Analyze bookmarks using Gemini AI for intelligent categorization
+        Analyze bookmarks using OpenAI for intelligent categorization
         """
         try:
             # Get session data
@@ -272,8 +272,8 @@ class BookmarkImporterService:
                     "folder": bookmark.folder_path
                 })
             
-            # Get categorization from Gemini
-            categories = await self._categorize_with_gemini(
+            # Get categorization from OpenAI
+            categories = await self._categorize_with_openai(
                 bookmark_data,
                 max_categories,
                 min_bookmarks_per_category,
@@ -336,7 +336,7 @@ class BookmarkImporterService:
                 error_code="ANALYSIS_ERROR"
             )
     
-    async def _categorize_with_gemini(
+    async def _categorize_with_openai(
         self,
         bookmark_data: List[Dict[str, Any]],
         max_categories: int,
@@ -344,9 +344,9 @@ class BookmarkImporterService:
         preferred_categories: Optional[List[str]],
         merge_similar_categories: bool
     ) -> List[BookmarkCategory]:
-        """Use Gemini AI to categorize bookmarks"""
+        """Use OpenAI to categorize bookmarks"""
         
-        # Prepare the prompt for Gemini
+        # Prepare the prompt for OpenAI
         prompt = self._create_categorization_prompt(
             bookmark_data,
             max_categories,
@@ -356,18 +356,17 @@ class BookmarkImporterService:
         )
         
         try:
-            # Generate categorization using Gemini
-            response = await asyncio.to_thread(
-                self.model.generate_content,
-                prompt,
-                generation_config=genai.types.GenerationConfig(
-                    temperature=0.3,  # Lower temperature for more consistent categorization
-                    max_output_tokens=4000,
-                )
+            # Generate categorization using OpenAI
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=4000,
+                temperature=0.3, # Lower temperature for more consistent categorization
+                response_format={"type": "json"}
             )
             
             # Parse the response
-            categories = self._parse_gemini_response(response.text, bookmark_data)
+            categories = self._parse_openai_response(response.choices[0].message.content, bookmark_data)
             return categories
             
         except Exception as e:
@@ -382,7 +381,7 @@ class BookmarkImporterService:
         preferred_categories: Optional[List[str]],
         merge_similar_categories: bool
     ) -> str:
-        """Create prompt for Gemini AI categorization"""
+        """Create prompt for OpenAI categorization"""
         
         bookmark_summary = []
         for i, bookmark in enumerate(bookmark_data[:50]):  # Limit to first 50 for prompt
@@ -433,21 +432,16 @@ Analyze the bookmarks and provide intelligent categorization in the exact JSON f
         
         return prompt
     
-    def _parse_gemini_response(
+    def _parse_openai_response(
         self, 
         response_text: str, 
         bookmark_data: List[Dict[str, Any]]
     ) -> List[BookmarkCategory]:
-        """Parse Gemini AI response into BookmarkCategory objects"""
+        """Parse OpenAI response into BookmarkCategory objects"""
         
         try:
-            # Extract JSON from response
-            json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
-            if not json_match:
-                raise ValueError("No JSON found in response")
-            
-            json_str = json_match.group()
-            parsed = json.loads(json_str)
+            # OpenAI with response_format={"type": "json"} returns JSON directly
+            parsed = json.loads(response_text)
             
             categories = []
             for cat_data in parsed.get("categories", []):
@@ -476,8 +470,8 @@ Analyze the bookmarks and provide intelligent categorization in the exact JSON f
             
             return categories
             
-        except Exception as e:
-            # Fallback to simple categorization
+        except (json.JSONDecodeError, KeyError, ValueError) as e:
+            # If JSON parsing fails, fall back to simple categorization
             return self._fallback_categorization(bookmark_data, 5)
     
     def _fallback_categorization(

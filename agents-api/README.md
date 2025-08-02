@@ -1,6 +1,6 @@
 # Cur8t Agents API
 
-AI agents for bookmark and collection management, powered by FastAPI and Google Gemini.
+AI agents for bookmark and collection management, powered by FastAPI and OpenAI.
 
 ## Features
 
@@ -26,7 +26,7 @@ pip install -r requirements.txt
 cp env.example .env
 
 # Edit .env and add your API keys
-# GEMINI_API_KEY=your_gemini_api_key_here
+# OPENAI_API_KEY=your_openai_api_key_here
 ```
 
 3. **Run the Development Server:**
@@ -47,10 +47,10 @@ The API uses environment variables for configuration. Copy `env.example` to `.en
 
 ```env
 # Required for Bookmark Importer
-GEMINI_API_KEY=your_gemini_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 
 # Optional settings
-GEMINI_MODEL=gemini-1.5-flash
+OPENAI_MODEL=gpt-4-turbo-preview
 MAX_BOOKMARKS_PER_BATCH=100
 DEBUG=true
 HOST=0.0.0.0
@@ -69,7 +69,7 @@ Extract all links from articles and create collections.
 
 ### 2. Bookmark Importer ✅
 
-Import and categorize bookmarks using Google Gemini AI.
+Import and categorize bookmarks using OpenAI.
 
 - **Endpoint**: `POST /agents/bookmark-importer/upload`
 - **Status**: Active

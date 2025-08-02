@@ -80,11 +80,11 @@ async def upload_bookmarks(
 @router.post("/analyze", response_model=BookmarkAnalysisResponse)
 async def analyze_bookmarks(request: BookmarkAnalysisRequest):
     """
-    Analyze uploaded bookmarks using Gemini AI for intelligent categorization.
+    Analyze uploaded bookmarks using OpenAI for intelligent categorization.
     
     This endpoint:
     - Takes bookmarks from an upload session
-    - Uses Gemini AI to analyze and categorize bookmarks
+    - Uses OpenAI to analyze and categorize bookmarks
     - Groups bookmarks by technology, topic, or purpose
     - Returns suggested collections with confidence scores
     """
@@ -315,9 +315,9 @@ async def delete_session(session_id: str):
 async def get_health():
     """Health check for the Bookmark Importer agent"""
     
-    # Check if Gemini is configured
+    # Check if OpenAI is configured
     try:
-        bookmark_importer_service._initialize_gemini()
+        bookmark_importer_service._initialize_openai()
         ai_status = "configured"
     except Exception as e:
         ai_status = f"configuration_error: {str(e)}"
@@ -325,6 +325,6 @@ async def get_health():
     return HealthResponse(
         agent="Bookmark Importer",
         status=AgentStatus.HEALTHY if "configured" in ai_status else AgentStatus.UNHEALTHY,
-        description=f"Ready to import and categorize bookmarks using Gemini AI. AI Status: {ai_status}",
+        description=f"Ready to import and categorize bookmarks using OpenAI. AI Status: {ai_status}",
         version="1.0.0"
     ) 

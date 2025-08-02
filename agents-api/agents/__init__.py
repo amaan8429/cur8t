@@ -39,7 +39,7 @@ available_agents = {
     },
     "bookmark_importer": {
         "name": "Bookmark File Importer",
-        "description": "Import and organize bookmark files using Gemini AI",
+        "description": "Import and organize bookmark files using OpenAI",
         "status": "active",
         "router": bookmark_importer_router
     }

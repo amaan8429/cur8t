@@ -35,12 +35,12 @@ class TestBookmarkImporterService:
     
     @pytest.fixture
     def service(self):
-        """Create a service instance with mocked Gemini"""
-        with patch('agents.bookmark_importer.service.genai.configure'):
-            with patch('agents.bookmark_importer.service.genai.GenerativeModel') as mock_model:
-                mock_model.return_value = Mock()
-                service = BookmarkImporterService()
-                return service
+        """Create a service instance with mocked OpenAI"""
+        with patch('agents.bookmark_importer.service.OpenAI') as mock_openai:
+            mock_client = Mock()
+            mock_openai.return_value = mock_client
+            service = BookmarkImporterService()
+            return service
     
     def test_parse_chrome_bookmarks(self, service):
         """Test parsing Chrome bookmark format"""
@@ -113,9 +113,10 @@ class TestBookmarkImporterService:
             browser_type="chrome"
         )
         
-        # Mock Gemini response
+        # Mock OpenAI response
         mock_response = Mock()
-        mock_response.text = '''
+        mock_response.choices = [Mock()]
+        mock_response.choices[0].message.content = '''
         {
             "categories": [
                 {
@@ -138,7 +139,7 @@ class TestBookmarkImporterService:
         }
         '''
         
-        with patch.object(service.model, 'generate_content', return_value=mock_response):
+        with patch.object(service.client.chat.completions, 'create', return_value=mock_response):
             result, error = await service.analyze_bookmarks(
                 session_id=upload_result.session_id,
                 max_categories=5,
@@ -210,7 +211,7 @@ class TestBookmarkImporterService:
             assert category.confidence_score == 0.7
     
     def test_create_categorization_prompt(self, service):
-        """Test Gemini prompt creation"""
+        """Test OpenAI prompt creation"""
         bookmark_data = [
             {"url": "https://python.org", "title": "Python", "domain": "python.org"},
             {"url": "https://react.dev", "title": "React", "domain": "react.dev"}
