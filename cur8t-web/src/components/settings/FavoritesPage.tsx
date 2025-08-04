@@ -1,11 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Trash2, Edit, Plus, ExternalLink, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { createFavorite } from "@/actions/favorites/createFavorite";
@@ -22,7 +20,6 @@ interface Favorite {
 }
 
 const FavoritesPage = () => {
-  const { user } = useUser();
   const { toast } = useToast();
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
@@ -228,18 +225,6 @@ const FavoritesPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Favorites</h2>
-          <p className="text-muted-foreground">
-            Manage your important links that you use occasionally
-          </p>
-        </div>
-        <Badge variant="secondary" className="text-sm">
-          {favorites.length} {favorites.length === 1 ? "favorite" : "favorites"}
-        </Badge>
-      </div>
-
       {/* Add New Favorite */}
       <Card>
         <CardHeader>
