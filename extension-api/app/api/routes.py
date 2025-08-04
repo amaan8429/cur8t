@@ -21,7 +21,13 @@ from ..models.schemas import (
     CreateFavoriteResponse,
     UpdateFavoriteRequest,
     UpdateFavoriteResponse,
-    DeleteFavoriteResponse
+    DeleteFavoriteResponse,
+    BulkLinkRequest,
+    BulkCreateLinkResponse,
+    CreateCollectionRequest,
+    CreateCollectionResponse,
+    CreateCollectionWithLinksRequest,
+    CreateCollectionWithLinksResponse
 )
 from ..core.database import execute_query_one, execute_query_all, execute_insert, execute_query
 from ..core.utils import extract_title_from_url, generate_fallback_title
@@ -191,6 +197,57 @@ async def get_top_collections(authorization: Optional[str] = Header(None)):
         logger.error(f"❌ Exception type: {type(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to fetch top collections: {str(e)}")
 
+@router.post("/collections", response_model=Union[CreateCollectionResponse, ErrorResponse])
+async def create_collection(
+    collection_data: CreateCollectionRequest,
+    authorization: Optional[str] = Header(None)
+):
+    """Create a new collection"""
+    logger.info("📁 CREATE COLLECTION - Endpoint called")
+    logger.info(f"📁 CREATE COLLECTION - Title: {collection_data.title}")
+    
+    try:
+        user_id = get_user_id_from_api_key(authorization)
+        
+        # Validate visibility
+        if collection_data.visibility not in ["private", "public"]:
+            raise HTTPException(status_code=422, detail="Visibility must be 'private' or 'public'")
+        
+        # Create new collection
+        collection_id = str(uuid.uuid4())
+        insert_collection_query = """
+            INSERT INTO collections (id, title, description, visibility, user_id, total_links, created_at, updated_at)
+            VALUES (%s::uuid, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id, title, description, visibility, total_links, created_at
+        """
+        
+        now = datetime.utcnow()
+        created_collection = execute_insert(
+            insert_collection_query,
+            (collection_id, collection_data.title, collection_data.description, collection_data.visibility, user_id, 0, now, now)
+        )
+        
+        if not created_collection:
+            raise HTTPException(status_code=500, detail="Failed to create collection")
+        
+        response_collection = Collection(
+            id=str(created_collection['id']),
+            title=created_collection['title'],
+            description=created_collection['description'],
+            visibility=created_collection['visibility'],
+            totalLinks=created_collection['total_links'],
+            createdAt=created_collection['created_at']
+        )
+        
+        logger.info(f"📁 CREATE COLLECTION - Successfully created collection: {collection_id}")
+        
+        return CreateCollectionResponse(success=True, data=response_collection)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create collection: {str(e)}")
+
 @router.post("/collections/{collection_id}/links", response_model=Union[CreateLinkResponse, ErrorResponse])
 async def create_link(
     collection_id: str,
@@ -271,6 +328,221 @@ async def create_link(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create link: {str(e)}")
+
+@router.post("/collections/{collection_id}/links/bulk", response_model=Union[BulkCreateLinkResponse, ErrorResponse])
+async def create_bulk_links(
+    collection_id: str,
+    bulk_data: BulkLinkRequest,
+    authorization: Optional[str] = Header(None)
+):
+    """Add multiple links to a collection at once"""
+    logger.info(f"📦 BULK LINKS - Endpoint called for collection: {collection_id}")
+    logger.info(f"📦 BULK LINKS - Number of links to add: {len(bulk_data.links)}")
+    
+    try:
+        user_id = get_user_id_from_api_key(authorization)
+        
+        # Validate collection exists and belongs to user
+        collection_query = """
+            SELECT id, total_links 
+            FROM collections 
+            WHERE id = %s::uuid AND user_id = %s
+        """
+        collection_result = execute_query_one(
+            collection_query, 
+            (collection_id, user_id)
+        )
+        
+        if not collection_result:
+            raise HTTPException(status_code=404, detail="Collection not found")
+        
+        current_total = collection_result['total_links']
+        created_links = []
+        now = datetime.utcnow()
+        
+        # Process each link
+        for link_data in bulk_data.links:
+            try:
+                # Extract title if not provided
+                final_title = link_data.title or ""
+                if not final_title.strip():
+                    try:
+                        final_title = await extract_title_from_url(str(link_data.url))
+                    except Exception:
+                        final_title = generate_fallback_title(str(link_data.url))
+                
+                # Insert the new link
+                link_id = str(uuid.uuid4())
+                insert_link_query = """
+                    INSERT INTO links (id, title, url, link_collection_id, user_id, created_at, updated_at)
+                    VALUES (%s::uuid, %s, %s, %s::uuid, %s, %s, %s)
+                    RETURNING id, title, url, link_collection_id, user_id, created_at, updated_at
+                """
+                
+                created_link = execute_insert(
+                    insert_link_query,
+                    (link_id, final_title, str(link_data.url), collection_id, user_id, now, now)
+                )
+                
+                if created_link:
+                    response_link = Link(
+                        id=str(created_link['id']),
+                        title=created_link['title'],
+                        url=created_link['url'],
+                        linkCollectionId=str(created_link['link_collection_id']),
+                        userId=created_link['user_id'],
+                        createdAt=created_link['created_at'],
+                        updatedAt=created_link['updated_at']
+                    )
+                    created_links.append(response_link)
+                    current_total += 1
+                    
+            except Exception as e:
+                logger.error(f"❌ Failed to create link {link_data.url}: {str(e)}")
+                # Continue with other links even if one fails
+                continue
+        
+        # Update collection's total links count
+        update_collection_query = """
+            UPDATE collections 
+            SET total_links = %s 
+            WHERE id = %s::uuid AND user_id = %s
+        """
+        execute_query(
+            update_collection_query, 
+            (current_total, collection_id, user_id), 
+            fetch_all=False
+        )
+        
+        logger.info(f"📦 BULK LINKS - Successfully added {len(created_links)} out of {len(bulk_data.links)} links")
+        
+        return BulkCreateLinkResponse(
+            success=True,
+            data=created_links,
+            total_added=len(created_links),
+            total_requested=len(bulk_data.links)
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create bulk links: {str(e)}")
+
+@router.post("/collections/with-links", response_model=Union[CreateCollectionWithLinksResponse, ErrorResponse])
+async def create_collection_with_links(
+    request_data: CreateCollectionWithLinksRequest,
+    authorization: Optional[str] = Header(None)
+):
+    """Create a new collection and add multiple links to it in one call"""
+    logger.info("🚀 CREATE COLLECTION WITH LINKS - Endpoint called")
+    logger.info(f"🚀 CREATE COLLECTION WITH LINKS - Title: {request_data.title}")
+    logger.info(f"🚀 CREATE COLLECTION WITH LINKS - Number of links: {len(request_data.links)}")
+    
+    try:
+        user_id = get_user_id_from_api_key(authorization)
+        
+        # Validate visibility
+        if request_data.visibility not in ["private", "public"]:
+            raise HTTPException(status_code=422, detail="Visibility must be 'private' or 'public'")
+        
+        # Create new collection
+        collection_id = str(uuid.uuid4())
+        insert_collection_query = """
+            INSERT INTO collections (id, title, description, visibility, user_id, total_links, created_at, updated_at)
+            VALUES (%s::uuid, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id, title, description, visibility, total_links, created_at
+        """
+        
+        now = datetime.utcnow()
+        created_collection = execute_insert(
+            insert_collection_query,
+            (collection_id, request_data.title, request_data.description, request_data.visibility, user_id, 0, now, now)
+        )
+        
+        if not created_collection:
+            raise HTTPException(status_code=500, detail="Failed to create collection")
+        
+        # Process each link
+        created_links = []
+        current_total = 0
+        
+        for link_data in request_data.links:
+            try:
+                # Extract title if not provided
+                final_title = link_data.title or ""
+                if not final_title.strip():
+                    try:
+                        final_title = await extract_title_from_url(str(link_data.url))
+                    except Exception:
+                        final_title = generate_fallback_title(str(link_data.url))
+                
+                # Insert the new link
+                link_id = str(uuid.uuid4())
+                insert_link_query = """
+                    INSERT INTO links (id, title, url, link_collection_id, user_id, created_at, updated_at)
+                    VALUES (%s::uuid, %s, %s, %s::uuid, %s, %s, %s)
+                    RETURNING id, title, url, link_collection_id, user_id, created_at, updated_at
+                """
+                
+                created_link = execute_insert(
+                    insert_link_query,
+                    (link_id, final_title, str(link_data.url), collection_id, user_id, now, now)
+                )
+                
+                if created_link:
+                    response_link = Link(
+                        id=str(created_link['id']),
+                        title=created_link['title'],
+                        url=created_link['url'],
+                        linkCollectionId=str(created_link['link_collection_id']),
+                        userId=created_link['user_id'],
+                        createdAt=created_link['created_at'],
+                        updatedAt=created_link['updated_at']
+                    )
+                    created_links.append(response_link)
+                    current_total += 1
+                    
+            except Exception as e:
+                logger.error(f"❌ Failed to create link {link_data.url}: {str(e)}")
+                # Continue with other links even if one fails
+                continue
+        
+        # Update collection's total links count
+        update_collection_query = """
+            UPDATE collections 
+            SET total_links = %s 
+            WHERE id = %s::uuid AND user_id = %s
+        """
+        execute_query(
+            update_collection_query, 
+            (current_total, collection_id, user_id), 
+            fetch_all=False
+        )
+        
+        # Create response collection object
+        response_collection = Collection(
+            id=str(created_collection['id']),
+            title=created_collection['title'],
+            description=created_collection['description'],
+            visibility=created_collection['visibility'],
+            totalLinks=current_total,
+            createdAt=created_collection['created_at']
+        )
+        
+        logger.info(f"🚀 CREATE COLLECTION WITH LINKS - Successfully created collection with {len(created_links)} links")
+        
+        return CreateCollectionWithLinksResponse(
+            success=True,
+            collection=response_collection,
+            links=created_links,
+            total_added=len(created_links),
+            total_requested=len(request_data.links)
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create collection with links: {str(e)}")
 
 # Favorites endpoints
 @router.get("/favorites", response_model=Union[FavoritesResponse, ErrorResponse])

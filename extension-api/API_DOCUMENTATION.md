@@ -237,6 +237,332 @@ Content-Type: application/json
 
 ---
 
+### 5. Add Multiple Links to Collection
+
+**POST** `/collections/{collection_id}/links/bulk`
+
+Add multiple bookmarks/links to a specific collection at once. Perfect for browser extensions that want to save all open tabs.
+
+#### Request
+
+```http
+POST /api/v1/collections/123e4567-e89b-12d3-a456-426614174000/links/bulk
+Authorization: Bearer user_2rpYE73BYUo1CtmFy3hXiV0Z8BC
+Content-Type: application/json
+
+{
+  "links": [
+    {
+      "url": "https://fastapi.tiangolo.com/",
+      "title": "FastAPI Documentation"
+    },
+    {
+      "url": "https://github.com/",
+      "title": "GitHub"
+    },
+    {
+      "url": "https://stackoverflow.com/"
+    }
+  ]
+}
+```
+
+#### Request Body Schema
+
+```json
+{
+  "links": [
+    {
+      "url": "string (required, must be valid URL)",
+      "title": "string (optional, max 100 characters)"
+    }
+  ]
+}
+```
+
+**Note:** If `title` is not provided or empty for any link, the API will automatically extract the page title from the URL.
+
+#### Success Response (200)
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "789e0123-e89b-12d3-a456-426614174222",
+      "title": "FastAPI Documentation",
+      "url": "https://fastapi.tiangolo.com/",
+      "linkCollectionId": "123e4567-e89b-12d3-a456-426614174000",
+      "userId": "user_2rpYE73BYUo1CtmFy3hXiV0Z8BC",
+      "createdAt": "2024-01-01T10:35:00Z",
+      "updatedAt": "2024-01-01T10:35:00Z"
+    },
+    {
+      "id": "890e1234-e89b-12d3-a456-426614174333",
+      "title": "GitHub",
+      "url": "https://github.com/",
+      "linkCollectionId": "123e4567-e89b-12d3-a456-426614174000",
+      "userId": "user_2rpYE73BYUo1CtmFy3hXiV0Z8BC",
+      "createdAt": "2024-01-01T10:35:00Z",
+      "updatedAt": "2024-01-01T10:35:00Z"
+    },
+    {
+      "id": "901e2345-e89b-12d3-a456-426614174444",
+      "title": "Stack Overflow",
+      "url": "https://stackoverflow.com/",
+      "linkCollectionId": "123e4567-e89b-12d3-a456-426614174000",
+      "userId": "user_2rpYE73BYUo1CtmFy3hXiV0Z8BC",
+      "createdAt": "2024-01-01T10:35:00Z",
+      "updatedAt": "2024-01-01T10:35:00Z"
+    }
+  ],
+  "total_added": 3,
+  "total_requested": 3
+}
+```
+
+#### Error Responses
+
+**401 Unauthorized**
+
+```json
+{
+  "detail": "Authorization header required"
+}
+```
+
+**404 Not Found**
+
+```json
+{
+  "detail": "Collection not found"
+}
+```
+
+**422 Validation Error**
+
+```json
+{
+  "detail": [
+    {
+      "loc": ["body", "links", 0, "url"],
+      "msg": "invalid or missing URL scheme",
+      "type": "value_error.url.scheme"
+    }
+  ]
+}
+```
+
+**500 Internal Server Error**
+
+```json
+{
+  "detail": "Failed to create bulk links: Database error"
+}
+```
+
+---
+
+### 6. Create Collection
+
+**POST** `/collections`
+
+Create a new collection.
+
+#### Request
+
+```http
+POST /api/v1/collections
+Authorization: Bearer user_2rpYE73BYUo1CtmFy3hXiV0Z8BC
+Content-Type: application/json
+
+{
+  "title": "My New Collection",
+  "description": "A collection for my saved tabs",
+  "visibility": "private"
+}
+```
+
+#### Request Body Schema
+
+```json
+{
+  "title": "string (required)",
+  "description": "string (optional, defaults to empty string)",
+  "visibility": "string (optional, 'private' or 'public', defaults to 'private')"
+}
+```
+
+#### Success Response (200)
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "title": "My New Collection",
+    "description": "A collection for my saved tabs",
+    "visibility": "private",
+    "totalLinks": 0,
+    "createdAt": "2024-01-01T10:35:00Z"
+  }
+}
+```
+
+#### Error Responses
+
+**401 Unauthorized**
+
+```json
+{
+  "detail": "Authorization header required"
+}
+```
+
+**422 Validation Error**
+
+```json
+{
+  "detail": "Visibility must be 'private' or 'public'"
+}
+```
+
+**500 Internal Server Error**
+
+```json
+{
+  "detail": "Failed to create collection: Database error"
+}
+```
+
+---
+
+### 7. Create Collection with Links
+
+**POST** `/collections/with-links`
+
+Create a new collection and add multiple links to it in one call. Perfect for browser extensions that want to create a new collection and save all open tabs at once.
+
+#### Request
+
+```http
+POST /api/v1/collections/with-links
+Authorization: Bearer user_2rpYE73BYUo1CtmFy3hXiV0Z8BC
+Content-Type: application/json
+
+{
+  "title": "My Saved Tabs",
+  "description": "Tabs saved on 2024-01-01",
+  "visibility": "private",
+  "links": [
+    {
+      "url": "https://fastapi.tiangolo.com/",
+      "title": "FastAPI Documentation"
+    },
+    {
+      "url": "https://github.com/",
+      "title": "GitHub"
+    },
+    {
+      "url": "https://stackoverflow.com/"
+    }
+  ]
+}
+```
+
+#### Request Body Schema
+
+```json
+{
+  "title": "string (required)",
+  "description": "string (optional, defaults to empty string)",
+  "visibility": "string (optional, 'private' or 'public', defaults to 'private')",
+  "links": [
+    {
+      "url": "string (required, must be valid URL)",
+      "title": "string (optional, max 100 characters)"
+    }
+  ]
+}
+```
+
+**Note:** If `title` is not provided or empty for any link, the API will automatically extract the page title from the URL.
+
+#### Success Response (200)
+
+```json
+{
+  "success": true,
+  "collection": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "title": "My Saved Tabs",
+    "description": "Tabs saved on 2024-01-01",
+    "visibility": "private",
+    "totalLinks": 3,
+    "createdAt": "2024-01-01T10:35:00Z"
+  },
+  "links": [
+    {
+      "id": "789e0123-e89b-12d3-a456-426614174222",
+      "title": "FastAPI Documentation",
+      "url": "https://fastapi.tiangolo.com/",
+      "linkCollectionId": "123e4567-e89b-12d3-a456-426614174000",
+      "userId": "user_2rpYE73BYUo1CtmFy3hXiV0Z8BC",
+      "createdAt": "2024-01-01T10:35:00Z",
+      "updatedAt": "2024-01-01T10:35:00Z"
+    },
+    {
+      "id": "890e1234-e89b-12d3-a456-426614174333",
+      "title": "GitHub",
+      "url": "https://github.com/",
+      "linkCollectionId": "123e4567-e89b-12d3-a456-426614174000",
+      "userId": "user_2rpYE73BYUo1CtmFy3hXiV0Z8BC",
+      "createdAt": "2024-01-01T10:35:00Z",
+      "updatedAt": "2024-01-01T10:35:00Z"
+    },
+    {
+      "id": "901e2345-e89b-12d3-a456-426614174444",
+      "title": "Stack Overflow",
+      "url": "https://stackoverflow.com/",
+      "linkCollectionId": "123e4567-e89b-12d3-a456-426614174000",
+      "userId": "user_2rpYE73BYUo1CtmFy3hXiV0Z8BC",
+      "createdAt": "2024-01-01T10:35:00Z",
+      "updatedAt": "2024-01-01T10:35:00Z"
+    }
+  ],
+  "total_added": 3,
+  "total_requested": 3
+}
+```
+
+#### Error Responses
+
+**401 Unauthorized**
+
+```json
+{
+  "detail": "Authorization header required"
+}
+```
+
+**422 Validation Error**
+
+```json
+{
+  "detail": "Visibility must be 'private' or 'public'"
+}
+```
+
+**500 Internal Server Error**
+
+```json
+{
+  "detail": "Failed to create collection with links: Database error"
+}
+```
+
+---
+
 ## Data Models
 
 ### Collection
@@ -337,9 +663,133 @@ async function addBookmark(userId, collectionId, url, title = null) {
 }
 ```
 
-#### Complete Extension Example
+#### Add Multiple Bookmarks to Collection
 
 ```javascript
+async function addBulkBookmarks(userId, collectionId, links) {
+  try {
+    const response = await fetch(
+      `http://localhost:8001/api/v1/collections/${collectionId}/links/bulk`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${userId}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          links: links.map((link) => ({
+            url: link.url,
+            ...(link.title && { title: link.title }),
+          })),
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${errorData.detail}`
+      );
+    }
+
+    const data = await response.json();
+    return data; // Returns { success, data, total_added, total_requested }
+  } catch (error) {
+    console.error("Failed to add bulk bookmarks:", error);
+    throw error;
+  }
+}
+```
+
+#### Create New Collection
+
+```javascript
+async function createCollection(
+  userId,
+  title,
+  description = "",
+  visibility = "private"
+) {
+  try {
+    const response = await fetch("http://localhost:8001/api/v1/collections", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${userId}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        visibility,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${errorData.detail}`
+      );
+    }
+
+    const data = await response.json();
+    return data.data; // Returns the created collection
+  } catch (error) {
+    console.error("Failed to create collection:", error);
+    throw error;
+  }
+}
+```
+
+#### Create Collection with Links
+
+```javascript
+async function createCollectionWithLinks(
+  userId,
+  title,
+  links,
+  description = "",
+  visibility = "private"
+) {
+  try {
+    const response = await fetch(
+      "http://localhost:8001/api/v1/collections/with-links",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${userId}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          visibility,
+          links: links.map((link) => ({
+            url: link.url,
+            ...(link.title && { title: link.title }),
+          })),
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        `HTTP error! status: ${response.status}, message: ${errorData.detail}`
+      );
+    }
+
+    const data = await response.json();
+    return data; // Returns { success, collection, links, total_added, total_requested }
+  } catch (error) {
+    console.error("Failed to create collection with links:", error);
+    throw error;
+  }
+}
+```
+
+#### Complete Extension Example
+
+````javascript
 // Background script or content script
 class Cur8tAPI {
   constructor(userId) {
@@ -400,7 +850,90 @@ const newBookmark = await api.addBookmark(
   currentUrl,
   pageTitle
 );
-```
+
+// Add all open tabs to collection (browser extension use case)
+async function saveAllTabsToCollection(userId, collectionId) {
+  try {
+    // Get all open tabs
+    const tabs = await chrome.tabs.query({});
+
+    // Prepare links data
+    const links = tabs.map(tab => ({
+      url: tab.url,
+      title: tab.title
+    }));
+
+    // Add all tabs to collection
+    const result = await addBulkBookmarks(userId, collectionId, links);
+
+    console.log(`Successfully added ${result.total_added} out of ${result.total_requested} tabs`);
+
+    // Close all tabs after successful save
+    if (result.total_added > 0) {
+      const tabIds = tabs.map(tab => tab.id);
+      await chrome.tabs.remove(tabIds);
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Failed to save all tabs:", error);
+    throw error;
+  }
+}
+
+// Create new collection and save all open tabs (browser extension use case)
+async function createCollectionAndSaveTabs(userId, collectionTitle, collectionDescription = "") {
+  try {
+    // Get all open tabs
+    const tabs = await chrome.tabs.query({});
+
+    // Prepare links data
+    const links = tabs.map(tab => ({
+      url: tab.url,
+      title: tab.title
+    }));
+
+    // Create collection with all tabs
+    const result = await createCollectionWithLinks(
+      userId,
+      collectionTitle,
+      links,
+      collectionDescription
+    );
+
+    console.log(`Successfully created collection "${result.collection.title}" with ${result.total_added} tabs`);
+
+    // Close all tabs after successful save
+    if (result.total_added > 0) {
+      const tabIds = tabs.map(tab => tab.id);
+      await chrome.tabs.remove(tabIds);
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Failed to create collection and save tabs:", error);
+    throw error;
+  }
+}
+
+// Example usage in extension popup
+async function handleSaveAllTabs() {
+  const userId = "user_2rpYE73BYUo1CtmFy3hXiV0Z8BC";
+
+  // Option 1: Save to existing collection
+  const collections = await getTopCollections(userId);
+  if (collections.length > 0) {
+    await saveAllTabsToCollection(userId, collections[0].id);
+  }
+
+  // Option 2: Create new collection with tabs
+  const timestamp = new Date().toISOString().split('T')[0];
+  await createCollectionAndSaveTabs(
+    userId,
+    `Saved Tabs - ${timestamp}`,
+    `Tabs saved on ${timestamp}`
+  );
+}
 
 ---
 
@@ -417,7 +950,7 @@ Retrieve the user's favorite links.
 ```http
 GET /api/v1/favorites
 Authorization: Bearer user_2rpYE73BYUo1CtmFy3hXiV0Z8BC
-```
+````
 
 #### Success Response (200)
 
