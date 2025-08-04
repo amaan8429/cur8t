@@ -234,15 +234,17 @@ async def create_collection(
         # Create new collection
         collection_id = str(uuid.uuid4())
         insert_collection_query = """
-            INSERT INTO collections (id, title, description, visibility, user_id, total_links, created_at, updated_at)
-            VALUES ($1::uuid, $2, $3, $4, $5, $6, $7, $8)
+            INSERT INTO collections (id, title, description, visibility, user_id, total_links, created_at, updated_at, url)
+            VALUES ($1::uuid, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING id, title, description, visibility, total_links, created_at
         """
         
         now = datetime.utcnow()
+        # For collections without links, use a default URL
+        collection_url = "https://cur8t.com"
         created_collection = await execute_insert(
             insert_collection_query,
-            (collection_id, collection_data.title, collection_data.description, collection_data.visibility, user_id, 0, now, now)
+            (collection_id, collection_data.title, collection_data.description, collection_data.visibility, user_id, 0, now, now, collection_url)
         )
         
         if not created_collection:
@@ -393,7 +395,7 @@ async def create_bulk_links(
                 link_id = str(uuid.uuid4())
                 insert_link_query = """
                     INSERT INTO links (id, title, url, link_collection_id, user_id, created_at, updated_at)
-                    VALUES (%s::uuid, %s, %s, %s::uuid, %s, %s, %s)
+                    VALUES ($1::uuid, $2, $3, $4::uuid, $5, $6, $7)
                     RETURNING id, title, url, link_collection_id, user_id, created_at, updated_at
                 """
                 
@@ -466,15 +468,17 @@ async def create_collection_with_links(
         # Create new collection
         collection_id = str(uuid.uuid4())
         insert_collection_query = """
-            INSERT INTO collections (id, title, description, visibility, user_id, total_links, created_at, updated_at)
-            VALUES ($1::uuid, $2, $3, $4, $5, $6, $7, $8)
+            INSERT INTO collections (id, title, description, visibility, user_id, total_links, created_at, updated_at, url)
+            VALUES ($1::uuid, $2, $3, $4, $5, $6, $7, $8, $9)
             RETURNING id, title, description, visibility, total_links, created_at
         """
         
         now = datetime.utcnow()
+        # Use the first link's URL as the collection URL, or a default if no links
+        collection_url = request_data.links[0].url if request_data.links else "https://cur8t.com"
         created_collection = await execute_insert(
             insert_collection_query,
-            (collection_id, request_data.title, request_data.description, request_data.visibility, user_id, 0, now, now)
+            (collection_id, request_data.title, request_data.description, request_data.visibility, user_id, 0, now, now, str(collection_url))
         )
         
         if not created_collection:
@@ -498,7 +502,7 @@ async def create_collection_with_links(
                 link_id = str(uuid.uuid4())
                 insert_link_query = """
                     INSERT INTO links (id, title, url, link_collection_id, user_id, created_at, updated_at)
-                    VALUES (%s::uuid, %s, %s, %s::uuid, %s, %s, %s)
+                    VALUES ($1::uuid, $2, $3, $4::uuid, $5, $6, $7)
                     RETURNING id, title, url, link_collection_id, user_id, created_at, updated_at
                 """
                 
