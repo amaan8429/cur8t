@@ -404,6 +404,151 @@ const newBookmark = await api.addBookmark(
 
 ---
 
+## Favorites Endpoints
+
+### Get Favorites
+
+**GET** `/favorites`
+
+Retrieve the user's favorite links.
+
+#### Request
+
+```http
+GET /api/v1/favorites
+Authorization: Bearer user_2rpYE73BYUo1CtmFy3hXiV0Z8BC
+```
+
+#### Success Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "title": "GitHub",
+      "url": "https://github.com",
+      "userId": "user_2rpYE73BYUo1CtmFy3hXiV0Z8BC",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "updatedAt": "2024-01-15T10:30:00Z"
+    }
+  ]
+}
+```
+
+### Create Favorite
+
+**POST** `/favorites`
+
+Add a new favorite link.
+
+#### Request
+
+```http
+POST /api/v1/favorites
+Authorization: Bearer user_2rpYE73BYUo1CtmFy3hXiV0Z8BC
+Content-Type: application/json
+
+{
+  "title": "GitHub",
+  "url": "https://github.com"
+}
+```
+
+#### Request Body
+
+| Field   | Type   | Required | Description                |
+| ------- | ------ | -------- | -------------------------- |
+| `title` | string | Yes      | The title for the favorite |
+| `url`   | string | Yes      | The URL to favorite        |
+
+#### Success Response (200)
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "GitHub",
+    "url": "https://github.com",
+    "userId": "user_2rpYE73BYUo1CtmFy3hXiV0Z8BC",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+### Update Favorite
+
+**PUT** `/favorites/{favorite_id}`
+
+Update a favorite link's title.
+
+#### Request
+
+```http
+PUT /api/v1/favorites/{favorite_id}
+Authorization: Bearer user_2rpYE73BYUo1CtmFy3hXiV0Z8BC
+Content-Type: application/json
+
+{
+  "title": "Updated Title"
+}
+```
+
+#### Success Response (200)
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "Updated Title",
+    "url": "https://github.com",
+    "userId": "user_2rpYE73BYUo1CtmFy3hXiV0Z8BC",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "updatedAt": "2024-01-15T10:35:00Z"
+  }
+}
+```
+
+### Delete Favorite
+
+**DELETE** `/favorites/{favorite_id}`
+
+Delete a favorite link.
+
+#### Request
+
+```http
+DELETE /api/v1/favorites/{favorite_id}
+Authorization: Bearer user_2rpYE73BYUo1CtmFy3hXiV0Z8BC
+```
+
+#### Success Response (200)
+
+```json
+{
+  "success": true,
+  "message": "Favorite deleted successfully"
+}
+```
+
+### Favorite Data Model
+
+```typescript
+interface Favorite {
+  id: string; // UUID
+  title: string; // Favorite title
+  url: string; // Favorite URL
+  userId: string; // Owner user ID
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+}
+```
+
+---
+
 ## Error Handling
 
 ### Common Error Patterns

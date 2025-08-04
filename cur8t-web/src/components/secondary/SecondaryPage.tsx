@@ -6,6 +6,7 @@ import SavedCollections from "../dashboard/TopSection/SavedCollections";
 import ToolsAndAgents from "../dashboard/TopSection/ToolsAndAgents";
 import ManageSubscription from "../settings/ManageSubscription";
 import Notifications from "../settings/Notifications";
+import FavoritesPage from "../settings/FavoritesPage";
 
 const SecondaryPage = () => {
   // Use the proper hook instead of getState() during render
@@ -31,6 +32,8 @@ const SecondaryPage = () => {
     return <SavedCollections />;
   } else if (activeSecondary === "Tools and Agents") {
     return <ToolsAndAgents />;
+  } else if (activeSecondary === "Favorites") {
+    return <FavoritesPage />;
   } else if (activeSecondary === "Explore") {
     window.open("/explore", "_blank");
   }

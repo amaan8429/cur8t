@@ -14,7 +14,14 @@ from ..models.schemas import (
     CreateLinkResponse, 
     ErrorResponse,
     Collection,
-    Link
+    Link,
+    Favorite,
+    FavoritesResponse,
+    CreateFavoriteRequest,
+    CreateFavoriteResponse,
+    UpdateFavoriteRequest,
+    UpdateFavoriteResponse,
+    DeleteFavoriteResponse
 )
 from ..core.database import execute_query_one, execute_query_all, execute_insert, execute_query
 from ..core.utils import extract_title_from_url, generate_fallback_title
@@ -264,3 +271,173 @@ async def create_link(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create link: {str(e)}")
+
+# Favorites endpoints
+@router.get("/favorites", response_model=Union[FavoritesResponse, ErrorResponse])
+async def get_favorites(authorization: Optional[str] = Header(None)):
+    """Get user's favorite links"""
+    logger.info("⭐ FAVORITES - Endpoint called")
+    
+    try:
+        user_id = get_user_id_from_api_key(authorization)
+        logger.info(f"⭐ FAVORITES - User ID extracted: {user_id}")
+        
+        # Get user's favorites
+        favorites_query = """
+            SELECT id, title, url, user_id as "userId", created_at as "createdAt", updated_at as "updatedAt"
+            FROM favorites 
+            WHERE user_id = %s
+            ORDER BY created_at DESC
+        """
+        
+        favorites_result = execute_query_all(favorites_query, (user_id,))
+        
+        favorites = []
+        for fav_data in favorites_result:
+            favorite = Favorite(
+                id=str(fav_data['id']),
+                title=fav_data['title'],
+                url=fav_data['url'],
+                userId=fav_data['userId'],
+                createdAt=fav_data['createdAt'],
+                updatedAt=fav_data['updatedAt']
+            )
+            favorites.append(favorite)
+        
+        return FavoritesResponse(data=favorites)
+        
+    except HTTPException as e:
+        logger.error(f"❌ HTTP Exception in favorites: {e.detail}")
+        raise
+    except Exception as e:
+        logger.error(f"❌ Unexpected error in favorites: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch favorites: {str(e)}")
+
+@router.post("/favorites", response_model=Union[CreateFavoriteResponse, ErrorResponse])
+async def create_favorite(
+    favorite_data: CreateFavoriteRequest,
+    authorization: Optional[str] = Header(None)
+):
+    """Add a new favorite link"""
+    logger.info("⭐ CREATE FAVORITE - Endpoint called")
+    
+    try:
+        user_id = get_user_id_from_api_key(authorization)
+        
+        # Check if favorite already exists
+        existing_query = """
+            SELECT id FROM favorites 
+            WHERE user_id = %s AND url = %s
+        """
+        existing_result = execute_query_one(existing_query, (user_id, str(favorite_data.url)))
+        
+        if existing_result:
+            raise HTTPException(status_code=409, detail="This URL is already in your favorites")
+        
+        # Insert new favorite
+        favorite_id = str(uuid.uuid4())
+        insert_favorite_query = """
+            INSERT INTO favorites (id, title, url, user_id, created_at, updated_at)
+            VALUES (%s::uuid, %s, %s, %s, %s, %s)
+            RETURNING id, title, url, user_id, created_at, updated_at
+        """
+        
+        now = datetime.utcnow()
+        created_favorite = execute_insert(
+            insert_favorite_query,
+            (favorite_id, favorite_data.title, str(favorite_data.url), user_id, now, now)
+        )
+        
+        if not created_favorite:
+            raise HTTPException(status_code=500, detail="Failed to create favorite")
+        
+        response_favorite = Favorite(
+            id=str(created_favorite['id']),
+            title=created_favorite['title'],
+            url=created_favorite['url'],
+            userId=created_favorite['user_id'],
+            createdAt=created_favorite['created_at'],
+            updatedAt=created_favorite['updated_at']
+        )
+        
+        return CreateFavoriteResponse(success=True, data=response_favorite)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create favorite: {str(e)}")
+
+@router.put("/favorites/{favorite_id}", response_model=Union[UpdateFavoriteResponse, ErrorResponse])
+async def update_favorite(
+    favorite_id: str,
+    favorite_data: UpdateFavoriteRequest,
+    authorization: Optional[str] = Header(None)
+):
+    """Update a favorite link's title"""
+    logger.info(f"⭐ UPDATE FAVORITE - Endpoint called for ID: {favorite_id}")
+    
+    try:
+        user_id = get_user_id_from_api_key(authorization)
+        
+        # Update the favorite
+        update_query = """
+            UPDATE favorites 
+            SET title = %s, updated_at = %s
+            WHERE id = %s::uuid AND user_id = %s
+            RETURNING id, title, url, user_id, created_at, updated_at
+        """
+        
+        now = datetime.utcnow()
+        updated_favorite = execute_insert(
+            update_query,
+            (favorite_data.title, now, favorite_id, user_id)
+        )
+        
+        if not updated_favorite:
+            raise HTTPException(status_code=404, detail="Favorite not found or you don't have permission to update it")
+        
+        response_favorite = Favorite(
+            id=str(updated_favorite['id']),
+            title=updated_favorite['title'],
+            url=updated_favorite['url'],
+            userId=updated_favorite['user_id'],
+            createdAt=updated_favorite['created_at'],
+            updatedAt=updated_favorite['updated_at']
+        )
+        
+        return UpdateFavoriteResponse(success=True, data=response_favorite)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update favorite: {str(e)}")
+
+@router.delete("/favorites/{favorite_id}", response_model=Union[DeleteFavoriteResponse, ErrorResponse])
+async def delete_favorite(
+    favorite_id: str,
+    authorization: Optional[str] = Header(None)
+):
+    """Delete a favorite link"""
+    logger.info(f"⭐ DELETE FAVORITE - Endpoint called for ID: {favorite_id}")
+    
+    try:
+        user_id = get_user_id_from_api_key(authorization)
+        
+        # Delete the favorite
+        delete_query = """
+            DELETE FROM favorites 
+            WHERE id = %s::uuid AND user_id = %s
+            RETURNING id
+        """
+        
+        deleted_favorite = execute_insert(delete_query, (favorite_id, user_id))
+        
+        if not deleted_favorite:
+            raise HTTPException(status_code=404, detail="Favorite not found or you don't have permission to delete it")
+        
+        return DeleteFavoriteResponse(success=True, message="Favorite deleted successfully")
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete favorite: {str(e)}")

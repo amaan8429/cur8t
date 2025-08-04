@@ -4,7 +4,11 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
 import { UsersTable } from "@/schema";
 import { eq } from "drizzle-orm";
-import { checkRateLimit, getClientIdFromHeaders, rateLimiters } from "@/lib/ratelimit";
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from "@/lib/ratelimit";
 
 export async function getUserInfoAction() {
   try {

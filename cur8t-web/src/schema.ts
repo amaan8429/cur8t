@@ -147,6 +147,20 @@ export const AccessRequestsTable = pgTable(
   })
 );
 
+// Define the favorites table for user's important links
+export const FavoritesTable = pgTable("favorites", {
+  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  title: text("title").notNull(),
+  url: text("url").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => UsersTable.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
 // Infer types for users
 export type InsertUser = typeof UsersTable.$inferInsert;
 export type SelectUser = typeof UsersTable.$inferSelect;
@@ -170,3 +184,7 @@ export type SelectCollectionLike = typeof CollectionLikesTable.$inferSelect;
 // Infer types for access requests
 export type InsertAccessRequest = typeof AccessRequestsTable.$inferInsert;
 export type SelectAccessRequest = typeof AccessRequestsTable.$inferSelect;
+
+// Infer types for favorites
+export type InsertFavorite = typeof FavoritesTable.$inferInsert;
+export type SelectFavorite = typeof FavoritesTable.$inferSelect;

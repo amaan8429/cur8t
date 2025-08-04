@@ -22,6 +22,7 @@ import {
   PlusCircle,
   CreditCard,
   Bell,
+  Star,
 } from "lucide-react";
 
 import { NavCollection } from "@/components/dashboard/Sidebar/NavCollection/NavCollections";
@@ -58,6 +59,10 @@ const data = {
     {
       title: "Notifications",
       icon: Bell,
+    },
+    {
+      title: "Favorites",
+      icon: Star,
     },
     {
       title: "Manage Subscription",

@@ -257,6 +257,35 @@ export const rateLimiters = {
     analytics: true,
     prefix: "ratelimit:get-api-keys",
   }),
+
+  // Favorites actions
+  createFavoriteLimiter: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(20, "1 h"),
+    analytics: true,
+    prefix: "ratelimit:create-favorite",
+  }),
+
+  deleteFavoriteLimiter: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(30, "1 h"),
+    analytics: true,
+    prefix: "ratelimit:delete-favorite",
+  }),
+
+  updateFavoriteLimiter: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(30, "1 h"),
+    analytics: true,
+    prefix: "ratelimit:update-favorite",
+  }),
+
+  getFavoritesLimiter: new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(100, "1 h"),
+    analytics: true,
+    prefix: "ratelimit:get-favorites",
+  }),
 };
 
 // Helper function to get client identifier

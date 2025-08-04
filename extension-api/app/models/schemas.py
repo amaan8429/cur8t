@@ -31,4 +31,34 @@ class CreateLinkResponse(BaseModel):
     data: Optional[Link] = None
 
 class ErrorResponse(BaseModel):
-    error: str 
+    error: str
+
+class Favorite(BaseModel):
+    id: str
+    title: str
+    url: str
+    userId: str
+    createdAt: datetime
+    updatedAt: datetime
+
+class FavoritesResponse(BaseModel):
+    data: List[Favorite]
+
+class CreateFavoriteRequest(BaseModel):
+    title: str
+    url: HttpUrl
+
+class CreateFavoriteResponse(BaseModel):
+    success: bool
+    data: Optional[Favorite] = None
+
+class UpdateFavoriteRequest(BaseModel):
+    title: str
+
+class UpdateFavoriteResponse(BaseModel):
+    success: bool
+    data: Optional[Favorite] = None
+
+class DeleteFavoriteResponse(BaseModel):
+    success: bool
+    message: str 

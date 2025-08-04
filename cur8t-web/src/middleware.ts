@@ -159,7 +159,14 @@ export default clerkMiddleware(async (auth, request) => {
       await auth.protect();
     }
   } catch (error) {
-    console.error("Rate limiting error in middleware:", error);
+    // Only log actual errors, not expected redirects or not found responses
+    if (
+      error instanceof Error &&
+      !error.message.includes("NEXT_REDIRECT") &&
+      !error.message.includes("NEXT_NOT_FOUND")
+    ) {
+      console.error("Rate limiting error in middleware:", error);
+    }
     // Continue without rate limiting if Redis fails (graceful degradation)
   }
 });

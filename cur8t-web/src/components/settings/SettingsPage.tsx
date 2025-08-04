@@ -9,6 +9,7 @@ import LoadingSettings from "./Loading";
 import APIKeySettings from "./ApiKeySettings";
 import TopCollectionsSettings from "./TopCollectionsSettings";
 import SocialMediaSettings from "./SocialMediaSettings";
+import FavoritesPage from "./FavoritesPage";
 
 const SettingsPage = () => {
   const { user, isLoaded } = useUser();
@@ -25,7 +26,7 @@ const SettingsPage = () => {
   return (
     <div className="mx-auto p-6 max-w-auto">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 mb-8 bg-muted/50 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+        <TabsList className="grid w-full grid-cols-6 mb-8 bg-muted/50 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
           <TabsTrigger
             value="profile"
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 ease-in-out hover:bg-muted"
@@ -55,6 +56,12 @@ const SettingsPage = () => {
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 ease-in-out hover:bg-muted"
           >
             Social
+          </TabsTrigger>
+          <TabsTrigger
+            value="favorites"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 ease-in-out hover:bg-muted"
+          >
+            Favorites
           </TabsTrigger>
         </TabsList>
 
@@ -91,6 +98,13 @@ const SettingsPage = () => {
           className="space-y-6 animate-in fade-in-0 slide-in-from-right-2 duration-300"
         >
           <SocialMediaSettings />
+        </TabsContent>
+
+        <TabsContent
+          value="favorites"
+          className="space-y-6 animate-in fade-in-0 slide-in-from-right-2 duration-300"
+        >
+          <FavoritesPage />
         </TabsContent>
       </Tabs>
     </div>
