@@ -10,6 +10,19 @@ class Collection(BaseModel):
     totalLinks: int
     createdAt: datetime
 
+class CreateLinkRequest(BaseModel):
+    title: Optional[str] = None
+    url: HttpUrl
+
+class Link(BaseModel):
+    id: str
+    title: str
+    url: str
+    linkCollectionId: str
+    userId: str
+    createdAt: datetime
+    updatedAt: datetime
+
 class CreateCollectionRequest(BaseModel):
     title: str
     description: Optional[str] = ""
@@ -35,21 +48,8 @@ class CreateCollectionWithLinksResponse(BaseModel):
 class TopCollectionsResponse(BaseModel):
     data: List[Collection]
 
-class CreateLinkRequest(BaseModel):
-    title: Optional[str] = None
-    url: HttpUrl
-
 class BulkLinkRequest(BaseModel):
     links: List[CreateLinkRequest]
-
-class Link(BaseModel):
-    id: str
-    title: str
-    url: str
-    linkCollectionId: str
-    userId: str
-    createdAt: datetime
-    updatedAt: datetime
 
 class CreateLinkResponse(BaseModel):
     success: bool

@@ -29,12 +29,12 @@ from ..models.schemas import (
     CreateCollectionWithLinksRequest,
     CreateCollectionWithLinksResponse
 )
-from ..core.database import execute_query_one, execute_query_all, execute_insert, execute_query
+from ..core.database import execute_query_one, execute_query_all, execute_insert, execute_query, clear_cache, health_check
 from ..core.utils import extract_title_from_url, generate_fallback_title
 
 router = APIRouter()
 
-def get_user_id_from_api_key(authorization: Optional[str] = Header(None)) -> str:
+async def get_user_id_from_api_key(authorization: Optional[str] = Header(None)) -> str:
     """Extract and validate API key, then return the associated user ID"""
     logger.info(f"🔑 Authorization header received: {authorization}")
     logger.info(f"🔑 Authorization type: {type(authorization)}")
@@ -63,7 +63,7 @@ def get_user_id_from_api_key(authorization: Optional[str] = Header(None)) -> str
         """
         
         logger.info(f"🔍 Validating API key in database...")
-        api_key_result = execute_query_one(api_key_query, (api_key,))
+        api_key_result = await execute_query_one(api_key_query, (api_key,))
         
         if not api_key_result:
             logger.error(f"❌ Invalid API key: {api_key[:8]}...")
@@ -86,6 +86,11 @@ def get_user_id_from_api_key(authorization: Optional[str] = Header(None)) -> str
 def root():
     return {"message": "Extension API v1.0"}
 
+@router.get("/health")
+async def health():
+    """Health check endpoint"""
+    return await health_check()
+
 @router.get("/test-auth")
 async def test_auth(authorization: Optional[str] = Header(None)):
     """Test endpoint to debug API key authentication"""
@@ -93,7 +98,7 @@ async def test_auth(authorization: Optional[str] = Header(None)):
     logger.info(f"🧪 TEST AUTH - Header type: {type(authorization)}")
     
     try:
-        user_id = get_user_id_from_api_key(authorization)
+        user_id = await get_user_id_from_api_key(authorization)
         
         response = {
             "success": True,
@@ -131,7 +136,7 @@ async def get_top_collections(authorization: Optional[str] = Header(None)):
     logger.info(f"🚀 TOP COLLECTIONS - Authorization header: {authorization}")
     
     try:
-        user_id = get_user_id_from_api_key(authorization)
+        user_id = await get_user_id_from_api_key(authorization)
         logger.info(f"🚀 TOP COLLECTIONS - User ID extracted: {user_id}")
         
         # Get user's top collections array
@@ -142,7 +147,7 @@ async def get_top_collections(authorization: Optional[str] = Header(None)):
             LIMIT 1
         """
         logger.info(f"🔍 Executing user query for user_id: {user_id}")
-        user_result = execute_query_one(user_query, (user_id,))
+        user_result = await execute_query_one(user_query, (user_id,))
         logger.info(f"🔍 User query result: {user_result}")
         
         if not user_result:
@@ -165,9 +170,10 @@ async def get_top_collections(authorization: Optional[str] = Header(None)):
             WHERE user_id = %s AND id = ANY(%s::uuid[])
         """
         
-        collections_result = execute_query_all(
+        collections_result = await execute_query_all(
             collections_query, 
-            (user_id, top_collection_ids)
+            (user_id, top_collection_ids),
+            cache_key=f"top_collections_{user_id}"
         )
         
         # Maintain the order from top_collection_ids
@@ -207,7 +213,7 @@ async def create_collection(
     logger.info(f"📁 CREATE COLLECTION - Title: {collection_data.title}")
     
     try:
-        user_id = get_user_id_from_api_key(authorization)
+        user_id = await get_user_id_from_api_key(authorization)
         
         # Validate visibility
         if collection_data.visibility not in ["private", "public"]:
@@ -222,7 +228,7 @@ async def create_collection(
         """
         
         now = datetime.utcnow()
-        created_collection = execute_insert(
+        created_collection = await execute_insert(
             insert_collection_query,
             (collection_id, collection_data.title, collection_data.description, collection_data.visibility, user_id, 0, now, now)
         )
@@ -256,7 +262,7 @@ async def create_link(
 ):
     """Add a link to a collection"""
     try:
-        user_id = get_user_id_from_api_key(authorization)
+        user_id = await get_user_id_from_api_key(authorization)
         
         # Validate collection exists and belongs to user
         collection_query = """
@@ -264,7 +270,7 @@ async def create_link(
             FROM collections 
             WHERE id = %s::uuid AND user_id = %s
         """
-        collection_result = execute_query_one(
+        collection_result = await execute_query_one(
             collection_query, 
             (collection_id, user_id)
         )
@@ -289,7 +295,7 @@ async def create_link(
         """
         
         now = datetime.utcnow()
-        created_link = execute_insert(
+        created_link = await execute_insert(
             insert_link_query,
             (link_id, final_title, str(link_data.url), collection_id, user_id, now, now)
         )
@@ -340,7 +346,7 @@ async def create_bulk_links(
     logger.info(f"📦 BULK LINKS - Number of links to add: {len(bulk_data.links)}")
     
     try:
-        user_id = get_user_id_from_api_key(authorization)
+        user_id = await get_user_id_from_api_key(authorization)
         
         # Validate collection exists and belongs to user
         collection_query = """
@@ -348,7 +354,7 @@ async def create_bulk_links(
             FROM collections 
             WHERE id = %s::uuid AND user_id = %s
         """
-        collection_result = execute_query_one(
+        collection_result = await execute_query_one(
             collection_query, 
             (collection_id, user_id)
         )
@@ -379,7 +385,7 @@ async def create_bulk_links(
                     RETURNING id, title, url, link_collection_id, user_id, created_at, updated_at
                 """
                 
-                created_link = execute_insert(
+                created_link = await execute_insert(
                     insert_link_query,
                     (link_id, final_title, str(link_data.url), collection_id, user_id, now, now)
                 )
@@ -408,7 +414,7 @@ async def create_bulk_links(
             SET total_links = %s 
             WHERE id = %s::uuid AND user_id = %s
         """
-        execute_query(
+        await execute_query(
             update_collection_query, 
             (current_total, collection_id, user_id), 
             fetch_all=False
@@ -439,7 +445,7 @@ async def create_collection_with_links(
     logger.info(f"🚀 CREATE COLLECTION WITH LINKS - Number of links: {len(request_data.links)}")
     
     try:
-        user_id = get_user_id_from_api_key(authorization)
+        user_id = await get_user_id_from_api_key(authorization)
         
         # Validate visibility
         if request_data.visibility not in ["private", "public"]:
@@ -454,7 +460,7 @@ async def create_collection_with_links(
         """
         
         now = datetime.utcnow()
-        created_collection = execute_insert(
+        created_collection = await execute_insert(
             insert_collection_query,
             (collection_id, request_data.title, request_data.description, request_data.visibility, user_id, 0, now, now)
         )
@@ -484,7 +490,7 @@ async def create_collection_with_links(
                     RETURNING id, title, url, link_collection_id, user_id, created_at, updated_at
                 """
                 
-                created_link = execute_insert(
+                created_link = await execute_insert(
                     insert_link_query,
                     (link_id, final_title, str(link_data.url), collection_id, user_id, now, now)
                 )
@@ -513,7 +519,7 @@ async def create_collection_with_links(
             SET total_links = %s 
             WHERE id = %s::uuid AND user_id = %s
         """
-        execute_query(
+        await execute_query(
             update_collection_query, 
             (current_total, collection_id, user_id), 
             fetch_all=False
@@ -551,7 +557,7 @@ async def get_favorites(authorization: Optional[str] = Header(None)):
     logger.info("⭐ FAVORITES - Endpoint called")
     
     try:
-        user_id = get_user_id_from_api_key(authorization)
+        user_id = await get_user_id_from_api_key(authorization)
         logger.info(f"⭐ FAVORITES - User ID extracted: {user_id}")
         
         # Get user's favorites
@@ -562,7 +568,7 @@ async def get_favorites(authorization: Optional[str] = Header(None)):
             ORDER BY created_at DESC
         """
         
-        favorites_result = execute_query_all(favorites_query, (user_id,))
+        favorites_result = await execute_query_all(favorites_query, (user_id,), cache_key=f"favorites_{user_id}")
         
         favorites = []
         for fav_data in favorites_result:
@@ -594,14 +600,14 @@ async def create_favorite(
     logger.info("⭐ CREATE FAVORITE - Endpoint called")
     
     try:
-        user_id = get_user_id_from_api_key(authorization)
+        user_id = await get_user_id_from_api_key(authorization)
         
         # Check if favorite already exists
         existing_query = """
             SELECT id FROM favorites 
             WHERE user_id = %s AND url = %s
         """
-        existing_result = execute_query_one(existing_query, (user_id, str(favorite_data.url)))
+        existing_result = await execute_query_one(existing_query, (user_id, str(favorite_data.url)))
         
         if existing_result:
             raise HTTPException(status_code=409, detail="This URL is already in your favorites")
@@ -615,7 +621,7 @@ async def create_favorite(
         """
         
         now = datetime.utcnow()
-        created_favorite = execute_insert(
+        created_favorite = await execute_insert(
             insert_favorite_query,
             (favorite_id, favorite_data.title, str(favorite_data.url), user_id, now, now)
         )
@@ -631,6 +637,9 @@ async def create_favorite(
             createdAt=created_favorite['created_at'],
             updatedAt=created_favorite['updated_at']
         )
+        
+        # Clear cache for this user's favorites
+        clear_cache()
         
         return CreateFavoriteResponse(success=True, data=response_favorite)
         
@@ -649,7 +658,7 @@ async def update_favorite(
     logger.info(f"⭐ UPDATE FAVORITE - Endpoint called for ID: {favorite_id}")
     
     try:
-        user_id = get_user_id_from_api_key(authorization)
+        user_id = await get_user_id_from_api_key(authorization)
         
         # Update the favorite
         update_query = """
@@ -660,7 +669,7 @@ async def update_favorite(
         """
         
         now = datetime.utcnow()
-        updated_favorite = execute_insert(
+        updated_favorite = await execute_insert(
             update_query,
             (favorite_data.title, now, favorite_id, user_id)
         )
@@ -693,7 +702,7 @@ async def delete_favorite(
     logger.info(f"⭐ DELETE FAVORITE - Endpoint called for ID: {favorite_id}")
     
     try:
-        user_id = get_user_id_from_api_key(authorization)
+        user_id = await get_user_id_from_api_key(authorization)
         
         # Delete the favorite
         delete_query = """
@@ -702,7 +711,7 @@ async def delete_favorite(
             RETURNING id
         """
         
-        deleted_favorite = execute_insert(delete_query, (favorite_id, user_id))
+        deleted_favorite = await execute_insert(delete_query, (favorite_id, user_id))
         
         if not deleted_favorite:
             raise HTTPException(status_code=404, detail="Favorite not found or you don't have permission to delete it")
