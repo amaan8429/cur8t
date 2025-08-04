@@ -16,30 +16,29 @@ async def get_pool():
     """Get or create the database connection pool"""
     global _pool
     if _pool is None:
-        _pool = await asyncpg.create_pool(
-            settings.database_url,
-            min_size=5,
-            max_size=20,
-            command_timeout=60,
-            server_settings={
-                'jit': 'off',  # Disable JIT for better performance
-                'work_mem': '64MB',  # Increase work memory
-                'maintenance_work_mem': '256MB',  # Increase maintenance memory
-                'shared_preload_libraries': 'pg_stat_statements',  # Enable query stats
-                'pg_stat_statements.track': 'all'  # Track all queries
-            }
-        )
-        
-        # Initialize connection with performance settings
-        async with _pool.acquire() as conn:
-            await conn.execute("""
-                SET enable_seqscan = off;
-                SET enable_bitmapscan = on;
-                SET enable_indexscan = on;
-                SET enable_indexonlyscan = on;
-                SET random_page_cost = 1.1;
-                SET effective_cache_size = '1GB';
-            """)
+        try:
+            logger.info(f"🔗 Creating database pool with URL: {settings.database_url[:20]}...")
+            _pool = await asyncpg.create_pool(
+                settings.database_url,
+                min_size=5,
+                max_size=20,
+                command_timeout=60,
+                ssl='require' if 'neon.tech' in settings.database_url else False,
+                server_settings={
+                    'jit': 'off',  # Disable JIT for better performance
+                    'work_mem': '64MB',  # Increase work memory
+                    'maintenance_work_mem': '256MB',  # Increase maintenance memory
+                }
+            )
+            
+            # Test the connection
+            async with _pool.acquire() as conn:
+                await conn.execute("SELECT 1")
+                logger.info("✅ Database pool created successfully")
+                
+        except Exception as e:
+            logger.error(f"❌ Failed to create database pool: {str(e)}")
+            raise
             
     return _pool
 
@@ -133,7 +132,7 @@ async def health_check():
                 "min_size": pool.get_min_size(),
                 "max_size": pool.get_max_size(),
                 "size": pool.get_size(),
-                "free_size": pool.get_free_size()
+                "free_size": "N/A"  # asyncpg doesn't expose free size
             }
             
             # Get cache stats

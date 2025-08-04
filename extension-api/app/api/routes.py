@@ -29,7 +29,7 @@ from ..models.schemas import (
     CreateCollectionWithLinksRequest,
     CreateCollectionWithLinksResponse
 )
-from ..core.database import execute_query_one, execute_query_all, execute_insert, execute_query, clear_cache, health_check
+from ..core.database import execute_query_one, execute_query_all, execute_insert, execute_query, clear_cache, health_check, get_pool
 from ..core.utils import extract_title_from_url, generate_fallback_title
 
 router = APIRouter()
@@ -59,7 +59,7 @@ async def get_user_id_from_api_key(authorization: Optional[str] = Header(None)) 
             SELECT ak.user_id, ak.name, ak.created_at, u.name as user_name
             FROM api_keys ak
             JOIN users u ON ak.user_id = u.id
-            WHERE ak.key = %s
+            WHERE ak.key = $1
         """
         
         logger.info(f"🔍 Validating API key in database...")
@@ -90,6 +90,18 @@ def root():
 async def health():
     """Health check endpoint"""
     return await health_check()
+
+@router.get("/test-db")
+async def test_db():
+    """Test database connection"""
+    try:
+        pool = await get_pool()
+        async with pool.acquire() as conn:
+            result = await conn.fetchval("SELECT 1 as test")
+            return {"status": "success", "result": result}
+    except Exception as e:
+        logger.error(f"❌ Database test failed: {str(e)}")
+        return {"status": "error", "error": str(e)}
 
 @router.get("/test-auth")
 async def test_auth(authorization: Optional[str] = Header(None)):
@@ -143,7 +155,7 @@ async def get_top_collections(authorization: Optional[str] = Header(None)):
         user_query = """
             SELECT top_collections 
             FROM users 
-            WHERE id = %s 
+            WHERE id = $1 
             LIMIT 1
         """
         logger.info(f"🔍 Executing user query for user_id: {user_id}")
@@ -167,7 +179,7 @@ async def get_top_collections(authorization: Optional[str] = Header(None)):
         collections_query = """
             SELECT id, title, description, visibility, total_links as "totalLinks", created_at as "createdAt"
             FROM collections 
-            WHERE user_id = %s AND id = ANY(%s::uuid[])
+            WHERE user_id = $1 AND id = ANY($2::uuid[])
         """
         
         collections_result = await execute_query_all(
@@ -223,7 +235,7 @@ async def create_collection(
         collection_id = str(uuid.uuid4())
         insert_collection_query = """
             INSERT INTO collections (id, title, description, visibility, user_id, total_links, created_at, updated_at)
-            VALUES (%s::uuid, %s, %s, %s, %s, %s, %s, %s)
+            VALUES ($1::uuid, $2, $3, $4, $5, $6, $7, $8)
             RETURNING id, title, description, visibility, total_links, created_at
         """
         
@@ -268,7 +280,7 @@ async def create_link(
         collection_query = """
             SELECT id, total_links 
             FROM collections 
-            WHERE id = %s::uuid AND user_id = %s
+            WHERE id = $1::uuid AND user_id = $2
         """
         collection_result = await execute_query_one(
             collection_query, 
@@ -290,7 +302,7 @@ async def create_link(
         link_id = str(uuid.uuid4())
         insert_link_query = """
             INSERT INTO links (id, title, url, link_collection_id, user_id, created_at, updated_at)
-            VALUES (%s::uuid, %s, %s, %s::uuid, %s, %s, %s)
+            VALUES ($1::uuid, $2, $3, $4::uuid, $5, $6, $7)
             RETURNING id, title, url, link_collection_id, user_id, created_at, updated_at
         """
         
@@ -307,8 +319,8 @@ async def create_link(
         current_total = collection_result['total_links']
         update_collection_query = """
             UPDATE collections 
-            SET total_links = %s 
-            WHERE id = %s::uuid AND user_id = %s
+            SET total_links = $1 
+            WHERE id = $2::uuid AND user_id = $3
         """
         # Update collection's total links count
         execute_query(
@@ -352,7 +364,7 @@ async def create_bulk_links(
         collection_query = """
             SELECT id, total_links 
             FROM collections 
-            WHERE id = %s::uuid AND user_id = %s
+            WHERE id = $1::uuid AND user_id = $2
         """
         collection_result = await execute_query_one(
             collection_query, 
@@ -564,7 +576,7 @@ async def get_favorites(authorization: Optional[str] = Header(None)):
         favorites_query = """
             SELECT id, title, url, user_id as "userId", created_at as "createdAt", updated_at as "updatedAt"
             FROM favorites 
-            WHERE user_id = %s
+            WHERE user_id = $1
             ORDER BY created_at DESC
         """
         
@@ -605,7 +617,7 @@ async def create_favorite(
         # Check if favorite already exists
         existing_query = """
             SELECT id FROM favorites 
-            WHERE user_id = %s AND url = %s
+            WHERE user_id = $1 AND url = $2
         """
         existing_result = await execute_query_one(existing_query, (user_id, str(favorite_data.url)))
         
@@ -616,7 +628,7 @@ async def create_favorite(
         favorite_id = str(uuid.uuid4())
         insert_favorite_query = """
             INSERT INTO favorites (id, title, url, user_id, created_at, updated_at)
-            VALUES (%s::uuid, %s, %s, %s, %s, %s)
+            VALUES ($1::uuid, $2, $3, $4, $5, $6)
             RETURNING id, title, url, user_id, created_at, updated_at
         """
         
@@ -663,8 +675,8 @@ async def update_favorite(
         # Update the favorite
         update_query = """
             UPDATE favorites 
-            SET title = %s, updated_at = %s
-            WHERE id = %s::uuid AND user_id = %s
+            SET title = $1, updated_at = $2
+            WHERE id = $3::uuid AND user_id = $4
             RETURNING id, title, url, user_id, created_at, updated_at
         """
         
@@ -707,7 +719,7 @@ async def delete_favorite(
         # Delete the favorite
         delete_query = """
             DELETE FROM favorites 
-            WHERE id = %s::uuid AND user_id = %s
+            WHERE id = $1::uuid AND user_id = $2
             RETURNING id
         """
         

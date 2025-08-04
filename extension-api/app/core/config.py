@@ -8,7 +8,7 @@ load_dotenv()
 
 class Settings(BaseModel):
     # Database URL with helpful default message
-    database_url: str = os.getenv("DATABASE_URL", "")
+    database_url: str = os.getenv("DATABASE_URL", "postgresql://neondb_owner:5AWMtSg3HBdE@ep-bitter-glade-a5blm00f.us-east-2.aws.neon.tech/neondb?sslmode=require")
     
     # Clerk secret key (optional for now)
     clerk_secret_key: Optional[str] = os.getenv("CLERK_SECRET_KEY")
