@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from app.api import routes
 from app.core.config import settings
 import logging
@@ -26,6 +27,16 @@ app = FastAPI(
 
 # Add compression middleware
 app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+# Security middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
 
 # Rate limiting middleware
 @app.middleware("http")
@@ -61,12 +72,16 @@ async def log_requests(request: Request, call_next):
     logger.info(f"📤 Response status: {response.status_code} | Time: {process_time:.3f}s")
     return response
 
-# Configure CORS
+# Configure CORS - more restrictive
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure this properly for production
+    allow_origins=[
+        "http://localhost:3000",  # Development
+        "https://cur8t.com",      # Production
+        "https://www.cur8t.com",  # Production with www
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
 

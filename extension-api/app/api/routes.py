@@ -323,7 +323,7 @@ async def create_link(
             WHERE id = $2::uuid AND user_id = $3
         """
         # Update collection's total links count
-        execute_query(
+        await execute_query(
             update_collection_query, 
             (current_total + 1, collection_id, user_id), 
             fetch_all=False
@@ -423,8 +423,8 @@ async def create_bulk_links(
         # Update collection's total links count
         update_collection_query = """
             UPDATE collections 
-            SET total_links = %s 
-            WHERE id = %s::uuid AND user_id = %s
+            SET total_links = $1 
+            WHERE id = $2::uuid AND user_id = $3
         """
         await execute_query(
             update_collection_query, 
@@ -467,7 +467,7 @@ async def create_collection_with_links(
         collection_id = str(uuid.uuid4())
         insert_collection_query = """
             INSERT INTO collections (id, title, description, visibility, user_id, total_links, created_at, updated_at)
-            VALUES (%s::uuid, %s, %s, %s, %s, %s, %s, %s)
+            VALUES ($1::uuid, $2, $3, $4, $5, $6, $7, $8)
             RETURNING id, title, description, visibility, total_links, created_at
         """
         
@@ -528,8 +528,8 @@ async def create_collection_with_links(
         # Update collection's total links count
         update_collection_query = """
             UPDATE collections 
-            SET total_links = %s 
-            WHERE id = %s::uuid AND user_id = %s
+            SET total_links = $1 
+            WHERE id = $2::uuid AND user_id = $3
         """
         await execute_query(
             update_collection_query, 
