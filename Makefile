@@ -16,7 +16,7 @@ prod:
 prod-stop:
 	docker-compose down
 
-# Code quality
+# Code quality (Frontend only - simple and reliable)
 .PHONY: lint
 lint:
 	cd cur8t-web && pnpm lint
