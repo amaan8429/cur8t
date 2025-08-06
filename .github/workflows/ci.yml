@@ -1,0 +1,64 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd cur8t-web
+          npm install
+
+      - name: Install Python Dependencies
+        run: |
+          cd agents-api
+          pip install -r requirements.txt
+          pip install black isort flake8 mypy
+          cd ../extension-api
+          pip install -r requirements.txt
+          pip install black isort flake8 mypy
+
+      - name: Format Python Code
+        run: |
+          cd agents-api && black . --check && isort . --check
+          cd ../extension-api && black . --check && isort . --check
+
+      - name: Lint Python Code
+        run: |
+          cd agents-api && flake8 . && mypy .
+          cd ../extension-api && flake8 . && mypy .
+
+      - name: Lint Frontend Code
+        run: |
+          cd cur8t-web
+          npm run lint
+
+      - name: Run Frontend Tests
+        run: |
+          cd cur8t-web
+          npm test
+
+      - name: Build Frontend
+        run: |
+          cd cur8t-web
+          npm run build
