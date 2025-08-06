@@ -1,20 +1,20 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { DialogFooter } from "@/components/ui/dialog";
-import { PiPlus, PiX } from "react-icons/pi";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { DialogFooter } from '@/components/ui/dialog';
+import { PiPlus, PiX } from 'react-icons/pi';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useCollectionStore } from "@/store/collection-store";
-import { useActiveState } from "@/store/activeStateStore";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/select';
+import { useCollectionStore } from '@/store/collection-store';
+import { useActiveState } from '@/store/activeStateStore';
+import { useToast } from '@/hooks/use-toast';
 
 interface VisibilityActionProps {
   visibilityOption: string;
@@ -49,20 +49,20 @@ export const VisibilityAction: React.FC<VisibilityActionProps> = ({
   const addEmail = () => {
     if (!isValidEmail(newEmail)) {
       toast({
-        title: "Invalid email format",
-        variant: "destructive",
+        title: 'Invalid email format',
+        variant: 'destructive',
       });
       return;
     }
     if (emails.includes(newEmail)) {
       toast({
-        title: "Email already added",
-        variant: "destructive",
+        title: 'Email already added',
+        variant: 'destructive',
       });
       return;
     }
     setEmails([...emails, newEmail]);
-    setNewEmail("");
+    setNewEmail('');
   };
 
   const removeEmail = (emailToRemove: string) => {
@@ -71,17 +71,17 @@ export const VisibilityAction: React.FC<VisibilityActionProps> = ({
 
   const handleConfirm = async () => {
     if (!activeCollectionId) {
-      console.error("No active collection ID found");
+      console.error('No active collection ID found');
       return;
     }
 
     const active = getActiveCollection();
     if (
       active?.visibility === visibilityOption &&
-      visibilityOption !== "protected"
+      visibilityOption !== 'protected'
     ) {
       toast({
-        title: "No changes made",
+        title: 'No changes made',
       });
       return;
     }
@@ -91,18 +91,18 @@ export const VisibilityAction: React.FC<VisibilityActionProps> = ({
       await updateCollectionVisibility(
         activeCollectionId,
         visibilityOption,
-        visibilityOption === "protected" ? emails : []
+        visibilityOption === 'protected' ? emails : []
       );
 
       toast({
-        title: "Collection visibility updated",
+        title: 'Collection visibility updated',
       });
       onClose();
     } catch (error) {
       console.error(error);
       toast({
-        title: "An error occurred",
-        variant: "destructive",
+        title: 'An error occurred',
+        variant: 'destructive',
       });
     }
   };
@@ -127,7 +127,7 @@ export const VisibilityAction: React.FC<VisibilityActionProps> = ({
           </p>
         </div>
 
-        {visibilityOption === "protected" && (
+        {visibilityOption === 'protected' && (
           <div className="space-y-4">
             <Label>Shared With</Label>
             <div className="flex gap-2">
@@ -181,7 +181,7 @@ export const VisibilityAction: React.FC<VisibilityActionProps> = ({
         </Button>
         <Button
           onClick={handleConfirm}
-          disabled={visibilityOption === "protected" && emails.length === 0}
+          disabled={visibilityOption === 'protected' && emails.length === 0}
         >
           Apply
         </Button>

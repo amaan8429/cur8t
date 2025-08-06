@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {PiPushPin, PiUser, PiCaretLeft, PiCaretRight} from "react-icons/pi";
-import { CollectionCard } from "./CollectionCard";
-import { type Collection, type SortOption } from "@/types/profile";
+} from '@/components/ui/select';
+import { PiPushPin, PiUser, PiCaretLeft, PiCaretRight } from 'react-icons/pi';
+import { CollectionCard } from './CollectionCard';
+import { type Collection, type SortOption } from '@/types/profile';
 
 interface CollectionsSectionProps {
   pinnedCollections: Collection[];
@@ -32,15 +32,15 @@ export function CollectionsSection({
   // Apply sorting
   const sortedCollections = [...unpinnedCollections].sort((a, b) => {
     switch (sortBy) {
-      case "recent":
+      case 'recent':
         return (
           new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         );
-      case "likes":
+      case 'likes':
         return b.likes - a.likes;
-      case "links":
+      case 'links':
         return b.totalLinks - a.totalLinks;
-      case "alphabetical":
+      case 'alphabetical':
         return a.title.localeCompare(b.title);
       default:
         return 0;
@@ -143,7 +143,7 @@ export function CollectionsSection({
                     (page) => (
                       <Button
                         key={page}
-                        variant={currentPage === page ? "default" : "outline"}
+                        variant={currentPage === page ? 'default' : 'outline'}
                         size="sm"
                         onClick={() => setCurrentPage(page)}
                         className="w-8 h-8"

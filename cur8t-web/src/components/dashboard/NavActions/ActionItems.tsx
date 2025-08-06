@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { PiDotsThreeThin } from "react-icons/pi";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { PiDotsThreeThin } from 'react-icons/pi';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover';
 import {
   Sidebar,
   SidebarContent,
@@ -16,24 +16,24 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { actionsData as data, ActionType } from "./actions-data";
-import { useCollectionStore } from "@/store/collection-store";
-import { useActiveState } from "@/store/activeStateStore";
+} from '@/components/ui/dialog';
+import { actionsData as data, ActionType } from './actions-data';
+import { useCollectionStore } from '@/store/collection-store';
+import { useActiveState } from '@/store/activeStateStore';
 
 // Import individual action components
-import { CustomizeAction } from "./actions/CustomizeAction";
-import { VisibilityAction } from "./actions/VisibilityAction";
-import { CopyLinkAction } from "./actions/CopyLinkAction";
-import { DuplicateAction } from "./actions/DuplicateAction";
-import { ExportAction } from "./actions/ExportAction";
+import { CustomizeAction } from './actions/CustomizeAction';
+import { VisibilityAction } from './actions/VisibilityAction';
+import { CopyLinkAction } from './actions/CopyLinkAction';
+import { DuplicateAction } from './actions/DuplicateAction';
+import { ExportAction } from './actions/ExportAction';
 
 // Interface for the ActionItem
 export interface ActionItem {
@@ -50,18 +50,18 @@ const ActionItems: React.FC = () => {
   );
 
   // Form states for different dialogs
-  const [pageTitle, setPageTitle] = React.useState("");
-  const [pageDescription, setPageDescription] = React.useState("");
-  const [visibilityOption, setVisibilityOption] = React.useState("public");
+  const [pageTitle, setPageTitle] = React.useState('');
+  const [pageDescription, setPageDescription] = React.useState('');
+  const [visibilityOption, setVisibilityOption] = React.useState('public');
   const [emails, setEmails] = React.useState<string[]>([]);
-  const [newEmail, setNewEmail] = React.useState("");
-  const [duplicateName, setDuplicateName] = React.useState("");
+  const [newEmail, setNewEmail] = React.useState('');
+  const [duplicateName, setDuplicateName] = React.useState('');
   const [includeContents, setIncludeContents] = React.useState(true);
   const [copyPermissions, setCopyPermissions] = React.useState(false);
   const [isDuplicating, setIsDuplicating] = React.useState(false);
   const [isExporting, setIsExporting] = React.useState(false);
-  const [copyLink, setCopyLink] = React.useState("");
-  const [exportFormat, setExportFormat] = React.useState("json");
+  const [copyLink, setCopyLink] = React.useState('');
+  const [exportFormat, setExportFormat] = React.useState('json');
 
   const { collections } = useCollectionStore();
   const { activeCollectionId } = useActiveState();
@@ -74,27 +74,27 @@ const ActionItems: React.FC = () => {
     setSelectedAction(item);
 
     // Initialize states based on action type
-    if (item.type === "customize") {
+    if (item.type === 'customize') {
       const active = getActiveCollection();
-      setPageTitle(active?.title || "");
-      setPageDescription(active?.description || "");
+      setPageTitle(active?.title || '');
+      setPageDescription(active?.description || '');
     }
 
-    if (item.type === "visibility") {
+    if (item.type === 'visibility') {
       const active = getActiveCollection();
-      setVisibilityOption(active?.visibility || "public");
+      setVisibilityOption(active?.visibility || 'public');
       setEmails(active?.sharedEmails || []);
     }
 
-    if (item.type === "copy-link") {
+    if (item.type === 'copy-link') {
       setCopyLink(
         `https://bukmarks.vercel.app/collection/${activeCollectionId}`
       );
     }
 
-    if (item.type === "duplicate") {
+    if (item.type === 'duplicate') {
       const active = getActiveCollection();
-      setDuplicateName(`Copy of ${active?.title || "Collection"}`);
+      setDuplicateName(`Copy of ${active?.title || 'Collection'}`);
       setIncludeContents(true);
       setCopyPermissions(false);
     }
@@ -111,7 +111,7 @@ const ActionItems: React.FC = () => {
     if (!selectedAction) return null;
 
     switch (selectedAction.type) {
-      case "customize":
+      case 'customize':
         return (
           <CustomizeAction
             pageTitle={pageTitle}
@@ -122,7 +122,7 @@ const ActionItems: React.FC = () => {
           />
         );
 
-      case "visibility":
+      case 'visibility':
         return (
           <VisibilityAction
             visibilityOption={visibilityOption}
@@ -135,10 +135,10 @@ const ActionItems: React.FC = () => {
           />
         );
 
-      case "copy-link":
+      case 'copy-link':
         return <CopyLinkAction copyLink={copyLink} onClose={handleClose} />;
 
-      case "duplicate":
+      case 'duplicate':
         return (
           <DuplicateAction
             duplicateName={duplicateName}
@@ -153,7 +153,7 @@ const ActionItems: React.FC = () => {
           />
         );
 
-      case "export":
+      case 'export':
         return (
           <ExportAction
             exportFormat={exportFormat}
@@ -226,16 +226,16 @@ const ActionItems: React.FC = () => {
                 {selectedAction.label}
               </DialogTitle>
               <DialogDescription>
-                {selectedAction.type === "customize" &&
-                  "Customize the title and description of your collection."}
-                {selectedAction.type === "visibility" &&
-                  "Choose who can see your page."}
-                {selectedAction.type === "copy-link" &&
-                  "Copy a link to share this page with others."}
-                {selectedAction.type === "duplicate" &&
-                  "Create a copy of this page with customizable settings."}
-                {selectedAction.type === "export" &&
-                  "Export this page in various formats."}
+                {selectedAction.type === 'customize' &&
+                  'Customize the title and description of your collection.'}
+                {selectedAction.type === 'visibility' &&
+                  'Choose who can see your page.'}
+                {selectedAction.type === 'copy-link' &&
+                  'Copy a link to share this page with others.'}
+                {selectedAction.type === 'duplicate' &&
+                  'Create a copy of this page with customizable settings.'}
+                {selectedAction.type === 'export' &&
+                  'Export this page in various formats.'}
               </DialogDescription>
             </DialogHeader>
             {renderDialogContent()}

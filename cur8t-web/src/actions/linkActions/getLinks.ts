@@ -1,27 +1,27 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { LinksTable } from "@/schema";
-import { auth } from "@clerk/nextjs/server";
-import { and, eq } from "drizzle-orm";
+import { db } from '@/db';
+import { LinksTable } from '@/schema';
+import { auth } from '@clerk/nextjs/server';
+import { and, eq } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function getLinksAction(linkCollectionId: string) {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not found" };
+    return { error: 'User not found' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getLinksLimiter,
     identifier,
-    "Too many requests to get links. Please try again later."
+    'Too many requests to get links. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -29,7 +29,7 @@ export async function getLinksAction(linkCollectionId: string) {
   }
 
   if (!linkCollectionId) {
-    return { error: "Link collection ID is required" };
+    return { error: 'Link collection ID is required' };
   }
 
   const links = await db

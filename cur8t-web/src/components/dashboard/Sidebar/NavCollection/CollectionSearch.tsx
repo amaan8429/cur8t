@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   PiMagnifyingGlass,
   PiFolder,
   PiFolderOpen,
   PiPushPin,
-} from "react-icons/pi";
-import { useRouter } from "next/navigation";
+} from 'react-icons/pi';
+import { useRouter } from 'next/navigation';
 
 import {
   CommandDialog,
@@ -16,13 +16,13 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { DialogTitle } from "@/components/ui/dialog";
-import { VisuallyHidden } from "@/components/ui/visually-hidden";
-import { useCollectionStore } from "@/store/collection-store";
-import { useActiveState } from "@/store/activeStateStore";
-import { usePinnedCollectionsStore } from "@/store/pinned-collections-store";
-import { Collection } from "@/types/types";
+} from '@/components/ui/command';
+import { DialogTitle } from '@/components/ui/dialog';
+import { VisuallyHidden } from '@/components/ui/visually-hidden';
+import { useCollectionStore } from '@/store/collection-store';
+import { useActiveState } from '@/store/activeStateStore';
+import { usePinnedCollectionsStore } from '@/store/pinned-collections-store';
+import { Collection } from '@/types/types';
 
 interface CollectionSearchProps {
   open: boolean;
@@ -134,14 +134,14 @@ export function CollectionSearchButton() {
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey) && e.shiftKey) {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey) && e.shiftKey) {
         e.preventDefault();
         setOpen((open) => !open);
       }
     };
 
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
   }, []);
 
   return (

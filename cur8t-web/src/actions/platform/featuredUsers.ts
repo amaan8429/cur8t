@@ -1,13 +1,13 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { CollectionsTable, UsersTable } from "@/schema";
-import { eq, desc, sql, and } from "drizzle-orm";
+import { db } from '@/db';
+import { CollectionsTable, UsersTable } from '@/schema';
+import { eq, desc, sql, and } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function getFeaturedUsers() {
   // IP-based rate limiting for public platform endpoint
@@ -15,7 +15,7 @@ export async function getFeaturedUsers() {
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getPlatformStatsLimiter,
     identifier,
-    "Too many requests to get featured users. Please try again later."
+    'Too many requests to get featured users. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -38,10 +38,10 @@ export async function getFeaturedUsers() {
         CollectionsTable,
         and(
           eq(UsersTable.id, CollectionsTable.userId),
-          eq(CollectionsTable.visibility, "public")
+          eq(CollectionsTable.visibility, 'public')
         )
       )
-      .where(eq(CollectionsTable.visibility, "public"))
+      .where(eq(CollectionsTable.visibility, 'public'))
       .groupBy(
         UsersTable.id,
         UsersTable.name,
@@ -68,7 +68,7 @@ export async function getFeaturedUsers() {
           .where(
             and(
               eq(CollectionsTable.userId, user.id),
-              eq(CollectionsTable.visibility, "public")
+              eq(CollectionsTable.visibility, 'public')
             )
           )
           .orderBy(desc(CollectionsTable.likes))
@@ -86,9 +86,9 @@ export async function getFeaturedUsers() {
       data: usersWithCollections.filter((user) => user.username), // Only users with usernames
     };
   } catch (error) {
-    console.error("Error fetching featured users:", error);
+    console.error('Error fetching featured users:', error);
     return {
-      error: "Failed to fetch featured users",
+      error: 'Failed to fetch featured users',
     };
   }
 }

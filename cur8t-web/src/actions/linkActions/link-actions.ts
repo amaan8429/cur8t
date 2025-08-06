@@ -1,18 +1,17 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { totalLinksCount } from "@/lib/totalLinksCount";
-import { CollectionsTable, LinksTable } from "@/schema";
-import { extractTitleFromUrl, generateFallbackTitle } from "@/lib/extractTitle";
-import { auth } from "@clerk/nextjs/server";
-import { and, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { db } from '@/db';
+import { totalLinksCount } from '@/lib/totalLinksCount';
+import { CollectionsTable, LinksTable } from '@/schema';
+import { extractTitleFromUrl, generateFallbackTitle } from '@/lib/extractTitle';
+import { auth } from '@clerk/nextjs/server';
+import { and, eq } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
-import { FrontendLinkSchema } from "@/types/types";
+} from '@/lib/ratelimit';
+import { FrontendLinkSchema } from '@/types/types';
 
 interface AddLinkData {
   title?: string;
@@ -23,14 +22,14 @@ export async function addLinkAction(data: AddLinkData, collectionId: string) {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not found" };
+    return { error: 'User not found' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.createLinkLimiter,
     identifier,
-    "Too many requests to add link. Please try again later."
+    'Too many requests to add link. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -38,7 +37,7 @@ export async function addLinkAction(data: AddLinkData, collectionId: string) {
   }
 
   if (!collectionId) {
-    return { error: "Collection Id is required" };
+    return { error: 'Collection Id is required' };
   }
 
   // Validate link data using schema
@@ -49,17 +48,17 @@ export async function addLinkAction(data: AddLinkData, collectionId: string) {
 
   if (!validationResult.success) {
     const errorMessage =
-      validationResult.error.errors[0]?.message || "Invalid link data";
+      validationResult.error.errors[0]?.message || 'Invalid link data';
     return { error: errorMessage };
   }
 
   // Extract title if not provided
-  let finalTitle: string = data.title?.trim() || "";
+  let finalTitle: string = data.title?.trim() || '';
   if (!finalTitle) {
     try {
       finalTitle = await extractTitleFromUrl(data.url);
     } catch (error) {
-      console.warn("Failed to extract title, using fallback:", error);
+      console.warn('Failed to extract title, using fallback:', error);
       finalTitle = generateFallbackTitle(data.url);
     }
   }
@@ -98,14 +97,14 @@ export async function deleteLinkAction(id: string) {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not found" };
+    return { error: 'User not found' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.deleteLinkLimiter,
     identifier,
-    "Too many requests to delete link. Please try again later."
+    'Too many requests to delete link. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -113,7 +112,7 @@ export async function deleteLinkAction(id: string) {
   }
 
   if (!id) {
-    return { error: "Link ID is required" };
+    return { error: 'Link ID is required' };
   }
 
   // Retrieve the link's collectionId before deleting it
@@ -124,8 +123,8 @@ export async function deleteLinkAction(id: string) {
     .limit(1);
 
   if (!link || !link[0]?.linkCollectionId) {
-    console.error("Invalid collectionId for link:", id);
-    return { error: "Invalid collectionId" };
+    console.error('Invalid collectionId for link:', id);
+    return { error: 'Invalid collectionId' };
   }
 
   const collectionId = link[0].linkCollectionId;
@@ -152,7 +151,7 @@ export async function deleteLinkAction(id: string) {
       )
     );
 
-  console.log("Link deleted:", deletedLink);
+  console.log('Link deleted:', deletedLink);
 
   return { success: true };
 }
@@ -167,14 +166,14 @@ export async function updateLinkAction(
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not found" };
+    return { error: 'User not found' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.userUpdateLimiter, // Using user update limiter for modification operations
     identifier,
-    "Too many requests to update link. Please try again later."
+    'Too many requests to update link. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -182,7 +181,7 @@ export async function updateLinkAction(
   }
 
   if (!id) {
-    return { error: "Link ID is required" };
+    return { error: 'Link ID is required' };
   }
 
   // Validate link data using schema (only validate fields that are provided)
@@ -194,13 +193,13 @@ export async function updateLinkAction(
     // For partial updates, we need to check if url is valid when provided
     if (data.url !== undefined) {
       const validationResult = FrontendLinkSchema.safeParse({
-        title: data.title || "placeholder", // Required field for schema
+        title: data.title || 'placeholder', // Required field for schema
         url: data.url,
       });
 
       if (!validationResult.success) {
         const errorMessage =
-          validationResult.error.errors[0]?.message || "Invalid link data";
+          validationResult.error.errors[0]?.message || 'Invalid link data';
         return { error: errorMessage };
       }
     }
@@ -209,12 +208,12 @@ export async function updateLinkAction(
     if (data.title !== undefined) {
       const titleValidation = FrontendLinkSchema.safeParse({
         title: data.title,
-        url: "https://placeholder.com", // Required field for schema
+        url: 'https://placeholder.com', // Required field for schema
       });
 
       if (!titleValidation.success) {
         const titleError = titleValidation.error.errors.find((e) =>
-          e.path.includes("title")
+          e.path.includes('title')
         );
         if (titleError) {
           return { error: titleError.message };
@@ -233,11 +232,11 @@ export async function updateLinkAction(
       .where(and(eq(LinksTable.id, id), eq(LinksTable.userId, userId)))
       .returning();
 
-    console.log("Link updated:", updatedLink);
+    console.log('Link updated:', updatedLink);
 
     return { success: true, data: updatedLink };
   } catch (error) {
-    console.error("Failed to update link:", error);
-    return { error: "Failed to update" };
+    console.error('Failed to update link:', error);
+    return { error: 'Failed to update' };
   }
 }

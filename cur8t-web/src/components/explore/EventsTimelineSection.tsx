@@ -1,15 +1,15 @@
-import React from "react";
-import { PiPlus } from "react-icons/pi";
+import React from 'react';
+import { PiPlus } from 'react-icons/pi';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { HomepageCollection } from "@/actions/platform/homepageCollections";
-import { UnifiedCollectionCard } from "./UnifiedCollectionCard";
+} from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { HomepageCollection } from '@/actions/platform/homepageCollections';
+import { UnifiedCollectionCard } from './UnifiedCollectionCard';
 
 interface EventsTimelineSectionProps {
   newCollections: HomepageCollection[];

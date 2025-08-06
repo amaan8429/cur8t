@@ -1,9 +1,13 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { CollectionsTable, UsersTable } from "@/schema";
-import { eq, ilike, or, and } from "drizzle-orm";
-import { checkRateLimit, getClientIdFromHeaders, rateLimiters } from "@/lib/ratelimit";
+import { db } from '@/db';
+import { CollectionsTable, UsersTable } from '@/schema';
+import { eq, ilike, or, and } from 'drizzle-orm';
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from '@/lib/ratelimit';
 
 export async function quickSearch(query: string) {
   try {
@@ -12,7 +16,7 @@ export async function quickSearch(query: string) {
     const rateLimitResult = await checkRateLimit(
       rateLimiters.searchLimiter,
       identifier,
-      "Too many search requests. Please try again later."
+      'Too many search requests. Please try again later.'
     );
     if (!rateLimitResult.success) {
       return { error: rateLimitResult.error };
@@ -51,7 +55,7 @@ export async function quickSearch(query: string) {
             ilike(CollectionsTable.description, searchTerm),
             ilike(UsersTable.name, searchTerm)
           ),
-          eq(CollectionsTable.visibility, "public")
+          eq(CollectionsTable.visibility, 'public')
         )
       )
       .limit(8);
@@ -81,9 +85,9 @@ export async function quickSearch(query: string) {
       },
     };
   } catch (error) {
-    console.error("Error in quick search:", error);
+    console.error('Error in quick search:', error);
     return {
-      error: "Failed to perform search",
+      error: 'Failed to perform search',
     };
   }
 }

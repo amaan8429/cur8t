@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
-import { Octokit } from "@octokit/rest";
-import { desc, eq } from "drizzle-orm";
-import { db } from "@/db";
-import { GitHubSettingsTable, CollectionsTable, LinksTable } from "@/schema";
-import { Collection, Link } from "@/types/types";
-import { auth } from "@clerk/nextjs/server";
-import { RequestError } from "@octokit/request-error";
-import { getClientId, checkRateLimit, rateLimiters } from "@/lib/ratelimit";
+import { NextResponse } from 'next/server';
+import { Octokit } from '@octokit/rest';
+import { desc, eq } from 'drizzle-orm';
+import { db } from '@/db';
+import { GitHubSettingsTable, CollectionsTable, LinksTable } from '@/schema';
+import { Collection, Link } from '@/types/types';
+import { auth } from '@clerk/nextjs/server';
+import { RequestError } from '@octokit/request-error';
+import { getClientId, checkRateLimit, rateLimiters } from '@/lib/ratelimit';
 
 function convertToMarkdown(collection: Collection, links: Link[]) {
   let markdown = `# ${collection.title}\n\n`;
@@ -29,12 +29,12 @@ async function getCurrentContent(
   try {
     const { data } = await octokit.repos.getContent({
       owner,
-      repo: "bookmarksCollection",
+      repo: 'bookmarksCollection',
       path,
     });
 
-    if ("content" in data && typeof data.content === "string") {
-      return Buffer.from(data.content, "base64").toString("utf-8");
+    if ('content' in data && typeof data.content === 'string') {
+      return Buffer.from(data.content, 'base64').toString('utf-8');
     }
     return null;
   } catch (error) {
@@ -49,13 +49,13 @@ async function ensureRepoExists(octokit: Octokit, owner: string) {
   try {
     await octokit.repos.get({
       owner,
-      repo: "bookmarksCollection",
+      repo: 'bookmarksCollection',
     });
   } catch (error) {
     if (error instanceof RequestError && error.status === 404) {
       await octokit.repos.createForAuthenticatedUser({
-        name: "bookmarksCollection",
-        description: "Collection of bookmarked links synced from my app",
+        name: 'bookmarksCollection',
+        description: 'Collection of bookmarked links synced from my app',
         private: true,
         auto_init: true,
       });
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
 
     if (!id) {
       return NextResponse.json(
-        { error: "Missing UserId", showToast: true },
+        { error: 'Missing UserId', showToast: true },
         { status: 400 }
       );
     }
@@ -87,7 +87,7 @@ export async function POST(req: Request) {
 
     if (!userId) {
       return NextResponse.json(
-        { error: "User not found", showToast: true },
+        { error: 'User not found', showToast: true },
         { status: 404 }
       );
     }
@@ -96,19 +96,19 @@ export async function POST(req: Request) {
     const rateLimitResult = await checkRateLimit(
       rateLimiters.githubSyncLimiter,
       identifier,
-      "Too many requests to GitHub sync. Please try again later."
+      'Too many requests to GitHub sync. Please try again later.'
     );
     if (!rateLimitResult.success) {
       const retryAfter = rateLimitResult.retryAfter ?? 60;
       return NextResponse.json(
         { error: rateLimitResult.error, retryAfter },
-        { status: 429, headers: { "Retry-After": retryAfter.toString() } }
+        { status: 429, headers: { 'Retry-After': retryAfter.toString() } }
       );
     }
 
     if (id !== userId) {
       return NextResponse.json(
-        { error: "User does not match request", showToast: true },
+        { error: 'User does not match request', showToast: true },
         { status: 403 }
       );
     }
@@ -119,7 +119,7 @@ export async function POST(req: Request) {
 
     if (!githubSettings) {
       return NextResponse.json(
-        { error: "GitHub not connected", showToast: true },
+        { error: 'GitHub not connected', showToast: true },
         { status: 400 }
       );
     }
@@ -137,9 +137,9 @@ export async function POST(req: Request) {
 
     if (collections.length === 0) {
       return NextResponse.json({
-        message: "No collections to sync",
+        message: 'No collections to sync',
         showToast: true,
-        status: "info",
+        status: 'info',
       });
     }
 
@@ -152,7 +152,7 @@ export async function POST(req: Request) {
         const content = convertToMarkdown(collection, links);
         const path = `${collection.title
           .toLowerCase()
-          .replace(/\s+/g, "-")}.md`;
+          .replace(/\s+/g, '-')}.md`;
         const currentContent = await getCurrentContent(octokit, owner, path);
 
         return {
@@ -169,24 +169,24 @@ export async function POST(req: Request) {
 
     if (changedFiles.length === 0) {
       return NextResponse.json({
-        message: "All collections are already in sync",
+        message: 'All collections are already in sync',
         showToast: true,
-        status: "success",
+        status: 'success',
       });
     }
 
     // Get the latest commit SHA
     const { data: ref } = await octokit.git.getRef({
       owner,
-      repo: "bookmarksCollection",
-      ref: "heads/main",
+      repo: 'bookmarksCollection',
+      ref: 'heads/main',
     });
     const latestCommitSha = ref.object.sha;
 
     // Get the base tree
     const { data: commit } = await octokit.git.getCommit({
       owner,
-      repo: "bookmarksCollection",
+      repo: 'bookmarksCollection',
       commit_sha: latestCommitSha,
     });
     const baseTreeSha = commit.tree.sha;
@@ -196,14 +196,14 @@ export async function POST(req: Request) {
       changedFiles.map(async (file) => {
         const { data } = await octokit.git.createBlob({
           owner,
-          repo: "bookmarksCollection",
+          repo: 'bookmarksCollection',
           content: file.content,
-          encoding: "utf-8",
+          encoding: 'utf-8',
         });
         return {
           path: file.path,
-          mode: "100644" as const,
-          type: "blob" as const,
+          mode: '100644' as const,
+          type: 'blob' as const,
           sha: data.sha,
         };
       })
@@ -212,7 +212,7 @@ export async function POST(req: Request) {
     // Create a new tree
     const { data: newTree } = await octokit.git.createTree({
       owner,
-      repo: "bookmarksCollection",
+      repo: 'bookmarksCollection',
       base_tree: baseTreeSha,
       tree: blobs,
     });
@@ -220,7 +220,7 @@ export async function POST(req: Request) {
     // Create a commit
     const { data: newCommit } = await octokit.git.createCommit({
       owner,
-      repo: "bookmarksCollection",
+      repo: 'bookmarksCollection',
       message: `Sync updated collections (${changedFiles.length} changed)`,
       tree: newTree.sha,
       parents: [latestCommitSha],
@@ -229,8 +229,8 @@ export async function POST(req: Request) {
     // Update the reference
     await octokit.git.updateRef({
       owner,
-      repo: "bookmarksCollection",
-      ref: "heads/main",
+      repo: 'bookmarksCollection',
+      ref: 'heads/main',
       sha: newCommit.sha,
     });
 
@@ -243,19 +243,19 @@ export async function POST(req: Request) {
     return NextResponse.json({
       message: `Successfully synced ${changedFiles.length} updated collections`,
       showToast: true,
-      status: "success",
+      status: 'success',
       results: changedFiles.map((file) => ({
         collection: file.collection,
-        status: "success",
+        status: 'success',
       })),
     });
   } catch (error) {
-    console.error("Sync error:", error);
+    console.error('Sync error:', error);
     return NextResponse.json(
       {
-        error: "Failed to sync with GitHub",
+        error: 'Failed to sync with GitHub',
         showToast: true,
-        status: "error",
+        status: 'error',
       },
       { status: 500 }
     );

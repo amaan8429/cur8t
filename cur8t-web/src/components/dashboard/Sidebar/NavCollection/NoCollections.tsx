@@ -1,22 +1,22 @@
-import React from "react";
-import { useRouter } from "next/navigation";
-import { PiFolder, PiPlus } from "react-icons/pi";
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import { PiFolder, PiPlus } from 'react-icons/pi';
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-} from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { CreateCollectionComponent } from "../../TopSection/CreateCollection";
+} from '@/components/ui/dialog';
+import { CreateCollectionComponent } from '../../TopSection/CreateCollection';
 
 const NoCollections = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false);

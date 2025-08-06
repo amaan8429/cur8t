@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { PiTrash, PiGlobe, PiPencilSimple } from "react-icons/pi";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import * as React from 'react';
+import { PiTrash, PiGlobe, PiPencilSimple } from 'react-icons/pi';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+} from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,7 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 import {
   Dialog,
   DialogContent,
@@ -31,13 +31,13 @@ import {
   DialogFooter,
   DialogTrigger,
   DialogClose,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 
-import { Link } from "@/types/types";
-import { truncateUrl } from "@/lib/truncate";
-import { useLinkStore } from "@/store/link-store";
-import LoadingStates from "./Loading";
-import EmptyStates from "./NoLinks";
+import { Link } from '@/types/types';
+import { truncateUrl } from '@/lib/truncate';
+import { useLinkStore } from '@/store/link-store';
+import LoadingStates from './Loading';
+import EmptyStates from './NoLinks';
 
 interface LinkGridProps {
   collectionId: string;
@@ -56,8 +56,8 @@ export function LinkGrid({
 }: LinkGridProps) {
   const [linkToDelete, setLinkToDelete] = React.useState<string | null>(null);
   const [editingLink, setEditingLink] = React.useState<Link | null>(null);
-  const [newTitle, setNewTitle] = React.useState("");
-  const [newUrl, setNewUrl] = React.useState("");
+  const [newTitle, setNewTitle] = React.useState('');
+  const [newUrl, setNewUrl] = React.useState('');
   const [open, setOpen] = React.useState(false);
 
   // Filter links for this collection first
@@ -97,8 +97,8 @@ export function LinkGrid({
       }
       setEditingLink(null);
       setOpen(false);
-      setNewTitle("");
-      setNewUrl("");
+      setNewTitle('');
+      setNewUrl('');
     }
   };
 
@@ -139,7 +139,7 @@ export function LinkGrid({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.open(link.url, "_blank")}
+                  onClick={() => window.open(link.url, '_blank')}
                 >
                   Visit
                 </Button>

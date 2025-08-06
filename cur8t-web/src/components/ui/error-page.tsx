@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   PiTriangle,
   PiWifiX,
@@ -7,20 +7,20 @@ import {
   PiBug,
   PiHouse,
   PiArrowClockwise,
-} from "react-icons/pi";
+} from 'react-icons/pi';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 export type ErrorType =
-  | "rate-limit"
-  | "network"
-  | "server"
-  | "permission"
-  | "not-found"
-  | "generic";
+  | 'rate-limit'
+  | 'network'
+  | 'server'
+  | 'permission'
+  | 'not-found'
+  | 'generic';
 
 interface ErrorPageProps {
   type?: ErrorType;
@@ -36,60 +36,60 @@ interface ErrorPageProps {
 }
 
 const errorConfig = {
-  "rate-limit": {
+  'rate-limit': {
     icon: PiClock,
-    title: "Rate Limit Exceeded",
+    title: 'Rate Limit Exceeded',
     description:
       "You've made too many requests. Please wait a moment before trying again.",
-    color: "text-amber-500",
-    bgColor: "bg-amber-50 dark:bg-amber-950/20",
-    borderColor: "border-amber-200 dark:border-amber-800",
+    color: 'text-amber-500',
+    bgColor: 'bg-amber-50 dark:bg-amber-950/20',
+    borderColor: 'border-amber-200 dark:border-amber-800',
   },
   network: {
     icon: PiWifiX,
-    title: "Connection Error",
+    title: 'Connection Error',
     description:
-      "Unable to connect to the server. Please check your internet connection.",
-    color: "text-red-500",
-    bgColor: "bg-red-50 dark:bg-red-950/20",
-    borderColor: "border-red-200 dark:border-red-800",
+      'Unable to connect to the server. Please check your internet connection.',
+    color: 'text-red-500',
+    bgColor: 'bg-red-50 dark:bg-red-950/20',
+    borderColor: 'border-red-200 dark:border-red-800',
   },
   server: {
     icon: PiBug,
-    title: "Server Error",
-    description: "Something went wrong on our end. Our team has been notified.",
-    color: "text-red-500",
-    bgColor: "bg-red-50 dark:bg-red-950/20",
-    borderColor: "border-red-200 dark:border-red-800",
+    title: 'Server Error',
+    description: 'Something went wrong on our end. Our team has been notified.',
+    color: 'text-red-500',
+    bgColor: 'bg-red-50 dark:bg-red-950/20',
+    borderColor: 'border-red-200 dark:border-red-800',
   },
   permission: {
     icon: PiShield,
-    title: "Access Denied",
+    title: 'Access Denied',
     description: "You don't have permission to access this resource.",
-    color: "text-orange-500",
-    bgColor: "bg-orange-50 dark:bg-orange-950/20",
-    borderColor: "border-orange-200 dark:border-orange-800",
+    color: 'text-orange-500',
+    bgColor: 'bg-orange-50 dark:bg-orange-950/20',
+    borderColor: 'border-orange-200 dark:border-orange-800',
   },
-  "not-found": {
+  'not-found': {
     icon: PiTriangle,
-    title: "Not Found",
+    title: 'Not Found',
     description: "The page or resource you're looking for doesn't exist.",
-    color: "text-gray-500",
-    bgColor: "bg-gray-50 dark:bg-gray-950/20",
-    borderColor: "border-gray-200 dark:border-gray-800",
+    color: 'text-gray-500',
+    bgColor: 'bg-gray-50 dark:bg-gray-950/20',
+    borderColor: 'border-gray-200 dark:border-gray-800',
   },
   generic: {
     icon: PiBug,
-    title: "Something Went Wrong",
-    description: "An unexpected error occurred. Please try again.",
-    color: "text-red-500",
-    bgColor: "bg-red-50 dark:bg-red-950/20",
-    borderColor: "border-red-200 dark:border-red-800",
+    title: 'Something Went Wrong',
+    description: 'An unexpected error occurred. Please try again.',
+    color: 'text-red-500',
+    bgColor: 'bg-red-50 dark:bg-red-950/20',
+    borderColor: 'border-red-200 dark:border-red-800',
   },
 };
 
 export const ErrorPage: React.FC<ErrorPageProps> = ({
-  type = "generic",
+  type = 'generic',
   title,
   description,
   errorCode,
@@ -97,7 +97,7 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
   onRetry,
   onGoHome,
   showHomeButton = true,
-  className = "",
+  className = '',
   children,
 }) => {
   const config = errorConfig[type];
@@ -106,7 +106,7 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
   const formatRetryTime = (seconds: number) => {
     if (seconds < 60) return `${seconds} seconds`;
     const minutes = Math.ceil(seconds / 60);
-    return `${minutes} minute${minutes > 1 ? "s" : ""}`;
+    return `${minutes} minute${minutes > 1 ? 's' : ''}`;
   };
 
   return (
@@ -183,22 +183,22 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
 };
 
 // Specific error page components for common cases
-export const RateLimitErrorPage: React.FC<Omit<ErrorPageProps, "type">> = (
+export const RateLimitErrorPage: React.FC<Omit<ErrorPageProps, 'type'>> = (
   props
 ) => <ErrorPage type="rate-limit" {...props} />;
 
-export const NetworkErrorPage: React.FC<Omit<ErrorPageProps, "type">> = (
+export const NetworkErrorPage: React.FC<Omit<ErrorPageProps, 'type'>> = (
   props
 ) => <ErrorPage type="network" {...props} />;
 
-export const ServerErrorPage: React.FC<Omit<ErrorPageProps, "type">> = (
+export const ServerErrorPage: React.FC<Omit<ErrorPageProps, 'type'>> = (
   props
 ) => <ErrorPage type="server" {...props} />;
 
-export const NotFoundErrorPage: React.FC<Omit<ErrorPageProps, "type">> = (
+export const NotFoundErrorPage: React.FC<Omit<ErrorPageProps, 'type'>> = (
   props
 ) => <ErrorPage type="not-found" {...props} />;
 
-export const PermissionErrorPage: React.FC<Omit<ErrorPageProps, "type">> = (
+export const PermissionErrorPage: React.FC<Omit<ErrorPageProps, 'type'>> = (
   props
 ) => <ErrorPage type="permission" {...props} />;

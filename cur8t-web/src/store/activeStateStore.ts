@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 interface ActiveState {
   activeItem: string;
@@ -14,11 +14,11 @@ interface ActiveState {
 }
 
 export const useActiveState = create<ActiveState>((set) => ({
-  activeItem: "",
-  activeUserId: "",
-  activeCollectionId: "",
-  activeSecondary: "",
-  activeCollectionName: "",
+  activeItem: '',
+  activeUserId: '',
+  activeCollectionId: '',
+  activeSecondary: '',
+  activeCollectionName: '',
   setActiveItem: (item) => set({ activeItem: item }),
   setActiveUserId: (userId) => set({ activeUserId: userId }),
   setActiveCollectionId: (collectionId) =>

@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { useEffect, useState, type MouseEvent } from "react";
-import Image, { type StaticImageData } from "next/image";
+import { useEffect, useState, type MouseEvent } from 'react';
+import Image, { type StaticImageData } from 'next/image';
 import {
   motion,
   useMotionTemplate,
   useMotionValue,
   type MotionStyle,
   type MotionValue,
-} from "motion/react";
-import Balancer from "react-wrap-balancer";
-import { cn } from "@/lib/utils";
-import {PiBrowser} from "react-icons/pi";
-import { Badge } from "@/components/ui/badge";
+} from 'motion/react';
+import Balancer from 'react-wrap-balancer';
+import { cn } from '@/lib/utils';
+import { PiBrowser } from 'react-icons/pi';
+import { Badge } from '@/components/ui/badge';
 
 type WrapperStyle = MotionStyle & {
-  "--x": MotionValue<string>;
-  "--y": MotionValue<string>;
+  '--x': MotionValue<string>;
+  '--y': MotionValue<string>;
 };
 
 interface CardProps {
@@ -51,15 +51,15 @@ function FeatureCard({
       onMouseMove={handleMouseMove}
       style={
         {
-          "--x": motionTemplateX,
-          "--y": motionTemplateY,
+          '--x': motionTemplateX,
+          '--y': motionTemplateY,
         } as WrapperStyle
       }
     >
       <div
         className={cn(
-          "group relative w-full overflow-hidden rounded-3xl border border-border bg-card transition duration-300",
-          "md:hover:border-primary/50",
+          'group relative w-full overflow-hidden rounded-3xl border border-border bg-card transition duration-300',
+          'md:hover:border-primary/50',
           bgClass
         )}
       >
@@ -80,19 +80,19 @@ function FeatureCard({
 }
 
 const steps = [
-  { id: "1", name: "Install" },
-  { id: "2", name: "Save" },
-  { id: "3", name: "Access" },
-  { id: "4", name: "Organize" },
+  { id: '1', name: 'Install' },
+  { id: '2', name: 'Save' },
+  { id: '3', name: 'Access' },
+  { id: '4', name: 'Organize' },
 ];
 
-function IconCheck({ className, ...props }: React.ComponentProps<"svg">) {
+function IconCheck({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 256 256"
       fill="currentColor"
-      className={cn("size-4", className)}
+      className={cn('size-4', className)}
       {...props}
     >
       <path d="m229.66 77.66-128 128a8 8 0 0 1-11.32 0l-56-56a8 8 0 0 1 11.32-11.32L96 188.69 218.34 66.34a8 8 0 0 1 11.32 11.32Z" />
@@ -120,27 +120,27 @@ function Steps({ steps, current, onChange }: StepsProps) {
           return (
             <li
               className={cn(
-                "relative z-50 rounded-full px-3 py-1 transition-all duration-300 ease-in-out md:flex",
-                isCompleted ? "bg-primary/20" : "bg-muted/20"
+                'relative z-50 rounded-full px-3 py-1 transition-all duration-300 ease-in-out md:flex',
+                isCompleted ? 'bg-primary/20' : 'bg-muted/20'
               )}
               key={`${step.name}-${stepIdx}`}
             >
               <div
                 className={cn(
-                  "group flex w-full cursor-pointer items-center focus:outline-none focus-visible:ring-2",
-                  (isFuture || isCurrent) && "pointer-events-none"
+                  'group flex w-full cursor-pointer items-center focus:outline-none focus-visible:ring-2',
+                  (isFuture || isCurrent) && 'pointer-events-none'
                 )}
                 onClick={() => onChange(stepIdx)}
               >
                 <span className="flex items-center gap-2 text-sm font-medium">
                   <span
                     className={cn(
-                      "flex shrink-0 items-center justify-center rounded-full duration-300",
+                      'flex shrink-0 items-center justify-center rounded-full duration-300',
                       isCompleted &&
-                        "bg-primary size-4 text-primary-foreground",
+                        'bg-primary size-4 text-primary-foreground',
                       isCurrent &&
-                        "bg-primary/80 size-4 p-2 text-primary-foreground",
-                      isFuture && "bg-muted size-4 p-2 text-muted-foreground"
+                        'bg-primary/80 size-4 p-2 text-primary-foreground',
+                      isFuture && 'bg-muted size-4 p-2 text-muted-foreground'
                     )}
                   >
                     {isCompleted ? (
@@ -148,8 +148,8 @@ function Steps({ steps, current, onChange }: StepsProps) {
                     ) : (
                       <span
                         className={cn(
-                          "text-xs",
-                          isCurrent && "text-primary-foreground"
+                          'text-xs',
+                          isCurrent && 'text-primary-foreground'
                         )}
                       >
                         {stepIdx + 1}
@@ -158,9 +158,9 @@ function Steps({ steps, current, onChange }: StepsProps) {
                   </span>
                   <span
                     className={cn(
-                      "text-sm font-medium duration-300",
-                      isCompleted && "text-primary",
-                      isFuture && "text-muted-foreground"
+                      'text-sm font-medium duration-300',
+                      isCompleted && 'text-primary',
+                      isFuture && 'text-muted-foreground'
                     )}
                   >
                     {step.name}
@@ -235,8 +235,8 @@ export function BrowserExtensionCard({
     <FeatureCard {...props}>
       <div
         className={cn(
-          { "translate-x-0 opacity-0": step < 3 },
-          "absolute left-2/4 top-1/3 flex w-full -translate-x-1/2 -translate-y-[33%] flex-col gap-12 text-center text-2xl font-bold transition-all duration-500 md:w-3/5"
+          { 'translate-x-0 opacity-0': step < 3 },
+          'absolute left-2/4 top-1/3 flex w-full -translate-x-1/2 -translate-y-[33%] flex-col gap-12 text-center text-2xl font-bold transition-all duration-500 md:w-3/5'
         )}
       >
         <Image
@@ -246,9 +246,9 @@ export function BrowserExtensionCard({
           width={800}
           height={300}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
       </div>
@@ -258,25 +258,25 @@ export function BrowserExtensionCard({
         <Image
           alt={image.alt}
           className={cn(step1img1Class, {
-            "-translate-x-36 opacity-0 rounded-2xl": step > 0,
+            '-translate-x-36 opacity-0 rounded-2xl': step > 0,
           })}
           src={image.step1dark1}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
         <Image
           alt={image.alt}
           className={cn(step1img2Class, {
-            "-translate-x-24 opacity-0 rounded-2xl": step > 0,
+            '-translate-x-24 opacity-0 rounded-2xl': step > 0,
           })}
           src={image.step1dark2}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
 
@@ -285,30 +285,30 @@ export function BrowserExtensionCard({
           alt={image.alt}
           className={cn(
             step2img1Class,
-            "rounded-2xl",
-            { "translate-x-36 opacity-0": step < 1 },
-            { "-translate-x-36 opacity-0": step > 1 }
+            'rounded-2xl',
+            { 'translate-x-36 opacity-0': step < 1 },
+            { '-translate-x-36 opacity-0': step > 1 }
           )}
           src={image.step2dark1}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
         <Image
           alt={image.alt}
           className={cn(
             step2img2Class,
-            "rounded-2xl",
-            { "translate-x-24 opacity-0": step < 1 },
-            { "-translate-x-24 opacity-0": step > 1 }
+            'rounded-2xl',
+            { 'translate-x-24 opacity-0': step < 1 },
+            { '-translate-x-24 opacity-0': step > 1 }
           )}
           src={image.step2dark2}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
 
@@ -317,16 +317,16 @@ export function BrowserExtensionCard({
           alt={image.alt}
           className={cn(
             step3imgClass,
-            "rounded-2xl",
-            { "translate-x-36 opacity-0": step < 2 },
-            { "-translate-x-36 opacity-0": step > 2 },
-            { "opacity-90": step === 2 }
+            'rounded-2xl',
+            { 'translate-x-36 opacity-0': step < 2 },
+            { '-translate-x-36 opacity-0': step > 2 },
+            { 'opacity-90': step === 2 }
           )}
           src={image.step3dark}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
 
@@ -345,11 +345,11 @@ export function BrowserExtensionCard({
 
 // Placeholder images - replace with actual screenshots
 const placeholderImage: StaticImageData = {
-  src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmEyYTJhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJyb3dzZXIgRXh0ZW5zaW9uIFNjcmVlbnNob3Q8L3RleHQ+PC9zdmc+",
+  src: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmEyYTJhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkJyb3dzZXIgRXh0ZW5zaW9uIFNjcmVlbnNob3Q8L3RleHQ+PC9zdmc+',
   height: 300,
   width: 800,
   blurDataURL:
-    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmEyYTJhIi8+PC9zdmc+",
+    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMmEyYTJhIi8+PC9zdmc+',
 };
 
 export default function BrowserExtensionShowcase() {
@@ -400,7 +400,7 @@ export default function BrowserExtensionShowcase() {
               step2dark2: placeholderImage,
               step3dark: placeholderImage,
               step4dark: placeholderImage,
-              alt: "Browser Extension Walkthrough",
+              alt: 'Browser Extension Walkthrough',
             }}
             step1img1Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 md:left-[35px] md:top-[30%] md:w-full"
             step1img2Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 md:left-[45px] md:top-[35%] md:w-full"

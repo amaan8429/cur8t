@@ -1,13 +1,13 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   PiTrash,
   PiPencilSimple,
   PiArrowSquareOut,
   PiCalendar,
-} from "react-icons/pi";
+} from 'react-icons/pi';
 
 interface Favorite {
   id: string;
@@ -60,15 +60,15 @@ const FavoriteCard: React.FC<FavoriteCardProps> = ({
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") onSave(favorite.id);
-                    if (e.key === "Escape") onCancel();
+                    if (e.key === 'Enter') onSave(favorite.id);
+                    if (e.key === 'Escape') onCancel();
                   }}
                   autoFocus
                   maxLength={VALIDATION_LIMITS.LINK_TITLE_MAX}
                   className="text-sm"
                 />
                 <div className="text-xs text-muted-foreground">
-                  {editTitle.length}/{VALIDATION_LIMITS.LINK_TITLE_MAX}{" "}
+                  {editTitle.length}/{VALIDATION_LIMITS.LINK_TITLE_MAX}{' '}
                   characters
                 </div>
                 <div className="flex gap-2">

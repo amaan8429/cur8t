@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { PiLink } from "react-icons/pi";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from 'react';
+import { PiLink } from 'react-icons/pi';
+import { useRouter } from 'next/navigation';
 import {
   PiFolder,
   PiFolderOpen,
@@ -10,7 +10,7 @@ import {
   PiPlus,
   PiDotsThreeThin,
   PiCaretDown,
-} from "react-icons/pi";
+} from 'react-icons/pi';
 
 import {
   SidebarGroup,
@@ -20,35 +20,35 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { CreateCollectionComponent } from "../../TopSection/CreateCollection";
+} from '@/components/ui/dialog';
+import { CreateCollectionComponent } from '../../TopSection/CreateCollection';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import ChangeVisibility from "./ChangeVisibility";
-import CopyCollectionLink from "./CopyCollectionLink";
-import DeleteCollectionOption from "./DeleteCollection";
-import ChangeCollectionName from "./ChangeCollectionName";
-import ChangeCollectionDescription from "./ChangeCollectionDescription";
-import PinCollection from "./PinCollection";
-import { useCollectionStore } from "@/store/collection-store";
-import NoCollections from "./NoCollections";
-import { useActiveState } from "@/store/activeStateStore";
-import { usePinnedCollectionsStore } from "@/store/pinned-collections-store";
-import LoadingCollections from "./Loading";
-import { CollectionSearchButton } from "./CollectionSearch";
+} from '@/components/ui/dropdown-menu';
+import ChangeVisibility from './ChangeVisibility';
+import CopyCollectionLink from './CopyCollectionLink';
+import DeleteCollectionOption from './DeleteCollection';
+import ChangeCollectionName from './ChangeCollectionName';
+import ChangeCollectionDescription from './ChangeCollectionDescription';
+import PinCollection from './PinCollection';
+import { useCollectionStore } from '@/store/collection-store';
+import NoCollections from './NoCollections';
+import { useActiveState } from '@/store/activeStateStore';
+import { usePinnedCollectionsStore } from '@/store/pinned-collections-store';
+import LoadingCollections from './Loading';
+import { CollectionSearchButton } from './CollectionSearch';
 
 const INITIAL_DISPLAY_COUNT = 10;
 
@@ -210,8 +210,8 @@ export function NavCollection() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     className="w-56 rounded-lg"
-                    side={isMobile ? "bottom" : "right"}
-                    align={isMobile ? "end" : "start"}
+                    side={isMobile ? 'bottom' : 'right'}
+                    align={isMobile ? 'end' : 'start'}
                   >
                     <PinCollection
                       collectionId={collection.id}
@@ -233,7 +233,7 @@ export function NavCollection() {
                     <DropdownMenuSeparator />
                     <ChangeCollectionDescription
                       collectionId={collection.id}
-                      collectionDescription={collection.description || ""}
+                      collectionDescription={collection.description || ''}
                     />
                     <DropdownMenuSeparator />
                     <DeleteCollectionOption collection={collection} />

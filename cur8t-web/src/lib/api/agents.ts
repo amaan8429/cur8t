@@ -3,7 +3,7 @@
  */
 
 const AGENTS_API_BASE_URL =
-  process.env.NEXT_PUBLIC_AGENTS_API_URL || "http://localhost:8000";
+  process.env.NEXT_PUBLIC_AGENTS_API_URL || 'http://localhost:8000';
 
 export interface ExtractedLink {
   url: string;
@@ -117,7 +117,7 @@ export class AgentsApiError extends Error {
     public errorCode?: string
   ) {
     super(message);
-    this.name = "AgentsApiError";
+    this.name = 'AgentsApiError';
   }
 }
 
@@ -137,7 +137,7 @@ class AgentsApiService {
     try {
       const response = await fetch(url, {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           ...options.headers,
         },
         ...options,
@@ -147,21 +147,21 @@ class AgentsApiService {
       if (response.status === 429) {
         const data = await response.json().catch(() => ({}));
         const retryAfter =
-          response.headers.get("retry-after") || data.retryAfter || 60;
+          response.headers.get('retry-after') || data.retryAfter || 60;
 
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter:
-            typeof retryAfter === "string"
+            typeof retryAfter === 'string'
               ? parseInt(retryAfter) * 60
               : retryAfter * 60,
-          message: "Too many requests to agents API. Please try again later.",
+          message: 'Too many requests to agents API. Please try again later.',
         });
 
         throw new AgentsApiError(
-          "Rate limit exceeded. Please try again later.",
+          'Rate limit exceeded. Please try again later.',
           429,
           data.details,
           data.error_code
@@ -195,9 +195,9 @@ class AgentsApiService {
 
       // Network or other errors
       throw new AgentsApiError(
-        "Failed to connect to agents API. Please check if the service is running.",
+        'Failed to connect to agents API. Please check if the service is running.',
         0,
-        error instanceof Error ? error.message : "Unknown error"
+        error instanceof Error ? error.message : 'Unknown error'
       );
     }
   }
@@ -209,9 +209,9 @@ class AgentsApiService {
     request: ArticleExtractionRequest
   ): Promise<ArticleExtractionResponse> {
     return this.makeRequest<ArticleExtractionResponse>(
-      "/agents/article-extractor/",
+      '/agents/article-extractor/',
       {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(request),
       }
     );
@@ -226,7 +226,7 @@ class AgentsApiService {
     description: string;
     version: string;
   }> {
-    return this.makeRequest("/agents/article-extractor/health");
+    return this.makeRequest('/agents/article-extractor/health');
   }
 
   /**
@@ -242,7 +242,7 @@ class AgentsApiService {
       status: string;
     }>;
   }> {
-    return this.makeRequest("/");
+    return this.makeRequest('/');
   }
 
   /**
@@ -253,7 +253,7 @@ class AgentsApiService {
     service: string;
     version: string;
   }> {
-    return this.makeRequest("/health");
+    return this.makeRequest('/health');
   }
 
   // Bookmark Importer Methods
@@ -267,20 +267,20 @@ class AgentsApiService {
     userPreferences?: Record<string, unknown>
   ): Promise<BookmarkUploadResponse> {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append('file', file);
 
     if (browserType) {
-      formData.append("browser_type", browserType);
+      formData.append('browser_type', browserType);
     }
 
     if (userPreferences) {
-      formData.append("user_preferences", JSON.stringify(userPreferences));
+      formData.append('user_preferences', JSON.stringify(userPreferences));
     }
 
     const response = await fetch(
       `${this.baseUrl}/agents/bookmark-importer/upload`,
       {
-        method: "POST",
+        method: 'POST',
         body: formData,
       }
     );
@@ -289,21 +289,21 @@ class AgentsApiService {
     if (response.status === 429) {
       const data = await response.json().catch(() => ({}));
       const retryAfter =
-        response.headers.get("retry-after") || data.retryAfter || 60;
+        response.headers.get('retry-after') || data.retryAfter || 60;
 
       const { showRateLimitToast } = await import(
-        "@/components/ui/rate-limit-toast"
+        '@/components/ui/rate-limit-toast'
       );
       showRateLimitToast({
         retryAfter:
-          typeof retryAfter === "string"
+          typeof retryAfter === 'string'
             ? parseInt(retryAfter) * 60
             : retryAfter * 60,
-        message: "Too many bookmark upload attempts. Please try again later.",
+        message: 'Too many bookmark upload attempts. Please try again later.',
       });
 
       throw new AgentsApiError(
-        "Rate limit exceeded. Please try again later.",
+        'Rate limit exceeded. Please try again later.',
         429,
         data.details,
         data.error_code
@@ -339,9 +339,9 @@ class AgentsApiService {
     request: BookmarkAnalysisRequest
   ): Promise<BookmarkAnalysisResponse> {
     return this.makeRequest<BookmarkAnalysisResponse>(
-      "/agents/bookmark-importer/analyze",
+      '/agents/bookmark-importer/analyze',
       {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(request),
       }
     );
@@ -354,9 +354,9 @@ class AgentsApiService {
     request: CollectionCreationRequest
   ): Promise<CollectionCreationResponse> {
     return this.makeRequest<CollectionCreationResponse>(
-      "/agents/bookmark-importer/create-collections",
+      '/agents/bookmark-importer/create-collections',
       {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(request),
       }
     );
@@ -385,7 +385,7 @@ class AgentsApiService {
     message: string;
   }> {
     return this.makeRequest(`/agents/bookmark-importer/session/${sessionId}`, {
-      method: "DELETE",
+      method: 'DELETE',
     });
   }
 
@@ -398,7 +398,7 @@ class AgentsApiService {
     description: string;
     version: string;
   }> {
-    return this.makeRequest("/agents/bookmark-importer/health");
+    return this.makeRequest('/agents/bookmark-importer/health');
   }
 }
 

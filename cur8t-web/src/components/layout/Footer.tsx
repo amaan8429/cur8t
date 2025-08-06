@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { PiGithubLogo, PiEnvelope, PiTwitterLogo } from "react-icons/pi";
-import Image from "next/image";
-import Link from "next/link";
+import { PiGithubLogo, PiEnvelope, PiTwitterLogo } from 'react-icons/pi';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export function Footer() {
   return (

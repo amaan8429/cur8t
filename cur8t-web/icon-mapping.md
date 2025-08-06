@@ -73,10 +73,10 @@ This file maps Lucide React icons to their Phosphor React Icons equivalents.
 
 ```tsx
 // Before (Lucide)
-import { Search, Plus, Trash2 } from "lucide-react";
+import { Search, Plus, Trash2 } from 'lucide-react';
 
 // After (Phosphor)
-import { PiMagnifyingGlass, PiPlus, PiTrash } from "react-icons/pi";
+import { PiMagnifyingGlass, PiPlus, PiTrash } from 'react-icons/pi';
 ```
 
 ## Notes

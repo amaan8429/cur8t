@@ -1,27 +1,27 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { auth } from "@clerk/nextjs/server";
-import { UsersTable, CollectionsTable } from "@/schema";
-import { eq, and, inArray } from "drizzle-orm";
+import { db } from '@/db';
+import { auth } from '@clerk/nextjs/server';
+import { UsersTable, CollectionsTable } from '@/schema';
+import { eq, and, inArray } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function getPinnedCollections() {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not authenticated" };
+    return { error: 'User not authenticated' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getCollectionsLimiter,
     identifier,
-    "Too many requests to get pinned collections. Please try again later."
+    'Too many requests to get pinned collections. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -37,7 +37,7 @@ export async function getPinnedCollections() {
       .limit(1);
 
     if (!user.length) {
-      return { error: "User not found" };
+      return { error: 'User not found' };
     }
 
     const pinnedCollectionIds = user[0].pinnedCollections;
@@ -71,8 +71,8 @@ export async function getPinnedCollections() {
 
     return { data: orderedCollections };
   } catch (error) {
-    console.error("Error fetching pinned collections:", error);
-    return { error: "Failed to fetch pinned collections" };
+    console.error('Error fetching pinned collections:', error);
+    return { error: 'Failed to fetch pinned collections' };
   }
 }
 
@@ -80,14 +80,14 @@ export async function addPinnedCollection(collectionId: string) {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not authenticated" };
+    return { error: 'User not authenticated' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.userUpdateLimiter, // Using user update limiter for modification operations
     identifier,
-    "Too many requests to pin collection. Please try again later."
+    'Too many requests to pin collection. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -103,19 +103,19 @@ export async function addPinnedCollection(collectionId: string) {
       .limit(1);
 
     if (!user.length) {
-      return { error: "User not found" };
+      return { error: 'User not found' };
     }
 
     const currentPinned = user[0].pinnedCollections;
 
     // Check if already pinned
     if (currentPinned.includes(collectionId)) {
-      return { error: "Collection is already pinned" };
+      return { error: 'Collection is already pinned' };
     }
 
     // Check limit
     if (currentPinned.length >= 3) {
-      return { error: "Cannot pin more than 3 collections" };
+      return { error: 'Cannot pin more than 3 collections' };
     }
 
     // Verify collection belongs to user
@@ -131,7 +131,7 @@ export async function addPinnedCollection(collectionId: string) {
       .limit(1);
 
     if (!collection.length) {
-      return { error: "Collection not found or does not belong to you" };
+      return { error: 'Collection not found or does not belong to you' };
     }
 
     // Add to pinned collections
@@ -143,8 +143,8 @@ export async function addPinnedCollection(collectionId: string) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error pinning collection:", error);
-    return { error: "Failed to pin collection" };
+    console.error('Error pinning collection:', error);
+    return { error: 'Failed to pin collection' };
   }
 }
 
@@ -152,14 +152,14 @@ export async function removePinnedCollection(collectionId: string) {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not authenticated" };
+    return { error: 'User not authenticated' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.userUpdateLimiter, // Using user update limiter for modification operations
     identifier,
-    "Too many requests to unpin collection. Please try again later."
+    'Too many requests to unpin collection. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -175,7 +175,7 @@ export async function removePinnedCollection(collectionId: string) {
       .limit(1);
 
     if (!user.length) {
-      return { error: "User not found" };
+      return { error: 'User not found' };
     }
 
     const currentPinned = user[0].pinnedCollections;
@@ -189,8 +189,8 @@ export async function removePinnedCollection(collectionId: string) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error unpinning collection:", error);
-    return { error: "Failed to unpin collection" };
+    console.error('Error unpinning collection:', error);
+    return { error: 'Failed to unpin collection' };
   }
 }
 
@@ -198,14 +198,14 @@ export async function setPinnedCollections(collectionIds: string[]) {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not authenticated" };
+    return { error: 'User not authenticated' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.userUpdateLimiter, // Using user update limiter for modification operations
     identifier,
-    "Too many requests to set pinned collections. Please try again later."
+    'Too many requests to set pinned collections. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -213,7 +213,7 @@ export async function setPinnedCollections(collectionIds: string[]) {
   }
 
   if (collectionIds.length > 3) {
-    return { error: "Cannot pin more than 3 collections" };
+    return { error: 'Cannot pin more than 3 collections' };
   }
 
   try {
@@ -230,7 +230,7 @@ export async function setPinnedCollections(collectionIds: string[]) {
         );
 
       if (userCollections.length !== collectionIds.length) {
-        return { error: "One or more collections do not belong to you" };
+        return { error: 'One or more collections do not belong to you' };
       }
     }
 
@@ -242,7 +242,7 @@ export async function setPinnedCollections(collectionIds: string[]) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error setting pinned collections:", error);
-    return { error: "Failed to update pinned collections" };
+    console.error('Error setting pinned collections:', error);
+    return { error: 'Failed to update pinned collections' };
   }
 }

@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useEffect, useState, type MouseEvent } from "react";
-import Image, { type StaticImageData } from "next/image";
+import { useEffect, useState, type MouseEvent } from 'react';
+import Image, { type StaticImageData } from 'next/image';
 import {
   motion,
   useMotionTemplate,
   useMotionValue,
   type MotionStyle,
   type MotionValue,
-} from "motion/react";
-import Balancer from "react-wrap-balancer";
+} from 'motion/react';
+import Balancer from 'react-wrap-balancer';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 type WrapperStyle = MotionStyle & {
-  "--x": MotionValue<string>;
-  "--y": MotionValue<string>;
+  '--x': MotionValue<string>;
+  '--y': MotionValue<string>;
 };
 
 interface CardProps {
@@ -59,16 +59,16 @@ function FeatureCard({
       style={
         mounted
           ? ({
-              "--x": motionTemplateX,
-              "--y": motionTemplateY,
+              '--x': motionTemplateX,
+              '--y': motionTemplateY,
             } as WrapperStyle)
           : {}
       }
     >
       <div
         className={cn(
-          "group relative w-full overflow-hidden rounded-3xl border border-black/10  bg-gradient-to-b from-neutral-900/90 to-stone-800 transition duration-300 dark:from-neutral-950/90 dark:to-neutral-800/90",
-          "md:hover:border-transparent",
+          'group relative w-full overflow-hidden rounded-3xl border border-black/10  bg-gradient-to-b from-neutral-900/90 to-stone-800 transition duration-300 dark:from-neutral-950/90 dark:to-neutral-800/90',
+          'md:hover:border-transparent',
           bgClass
         )}
       >
@@ -89,9 +89,9 @@ function FeatureCard({
 }
 
 const steps = [
-  { id: "1", name: "" },
-  { id: "2", name: "" },
-  { id: "3", name: "" },
+  { id: '1', name: '' },
+  { id: '2', name: '' },
+  { id: '3', name: '' },
 ];
 
 export function SkiperCard({
@@ -129,8 +129,8 @@ export function SkiperCard({
     <FeatureCard {...props}>
       <div
         className={cn(
-          { "translate-x-0 opacity-0": step < 3 },
-          "absolute left-2/4 top-1/3 flex w-full -translate-x-1/2 -translate-y-[33%] flex-col gap-12 text-center text-2xl font-bold transition-all duration-500 md:w-3/5 "
+          { 'translate-x-0 opacity-0': step < 3 },
+          'absolute left-2/4 top-1/3 flex w-full -translate-x-1/2 -translate-y-[33%] flex-col gap-12 text-center text-2xl font-bold transition-all duration-500 md:w-3/5 '
         )}
       >
         <Image
@@ -140,9 +140,9 @@ export function SkiperCard({
           width={800}
           height={300}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
       </div>
@@ -152,25 +152,25 @@ export function SkiperCard({
         <Image
           alt={image.alt}
           className={cn(step1img1Class, {
-            "-translate-x-36 opacity-0 rounded-2xl": step > 0,
+            '-translate-x-36 opacity-0 rounded-2xl': step > 0,
           })}
           src={image.step1light1}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
         <Image
           alt={image.alt}
           className={cn(step1img2Class, {
-            "-translate-x-24 opacity-0 rounded-2xl": step > 0,
+            '-translate-x-24 opacity-0 rounded-2xl': step > 0,
           })}
           src={image.step1light2}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
 
@@ -179,30 +179,30 @@ export function SkiperCard({
           alt={image.alt}
           className={cn(
             step2img1Class,
-            "rounded-2xl",
-            { "translate-x-36 opacity-0": step < 1 },
-            { "-translate-x-36 opacity-0": step > 1 }
+            'rounded-2xl',
+            { 'translate-x-36 opacity-0': step < 1 },
+            { '-translate-x-36 opacity-0': step > 1 }
           )}
           src={image.step2light1}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
         <Image
           alt={image.alt}
           className={cn(
             step2img2Class,
-            "rounded-2xl ",
-            { "translate-x-24 opacity-0": step < 1 },
-            { "-translate-x-24 opacity-0": step > 1 }
+            'rounded-2xl ',
+            { 'translate-x-24 opacity-0': step < 1 },
+            { '-translate-x-24 opacity-0': step > 1 }
           )}
           src={image.step2light2}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
         {/* step 3 */}
@@ -210,16 +210,16 @@ export function SkiperCard({
           alt={image.alt}
           className={cn(
             step3imgClass,
-            "rounded-2xl",
-            { "translate-x-36 opacity-0": step < 2 },
-            { "-translate-x-36 opacity-0": step > 2 },
-            { "opacity-90": step === 2 }
+            'rounded-2xl',
+            { 'translate-x-36 opacity-0': step < 2 },
+            { '-translate-x-36 opacity-0': step > 2 },
+            { 'opacity-90': step === 2 }
           )}
           src={image.step3light}
           style={{
-            position: "absolute",
-            userSelect: "none",
-            maxWidth: "unset",
+            position: 'absolute',
+            userSelect: 'none',
+            maxWidth: 'unset',
           }}
         />
         <div className="absolute left-48 top-5 z-50 size-full cursor-pointer md:left-0">
@@ -235,13 +235,13 @@ export function SkiperCard({
   );
 }
 
-function IconCheck({ className, ...props }: React.ComponentProps<"svg">) {
+function IconCheck({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 256 256"
       fill="currentColor"
-      className={cn("size-4", className)}
+      className={cn('size-4', className)}
       {...props}
     >
       <path d="m229.66 77.66-128 128a8 8 0 0 1-11.32 0l-56-56a8 8 0 0 1 11.32-11.32L96 188.69 218.34 66.34a8 8 0 0 1 11.32 11.32Z" />
@@ -269,28 +269,28 @@ export function Steps({ steps, current, onChange }: StepsProps) {
           return (
             <li
               className={cn(
-                "relative z-50 rounded-full px-3 py-1  transition-all duration-300 ease-in-out md:flex",
-                isCompleted ? "bg-neutral-500/20" : "bg-neutral-500/10"
+                'relative z-50 rounded-full px-3 py-1  transition-all duration-300 ease-in-out md:flex',
+                isCompleted ? 'bg-neutral-500/20' : 'bg-neutral-500/10'
               )}
               key={`${step.name}-${stepIdx}`}
             >
               <div
                 className={cn(
-                  "group flex w-full cursor-pointer items-center focus:outline-none  focus-visible:ring-2",
-                  (isFuture || isCurrent) && "pointer-events-none"
+                  'group flex w-full cursor-pointer items-center focus:outline-none  focus-visible:ring-2',
+                  (isFuture || isCurrent) && 'pointer-events-none'
                 )}
                 onClick={() => onChange(stepIdx)}
               >
                 <span className="flex items-center gap-2 text-sm font-medium">
                   <span
                     className={cn(
-                      "flex shrink-0 items-center justify-center rounded-full duration-300",
+                      'flex shrink-0 items-center justify-center rounded-full duration-300',
                       isCompleted &&
-                        "bg-brand-400 dark:bg-brand-400 size-4 text-white",
+                        'bg-brand-400 dark:bg-brand-400 size-4 text-white',
                       isCurrent &&
-                        "bg-brand-300/80 size-4 p-2 text-neutral-400 dark:bg-neutral-500/50",
+                        'bg-brand-300/80 size-4 p-2 text-neutral-400 dark:bg-neutral-500/50',
                       isFuture &&
-                        "bg-brand-300/10 size-4 p-2 dark:bg-neutral-500/20"
+                        'bg-brand-300/10 size-4 p-2 dark:bg-neutral-500/20'
                     )}
                   >
                     {isCompleted ? (
@@ -298,8 +298,8 @@ export function Steps({ steps, current, onChange }: StepsProps) {
                     ) : (
                       <span
                         className={cn(
-                          "text-xs",
-                          !isCurrent && "text-[#C6EA7E]"
+                          'text-xs',
+                          !isCurrent && 'text-[#C6EA7E]'
                         )}
                       >
                         {stepIdx + 1}
@@ -308,9 +308,9 @@ export function Steps({ steps, current, onChange }: StepsProps) {
                   </span>
                   <span
                     className={cn(
-                      "text-sm font-medium duration-300",
-                      isCompleted && "text-brand-400 dark:text-brand-500",
-                      isFuture && "text-neutral-500"
+                      'text-sm font-medium duration-300',
+                      isCompleted && 'text-brand-400 dark:text-brand-500',
+                      isFuture && 'text-neutral-500'
                     )}
                   >
                     {step.name}
@@ -361,7 +361,7 @@ export function useIsMobile() {
   useEffect(() => {
     const updateIsMobile = () => {
       const userAgent = navigator.userAgent;
-      const isSmall = window.matchMedia("(max-width: 768px)").matches;
+      const isSmall = window.matchMedia('(max-width: 768px)').matches;
       const isMobileDevice = Boolean(
         /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.exec(
           userAgent
@@ -375,13 +375,13 @@ export function useIsMobile() {
     updateIsMobile();
 
     // Listen for window resize
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
     const handleChange = () => updateIsMobile();
 
-    mediaQuery.addEventListener("change", handleChange);
+    mediaQuery.addEventListener('change', handleChange);
 
     return () => {
-      mediaQuery.removeEventListener("change", handleChange);
+      mediaQuery.removeEventListener('change', handleChange);
     };
   }, []);
 

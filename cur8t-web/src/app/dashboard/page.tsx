@@ -1,25 +1,25 @@
-import { getSingleCollectionNameAction } from "@/actions/collection/getSingleCollectionName";
-import { getUserInfoAction } from "@/actions/user/getUserInfo";
+import { getSingleCollectionNameAction } from '@/actions/collection/getSingleCollectionName';
+import { getUserInfoAction } from '@/actions/user/getUserInfo';
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
+} from '@/components/ui/breadcrumb';
+import { Separator } from '@/components/ui/separator';
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { redirect } from "next/navigation";
-import { NavActions } from "../../components/dashboard/NavActions/NavActions";
-import { ClientStateManager } from "../../components/dashboard/Sidebar/ClientStateManager";
-import { AppSidebar } from "../../components/dashboard/Sidebar/AppSidebar";
-import { ContentArea } from "../../components/dashboard/ContentArea/ContentArea";
+} from '@/components/ui/sidebar';
+import { redirect } from 'next/navigation';
+import { NavActions } from '../../components/dashboard/NavActions/NavActions';
+import { ClientStateManager } from '../../components/dashboard/Sidebar/ClientStateManager';
+import { AppSidebar } from '../../components/dashboard/Sidebar/AppSidebar';
+import { ContentArea } from '../../components/dashboard/ContentArea/ContentArea';
 
 // Force dynamic rendering for authenticated routes
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export default async function Page({
   searchParams,
@@ -32,17 +32,17 @@ export default async function Page({
   // Check for rate limiting on getUserInfoAction
   if (userInfo && 'error' in userInfo && 'retryAfter' in userInfo) {
     console.error(
-      "Rate limited while fetching user info:",
+      'Rate limited while fetching user info:',
       userInfo.error,
-      "Retry after:",
+      'Retry after:',
       userInfo.retryAfter
     );
     // For rate limiting, redirect to a generic dashboard page
-    redirect("/dashboard");
+    redirect('/dashboard');
   }
 
   if (userInfo && 'username' in userInfo && !userInfo.username) {
-    redirect("/onboarding/username");
+    redirect('/onboarding/username');
   }
 
   const searchParamsData = await searchParams;
@@ -50,33 +50,33 @@ export default async function Page({
   const activeCollectionId = searchParamsData.collectionId as string;
   const activeSecondary = searchParamsData.secondary as string;
 
-  let activeCollectionName = "";
+  let activeCollectionName = '';
 
   if (activeCollectionId) {
     const collectionNameResult =
       await getSingleCollectionNameAction(activeCollectionId);
-    
+
     // Check for rate limiting
     if (collectionNameResult.error && collectionNameResult.retryAfter) {
       console.error(
-        "Rate limited while fetching collection name:",
+        'Rate limited while fetching collection name:',
         collectionNameResult.error,
-        "Retry after:",
+        'Retry after:',
         collectionNameResult.retryAfter
       );
       // Handle rate limiting gracefully - redirect to dashboard without collection
-      redirect("/dashboard");
+      redirect('/dashboard');
     }
-    
+
     if (collectionNameResult.success) {
       activeCollectionName = collectionNameResult.data;
     } else {
       console.error(
-        "Failed to fetch collection name:",
+        'Failed to fetch collection name:',
         collectionNameResult.error
       );
       // Handle error gracefully - redirect to dashboard without collection
-      redirect("/dashboard");
+      redirect('/dashboard');
     }
   }
 

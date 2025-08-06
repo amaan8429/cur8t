@@ -1,11 +1,11 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useUser } from "@clerk/nextjs";
-import Link from "next/link";
-import { truncateText } from "@/lib/exploreUtils";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
+import { truncateText } from '@/lib/exploreUtils';
 
 interface UserProfileSectionProps {
   userStats: {
@@ -74,7 +74,7 @@ export const UserProfileSection: React.FC<UserProfileSectionProps> = ({
 
   // Use database user info if available, fallback to Clerk user info
   const displayName =
-    databaseUser?.name || user.firstName || user.username || "User";
+    databaseUser?.name || user.firstName || user.username || 'User';
   const profileUsername = databaseUser?.username;
 
   return (

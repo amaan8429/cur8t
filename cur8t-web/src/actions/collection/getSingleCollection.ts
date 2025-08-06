@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { CollectionsTable, UsersTable } from "@/schema";
-import { auth } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
+import { db } from '@/db';
+import { CollectionsTable, UsersTable } from '@/schema';
+import { auth } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function getSingleCollectionAction(collectionId: string) {
   // IP-based rate limiting for public endpoint
@@ -16,7 +16,7 @@ export async function getSingleCollectionAction(collectionId: string) {
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getSingleCollectionLimiter,
     identifier,
-    "Too many requests to get collection. Please try again later."
+    'Too many requests to get collection. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -26,7 +26,7 @@ export async function getSingleCollectionAction(collectionId: string) {
   const { userId } = await auth();
 
   if (!collectionId) {
-    return { error: "Collection ID is required" };
+    return { error: 'Collection ID is required' };
   }
 
   // Fetch the collection with author information
@@ -50,13 +50,13 @@ export async function getSingleCollectionAction(collectionId: string) {
     .where(eq(CollectionsTable.id, collectionId));
 
   if (!collectionResult || collectionResult.length === 0) {
-    return { error: "Collection not found" };
+    return { error: 'Collection not found' };
   }
 
   const collection = collectionResult[0];
 
   // Check visibility permissions
-  if (collection.visibility === "private") {
+  if (collection.visibility === 'private') {
     // Private: Only the owner can view
     if (!userId || collection.userId !== userId) {
       return {
@@ -64,10 +64,10 @@ export async function getSingleCollectionAction(collectionId: string) {
           "This collection is private. Please sign in to view if you're the owner.",
       };
     }
-  } else if (collection.visibility === "protected") {
+  } else if (collection.visibility === 'protected') {
     // Protected: Owner and people in shared emails can view
     if (!userId) {
-      return { error: "This collection is protected. Please sign in to view." };
+      return { error: 'This collection is protected. Please sign in to view.' };
     }
 
     // Get current user's email to check if they're in shared emails

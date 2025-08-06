@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { IconType } from "react-icons";
+} from '@/components/ui/card';
+import { IconType } from 'react-icons';
 
 interface QuickAction {
   title: string;
   description: string;
   icon: IconType;
   action: () => void;
-  variant?: "primary" | "secondary" | "accent" | "neutral";
+  variant?: 'primary' | 'secondary' | 'accent' | 'neutral';
 }
 
 interface QuickActionsProps {
@@ -24,16 +24,16 @@ interface QuickActionsProps {
 }
 
 export function QuickActions({ actions }: QuickActionsProps) {
-  const getActionVariant = (variant: QuickAction["variant"] = "neutral") => {
+  const getActionVariant = (variant: QuickAction['variant'] = 'neutral') => {
     switch (variant) {
-      case "primary":
-        return "bg-primary text-primary-foreground";
-      case "secondary":
-        return "bg-secondary text-secondary-foreground";
-      case "accent":
-        return "bg-accent text-accent-foreground";
+      case 'primary':
+        return 'bg-primary text-primary-foreground';
+      case 'secondary':
+        return 'bg-secondary text-secondary-foreground';
+      case 'accent':
+        return 'bg-accent text-accent-foreground';
       default:
-        return "bg-muted text-muted-foreground";
+        return 'bg-muted text-muted-foreground';
     }
   };
 

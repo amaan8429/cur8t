@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { CollectionsTable, UsersTable } from "@/schema";
-import { eq, desc, gte, and } from "drizzle-orm";
-import { Collection } from "@/types/types";
+import { db } from '@/db';
+import { CollectionsTable, UsersTable } from '@/schema';
+import { eq, desc, gte, and } from 'drizzle-orm';
+import { Collection } from '@/types/types';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 // Type for homepage collection that includes author info from the join
 export interface HomepageCollection extends Collection {
@@ -22,7 +22,7 @@ export async function getHomepageCollections() {
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getPlatformStatsLimiter,
     identifier,
-    "Too many requests to get homepage collections. Please try again later."
+    'Too many requests to get homepage collections. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -49,7 +49,7 @@ export async function getHomepageCollections() {
       })
       .from(CollectionsTable)
       .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
-      .where(eq(CollectionsTable.visibility, "public"))
+      .where(eq(CollectionsTable.visibility, 'public'))
       .orderBy(desc(CollectionsTable.likes))
       .limit(6);
 
@@ -72,7 +72,7 @@ export async function getHomepageCollections() {
       })
       .from(CollectionsTable)
       .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
-      .where(eq(CollectionsTable.visibility, "public"))
+      .where(eq(CollectionsTable.visibility, 'public'))
       .orderBy(desc(CollectionsTable.updatedAt))
       .limit(6);
 
@@ -100,7 +100,7 @@ export async function getHomepageCollections() {
       .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
       .where(
         and(
-          eq(CollectionsTable.visibility, "public"),
+          eq(CollectionsTable.visibility, 'public'),
           gte(CollectionsTable.createdAt, oneWeekAgo)
         )
       )
@@ -116,9 +116,9 @@ export async function getHomepageCollections() {
       },
     };
   } catch (error) {
-    console.error("Error fetching homepage collections:", error);
+    console.error('Error fetching homepage collections:', error);
     return {
-      error: "Failed to fetch homepage collections",
+      error: 'Failed to fetch homepage collections',
     };
   }
 }

@@ -1,20 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
-import { useUser } from "@clerk/nextjs";
+import { useQuery } from '@tanstack/react-query';
+import { useUser } from '@clerk/nextjs';
 import {
   fetchPublicCollections,
   PublicCollection,
-} from "@/actions/collection/fetchPublicCollections";
+} from '@/actions/collection/fetchPublicCollections';
 import {
   fetchSavedCollections,
   SavedCollection,
-} from "@/actions/collection/fetchSavedCollections";
+} from '@/actions/collection/fetchSavedCollections';
 import {
   getHomepageCollections,
   HomepageCollection,
-} from "@/actions/platform/homepageCollections";
-import { getUserInfoAction } from "@/actions/user/getUserInfo";
-import { showRateLimitToast } from "@/components/ui/rate-limit-toast";
-import { toast } from "@/hooks/use-toast";
+} from '@/actions/platform/homepageCollections';
+import { getUserInfoAction } from '@/actions/user/getUserInfo';
+import { showRateLimitToast } from '@/components/ui/rate-limit-toast';
+import { toast } from '@/hooks/use-toast';
 
 export interface UseExploreDataReturn {
   trendingCollections: PublicCollection[];
@@ -46,21 +46,21 @@ export const useExploreData = (): UseExploreDataReturn => {
     error: trendingError,
     refetch: refetchTrending,
   } = useQuery({
-    queryKey: ["trending-collections"],
+    queryKey: ['trending-collections'],
     queryFn: async () => {
       const response = await fetchPublicCollections({
         page: 1,
         limit: 5,
-        sortBy: "likes",
+        sortBy: 'likes',
       });
 
-      if ("error" in response && response.error) {
+      if ('error' in response && response.error) {
         // Handle rate limiting with toast instead of throwing
-        if (response.error.includes("Too many requests")) {
+        if (response.error.includes('Too many requests')) {
           showRateLimitToast({
             retryAfter: response.retryAfter,
             message:
-              "Trending collections temporarily unavailable due to rate limiting.",
+              'Trending collections temporarily unavailable due to rate limiting.',
           });
           // Return empty data instead of throwing
           return {
@@ -71,9 +71,9 @@ export const useExploreData = (): UseExploreDataReturn => {
 
         // For other errors, show a toast and return empty data
         toast({
-          title: "Failed to load trending collections",
+          title: 'Failed to load trending collections',
           description: response.error,
-          variant: "destructive",
+          variant: 'destructive',
           duration: 5000,
         });
         return {
@@ -87,7 +87,7 @@ export const useExploreData = (): UseExploreDataReturn => {
     enabled: isLoaded,
     retry: (failureCount, error) => {
       // Don't retry on rate limit errors
-      if (error?.message?.includes("Too many requests")) {
+      if (error?.message?.includes('Too many requests')) {
         return false;
       }
       return failureCount < 2; // Reduced retries
@@ -102,20 +102,20 @@ export const useExploreData = (): UseExploreDataReturn => {
     error: recentError,
     refetch: refetchRecent,
   } = useQuery({
-    queryKey: ["recent-collections"],
+    queryKey: ['recent-collections'],
     queryFn: async () => {
       const response = await fetchPublicCollections({
         page: 1,
         limit: 6,
-        sortBy: "recent",
+        sortBy: 'recent',
       });
 
-      if ("error" in response && response.error) {
-        if (response.error.includes("Too many requests")) {
+      if ('error' in response && response.error) {
+        if (response.error.includes('Too many requests')) {
           showRateLimitToast({
             retryAfter: response.retryAfter,
             message:
-              "Recent collections temporarily unavailable due to rate limiting.",
+              'Recent collections temporarily unavailable due to rate limiting.',
           });
           return {
             data: [],
@@ -124,9 +124,9 @@ export const useExploreData = (): UseExploreDataReturn => {
         }
 
         toast({
-          title: "Failed to load recent collections",
+          title: 'Failed to load recent collections',
           description: response.error,
-          variant: "destructive",
+          variant: 'destructive',
           duration: 5000,
         });
         return {
@@ -139,7 +139,7 @@ export const useExploreData = (): UseExploreDataReturn => {
     },
     enabled: isLoaded,
     retry: (failureCount, error) => {
-      if (error?.message?.includes("Too many requests")) {
+      if (error?.message?.includes('Too many requests')) {
         return false;
       }
       return failureCount < 2;
@@ -154,7 +154,7 @@ export const useExploreData = (): UseExploreDataReturn => {
     error: homepageError,
     refetch: refetchHomepage,
   } = useQuery({
-    queryKey: ["homepage-collections"],
+    queryKey: ['homepage-collections'],
     queryFn: async () => {
       try {
         return await getHomepageCollections();
@@ -162,11 +162,11 @@ export const useExploreData = (): UseExploreDataReturn => {
         const errorMessage =
           error instanceof Error
             ? error.message
-            : "Unable to load new collections timeline.";
+            : 'Unable to load new collections timeline.';
         toast({
-          title: "Failed to load new collections",
+          title: 'Failed to load new collections',
           description: errorMessage,
-          variant: "destructive",
+          variant: 'destructive',
           duration: 5000,
         });
         return { success: false, data: null };
@@ -184,19 +184,19 @@ export const useExploreData = (): UseExploreDataReturn => {
     error: userInfoError,
     refetch: refetchUserInfo,
   } = useQuery({
-    queryKey: ["user-info", user?.id],
+    queryKey: ['user-info', user?.id],
     queryFn: async () => {
       try {
         const result = await getUserInfoAction();
 
         // Check for rate limiting
-        if (result && "error" in result && "retryAfter" in result) {
+        if (result && 'error' in result && 'retryAfter' in result) {
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter: result.retryAfter * 60,
-            message: "Too many user info requests. Please try again later.",
+            message: 'Too many user info requests. Please try again later.',
           });
           return null;
         }
@@ -204,7 +204,7 @@ export const useExploreData = (): UseExploreDataReturn => {
         return result;
       } catch (error: unknown) {
         // Don't show toast for user info errors, handle silently
-        console.warn("Failed to load user info:", error);
+        console.warn('Failed to load user info:', error);
         return null;
       }
     },
@@ -220,20 +220,20 @@ export const useExploreData = (): UseExploreDataReturn => {
     error: savedError,
     refetch: refetchSaved,
   } = useQuery({
-    queryKey: ["saved-collections", user?.id],
+    queryKey: ['saved-collections', user?.id],
     queryFn: async () => {
       const response = await fetchSavedCollections({
         page: 1,
         limit: 5,
-        sortBy: "recent",
+        sortBy: 'recent',
       });
 
-      if ("error" in response && response.error) {
-        if (response.error.includes("Too many requests")) {
+      if ('error' in response && response.error) {
+        if (response.error.includes('Too many requests')) {
           showRateLimitToast({
             retryAfter: response.retryAfter,
             message:
-              "Saved collections temporarily unavailable due to rate limiting.",
+              'Saved collections temporarily unavailable due to rate limiting.',
           });
           return {
             data: [],
@@ -242,9 +242,9 @@ export const useExploreData = (): UseExploreDataReturn => {
         }
 
         toast({
-          title: "Failed to load saved collections",
+          title: 'Failed to load saved collections',
           description: response.error,
-          variant: "destructive",
+          variant: 'destructive',
           duration: 5000,
         });
         return {
@@ -257,7 +257,7 @@ export const useExploreData = (): UseExploreDataReturn => {
     },
     enabled: isLoaded && !!user,
     retry: (failureCount, error) => {
-      if (error?.message?.includes("Too many requests")) {
+      if (error?.message?.includes('Too many requests')) {
         return false;
       }
       return failureCount < 2;

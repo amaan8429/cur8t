@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import {PiPushPin, PiPushPinSlash, PiSpinner} from "react-icons/pi";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast";
+import React, { useState } from 'react';
+import { PiPushPin, PiPushPinSlash, PiSpinner } from 'react-icons/pi';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { useToast } from '@/hooks/use-toast';
 import {
   addPinnedCollection,
   removePinnedCollection,
-} from "@/actions/collection/pinnedCollections";
-import { usePinnedCollectionsStore } from "@/store/pinned-collections-store";
+} from '@/actions/collection/pinnedCollections';
+import { usePinnedCollectionsStore } from '@/store/pinned-collections-store';
 
 interface PinCollectionProps {
   collectionId: string;
@@ -42,9 +42,9 @@ const PinCollection = ({
     // Check pin limit before proceeding
     if (isPinLimitReached) {
       toastWarning({
-        title: "Pin Limit Reached",
+        title: 'Pin Limit Reached',
         description:
-          "You can only pin up to 3 collections. Unpin a collection first.",
+          'You can only pin up to 3 collections. Unpin a collection first.',
       });
       return;
     }
@@ -70,13 +70,13 @@ const PinCollection = ({
           // Revert optimistic update on error
           revertOptimisticUpdate();
           toastError({
-            title: "Unpin Failed",
-            description: result.error || "Failed to unpin collection",
+            title: 'Unpin Failed',
+            description: result.error || 'Failed to unpin collection',
           });
         } else {
           toastSuccess({
-            title: "Collection Unpinned",
-            description: "Collection removed from pinned collections.",
+            title: 'Collection Unpinned',
+            description: 'Collection removed from pinned collections.',
           });
         }
       } else {
@@ -85,13 +85,13 @@ const PinCollection = ({
           // Revert optimistic update on error
           revertOptimisticUpdate();
           toastError({
-            title: "Pin Failed",
-            description: result.error || "Failed to pin collection",
+            title: 'Pin Failed',
+            description: result.error || 'Failed to pin collection',
           });
         } else {
           toastSuccess({
-            title: "Collection Pinned",
-            description: "Collection added to pinned collections.",
+            title: 'Collection Pinned',
+            description: 'Collection added to pinned collections.',
           });
         }
       }
@@ -99,8 +99,8 @@ const PinCollection = ({
       // Revert optimistic update on error
       revertOptimisticUpdate();
       toastError({
-        title: "Action Failed",
-        description: "Something went wrong. Please try again.",
+        title: 'Action Failed',
+        description: 'Something went wrong. Please try again.',
       });
     } finally {
       setIsLoading(false);
@@ -113,7 +113,7 @@ const PinCollection = ({
       disabled={isLoading || isPinLimitReached}
       title={
         isPinLimitReached
-          ? "Pin limit reached (3/3). Unpin a collection first."
+          ? 'Pin limit reached (3/3). Unpin a collection first.'
           : undefined
       }
     >
@@ -123,11 +123,11 @@ const PinCollection = ({
         <PiPushPinSlash className="h-4 w-4 mr-2" />
       ) : (
         <PiPushPin
-          className={`h-4 w-4 mr-2 ${isPinLimitReached ? "opacity-50" : ""}`}
+          className={`h-4 w-4 mr-2 ${isPinLimitReached ? 'opacity-50' : ''}`}
         />
       )}
-      <span className={isPinLimitReached ? "opacity-50" : ""}>
-        {isPinned ? "Unpin Collection" : "Pin Collection"}
+      <span className={isPinLimitReached ? 'opacity-50' : ''}>
+        {isPinned ? 'Unpin Collection' : 'Pin Collection'}
       </span>
       {isPinLimitReached && (
         <span className="ml-auto text-xs text-muted-foreground">(3/3)</span>

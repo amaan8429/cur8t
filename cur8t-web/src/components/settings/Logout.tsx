@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -9,11 +9,11 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {PiSignOut} from "react-icons/pi";
-import { useToast } from "@/hooks/use-toast";
-import { useClerk } from "@clerk/nextjs";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { PiSignOut } from 'react-icons/pi';
+import { useToast } from '@/hooks/use-toast';
+import { useClerk } from '@clerk/nextjs';
 
 const Logout = () => {
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
@@ -23,20 +23,20 @@ const Logout = () => {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     const loadingToast = toast({
-      title: "Logging out",
-      description: "Please wait...",
+      title: 'Logging out',
+      description: 'Please wait...',
     });
 
     try {
       await signOut();
       loadingToast.dismiss();
     } catch (error) {
-      console.log("Error signing out:", error);
+      console.log('Error signing out:', error);
       loadingToast.dismiss();
       toast({
-        title: "Error",
-        description: "Failed to sign out. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to sign out. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsLoggingOut(false);
@@ -48,7 +48,7 @@ const Logout = () => {
       <AlertDialogTrigger asChild>
         <Button variant="destructive" disabled={isLoggingOut}>
           <PiSignOut className="h-4 w-4 mr-2" />
-          {isLoggingOut ? "Logging out..." : "Logout"}
+          {isLoggingOut ? 'Logging out...' : 'Logout'}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

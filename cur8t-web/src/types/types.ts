@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 // Define consistent length limits
 export const VALIDATION_LIMITS = {
@@ -43,7 +43,7 @@ export const FrontendLinkSchema = z.object({
     .string()
     .trim()
     .url({
-      message: "Please enter a valid URL",
+      message: 'Please enter a valid URL',
     })
     .max(VALIDATION_LIMITS.LINK_URL_MAX, {
       message: `URL must be at most ${VALIDATION_LIMITS.LINK_URL_MAX} characters long`,
@@ -55,7 +55,7 @@ export const FrontendCollectionSchema = z.object({
     .string()
     .trim()
     .min(1, {
-      message: "Collection name is required",
+      message: 'Collection name is required',
     })
     .max(VALIDATION_LIMITS.COLLECTION_NAME_MAX, {
       message: `Collection name must be at most ${VALIDATION_LIMITS.COLLECTION_NAME_MAX} characters long`,
@@ -66,7 +66,7 @@ export const FrontendCollectionSchema = z.object({
       message: `Description must be at most ${VALIDATION_LIMITS.COLLECTION_DESCRIPTION_MAX} characters long`,
     })
     .optional()
-    .default(""),
+    .default(''),
 });
 
 export type Link = z.infer<typeof LinkSchema>;

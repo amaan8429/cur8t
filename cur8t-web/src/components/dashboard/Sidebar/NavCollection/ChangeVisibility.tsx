@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { PiPlus, PiStar, PiX, PiLink } from "react-icons/pi";
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { PiPlus, PiStar, PiX, PiLink } from 'react-icons/pi';
 import {
   Dialog,
   DialogClose,
@@ -10,15 +10,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dialog';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Form,
   FormControl,
@@ -27,12 +27,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useCollectionStore } from "@/store/collection-store";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { useCollectionStore } from '@/store/collection-store';
+import { useToast } from '@/hooks/use-toast';
 
 const ChangeVisibility = ({
   collectionId,
@@ -46,7 +46,7 @@ const ChangeVisibility = ({
   const { updateCollectionVisibility } = useCollectionStore();
   const [open, setOpen] = React.useState(false);
   const [emails, setEmails] = React.useState(sharedEmails);
-  const [newEmail, setNewEmail] = React.useState("");
+  const [newEmail, setNewEmail] = React.useState('');
   const [collectionLink] = React.useState(
     `https://bukmarks.vercel.app/collection/${collectionId}`
   );
@@ -71,18 +71,18 @@ const ChangeVisibility = ({
   const addEmail = () => {
     if (!isValidEmail(newEmail)) {
       toastWarning({
-        title: "Invalid email format",
+        title: 'Invalid email format',
       });
       return;
     }
     if (emails.includes(newEmail)) {
       toastWarning({
-        title: "Email already added",
+        title: 'Email already added',
       });
       return;
     }
     setEmails([...emails, newEmail]);
-    setNewEmail("");
+    setNewEmail('');
   };
 
   const removeEmail = (emailToRemove: string) => {
@@ -92,28 +92,28 @@ const ChangeVisibility = ({
   const copyCollectionLink = () => {
     navigator.clipboard.writeText(collectionLink);
     toast({
-      title: "Collection link copied to clipboard!",
+      title: 'Collection link copied to clipboard!',
     });
   };
 
   const handleUpdateConfirm = async (data: { visibility: string }) => {
-    if (data.visibility === "protected" && emails.length === 0) {
+    if (data.visibility === 'protected' && emails.length === 0) {
       toastWarning({
-        title: "Email Required",
-        description: "Please add at least one email for protected visibility.",
+        title: 'Email Required',
+        description: 'Please add at least one email for protected visibility.',
       });
       return;
     }
 
-    const emailsToSend = data.visibility === "protected" ? emails : [];
+    const emailsToSend = data.visibility === 'protected' ? emails : [];
 
     if (
       data.visibility === collectionVisibility &&
       JSON.stringify(emailsToSend) === JSON.stringify(sharedEmails)
     ) {
       toastWarning({
-        title: "No Changes",
-        description: "Visibility settings are the same.",
+        title: 'No Changes',
+        description: 'Visibility settings are the same.',
       });
       return;
     }
@@ -127,14 +127,14 @@ const ChangeVisibility = ({
       );
 
       toastSuccess({
-        title: "Visibility Updated",
-        description: "Collection visibility has been successfully updated.",
+        title: 'Visibility Updated',
+        description: 'Collection visibility has been successfully updated.',
       });
     } catch (error) {
-      console.error("Failed to update visibility:", error);
+      console.error('Failed to update visibility:', error);
       toastError({
-        title: "Update Failed",
-        description: "Failed to update visibility. Please try again.",
+        title: 'Update Failed',
+        description: 'Failed to update visibility. Please try again.',
       });
     } finally {
       setLoading(false);
@@ -197,7 +197,7 @@ const ChangeVisibility = ({
               )}
             />
 
-            {form.watch("visibility") === "protected" && (
+            {form.watch('visibility') === 'protected' && (
               <div className="space-y-4">
                 <FormLabel>Shared With</FormLabel>
                 <div className="flex gap-2">
@@ -271,13 +271,13 @@ const ChangeVisibility = ({
                 type="submit"
                 disabled={
                   form.formState.isSubmitting ||
-                  (form.watch("visibility") === "protected" &&
+                  (form.watch('visibility') === 'protected' &&
                     emails.length === 0) ||
-                  (form.watch("visibility") === collectionVisibility &&
-                    form.watch("visibility") !== "protected")
+                  (form.watch('visibility') === collectionVisibility &&
+                    form.watch('visibility') !== 'protected')
                 }
               >
-                {loading ? "Updating..." : "Update"}
+                {loading ? 'Updating...' : 'Update'}
               </Button>
             </DialogFooter>
           </form>

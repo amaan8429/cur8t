@@ -1,18 +1,18 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { DialogFooter } from "@/components/ui/dialog";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { DialogFooter } from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useCollectionStore } from "@/store/collection-store";
-import { useActiveState } from "@/store/activeStateStore";
-import { useToast } from "@/hooks/use-toast";
-import { getLinksAction } from "@/actions/linkActions/getLinks";
+} from '@/components/ui/select';
+import { useCollectionStore } from '@/store/collection-store';
+import { useActiveState } from '@/store/activeStateStore';
+import { useToast } from '@/hooks/use-toast';
+import { getLinksAction } from '@/actions/linkActions/getLinks';
 
 interface ExportActionProps {
   exportFormat: string;
@@ -39,8 +39,8 @@ export const ExportAction: React.FC<ExportActionProps> = ({
   const handleConfirm = async () => {
     if (!activeCollectionId) {
       toast({
-        title: "No collection selected",
-        variant: "destructive",
+        title: 'No collection selected',
+        variant: 'destructive',
       });
       return;
     }
@@ -50,8 +50,8 @@ export const ExportAction: React.FC<ExportActionProps> = ({
       const active = getActiveCollection();
       if (!active) {
         toast({
-          title: "Collection not found",
-          variant: "destructive",
+          title: 'Collection not found',
+          variant: 'destructive',
         });
         return;
       }
@@ -62,19 +62,19 @@ export const ExportAction: React.FC<ExportActionProps> = ({
       // Check for rate limiting
       if (linksResult.error && linksResult.retryAfter) {
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter: linksResult.retryAfter * 60,
-          message: "Too many export attempts. Please try again later.",
+          message: 'Too many export attempts. Please try again later.',
         });
         return;
       }
 
       if (!linksResult.success) {
         toast({
-          title: "Failed to fetch collection data",
-          variant: "destructive",
+          title: 'Failed to fetch collection data',
+          variant: 'destructive',
         });
         return;
       }
@@ -102,47 +102,47 @@ export const ExportAction: React.FC<ExportActionProps> = ({
       let mimeType: string;
 
       switch (exportFormat) {
-        case "json":
+        case 'json':
           fileContent = JSON.stringify(exportData, null, 2);
-          fileName = `${active.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_collection.json`;
-          mimeType = "application/json";
+          fileName = `${active.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_collection.json`;
+          mimeType = 'application/json';
           break;
-        case "csv":
-          const csvHeader = "Title,URL,Created At\n";
+        case 'csv':
+          const csvHeader = 'Title,URL,Created At\n';
           const csvRows = links
             .map(
               (link) =>
                 `"${link.title.replace(/"/g, '""')}","${link.url}","${link.createdAt}"`
             )
-            .join("\n");
+            .join('\n');
           fileContent = csvHeader + csvRows;
-          fileName = `${active.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_links.csv`;
-          mimeType = "text/csv";
+          fileName = `${active.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_links.csv`;
+          mimeType = 'text/csv';
           break;
-        case "txt":
-          fileContent = `${active.title}\n${"=".repeat(active.title.length)}\n\n`;
+        case 'txt':
+          fileContent = `${active.title}\n${'='.repeat(active.title.length)}\n\n`;
           fileContent += `Description: ${active.description}\n`;
           fileContent += `Total Links: ${links.length}\n`;
           fileContent += `Created: ${active.createdAt}\n\n`;
-          fileContent += "Links:\n";
+          fileContent += 'Links:\n';
           fileContent += links
             .map(
               (link, index) => `${index + 1}. ${link.title}\n   ${link.url}\n`
             )
-            .join("\n");
-          fileName = `${active.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_collection.txt`;
-          mimeType = "text/plain";
+            .join('\n');
+          fileName = `${active.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_collection.txt`;
+          mimeType = 'text/plain';
           break;
         default:
           fileContent = JSON.stringify(exportData, null, 2);
-          fileName = `${active.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_collection.json`;
-          mimeType = "application/json";
+          fileName = `${active.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_collection.json`;
+          mimeType = 'application/json';
       }
 
       // Create and download file
       const blob = new Blob([fileContent], { type: mimeType });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
       a.download = fileName;
       document.body.appendChild(a);
@@ -151,15 +151,15 @@ export const ExportAction: React.FC<ExportActionProps> = ({
       URL.revokeObjectURL(url);
 
       toast({
-        title: "Collection exported successfully",
+        title: 'Collection exported successfully',
       });
 
       onClose();
     } catch (error) {
       console.error(error);
       toast({
-        title: "An error occurred while exporting",
-        variant: "destructive",
+        title: 'An error occurred while exporting',
+        variant: 'destructive',
       });
     } finally {
       setIsExporting(false);
@@ -194,7 +194,7 @@ export const ExportAction: React.FC<ExportActionProps> = ({
           Cancel
         </Button>
         <Button onClick={handleConfirm} disabled={isExporting}>
-          {isExporting ? "Exporting..." : "Export"}
+          {isExporting ? 'Exporting...' : 'Export'}
         </Button>
       </DialogFooter>
     </>

@@ -1,22 +1,22 @@
-"use server";
+'use server';
 
-import { auth } from "@clerk/nextjs/server";
-import { db } from "@/db";
-import { FavoritesTable } from "@/schema";
-import { eq, and } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { auth } from '@clerk/nextjs/server';
+import { db } from '@/db';
+import { FavoritesTable } from '@/schema';
+import { eq, and } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function updateFavorite(favoriteId: string, title: string) {
   try {
     const { userId } = await auth();
 
     if (!userId) {
-      throw new Error("Unauthorized");
+      throw new Error('Unauthorized');
     }
 
     // Apply rate limiting
@@ -24,7 +24,7 @@ export async function updateFavorite(favoriteId: string, title: string) {
     const rateLimitResult = await checkRateLimit(
       rateLimiters.updateFavoriteLimiter,
       identifier,
-      "Too many requests to update favorites. Please try again later."
+      'Too many requests to update favorites. Please try again later.'
     );
     if (!rateLimitResult.success) {
       const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -52,16 +52,16 @@ export async function updateFavorite(favoriteId: string, title: string) {
       );
     }
 
-    revalidatePath("/settings");
-    revalidatePath("/dashboard");
+    revalidatePath('/settings');
+    revalidatePath('/dashboard');
 
     return { success: true, data: updatedFavorites[0] };
   } catch (error) {
-    console.error("Error updating favorite:", error);
+    console.error('Error updating favorite:', error);
     return {
       success: false,
       error:
-        error instanceof Error ? error.message : "Failed to update favorite",
+        error instanceof Error ? error.message : 'Failed to update favorite',
     };
   }
 }

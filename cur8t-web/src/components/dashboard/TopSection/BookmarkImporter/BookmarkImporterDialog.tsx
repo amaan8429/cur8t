@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { BookmarkImporterDialogProps } from "./types";
-import { useBookmarkImporter } from "./useBookmarkImporter";
-import { BookmarkUploadStep } from "./BookmarkUploadStep";
-import { BookmarkAnalyzeStep } from "./BookmarkAnalyzeStep";
-import { BookmarkPreviewStep } from "./BookmarkPreviewStep";
-import { BookmarkCompleteStep } from "./BookmarkCompleteStep";
-import { BookmarkImporterSteps } from "./BookmarkImporterSteps";
+} from '@/components/ui/dialog';
+import { BookmarkImporterDialogProps } from './types';
+import { useBookmarkImporter } from './useBookmarkImporter';
+import { BookmarkUploadStep } from './BookmarkUploadStep';
+import { BookmarkAnalyzeStep } from './BookmarkAnalyzeStep';
+import { BookmarkPreviewStep } from './BookmarkPreviewStep';
+import { BookmarkCompleteStep } from './BookmarkCompleteStep';
+import { BookmarkImporterSteps } from './BookmarkImporterSteps';
 
 export function BookmarkImporterDialog({
   open,
@@ -28,9 +28,9 @@ export function BookmarkImporterDialog({
 
   // Dynamic sizing based on current step
   const dialogSize =
-    importer.currentStep === "preview"
-      ? "max-w-[95vw] max-h-[95vh]"
-      : "max-w-4xl max-h-[90vh]";
+    importer.currentStep === 'preview'
+      ? 'max-w-[95vw] max-h-[95vh]'
+      : 'max-w-4xl max-h-[90vh]';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -46,16 +46,16 @@ export function BookmarkImporterDialog({
         </DialogHeader>
         <div className="space-y-6">
           <BookmarkImporterSteps currentStep={importer.currentStep} />
-          {importer.currentStep === "upload" && (
+          {importer.currentStep === 'upload' && (
             <BookmarkUploadStep importer={importer} />
           )}
-          {importer.currentStep === "analyze" && (
+          {importer.currentStep === 'analyze' && (
             <BookmarkAnalyzeStep importer={importer} />
           )}
-          {importer.currentStep === "preview" && (
+          {importer.currentStep === 'preview' && (
             <BookmarkPreviewStep importer={importer} />
           )}
-          {importer.currentStep === "complete" && (
+          {importer.currentStep === 'complete' && (
             <BookmarkCompleteStep
               importer={importer}
               onOpenChange={onOpenChange}

@@ -1,23 +1,23 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { AccessRequestsTable, CollectionsTable, UsersTable } from "@/schema";
-import { auth } from "@clerk/nextjs/server";
-import { eq, and } from "drizzle-orm";
+import { db } from '@/db';
+import { AccessRequestsTable, CollectionsTable, UsersTable } from '@/schema';
+import { auth } from '@clerk/nextjs/server';
+import { eq, and } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function requestAccessAction(
   collectionId: string,
-  message: string = ""
+  message: string = ''
 ) {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "Authentication required to request access" };
+    return { error: 'Authentication required to request access' };
   }
 
   // Rate limiting
@@ -25,7 +25,7 @@ export async function requestAccessAction(
   const rateLimitResult = await checkRateLimit(
     rateLimiters.accessRequestLimiter,
     identifier,
-    "Too many access requests. Please try again later."
+    'Too many access requests. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -33,7 +33,7 @@ export async function requestAccessAction(
   }
 
   if (!collectionId) {
-    return { error: "Collection ID is required" };
+    return { error: 'Collection ID is required' };
   }
 
   try {
@@ -50,18 +50,18 @@ export async function requestAccessAction(
       .limit(1);
 
     if (!collection || collection.length === 0) {
-      return { error: "Collection not found" };
+      return { error: 'Collection not found' };
     }
 
     const collectionData = collection[0];
 
     // Check if user is the owner
     if (collectionData.ownerId === userId) {
-      return { error: "You cannot request access to your own collection" };
+      return { error: 'You cannot request access to your own collection' };
     }
 
     // Check if collection allows access requests (private or protected)
-    if (collectionData.visibility === "public") {
+    if (collectionData.visibility === 'public') {
       return {
         error: "This collection is public and doesn't need access requests",
       };
@@ -81,13 +81,13 @@ export async function requestAccessAction(
 
     if (existingRequest && existingRequest.length > 0) {
       const request = existingRequest[0];
-      if (request.status === "pending") {
+      if (request.status === 'pending') {
         return {
-          error: "You have already requested access to this collection",
+          error: 'You have already requested access to this collection',
         };
       }
-      if (request.status === "approved") {
-        return { error: "You already have access to this collection" };
+      if (request.status === 'approved') {
+        return { error: 'You already have access to this collection' };
       }
       // If denied, allow to request again (will update existing record)
     }
@@ -100,7 +100,7 @@ export async function requestAccessAction(
         collectionId,
         ownerId: collectionData.ownerId,
         message: message.trim(),
-        status: "pending",
+        status: 'pending',
       })
       .onConflictDoUpdate({
         target: [
@@ -109,7 +109,7 @@ export async function requestAccessAction(
         ],
         set: {
           message: message.trim(),
-          status: "pending",
+          status: 'pending',
           requestedAt: new Date(),
           respondedAt: null,
         },
@@ -118,12 +118,12 @@ export async function requestAccessAction(
 
     return {
       success: true,
-      message: "Access request sent successfully",
+      message: 'Access request sent successfully',
       data: result[0],
     };
   } catch (error) {
-    console.error("Error requesting access:", error);
-    return { error: "Failed to send access request" };
+    console.error('Error requesting access:', error);
+    return { error: 'Failed to send access request' };
   }
 }
 
@@ -131,7 +131,7 @@ export async function getAccessRequestsAction() {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "Authentication required" };
+    return { error: 'Authentication required' };
   }
 
   try {
@@ -163,8 +163,8 @@ export async function getAccessRequestsAction() {
       data: requests,
     };
   } catch (error) {
-    console.error("Error fetching access requests:", error);
-    return { error: "Failed to fetch access requests" };
+    console.error('Error fetching access requests:', error);
+    return { error: 'Failed to fetch access requests' };
   }
 }
 
@@ -172,7 +172,7 @@ export async function approveAccessRequestAction(requestId: string) {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "Authentication required" };
+    return { error: 'Authentication required' };
   }
 
   try {
@@ -189,20 +189,20 @@ export async function approveAccessRequestAction(requestId: string) {
       .limit(1);
 
     if (!request || request.length === 0) {
-      return { error: "Access request not found" };
+      return { error: 'Access request not found' };
     }
 
     const requestData = request[0];
 
-    if (requestData.status !== "pending") {
-      return { error: "This request has already been responded to" };
+    if (requestData.status !== 'pending') {
+      return { error: 'This request has already been responded to' };
     }
 
     // Update request status
     await db
       .update(AccessRequestsTable)
       .set({
-        status: "approved",
+        status: 'approved',
         respondedAt: new Date(),
       })
       .where(eq(AccessRequestsTable.id, requestId));
@@ -235,7 +235,7 @@ export async function approveAccessRequestAction(requestId: string) {
 
           // If collection is private, convert it to protected when granting access
           const newVisibility =
-            currentVisibility === "private" ? "protected" : currentVisibility;
+            currentVisibility === 'private' ? 'protected' : currentVisibility;
 
           await db
             .update(CollectionsTable)
@@ -247,12 +247,12 @@ export async function approveAccessRequestAction(requestId: string) {
 
           // Return different success messages based on whether visibility was changed
           const wasConverted =
-            currentVisibility === "private" && newVisibility === "protected";
+            currentVisibility === 'private' && newVisibility === 'protected';
           return {
             success: true,
             message: wasConverted
-              ? "Access request approved successfully. Collection converted from private to protected."
-              : "Access request approved successfully",
+              ? 'Access request approved successfully. Collection converted from private to protected.'
+              : 'Access request approved successfully',
             visibilityChanged: wasConverted,
           };
         }
@@ -261,11 +261,11 @@ export async function approveAccessRequestAction(requestId: string) {
 
     return {
       success: true,
-      message: "Access request approved successfully",
+      message: 'Access request approved successfully',
     };
   } catch (error) {
-    console.error("Error approving access request:", error);
-    return { error: "Failed to approve access request" };
+    console.error('Error approving access request:', error);
+    return { error: 'Failed to approve access request' };
   }
 }
 
@@ -273,7 +273,7 @@ export async function denyAccessRequestAction(requestId: string) {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "Authentication required" };
+    return { error: 'Authentication required' };
   }
 
   try {
@@ -290,31 +290,31 @@ export async function denyAccessRequestAction(requestId: string) {
       .limit(1);
 
     if (!request || request.length === 0) {
-      return { error: "Access request not found" };
+      return { error: 'Access request not found' };
     }
 
     const requestData = request[0];
 
-    if (requestData.status !== "pending") {
-      return { error: "This request has already been responded to" };
+    if (requestData.status !== 'pending') {
+      return { error: 'This request has already been responded to' };
     }
 
     // Update request status
     await db
       .update(AccessRequestsTable)
       .set({
-        status: "denied",
+        status: 'denied',
         respondedAt: new Date(),
       })
       .where(eq(AccessRequestsTable.id, requestId));
 
     return {
       success: true,
-      message: "Access request denied",
+      message: 'Access request denied',
     };
   } catch (error) {
-    console.error("Error denying access request:", error);
-    return { error: "Failed to deny access request" };
+    console.error('Error denying access request:', error);
+    return { error: 'Failed to deny access request' };
   }
 }
 
@@ -350,7 +350,7 @@ export async function checkAccessRequestStatus(collectionId: string) {
       requestedAt: request[0].requestedAt,
     };
   } catch (error) {
-    console.error("Error checking access request status:", error);
+    console.error('Error checking access request status:', error);
     return { hasRequest: false };
   }
 }

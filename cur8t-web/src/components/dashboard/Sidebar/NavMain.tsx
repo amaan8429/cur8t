@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { IconType } from "react-icons";
+import { IconType } from 'react-icons';
 
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { useActiveState } from "@/store/activeStateStore";
-import Link from "next/link";
+} from '@/components/ui/sidebar';
+import { useActiveState } from '@/store/activeStateStore';
+import Link from 'next/link';
 
 interface NavMainProps {
   items: {

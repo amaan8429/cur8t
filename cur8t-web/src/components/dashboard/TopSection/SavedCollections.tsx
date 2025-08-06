@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   PiMagnifyingGlass,
   PiList,
@@ -14,16 +14,16 @@ import {
   PiCalendar,
   PiSparkle,
   PiSquaresFour,
-} from "react-icons/pi";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from 'react-icons/pi';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Card,
   CardContent,
@@ -31,21 +31,21 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Collection } from "@/types/types";
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Collection } from '@/types/types';
 import {
   fetchSavedCollections,
   SavedCollection,
-} from "@/actions/collection/fetchSavedCollections";
-import Link from "next/link";
+} from '@/actions/collection/fetchSavedCollections';
+import Link from 'next/link';
 
 const SavedCollections = () => {
   const [isGridView, setIsGridView] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"trending" | "recent" | "likes">(
-    "trending"
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<'trending' | 'recent' | 'likes'>(
+    'trending'
   );
   const [collections, setCollections] = useState<SavedCollection[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -63,13 +63,13 @@ const SavedCollections = () => {
         sortBy,
       });
       if (response.error) {
-        console.error("Failed to fetch collections:", response.error);
+        console.error('Failed to fetch collections:', response.error);
         return;
       }
       setCollections(response.data || []);
       setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
-      console.error("Failed to fetch collections:", error);
+      console.error('Failed to fetch collections:', error);
     }
     setIsLoading(false);
   };
@@ -85,16 +85,16 @@ const SavedCollections = () => {
   );
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const CollectionCard = ({ collection }: { collection: SavedCollection }) => (
@@ -111,7 +111,7 @@ const SavedCollections = () => {
                 {collection.title}
               </CardTitle>
               <CardDescription className="line-clamp-3 text-muted-foreground">
-                {collection.description || "No description provided"}
+                {collection.description || 'No description provided'}
               </CardDescription>
             </div>
           </div>
@@ -148,11 +148,11 @@ const SavedCollections = () => {
               <div className="flex items-center gap-2">
                 <Avatar className="h-5 w-5">
                   <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                    {collection.author?.charAt(0)?.toUpperCase() || "?"}
+                    {collection.author?.charAt(0)?.toUpperCase() || '?'}
                   </AvatarFallback>
                 </Avatar>
                 <span className="text-xs text-muted-foreground truncate max-w-[100px]">
-                  {collection.author || "Anonymous"}
+                  {collection.author || 'Anonymous'}
                 </span>
               </div>
             </div>
@@ -180,7 +180,7 @@ const SavedCollections = () => {
                 {collection.title}
               </CardTitle>
               <CardDescription className="line-clamp-3 text-muted-foreground">
-                {collection.description || "No description provided"}
+                {collection.description || 'No description provided'}
               </CardDescription>
             </div>
           </div>
@@ -216,11 +216,11 @@ const SavedCollections = () => {
             <div className="flex items-center gap-2">
               <Avatar className="h-5 w-5">
                 <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                  {collection.author?.charAt(0)?.toUpperCase() || "?"}
+                  {collection.author?.charAt(0)?.toUpperCase() || '?'}
                 </AvatarFallback>
               </Avatar>
               <span className="text-sm text-muted-foreground">
-                {collection.author || "Anonymous"}
+                {collection.author || 'Anonymous'}
               </span>
             </div>
           </div>
@@ -273,7 +273,7 @@ const SavedCollections = () => {
           <Select
             value={sortBy}
             onValueChange={(value) =>
-              setSortBy(value as "trending" | "recent" | "likes")
+              setSortBy(value as 'trending' | 'recent' | 'likes')
             }
           >
             <SelectTrigger className="w-[180px]">

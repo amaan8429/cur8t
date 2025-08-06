@@ -1,17 +1,21 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { totalCollectionsCount } from "@/lib/totalCollectionCount";
-import { CollectionsTable, UsersTable, LinksTable } from "@/schema";
-import { auth } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
-import { checkRateLimit, getClientIdFromHeaders, rateLimiters } from "@/lib/ratelimit";
+import { db } from '@/db';
+import { totalCollectionsCount } from '@/lib/totalCollectionCount';
+import { CollectionsTable, UsersTable, LinksTable } from '@/schema';
+import { auth } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from '@/lib/ratelimit';
 
 export async function duplicatePublicCollectionAction(
   sourceCollectionId: string,
   options: {
     includeLinks?: boolean;
-    visibility?: "private" | "public" | "protected";
+    visibility?: 'private' | 'public' | 'protected';
   } = {}
 ) {
   const { userId } = await auth();
@@ -19,7 +23,7 @@ export async function duplicatePublicCollectionAction(
   if (!userId) {
     return {
       error:
-        "Authentication required. Please sign in to duplicate this collection.",
+        'Authentication required. Please sign in to duplicate this collection.',
     };
   }
 
@@ -27,7 +31,7 @@ export async function duplicatePublicCollectionAction(
   const rateLimitResult = await checkRateLimit(
     rateLimiters.duplicatePublicLinkLimiter,
     identifier,
-    "Too many requests to duplicate collection. Please try again later."
+    'Too many requests to duplicate collection. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -35,10 +39,10 @@ export async function duplicatePublicCollectionAction(
   }
 
   if (!sourceCollectionId) {
-    return { error: "Source collection ID is required" };
+    return { error: 'Source collection ID is required' };
   }
 
-  const { includeLinks = true, visibility = "private" } = options;
+  const { includeLinks = true, visibility = 'private' } = options;
 
   try {
     // Get the source collection
@@ -48,14 +52,14 @@ export async function duplicatePublicCollectionAction(
       .where(eq(CollectionsTable.id, sourceCollectionId));
 
     if (!sourceCollection || sourceCollection.length === 0) {
-      return { error: "Source collection not found" };
+      return { error: 'Source collection not found' };
     }
 
     const source = sourceCollection[0];
 
     // Check if source collection is accessible (public or protected with access)
-    if (source.visibility === "private") {
-      return { error: "Cannot duplicate private collections" };
+    if (source.visibility === 'private') {
+      return { error: 'Cannot duplicate private collections' };
     }
 
     // Create duplicate collection
@@ -66,7 +70,7 @@ export async function duplicatePublicCollectionAction(
         title: duplicateName,
         description: source.description,
         userId: userId,
-        url: "",
+        url: '',
         visibility: visibility,
         sharedEmails: [], // Reset shared emails for new collection
       })
@@ -113,10 +117,10 @@ export async function duplicatePublicCollectionAction(
     return {
       success: true,
       data: newCollection,
-      message: "Collection duplicated successfully",
+      message: 'Collection duplicated successfully',
     };
   } catch (error) {
-    console.error("Error duplicating collection:", error);
-    return { error: "Failed to duplicate collection" };
+    console.error('Error duplicating collection:', error);
+    return { error: 'Failed to duplicate collection' };
   }
 }

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import Hero from "@/components/landingPage/Hero";
-import Integrations from "@/components/landingPage/integrations";
-import BrowserExtensionShowcase from "@/components/landingPage/BrowserExtensionShowcase";
-import GitHubSyncAnimation from "@/components/landingPage/GitHubSyncAnimation";
-import TweetCard from "@/components/landingPage/twittercard";
-import CodeBlock from "@/components/landingPage/codeblock";
+import React, { useState } from 'react';
+import Hero from '@/components/landingPage/Hero';
+import Integrations from '@/components/landingPage/integrations';
+import BrowserExtensionShowcase from '@/components/landingPage/BrowserExtensionShowcase';
+import GitHubSyncAnimation from '@/components/landingPage/GitHubSyncAnimation';
+import TweetCard from '@/components/landingPage/twittercard';
+import CodeBlock from '@/components/landingPage/codeblock';
 import {
   Navbar,
   NavBody,
@@ -17,23 +17,23 @@ import {
   MobileNavToggle,
   NavbarLogo,
   NavbarButton,
-} from "@/components/landingPage/navbar";
-import SimplePricing from "@/components/landingPage/pricing";
-import ScrollBasedVelocityDemo from "@/components/landingPage/scollvelocity";
-import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
-import { PiCode, PiHeart, PiChatCircle } from "react-icons/pi";
-import Faq1 from "@/components/landingPage/faq";
-import Footer from "@/components/layout/Footer";
+} from '@/components/landingPage/navbar';
+import SimplePricing from '@/components/landingPage/pricing';
+import ScrollBasedVelocityDemo from '@/components/landingPage/scollvelocity';
+import { Badge } from '@/components/ui/badge';
+import { motion } from 'framer-motion';
+import { PiCode, PiHeart, PiChatCircle } from 'react-icons/pi';
+import Faq1 from '@/components/landingPage/faq';
+import Footer from '@/components/layout/Footer';
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
-    { name: "Home", link: "#home" },
-    { name: "Integrations", link: "#integrations" },
-    { name: "About", link: "#about" },
-    { name: "Contact", link: "#contact" },
+    { name: 'Home', link: '#home' },
+    { name: 'Integrations', link: '#integrations' },
+    { name: 'About', link: '#about' },
+    { name: 'Contact', link: '#contact' },
   ];
 
   const handleNavItemClick = () => {

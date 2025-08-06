@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 import {
   PiArrowRight,
   PiArrowUpRight,
@@ -16,8 +16,8 @@ import {
   PiSparkle,
   PiTag,
   PiBrowser,
-} from "react-icons/pi";
-import Image from "next/image";
+} from 'react-icons/pi';
+import Image from 'next/image';
 
 export default function Hero() {
   // State for animated counters
@@ -72,7 +72,7 @@ export default function Hero() {
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 100 },
+      transition: { type: 'spring', stiffness: 100 },
     },
   };
 
@@ -83,7 +83,7 @@ export default function Hero() {
     transition: {
       duration: 3,
       repeat: Number.POSITIVE_INFINITY,
-      ease: "easeInOut",
+      ease: 'easeInOut',
     },
   };
 
@@ -143,7 +143,7 @@ export default function Hero() {
           transition={{
             duration: 8,
             repeat: Number.POSITIVE_INFINITY,
-            ease: "easeInOut",
+            ease: 'easeInOut',
           }}
           className="absolute top-1/4 left-1/4 h-32 w-32 md:h-72 md:w-72 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 blur-3xl"
         ></motion.div>
@@ -158,7 +158,7 @@ export default function Hero() {
           transition={{
             duration: 10,
             repeat: Number.POSITIVE_INFINITY,
-            ease: "easeInOut",
+            ease: 'easeInOut',
             delay: 2,
           }}
           className="absolute bottom-1/4 right-1/4 h-48 w-48 md:h-96 md:w-96 rounded-full bg-gradient-to-l from-accent/15 to-primary/15 blur-3xl"
@@ -174,7 +174,7 @@ export default function Hero() {
           transition={{
             duration: 15,
             repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
+            ease: 'linear',
           }}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[300px] md:h-[500px] md:w-[500px] rounded-full bg-gradient-conic from-primary/10 via-accent/5 to-primary/10 blur-2xl hidden md:block"
         ></motion.div>
@@ -191,7 +191,7 @@ export default function Hero() {
             transition={{
               duration: 6,
               repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
+              ease: 'easeInOut',
             }}
           >
             <PiBookmark className="h-6 w-6 text-primary" />
@@ -207,7 +207,7 @@ export default function Hero() {
             transition={{
               duration: 5,
               repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
+              ease: 'easeInOut',
               delay: 1,
             }}
           >
@@ -224,7 +224,7 @@ export default function Hero() {
             transition={{
               duration: 7,
               repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
+              ease: 'easeInOut',
               delay: 0.5,
             }}
           >
@@ -241,7 +241,7 @@ export default function Hero() {
             transition={{
               duration: 6.5,
               repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
+              ease: 'easeInOut',
               delay: 1.5,
             }}
           >
@@ -258,7 +258,7 @@ export default function Hero() {
             transition={{
               duration: 5.5,
               repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
+              ease: 'easeInOut',
               delay: 2,
             }}
           >
@@ -276,7 +276,7 @@ export default function Hero() {
             transition={{
               duration: 4.5,
               repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
+              ease: 'easeInOut',
               delay: 3,
             }}
           >
@@ -294,7 +294,7 @@ export default function Hero() {
             transition={{
               duration: 6.2,
               repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
+              ease: 'easeInOut',
               delay: 1.8,
             }}
           >
@@ -311,7 +311,7 @@ export default function Hero() {
             transition={{
               duration: 5.8,
               repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
+              ease: 'easeInOut',
               delay: 0.8,
             }}
           >
@@ -353,7 +353,7 @@ export default function Hero() {
                 transition={{
                   duration: durations[i] || 3,
                   repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeInOut",
+                  ease: 'easeInOut',
                   delay: delays[i] || 0,
                 }}
               />
@@ -385,7 +385,7 @@ export default function Hero() {
           variants={itemVariants}
           className="mb-6 bg-gradient-to-r from-foreground/70 via-foreground to-muted-foreground/80 bg-clip-text text-4xl font-semibold leading-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
         >
-          Curate your stuff with{" "}
+          Curate your stuff with{' '}
           <motion.span
             className="relative inline-block text-primary font-semibold"
             animate={{
@@ -394,7 +394,7 @@ export default function Hero() {
             transition={{
               duration: 2.5,
               repeat: Number.POSITIVE_INFINITY,
-              ease: "easeInOut",
+              ease: 'easeInOut',
             }}
           >
             <span className="relative z-10">Cur8t</span>
@@ -407,7 +407,7 @@ export default function Hero() {
               transition={{
                 duration: 2,
                 repeat: Number.POSITIVE_INFINITY,
-                ease: "easeInOut",
+                ease: 'easeInOut',
                 delay: 0.5,
               }}
               className="absolute inset-0 bg-primary/20 blur-sm rounded-lg"
@@ -415,12 +415,12 @@ export default function Hero() {
             {/* Shimmer effect */}
             <motion.div
               animate={{
-                x: ["-100%", "100%"],
+                x: ['-100%', '100%'],
               }}
               transition={{
                 duration: 3,
                 repeat: Number.POSITIVE_INFINITY,
-                ease: "linear",
+                ease: 'linear',
                 repeatDelay: 2,
               }}
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 overflow-hidden"
@@ -517,7 +517,7 @@ export default function Hero() {
               transition={{
                 duration: 8,
                 repeat: Number.POSITIVE_INFINITY,
-                ease: "linear",
+                ease: 'linear',
               }}
               className="absolute -inset-1 rounded-2xl"
             >

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import UpdatedAt from "./UpdatedAt";
-import SavedCollection from "./SaveCollection";
-import ActionItems from "./ActionItems";
-import { useLinkStore } from "@/store/link-store";
-import { useCollectionStore } from "@/store/collection-store";
-import { useActiveState } from "@/store/activeStateStore";
+import * as React from 'react';
+import UpdatedAt from './UpdatedAt';
+import SavedCollection from './SaveCollection';
+import ActionItems from './ActionItems';
+import { useLinkStore } from '@/store/link-store';
+import { useCollectionStore } from '@/store/collection-store';
+import { useActiveState } from '@/store/activeStateStore';
 
 export function NavActions({
   activeCollectionId,
@@ -18,7 +18,7 @@ export function NavActions({
     (link) => link.linkCollectionId === activeCollectionId
   );
 
-  console.log("Active collection ID:", activeCollectionId);
+  console.log('Active collection ID:', activeCollectionId);
 
   return (
     <div className="flex items-center gap-2 text-sm">

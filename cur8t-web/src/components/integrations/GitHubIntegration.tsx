@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import React from "react";
+import React from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
   PiGithubLogo,
   PiCheckCircle,
   PiWarningCircle,
   PiArrowSquareOut,
   PiSpinner,
-} from "react-icons/pi";
-import { useUser } from "@clerk/nextjs";
-import { useToast } from "@/hooks/use-toast";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
+} from 'react-icons/pi';
+import { useUser } from '@clerk/nextjs';
+import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
 
 interface GitHubStatus {
   githubConnected: boolean;
@@ -38,33 +38,33 @@ const GitHubIntegrationComponent = () => {
   const { user } = useUser();
 
   const handleConnectGitHub = () => {
-    window.location.href = "/api/github/connect";
+    window.location.href = '/api/github/connect';
   };
 
   const handleDisconnectGitHub = async () => {
     setIsDisconnecting(true);
     try {
-      const response = await fetch("/api/github/disconnect", {
-        method: "POST",
+      const response = await fetch('/api/github/disconnect', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
 
       if (response.ok) {
         setGithubStatus({ githubConnected: false });
         toast({
-          title: "Success",
-          description: "GitHub account disconnected successfully",
+          title: 'Success',
+          description: 'GitHub account disconnected successfully',
         });
       } else {
-        throw new Error("Failed to disconnect");
+        throw new Error('Failed to disconnect');
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to disconnect GitHub account",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to disconnect GitHub account',
+        variant: 'destructive',
       });
     } finally {
       setIsDisconnecting(false);
@@ -74,16 +74,16 @@ const GitHubIntegrationComponent = () => {
   const syncToGithub = async (id: string) => {
     setIsSyncing(true);
     toast({
-      title: "Syncing",
-      description: "Syncing your collections to GitHub...",
+      title: 'Syncing',
+      description: 'Syncing your collections to GitHub...',
     });
 
     try {
-      const response = await fetch("/api/github/sync", {
-        method: "POST",
+      const response = await fetch('/api/github/sync', {
+        method: 'POST',
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ id }),
       });
@@ -92,17 +92,17 @@ const GitHubIntegrationComponent = () => {
       if (response.status === 429) {
         const data = await response.json();
         const retryAfter =
-          response.headers.get("retry-after") || data.retryAfter || 60;
+          response.headers.get('retry-after') || data.retryAfter || 60;
 
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter:
-            typeof retryAfter === "string"
+            typeof retryAfter === 'string'
               ? parseInt(retryAfter) * 60
               : retryAfter * 60,
-          message: "Too many GitHub sync attempts. Please try again later.",
+          message: 'Too many GitHub sync attempts. Please try again later.',
         });
         return;
       }
@@ -111,23 +111,23 @@ const GitHubIntegrationComponent = () => {
 
       if (!response.ok) {
         toast({
-          title: "Error",
-          description: data.error || "Failed to sync with GitHub",
-          variant: "destructive",
+          title: 'Error',
+          description: data.error || 'Failed to sync with GitHub',
+          variant: 'destructive',
         });
         return;
       }
 
-      if (data.status === "info") {
+      if (data.status === 'info') {
         toast({
-          title: "Info",
+          title: 'Info',
           description: data.message,
         });
-      } else if (data.status === "success") {
+      } else if (data.status === 'success') {
         toast({
-          title: "Success",
+          title: 'Success',
           description: data.message,
-          variant: "default",
+          variant: 'default',
         });
         // Update last sync time
         setGithubStatus((prev) =>
@@ -138,9 +138,9 @@ const GitHubIntegrationComponent = () => {
       return data;
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to sync with GitHub",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to sync with GitHub',
+        variant: 'destructive',
       });
     } finally {
       setIsSyncing(false);
@@ -149,52 +149,52 @@ const GitHubIntegrationComponent = () => {
 
   const checkGithubStatus = async () => {
     try {
-      const response = await fetch("/api/github/status");
+      const response = await fetch('/api/github/status');
 
       // Check for rate limiting first
       if (response.status === 429) {
         const data = await response.json().catch(() => ({}));
         const retryAfter =
-          response.headers.get("retry-after") || data.retryAfter || 60;
+          response.headers.get('retry-after') || data.retryAfter || 60;
 
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter:
-            typeof retryAfter === "string"
+            typeof retryAfter === 'string'
               ? parseInt(retryAfter) * 60
               : retryAfter * 60,
-          message: "Too many GitHub status requests. Please try again later.",
+          message: 'Too many GitHub status requests. Please try again later.',
         });
         return;
       }
 
       if (!response.ok) {
-        throw new Error("Failed to fetch GitHub status");
+        throw new Error('Failed to fetch GitHub status');
       }
       const data = await response.json();
       setGithubStatus(data);
     } catch (error) {
-      console.log("Error checking GitHub status:", error);
+      console.log('Error checking GitHub status:', error);
       toast({
-        title: "Error",
-        description: "Failed to check GitHub connection status",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to check GitHub connection status',
+        variant: 'destructive',
       });
       setGithubStatus({ githubConnected: false });
     }
   };
 
   const formatLastSync = (lastSync?: string) => {
-    if (!lastSync) return "Never";
+    if (!lastSync) return 'Never';
     const date = new Date(lastSync);
     const now = new Date();
     const diffInHours = Math.floor(
       (now.getTime() - date.getTime()) / (1000 * 60 * 60)
     );
 
-    if (diffInHours < 1) return "Just now";
+    if (diffInHours < 1) return 'Just now';
     if (diffInHours < 24) return `${diffInHours}h ago`;
     const diffInDays = Math.floor(diffInHours / 24);
     return `${diffInDays}d ago`;
@@ -254,8 +254,8 @@ const GitHubIntegrationComponent = () => {
               </div>
               <CardDescription>
                 {githubStatus.githubConnected
-                  ? `Connected as ${githubStatus.username || "User"} • Auto-sync your collections`
-                  : "Connect your GitHub account to sync collections automatically"}
+                  ? `Connected as ${githubStatus.username || 'User'} • Auto-sync your collections`
+                  : 'Connect your GitHub account to sync collections automatically'}
               </CardDescription>
             </div>
           </div>
@@ -277,7 +277,7 @@ const GitHubIntegrationComponent = () => {
                     variant="outline"
                     size="sm"
                     onClick={() =>
-                      window.open(githubStatus.repositoryUrl, "_blank")
+                      window.open(githubStatus.repositoryUrl, '_blank')
                     }
                     className="flex items-center gap-2"
                   >
@@ -293,9 +293,9 @@ const GitHubIntegrationComponent = () => {
                   onClick={async () => {
                     if (!user?.id) {
                       return toast({
-                        title: "Error",
-                        description: "User ID not found",
-                        variant: "destructive",
+                        title: 'Error',
+                        description: 'User ID not found',
+                        variant: 'destructive',
                       });
                     }
                     await syncToGithub(user.id);
@@ -309,7 +309,7 @@ const GitHubIntegrationComponent = () => {
                       Syncing...
                     </>
                   ) : (
-                    "Sync Now"
+                    'Sync Now'
                   )}
                 </Button>
                 <Button
@@ -321,7 +321,7 @@ const GitHubIntegrationComponent = () => {
                   {isDisconnecting ? (
                     <PiSpinner className="h-4 w-4 animate-spin" />
                   ) : (
-                    "Disconnect"
+                    'Disconnect'
                   )}
                 </Button>
               </div>

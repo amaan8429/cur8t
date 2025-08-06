@@ -1,44 +1,44 @@
-import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { PiPlus, PiSparkle } from "react-icons/pi";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import * as AccordionPrimitive from '@radix-ui/react-accordion';
+import { PiPlus, PiSparkle } from 'react-icons/pi';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
-} from "@/components/ui/accordion";
+} from '@/components/ui/accordion';
 
 const items = [
   {
-    id: "1",
-    title: "What makes Cur8t different?",
+    id: '1',
+    title: 'What makes Cur8t different?',
     content:
       "Cur8t is a powerful bookmark manager that helps you organize, discover, and share your favorite web content. With smart collections, AI-powered extraction, and seamless browser integration, it's designed to make your digital life more organized.",
   },
   {
-    id: "2",
-    title: "How can I organize my bookmarks?",
+    id: '2',
+    title: 'How can I organize my bookmarks?',
     content:
-      "Create custom collections for different topics, add tags and descriptions, and use our smart categorization features. You can also make collections public to share with others or keep them private for personal use.",
+      'Create custom collections for different topics, add tags and descriptions, and use our smart categorization features. You can also make collections public to share with others or keep them private for personal use.',
   },
   {
-    id: "3",
-    title: "Is Cur8t free to use?",
+    id: '3',
+    title: 'Is Cur8t free to use?',
     content:
-      "Yes! Cur8t offers a generous free tier that includes basic bookmark management, collections, and browser extension access. Premium features are available for users who need advanced functionality.",
+      'Yes! Cur8t offers a generous free tier that includes basic bookmark management, collections, and browser extension access. Premium features are available for users who need advanced functionality.',
   },
   {
-    id: "4",
-    title: "Can I import my existing bookmarks?",
+    id: '4',
+    title: 'Can I import my existing bookmarks?',
     content:
-      "Absolutely! Cur8t supports importing bookmarks from all major browsers including Chrome, Firefox, Safari, and Edge. Your existing folder structure will be preserved during import.",
+      'Absolutely! Cur8t supports importing bookmarks from all major browsers including Chrome, Firefox, Safari, and Edge. Your existing folder structure will be preserved during import.',
   },
   {
-    id: "5",
-    title: "How does the browser extension work?",
+    id: '5',
+    title: 'How does the browser extension work?',
     content:
-      "Our browser extension lets you save any webpage to your collections with a single click. You can organize bookmarks, add notes, and access your collections directly from your browser toolbar.",
+      'Our browser extension lets you save any webpage to your collections with a single click. You can organize bookmarks, add notes, and access your collections directly from your browser toolbar.',
   },
 ];
 
@@ -116,25 +116,25 @@ export default function Faq1() {
                 <AccordionItem
                   value={item.id}
                   className={cn(
-                    "bg-card/50 my-1 overflow-hidden rounded-lg border-none px-2 shadow-sm transition-all",
-                    "data-[state=open]:bg-card/80 data-[state=open]:shadow-md"
+                    'bg-card/50 my-1 overflow-hidden rounded-lg border-none px-2 shadow-sm transition-all',
+                    'data-[state=open]:bg-card/80 data-[state=open]:shadow-md'
                   )}
                 >
                   <AccordionPrimitive.Header className="flex">
                     <AccordionPrimitive.Trigger
                       className={cn(
-                        "group flex flex-1 items-center justify-between gap-4 py-4 text-left text-base font-medium",
-                        "hover:text-primary transition-all duration-300 outline-none",
-                        "focus-visible:ring-primary/50 focus-visible:ring-2",
-                        "data-[state=open]:text-primary"
+                        'group flex flex-1 items-center justify-between gap-4 py-4 text-left text-base font-medium',
+                        'hover:text-primary transition-all duration-300 outline-none',
+                        'focus-visible:ring-primary/50 focus-visible:ring-2',
+                        'data-[state=open]:text-primary'
                       )}
                     >
                       {item.title}
                       <PiPlus
                         size={18}
                         className={cn(
-                          "text-primary/70 shrink-0 transition-transform duration-300 ease-out",
-                          "group-data-[state=open]:rotate-45"
+                          'text-primary/70 shrink-0 transition-transform duration-300 ease-out',
+                          'group-data-[state=open]:rotate-45'
                         )}
                         aria-hidden="true"
                       />
@@ -142,9 +142,9 @@ export default function Faq1() {
                   </AccordionPrimitive.Header>
                   <AccordionContent
                     className={cn(
-                      "text-muted-foreground overflow-hidden pt-0 pb-4",
-                      "data-[state=open]:animate-accordion-down",
-                      "data-[state=closed]:animate-accordion-up"
+                      'text-muted-foreground overflow-hidden pt-0 pb-4',
+                      'data-[state=open]:animate-accordion-down',
+                      'data-[state=closed]:animate-accordion-up'
                     )}
                   >
                     <div className="border-border/30 border-t pt-3">

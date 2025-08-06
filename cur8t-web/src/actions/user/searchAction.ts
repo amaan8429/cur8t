@@ -1,15 +1,19 @@
-"use server";
+'use server';
 
-import { auth } from "@clerk/nextjs/server";
-import { db } from "@/db";
-import { CollectionsTable, LinksTable } from "@/schema";
-import { eq, and, or, ilike, sql, inArray } from "drizzle-orm";
-import { checkRateLimit, getClientIdFromHeaders, rateLimiters } from "@/lib/ratelimit";
+import { auth } from '@clerk/nextjs/server';
+import { db } from '@/db';
+import { CollectionsTable, LinksTable } from '@/schema';
+import { eq, and, or, ilike, inArray } from 'drizzle-orm';
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from '@/lib/ratelimit';
 
 export interface SearchResult {
   id: string;
   title: string;
-  type: "collection" | "link";
+  type: 'collection' | 'link';
   description?: string;
   url?: string;
   collectionTitle?: string;
@@ -26,7 +30,7 @@ export async function searchAction(query: string): Promise<SearchResult[]> {
   const rateLimitResult = await checkRateLimit(
     rateLimiters.searchLimiter,
     identifier,
-    "Too many search requests. Please try again later."
+    'Too many search requests. Please try again later.'
   );
   if (!rateLimitResult.success) {
     throw new Error(rateLimitResult.error);
@@ -100,13 +104,13 @@ export async function searchAction(query: string): Promise<SearchResult[]> {
       ...collections.map((col) => ({
         id: col.id,
         title: col.title,
-        type: "collection" as const,
+        type: 'collection' as const,
         description: col.description || undefined,
       })),
       ...links.map((link) => ({
         id: link.id,
         title: link.title,
-        type: "link" as const,
+        type: 'link' as const,
         url: link.url,
         collectionTitle: collectionTitleMap.get(link.collectionId),
       })),
@@ -114,7 +118,7 @@ export async function searchAction(query: string): Promise<SearchResult[]> {
 
     return results;
   } catch (error) {
-    console.error("Search error:", error);
+    console.error('Search error:', error);
     return [];
   }
 }

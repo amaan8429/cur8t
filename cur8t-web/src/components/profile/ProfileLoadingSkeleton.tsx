@@ -1,4 +1,4 @@
-import { ProfileHeader } from "./ProfileHeader";
+import { ProfileHeader } from './ProfileHeader';
 
 export function ProfileLoadingSkeleton() {
   return (

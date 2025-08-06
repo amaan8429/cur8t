@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect, use } from "react";
-import { notFound } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { Footer } from "@/components/layout/Footer";
-import { ProfileHeader } from "@/components/profile/ProfileHeader";
-import { ProfileLoadingSkeleton } from "@/components/profile/ProfileLoadingSkeleton";
-import { ProfileSidebar } from "@/components/profile/ProfileSidebar";
-import { CollectionsSection } from "@/components/profile/CollectionsSection";
-import { type User, type Collection, type SortOption } from "@/types/profile";
+import { useState, useEffect, use } from 'react';
+import { notFound } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { Footer } from '@/components/layout/Footer';
+import { ProfileHeader } from '@/components/profile/ProfileHeader';
+import { ProfileLoadingSkeleton } from '@/components/profile/ProfileLoadingSkeleton';
+import { ProfileSidebar } from '@/components/profile/ProfileSidebar';
+import { CollectionsSection } from '@/components/profile/CollectionsSection';
+import { type User, type Collection, type SortOption } from '@/types/profile';
 
 export default function ProfilePage({
   params,
@@ -23,7 +23,7 @@ export default function ProfilePage({
     []
   );
   const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState<SortOption>("recent");
+  const [sortBy, setSortBy] = useState<SortOption>('recent');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -36,17 +36,17 @@ export default function ProfilePage({
         if (userResponse.status === 429) {
           const data = await userResponse.json().catch(() => ({}));
           const retryAfter =
-            userResponse.headers.get("retry-after") || data.retryAfter || 60;
+            userResponse.headers.get('retry-after') || data.retryAfter || 60;
 
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter:
-              typeof retryAfter === "string"
+              typeof retryAfter === 'string'
                 ? parseInt(retryAfter) * 60
                 : retryAfter * 60,
-            message: "Too many profile requests. Please try again later.",
+            message: 'Too many profile requests. Please try again later.',
           });
           return;
         }
@@ -55,7 +55,7 @@ export default function ProfilePage({
           if (userResponse.status === 404) {
             notFound();
           }
-          throw new Error("Failed to fetch user");
+          throw new Error('Failed to fetch user');
         }
         const userData = await userResponse.json();
         setUser(userData.user);
@@ -85,11 +85,11 @@ export default function ProfilePage({
         setPinnedCollections(pinned);
         setUnpinnedCollections(unpinned);
       } catch (error) {
-        console.error("Error fetching profile data:", error);
+        console.error('Error fetching profile data:', error);
         toast({
-          title: "Error",
-          description: "Failed to load profile data",
-          variant: "destructive",
+          title: 'Error',
+          description: 'Failed to load profile data',
+          variant: 'destructive',
         });
       } finally {
         setLoading(false);

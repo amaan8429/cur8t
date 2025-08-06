@@ -1,9 +1,9 @@
-import { db } from "@/db";
-import { UsersTable, GitHubSettingsTable } from "@/schema";
-import { auth } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
-import { rateLimiters, checkRateLimit, getClientId } from "@/lib/ratelimit";
+import { db } from '@/db';
+import { UsersTable, GitHubSettingsTable } from '@/schema';
+import { auth } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
+import { NextResponse } from 'next/server';
+import { rateLimiters, checkRateLimit, getClientId } from '@/lib/ratelimit';
 
 export async function POST(request: Request) {
   try {
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     // Check if the user ID is present
     if (!userId) {
       return NextResponse.json(
-        { error: "Unauthorized: Missing user ID" },
+        { error: 'Unauthorized: Missing user ID' },
         { status: 401 }
       );
     }
@@ -23,13 +23,13 @@ export async function POST(request: Request) {
     const rateLimitResult = await checkRateLimit(
       rateLimiters.getGithubStatusLimiter,
       identifier,
-      "Too many requests to GitHub disconnect. Please try again later."
+      'Too many requests to GitHub disconnect. Please try again later.'
     );
     if (!rateLimitResult.success) {
       const retryAfter = rateLimitResult.retryAfter ?? 60;
       return NextResponse.json(
         { error: rateLimitResult.error, retryAfter },
-        { status: 429, headers: { "Retry-After": retryAfter.toString() } }
+        { status: 429, headers: { 'Retry-After': retryAfter.toString() } }
       );
     }
 
@@ -48,13 +48,13 @@ export async function POST(request: Request) {
       .where(eq(GitHubSettingsTable.userId, userId));
 
     return NextResponse.json({
-      message: "GitHub account disconnected successfully",
+      message: 'GitHub account disconnected successfully',
       githubConnected: false,
     });
   } catch (error) {
-    console.error("Error disconnecting GitHub account:", error);
+    console.error('Error disconnecting GitHub account:', error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

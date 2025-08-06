@@ -1,7 +1,7 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-import { showRateLimitToast } from "@/components/ui/rate-limit-toast";
+import { showRateLimitToast } from '@/components/ui/rate-limit-toast';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,10 +23,10 @@ type RateLimitResponse =
  */
 export function handleRateLimitResponse(
   result: RateLimitResponse,
-  defaultMessage: string = "Something went wrong, please try again later"
+  defaultMessage: string = 'Something went wrong, please try again later'
 ): boolean {
   // Check for rate limit in server action responses
-  if (result && typeof result === "object") {
+  if (result && typeof result === 'object') {
     const response = result as { error?: string; retryAfter?: number };
 
     // Server actions return { error: string, retryAfter?: number }
@@ -41,9 +41,9 @@ export function handleRateLimitResponse(
     // Some rate limit errors might not have retryAfter
     if (
       response.error &&
-      (response.error.includes("rate limit") ||
-        response.error.includes("Too many requests") ||
-        response.error.includes("please try again later"))
+      (response.error.includes('rate limit') ||
+        response.error.includes('Too many requests') ||
+        response.error.includes('please try again later'))
     ) {
       showRateLimitToast({
         retryAfter: 60, // Default 1 minute
@@ -64,20 +64,20 @@ export function handleRateLimitResponse(
  */
 export async function handleFetchRateLimitResponse(
   response: Response,
-  defaultMessage: string = "Something went wrong, please try again later"
+  defaultMessage: string = 'Something went wrong, please try again later'
 ): Promise<boolean> {
   if (response.status === 429) {
     try {
       const data = await response.json();
       const retryAfter =
-        response.headers.get("retry-after") ||
-        response.headers.get("x-ratelimit-reset") ||
+        response.headers.get('retry-after') ||
+        response.headers.get('x-ratelimit-reset') ||
         data.retryAfter ||
         60;
 
       showRateLimitToast({
         retryAfter:
-          typeof retryAfter === "string" ? parseInt(retryAfter) : retryAfter,
+          typeof retryAfter === 'string' ? parseInt(retryAfter) : retryAfter,
         message: data.error || defaultMessage,
       });
       return true;
@@ -101,7 +101,7 @@ export async function handleFetchRateLimitResponse(
  */
 export async function executeServerActionWithRateLimit<T>(
   actionFn: () => Promise<T>,
-  defaultMessage: string = "Something went wrong, please try again later"
+  defaultMessage: string = 'Something went wrong, please try again later'
 ): Promise<T | null> {
   try {
     const result = await actionFn();
@@ -112,7 +112,7 @@ export async function executeServerActionWithRateLimit<T>(
 
     return result;
   } catch (error) {
-    console.error("Server action error:", error);
+    console.error('Server action error:', error);
     throw error;
   }
 }
@@ -125,7 +125,7 @@ export async function executeServerActionWithRateLimit<T>(
  */
 export async function executeFetchWithRateLimit(
   fetchFn: () => Promise<Response>,
-  defaultMessage: string = "Something went wrong, please try again later"
+  defaultMessage: string = 'Something went wrong, please try again later'
 ): Promise<Response | null> {
   try {
     const response = await fetchFn();
@@ -140,7 +140,7 @@ export async function executeFetchWithRateLimit(
 
     return response;
   } catch (error) {
-    console.error("Fetch error:", error);
+    console.error('Fetch error:', error);
     throw error;
   }
 }

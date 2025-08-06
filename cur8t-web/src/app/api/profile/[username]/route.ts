@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
-import { db } from "@/db";
-import { UsersTable, CollectionsTable } from "@/schema";
-import { eq, and } from "drizzle-orm";
-import { getClientId, checkRateLimit, rateLimiters } from "@/lib/ratelimit";
+import { NextResponse } from 'next/server';
+import { db } from '@/db';
+import { UsersTable, CollectionsTable } from '@/schema';
+import { eq, and } from 'drizzle-orm';
+import { getClientId, checkRateLimit, rateLimiters } from '@/lib/ratelimit';
 
 export async function GET(
   request: Request,
@@ -13,13 +13,13 @@ export async function GET(
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getPublicProfileLimiter,
     identifier,
-    "Too many requests to get public profile. Please try again later."
+    'Too many requests to get public profile. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
     return NextResponse.json(
       { error: rateLimitResult.error, retryAfter },
-      { status: 429, headers: { "Retry-After": retryAfter.toString() } }
+      { status: 429, headers: { 'Retry-After': retryAfter.toString() } }
     );
   }
 
@@ -29,7 +29,7 @@ export async function GET(
 
     if (!username) {
       return NextResponse.json(
-        { error: "Username is required" },
+        { error: 'Username is required' },
         { status: 400 }
       );
     }
@@ -56,7 +56,7 @@ export async function GET(
       .limit(1);
 
     if (users.length === 0) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     const user = users[0];
@@ -81,7 +81,7 @@ export async function GET(
       .where(
         and(
           eq(CollectionsTable.userId, user.id),
-          eq(CollectionsTable.visibility, "public")
+          eq(CollectionsTable.visibility, 'public')
         )
       );
 
@@ -93,10 +93,10 @@ export async function GET(
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching profile data:", error);
+    console.error('Error fetching profile data:', error);
     return NextResponse.json(
       {
-        error: "Internal server error",
+        error: 'Internal server error',
       },
       { status: 500 }
     );

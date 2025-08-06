@@ -1,8 +1,8 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { CollectionsTable } from "@/schema";
-import { eq } from "drizzle-orm";
+import { db } from '@/db';
+import { CollectionsTable } from '@/schema';
+import { eq } from 'drizzle-orm';
 
 async function getExistingEmails(collectionId: string) {
   const data = await db
@@ -24,7 +24,7 @@ async function getExistingEmails(collectionId: string) {
 export async function addEmails(collectionId: string, newEmail: string) {
   //also check if the email is valid
   if (!collectionId || !newEmail) {
-    return "Collection id and email are required";
+    return 'Collection id and email are required';
   }
 
   const existingEmails = await getExistingEmails(collectionId);
@@ -44,7 +44,7 @@ export async function removeEmails(
 ) {
   //also check if the email is valid
   if (!collectionId || !emailToRemove) {
-    return "Collection id and email are required";
+    return 'Collection id and email are required';
   }
 
   const existingEmails = await getExistingEmails(collectionId);
@@ -56,22 +56,5 @@ export async function removeEmails(
     })
     .where(eq(CollectionsTable.id, collectionId));
 
-  return { success: true, message: "Email removed successfully" };
-}
-
-async function fetchSharedEmails(collectionId: string) {
-  const data = await db
-    .select({
-      sharedEmails: CollectionsTable.sharedEmails,
-    })
-    .from(CollectionsTable)
-    .where(eq(CollectionsTable.id, collectionId));
-
-  const sharedEmailsEmails = data[0]?.sharedEmails;
-
-  if (!sharedEmailsEmails) {
-    return [];
-  }
-
-  return sharedEmailsEmails;
+  return { success: true, message: 'Email removed successfully' };
 }

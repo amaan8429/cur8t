@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { PiUsers, PiHeart, PiBookOpen } from "react-icons/pi";
-import Link from "next/link";
-import { getFeaturedUsers } from "@/actions/platform/featuredUsers";
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { PiUsers, PiHeart, PiBookOpen } from 'react-icons/pi';
+import Link from 'next/link';
+import { getFeaturedUsers } from '@/actions/platform/featuredUsers';
 
 interface FeaturedUser {
   id: string;
@@ -37,12 +37,12 @@ export default function FeaturedUsers() {
         // Check for rate limiting
         if (response.error && response.retryAfter) {
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter: response.retryAfter * 60,
             message:
-              "Too many featured users requests. Please try again later.",
+              'Too many featured users requests. Please try again later.',
           });
           setLoading(false);
           return;
@@ -52,7 +52,7 @@ export default function FeaturedUsers() {
           setUsers(response.data);
         }
       } catch (error) {
-        console.error("Error loading featured users:", error);
+        console.error('Error loading featured users:', error);
       } finally {
         setLoading(false);
       }
@@ -129,23 +129,23 @@ export default function FeaturedUsers() {
                 <Avatar className="w-12 h-12">
                   <AvatarFallback className="text-lg font-semibold">
                     {user.name
-                      .split(" ")
+                      .split(' ')
                       .map((n) => n[0])
-                      .join("")
+                      .join('')
                       .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <CardTitle className="text-lg">
                     <Link
-                      href={`/profile/${user.username || "no-username"}`}
+                      href={`/profile/${user.username || 'no-username'}`}
                       className="hover:underline"
                     >
                       {user.name}
                     </Link>
                   </CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    @{user.username || "no-username"}
+                    @{user.username || 'no-username'}
                   </p>
                 </div>
               </div>
@@ -194,7 +194,7 @@ export default function FeaturedUsers() {
 
               {user.topCollections.length > 2 && (
                 <Link
-                  href={`/profile/${user.username || "no-username"}`}
+                  href={`/profile/${user.username || 'no-username'}`}
                   className="text-sm text-blue-600 hover:underline"
                 >
                   +{user.topCollections.length - 2} more collections

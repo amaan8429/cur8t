@@ -1,28 +1,28 @@
-import { db } from "@/db";
-import { checkRateLimit, getClientId, rateLimiters } from "@/lib/ratelimit";
-import { UsersTable } from "@/schema";
-import { auth } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
+import { db } from '@/db';
+import { checkRateLimit, getClientId, rateLimiters } from '@/lib/ratelimit';
+import { UsersTable } from '@/schema';
+import { auth } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
+import { NextResponse } from 'next/server';
 
 export async function GET(req: Request) {
   const { userId } = await auth();
 
   if (!userId) {
-    return new NextResponse("Unauthorized", { status: 401 });
+    return new NextResponse('Unauthorized', { status: 401 });
   }
 
   const identifier = getClientId(req, userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getSocialMediaInfoLimiter,
     identifier,
-    "Too many requests to get social media info. Please try again later."
+    'Too many requests to get social media info. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
     return NextResponse.json(
       { error: rateLimitResult.error, retryAfter },
-      { status: 429, headers: { "Retry-After": retryAfter.toString() } }
+      { status: 429, headers: { 'Retry-After': retryAfter.toString() } }
     );
   }
 
@@ -40,7 +40,7 @@ export async function GET(req: Request) {
     .where(eq(UsersTable.id, userId));
 
   if (!socialMediaSettings[0]) {
-    return new NextResponse("Social media settings not found", { status: 404 });
+    return new NextResponse('Social media settings not found', { status: 404 });
   }
 
   return NextResponse.json(socialMediaSettings[0]);
@@ -50,20 +50,20 @@ export async function PUT(req: Request) {
   const { userId } = await auth();
 
   if (!userId) {
-    return new NextResponse("Unauthorized", { status: 401 });
+    return new NextResponse('Unauthorized', { status: 401 });
   }
 
   const identifier = getClientId(req, userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.socialMediaUpdateLimiter,
     identifier,
-    "Too many requests to update social media info. Please try again later."
+    'Too many requests to update social media info. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
     return NextResponse.json(
       { error: rateLimitResult.error, retryAfter },
-      { status: 429, headers: { "Retry-After": retryAfter.toString() } }
+      { status: 429, headers: { 'Retry-After': retryAfter.toString() } }
     );
   }
 
@@ -92,7 +92,7 @@ export async function PUT(req: Request) {
     .where(eq(UsersTable.id, userId));
 
   if (!updatedUser) {
-    return new NextResponse("Failed to update social media settings", {
+    return new NextResponse('Failed to update social media settings', {
       status: 500,
     });
   }

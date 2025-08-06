@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
   PiCode,
   PiTerminal,
@@ -15,15 +15,15 @@ import {
   PiLightning,
   PiBrowser,
   PiArrowSquareOut,
-} from "react-icons/pi";
-import React from "react";
-import GitHubIntegrationComponent from "./GitHubIntegration";
+} from 'react-icons/pi';
+import React from 'react';
+import GitHubIntegrationComponent from './GitHubIntegration';
 
 const IntegrationsPage = () => {
   const handleChromeExtensionClick = () => {
     window.open(
-      "https://chrome.google.com/webstore/detail/cur8t/YOUR_ACTUAL_EXTENSION_ID_HERE",
-      "_blank"
+      'https://chrome.google.com/webstore/detail/cur8t/YOUR_ACTUAL_EXTENSION_ID_HERE',
+      '_blank'
     );
   };
 

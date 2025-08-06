@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { auth } from "@clerk/nextjs/server";
-import { db } from "@/db";
-import { UsersTable } from "@/schema";
-import { eq } from "drizzle-orm";
+import { auth } from '@clerk/nextjs/server';
+import { db } from '@/db';
+import { UsersTable } from '@/schema';
+import { eq } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function getUserInfoAction() {
   try {
@@ -22,7 +22,7 @@ export async function getUserInfoAction() {
     const rateLimitResult = await checkRateLimit(
       rateLimiters.getUserInfoLimiter,
       identifier,
-      "Too many requests to get user info. Please try again later."
+      'Too many requests to get user info. Please try again later.'
     );
     if (!rateLimitResult.success) {
       const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -37,7 +37,7 @@ export async function getUserInfoAction() {
 
     return users[0] || null;
   } catch (error) {
-    console.error("Error fetching user info:", error);
+    console.error('Error fetching user info:', error);
     return null;
   }
 }

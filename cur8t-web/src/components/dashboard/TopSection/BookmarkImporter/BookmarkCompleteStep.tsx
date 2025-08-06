@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {PiFolderOpen, PiCheckCircle, PiArrowSquareOut} from "react-icons/pi";
-import { motion } from "framer-motion";
-import { useBookmarkImporter } from "./useBookmarkImporter";
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { PiFolderOpen, PiCheckCircle, PiArrowSquareOut } from 'react-icons/pi';
+import { motion } from 'framer-motion';
+import { useBookmarkImporter } from './useBookmarkImporter';
 
 interface Props {
   importer: ReturnType<typeof useBookmarkImporter>;
@@ -34,7 +34,7 @@ export function BookmarkCompleteStep({ importer, onOpenChange }: Props) {
               </h3>
               <p className="text-muted-foreground/90 max-w-md mx-auto leading-relaxed">
                 Your bookmarks have been intelligently imported and organized
-                into{" "}
+                into{' '}
                 <span className="font-semibold text-primary">
                   {createdCollections.length} smart collections
                 </span>
@@ -67,7 +67,7 @@ export function BookmarkCompleteStep({ importer, onOpenChange }: Props) {
                   <Card
                     className="cursor-pointer hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary bg-primary/5 hover:bg-primary/10 dark:bg-primary/10 dark:hover:bg-primary/20"
                     onClick={() => {
-                      window.open(`/collection/${collection.id}`, "_blank");
+                      window.open(`/collection/${collection.id}`, '_blank');
                     }}
                   >
                     <CardContent className="p-5">
@@ -114,7 +114,7 @@ export function BookmarkCompleteStep({ importer, onOpenChange }: Props) {
         </Button>
         <Button
           onClick={() => {
-            window.open("/dashboard/?item=Overview", "_blank");
+            window.open('/dashboard/?item=Overview', '_blank');
             onOpenChange(false);
           }}
           className="flex-1 h-11 bg-primary hover:bg-primary/90"

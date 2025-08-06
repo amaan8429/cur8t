@@ -1,8 +1,8 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DialogFooter } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { DialogFooter } from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 
 interface CopyLinkActionProps {
   copyLink: string;
@@ -18,8 +18,8 @@ export const CopyLinkAction: React.FC<CopyLinkActionProps> = ({
   const copyToClipboard = () => {
     navigator.clipboard.writeText(copyLink);
     toastSuccess({
-      title: "Link Copied!",
-      description: "Collection link has been copied to clipboard.",
+      title: 'Link Copied!',
+      description: 'Collection link has been copied to clipboard.',
     });
   };
 

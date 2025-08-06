@@ -1,4 +1,4 @@
-import { NotFoundErrorPage } from "@/components/ui/error-page";
+import { NotFoundErrorPage } from '@/components/ui/error-page';
 
 export default function NotFound() {
   return (
@@ -10,4 +10,4 @@ export default function NotFound() {
       />
     </div>
   );
-} 
+}

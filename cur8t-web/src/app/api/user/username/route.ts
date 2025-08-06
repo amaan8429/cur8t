@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
-import { db } from "@/db";
-import { UsersTable } from "@/schema";
-import { eq } from "drizzle-orm";
+import { NextRequest, NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
+import { db } from '@/db';
+import { UsersTable } from '@/schema';
+import { eq } from 'drizzle-orm';
 // Import our rate limiting utilities
-import { rateLimiters, getClientId, checkRateLimit } from "@/lib/ratelimit";
+import { rateLimiters, getClientId, checkRateLimit } from '@/lib/ratelimit';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const { userId } = await auth();
 
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Step 2: Apply rate limiting BEFORE processing the request
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     const rateLimitResult = await checkRateLimit(
       rateLimiters.usernameChangeLimiter, // Using our username-specific rate limiter (5 req/15min)
       clientId,
-      "Too many username change attempts. Please try again later."
+      'Too many username change attempts. Please try again later.'
     );
 
     // Step 3: Handle rate limit exceeded
@@ -40,10 +40,10 @@ export async function POST(request: NextRequest) {
           status: 429, // Too Many Requests
           headers: {
             // Standard rate limiting headers
-            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
-            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
-            "X-RateLimit-Reset": rateLimitResult.reset.toString(),
-            "Retry-After": (rateLimitResult.timeUntilReset || 0).toString(),
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.reset.toString(),
+            'Retry-After': (rateLimitResult.timeUntilReset || 0).toString(),
           },
         }
       );
@@ -52,9 +52,9 @@ export async function POST(request: NextRequest) {
     // Step 4: Parse and validate request body
     const { username } = await request.json();
 
-    if (!username || typeof username !== "string") {
+    if (!username || typeof username !== 'string') {
       return NextResponse.json(
-        { error: "Username is required" },
+        { error: 'Username is required' },
         { status: 400 }
       );
     }
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     // Validate username format
     if (username.length < 3 || username.length > 20) {
       return NextResponse.json(
-        { error: "Username must be at least 3 characters long" },
+        { error: 'Username must be at least 3 characters long' },
         { status: 400 }
       );
     }
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
       return NextResponse.json(
         {
-          error: "Username can only contain letters, numbers, and underscores",
+          error: 'Username can only contain letters, numbers, and underscores',
         },
         { status: 400 }
       );
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
 
     if (existingUser.length > 0) {
       return NextResponse.json(
-        { error: "Username already taken" },
+        { error: 'Username already taken' },
         { status: 409 }
       );
     }
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: "Username set successfully",
+        message: 'Username set successfully',
         rateLimitInfo: {
           limit: rateLimitResult.limit,
           remaining: rateLimitResult.remaining - 1, // Subtract 1 since this request consumed one
@@ -111,17 +111,17 @@ export async function POST(request: NextRequest) {
         status: 200,
         headers: {
           // Include rate limit info in successful responses too
-          "X-RateLimit-Limit": rateLimitResult.limit.toString(),
-          "X-RateLimit-Remaining": (rateLimitResult.remaining - 1).toString(),
-          "X-RateLimit-Reset": rateLimitResult.reset.toString(),
+          'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+          'X-RateLimit-Remaining': (rateLimitResult.remaining - 1).toString(),
+          'X-RateLimit-Reset': rateLimitResult.reset.toString(),
         },
       }
     );
   } catch (error) {
-    console.error("Error setting username:", error);
+    console.error('Error setting username:', error);
     return NextResponse.json(
       {
-        error: "Internal server error",
+        error: 'Internal server error',
       },
       { status: 500 }
     );

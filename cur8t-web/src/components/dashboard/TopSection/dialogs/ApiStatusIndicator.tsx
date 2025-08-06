@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -17,15 +17,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   PiCheckCircle,
   PiXCircle,
   PiSpinner,
   PiWarning,
   PiSubtractSquare,
-} from "react-icons/pi";
-import { agentsApi, AgentsApiError } from "@/lib/api/agents";
+} from 'react-icons/pi';
+import { agentsApi, AgentsApiError } from '@/lib/api/agents';
 
 interface ApiStatusIndicatorProps {
   className?: string;
@@ -75,14 +75,14 @@ export function ApiStatusIndicator({ className }: ApiStatusIndicatorProps) {
         health,
       });
     } catch (error) {
-      console.error("API status check failed:", error);
+      console.error('API status check failed:', error);
       setStatus({
         isConnected: false,
         isLoading: false,
         error:
           error instanceof AgentsApiError
             ? error.message
-            : "Failed to connect to agents API",
+            : 'Failed to connect to agents API',
       });
     }
   };
@@ -104,19 +104,19 @@ export function ApiStatusIndicator({ className }: ApiStatusIndicatorProps) {
   };
 
   const getStatusText = () => {
-    if (status.isLoading) return "Checking...";
-    if (status.isConnected) return "Connected";
-    return "Disconnected";
+    if (status.isLoading) return 'Checking...';
+    if (status.isConnected) return 'Connected';
+    return 'Disconnected';
   };
 
   const getStatusVariant = ():
-    | "default"
-    | "secondary"
-    | "destructive"
-    | "outline" => {
-    if (status.isLoading) return "secondary";
-    if (status.isConnected) return "default";
-    return "destructive";
+    | 'default'
+    | 'secondary'
+    | 'destructive'
+    | 'outline' => {
+    if (status.isLoading) return 'secondary';
+    if (status.isConnected) return 'default';
+    return 'destructive';
   };
 
   return (
@@ -187,7 +187,7 @@ export function ApiStatusIndicator({ className }: ApiStatusIndicatorProps) {
                         </span>
                         <Badge
                           variant={
-                            agent.status === "active" ? "default" : "secondary"
+                            agent.status === 'active' ? 'default' : 'secondary'
                           }
                           className="text-xs"
                         >
@@ -220,7 +220,7 @@ export function ApiStatusIndicator({ className }: ApiStatusIndicatorProps) {
                       uvicorn main:app --reload
                     </div>
                     <p>
-                      The API should be available at{" "}
+                      The API should be available at{' '}
                       <code className="bg-muted px-1 rounded">
                         http://localhost:8000
                       </code>

@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
 import {
   getAccessRequestsAction,
   approveAccessRequestAction,
   denyAccessRequestAction,
-} from "@/actions/collection/accessRequests";
+} from '@/actions/collection/accessRequests';
 import {
   PiCheck,
   PiX,
@@ -19,8 +19,8 @@ import {
   PiClock,
   PiShield,
   PiLock,
-} from "react-icons/pi";
-import Link from "next/link";
+} from 'react-icons/pi';
+import Link from 'next/link';
 
 interface AccessRequest {
   id: string;
@@ -59,15 +59,15 @@ export default function Notifications() {
         );
       } else {
         toastError({
-          title: "Failed to load notifications",
-          description: result.error || "Could not fetch access requests",
+          title: 'Failed to load notifications',
+          description: result.error || 'Could not fetch access requests',
         });
       }
     } catch (error) {
-      console.error("Error fetching access requests:", error);
+      console.error('Error fetching access requests:', error);
       toastError({
-        title: "Error",
-        description: "Something went wrong while loading notifications",
+        title: 'Error',
+        description: 'Something went wrong while loading notifications',
       });
     } finally {
       setIsLoading(false);
@@ -80,29 +80,29 @@ export default function Notifications() {
       const result = await approveAccessRequestAction(requestId);
       if (result.success) {
         toastSuccess({
-          title: "Access Approved",
+          title: 'Access Approved',
           description:
-            result.message || "The user now has access to your collection",
+            result.message || 'The user now has access to your collection',
         });
         // Update local state
         setAccessRequests((prev) =>
           prev.map((req) =>
             req.id === requestId
-              ? { ...req, status: "approved", respondedAt: new Date() }
+              ? { ...req, status: 'approved', respondedAt: new Date() }
               : req
           )
         );
       } else {
         toastError({
-          title: "Failed to approve",
-          description: result.error || "Could not approve access request",
+          title: 'Failed to approve',
+          description: result.error || 'Could not approve access request',
         });
       }
     } catch (error) {
-      console.error("Error approving request:", error);
+      console.error('Error approving request:', error);
       toastError({
-        title: "Error",
-        description: "Something went wrong while approving the request",
+        title: 'Error',
+        description: 'Something went wrong while approving the request',
       });
     } finally {
       setActionLoading(null);
@@ -115,28 +115,28 @@ export default function Notifications() {
       const result = await denyAccessRequestAction(requestId);
       if (result.success) {
         toastSuccess({
-          title: "Access Denied",
-          description: "The access request has been denied",
+          title: 'Access Denied',
+          description: 'The access request has been denied',
         });
         // Update local state
         setAccessRequests((prev) =>
           prev.map((req) =>
             req.id === requestId
-              ? { ...req, status: "denied", respondedAt: new Date() }
+              ? { ...req, status: 'denied', respondedAt: new Date() }
               : req
           )
         );
       } else {
         toastError({
-          title: "Failed to deny",
-          description: result.error || "Could not deny access request",
+          title: 'Failed to deny',
+          description: result.error || 'Could not deny access request',
         });
       }
     } catch (error) {
-      console.error("Error denying request:", error);
+      console.error('Error denying request:', error);
       toastError({
-        title: "Error",
-        description: "Something went wrong while denying the request",
+        title: 'Error',
+        description: 'Something went wrong while denying the request',
       });
     } finally {
       setActionLoading(null);
@@ -145,7 +145,7 @@ export default function Notifications() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "pending":
+      case 'pending':
         return (
           <Badge
             variant="secondary"
@@ -155,7 +155,7 @@ export default function Notifications() {
             Pending
           </Badge>
         );
-      case "approved":
+      case 'approved':
         return (
           <Badge
             variant="secondary"
@@ -165,7 +165,7 @@ export default function Notifications() {
             Approved
           </Badge>
         );
-      case "denied":
+      case 'denied':
         return (
           <Badge
             variant="secondary"
@@ -181,10 +181,10 @@ export default function Notifications() {
   };
 
   const pendingRequests = accessRequests.filter(
-    (req) => req.status === "pending"
+    (req) => req.status === 'pending'
   );
   const respondedRequests = accessRequests.filter(
-    (req) => req.status !== "pending"
+    (req) => req.status !== 'pending'
   );
 
   if (isLoading) {
@@ -244,26 +244,26 @@ export default function Notifications() {
                         <Avatar className="h-10 w-10">
                           <AvatarFallback className="text-xs bg-muted text-muted-foreground">
                             {request.requesterName?.charAt(0)?.toUpperCase() ||
-                              "?"}
+                              '?'}
                           </AvatarFallback>
                         </Avatar>
                         <div>
                           <h4 className="font-semibold">
-                            {request.requesterName || "Unknown User"}
+                            {request.requesterName || 'Unknown User'}
                           </h4>
                           <p className="text-sm text-muted-foreground">
-                            wants access to{" "}
+                            wants access to{' '}
                             <Link
                               href={`/collection/${request.collectionId}`}
                               className="font-medium text-primary hover:underline"
                             >
                               &ldquo;
-                              {request.collectionTitle || "Unknown Collection"}
+                              {request.collectionTitle || 'Unknown Collection'}
                               &rdquo;
                             </Link>
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {request.requestedAt.toLocaleDateString()} at{" "}
+                            {request.requestedAt.toLocaleDateString()} at{' '}
                             {request.requestedAt.toLocaleTimeString()}
                           </p>
                         </div>
@@ -289,8 +289,8 @@ export default function Notifications() {
                       >
                         <PiCheck className="h-4 w-4 mr-2" />
                         {actionLoading === request.id
-                          ? "Approving..."
-                          : "Approve"}
+                          ? 'Approving...'
+                          : 'Approve'}
                       </Button>
                       <Button
                         onClick={() => handleDeny(request.id)}
@@ -300,7 +300,7 @@ export default function Notifications() {
                         className="border-destructive/50 text-destructive hover:bg-destructive/10 dark:border-destructive/40 dark:text-destructive dark:hover:bg-destructive/20"
                       >
                         <PiX className="h-4 w-4 mr-2" />
-                        {actionLoading === request.id ? "Denying..." : "Deny"}
+                        {actionLoading === request.id ? 'Denying...' : 'Deny'}
                       </Button>
                     </div>
                   </CardContent>
@@ -323,20 +323,20 @@ export default function Notifications() {
                         <Avatar className="h-8 w-8">
                           <AvatarFallback className="text-xs bg-muted text-muted-foreground">
                             {request.requesterName?.charAt(0)?.toUpperCase() ||
-                              "?"}
+                              '?'}
                           </AvatarFallback>
                         </Avatar>
                         <div>
                           <h4 className="font-medium text-sm">
-                            {request.requesterName || "Unknown User"}
+                            {request.requesterName || 'Unknown User'}
                           </h4>
                           <p className="text-xs text-muted-foreground">
                             requested access to &ldquo;
-                            {request.collectionTitle || "Unknown Collection"}
+                            {request.collectionTitle || 'Unknown Collection'}
                             &rdquo;
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            Responded{" "}
+                            Responded{' '}
                             {request.respondedAt?.toLocaleDateString()}
                           </p>
                         </div>

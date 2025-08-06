@@ -1,21 +1,21 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { CollectionsTable, SavedCollectionsTable, UsersTable } from "@/schema";
-import { Collection } from "@/types/types";
-import { auth } from "@clerk/nextjs/server";
-import { eq, desc } from "drizzle-orm";
-import { sql } from "drizzle-orm";
+import { db } from '@/db';
+import { CollectionsTable, SavedCollectionsTable, UsersTable } from '@/schema';
+import { Collection } from '@/types/types';
+import { auth } from '@clerk/nextjs/server';
+import { eq, desc } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export type PaginationParams = {
   page: number;
   limit: number;
-  sortBy: "trending" | "recent" | "likes";
+  sortBy: 'trending' | 'recent' | 'likes';
 };
 
 // Type for saved collection that includes author info from the join
@@ -27,7 +27,7 @@ export interface SavedCollection extends Collection {
 export async function fetchSavedCollections({
   page = 1,
   limit = 9,
-  sortBy = "trending",
+  sortBy = 'trending',
 }: PaginationParams) {
   // Calculate offset
   const offset = (page - 1) * limit;
@@ -36,7 +36,7 @@ export async function fetchSavedCollections({
 
   if (!userId) {
     return {
-      error: "User not found",
+      error: 'User not found',
     };
   }
 
@@ -44,7 +44,7 @@ export async function fetchSavedCollections({
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getCollectionsLimiter,
     identifier,
-    "Too many requests to fetch saved collections. Please try again later."
+    'Too many requests to fetch saved collections. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -54,11 +54,11 @@ export async function fetchSavedCollections({
   // Get sort column based on sortBy parameter
   const getSortColumn = () => {
     switch (sortBy) {
-      case "recent":
+      case 'recent':
         return CollectionsTable.updatedAt;
-      case "likes":
+      case 'likes':
         return CollectionsTable.likes;
-      case "trending":
+      case 'trending':
       default:
         return CollectionsTable.likes;
     }

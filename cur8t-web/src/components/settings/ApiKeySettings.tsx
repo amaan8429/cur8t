@@ -1,17 +1,17 @@
 /* eslint-disable react/no-unescaped-entities */
-import React, { useEffect, useState } from "react";
-import { PiCopy, PiPlus } from "react-icons/pi";
+import React, { useEffect, useState } from 'react';
+import { PiCopy, PiPlus } from 'react-icons/pi';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Dialog,
   DialogContent,
@@ -19,13 +19,13 @@ import {
   DialogTitle,
   DialogFooter,
   DialogDescription,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   CreateApiKey,
   DeleteApiKey,
   GetAPIKeys,
-} from "@/actions/collection/apikey";
-import { useToast } from "@/hooks/use-toast";
+} from '@/actions/collection/apikey';
+import { useToast } from '@/hooks/use-toast';
 
 const APIKeySettings = () => {
   const [apiKeys, setApiKeys] = useState<
@@ -37,7 +37,7 @@ const APIKeySettings = () => {
     key: string;
     name: string;
   } | null>(null);
-  const [newKeyName, setNewKeyName] = useState("");
+  const [newKeyName, setNewKeyName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
@@ -47,9 +47,9 @@ const APIKeySettings = () => {
       const response = await GetAPIKeys();
       if (response.error) {
         toast({
-          title: "Error",
-          description: "Failed to fetch API keys. Please try again later.",
-          className: "bg-primary border-primary text-primary-foreground",
+          title: 'Error',
+          description: 'Failed to fetch API keys. Please try again later.',
+          className: 'bg-primary border-primary text-primary-foreground',
         });
         return;
       }
@@ -108,24 +108,24 @@ const APIKeySettings = () => {
 
     setIsDeleting(true);
     const loadingToast = toast({
-      title: "Deleting API key...",
-      description: "Please wait while we delete your API key.",
+      title: 'Deleting API key...',
+      description: 'Please wait while we delete your API key.',
     });
 
     const response = await DeleteApiKey(selectedKeyForDeletion.key);
 
     if (response.error) {
       toast({
-        title: "Error",
+        title: 'Error',
         description: response.error,
-        className: "bg-primary border-primary text-primary-foreground",
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     } else {
       setApiKeys(apiKeys.filter((k) => k.key !== selectedKeyForDeletion.key));
       toast({
-        title: "Success",
-        description: "API key deleted successfully",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Success',
+        description: 'API key deleted successfully',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     }
 
@@ -137,17 +137,17 @@ const APIKeySettings = () => {
   const handleCreateKey = async () => {
     setIsLoading(true);
     const loadingToast = toast({
-      title: "Generating API key...",
-      description: "Please wait while we generate your new API key.",
+      title: 'Generating API key...',
+      description: 'Please wait while we generate your new API key.',
     });
 
     const data = await CreateApiKey(newKeyName);
 
     if (data.error || !data.data?.key) {
       toast({
-        title: "Error",
-        description: data.error || "Failed to create API key",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Error',
+        description: data.error || 'Failed to create API key',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
       setIsLoading(false);
       return;
@@ -155,9 +155,9 @@ const APIKeySettings = () => {
 
     if (apiKeys.length >= 3) {
       toast({
-        title: "Error",
-        description: "Maximum number of API keys reached",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Error',
+        description: 'Maximum number of API keys reached',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
       setIsLoading(false);
       return;
@@ -173,13 +173,13 @@ const APIKeySettings = () => {
     ]);
 
     toast({
-      title: "Success",
-      description: "New API key generated successfully",
-      className: "bg-primary border-primary text-primary-foreground",
+      title: 'Success',
+      description: 'New API key generated successfully',
+      className: 'bg-primary border-primary text-primary-foreground',
     });
 
     setIsLoading(false);
-    setNewKeyName("");
+    setNewKeyName('');
     setShowNewKeyDialog(false);
   };
 
@@ -187,16 +187,16 @@ const APIKeySettings = () => {
     navigator.clipboard.writeText(text).then(
       () => {
         toast({
-          title: "Copied!",
+          title: 'Copied!',
           description: `API key "${keyName}" copied to clipboard`,
-          className: "bg-primary border-primary text-primary-foreground",
+          className: 'bg-primary border-primary text-primary-foreground',
         });
       },
       () => {
         toast({
-          title: "Error",
-          description: "Failed to copy API key to clipboard",
-          className: "bg-primary border-primary text-primary-foreground",
+          title: 'Error',
+          description: 'Failed to copy API key to clipboard',
+          className: 'bg-primary border-primary text-primary-foreground',
         });
       }
     );
@@ -293,7 +293,7 @@ const APIKeySettings = () => {
                 disabled={!newKeyName || isLoading}
                 className="bg-primary hover:bg-primary/90"
               >
-                {isLoading ? "Generating..." : "Generate Key"}
+                {isLoading ? 'Generating...' : 'Generate Key'}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -323,7 +323,7 @@ const APIKeySettings = () => {
                 disabled={isDeleting}
                 className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
               >
-                {isDeleting ? "Deleting..." : "Delete"}
+                {isDeleting ? 'Deleting...' : 'Delete'}
               </Button>
             </DialogFooter>
           </DialogContent>

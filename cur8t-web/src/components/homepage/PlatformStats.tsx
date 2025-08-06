@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   PiUsers,
   PiFolderOpen,
@@ -12,8 +12,8 @@ import {
   PiTrendUp,
   PiBookmark,
   PiCalendar,
-} from "react-icons/pi";
-import { getPlatformStats } from "@/actions/platform/platformStats";
+} from 'react-icons/pi';
+import { getPlatformStats } from '@/actions/platform/platformStats';
 
 interface PlatformStatsData {
   totalCollections: number;
@@ -38,12 +38,12 @@ const PlatformStats = () => {
         // Check for rate limiting
         if (response.error && response.retryAfter) {
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter: response.retryAfter * 60,
             message:
-              "Too many platform stats requests. Please try again later.",
+              'Too many platform stats requests. Please try again later.',
           });
           setIsLoading(false);
           return;
@@ -53,7 +53,7 @@ const PlatformStats = () => {
           setStats(response.data);
         }
       } catch (error) {
-        console.error("Failed to fetch platform stats:", error);
+        console.error('Failed to fetch platform stats:', error);
       }
       setIsLoading(false);
     };

@@ -1,8 +1,8 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PiPlus } from "react-icons/pi";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PiPlus } from 'react-icons/pi';
 
 interface AddFavoriteFormProps {
   newTitle: string;
@@ -51,7 +51,7 @@ const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({
               placeholder="Enter a descriptive title"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && onAdd()}
+              onKeyDown={(e) => e.key === 'Enter' && onAdd()}
               maxLength={VALIDATION_LIMITS.LINK_TITLE_MAX}
               disabled={isLimitReached}
             />
@@ -68,7 +68,7 @@ const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({
               placeholder="https://example.com"
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && onAdd()}
+              onKeyDown={(e) => e.key === 'Enter' && onAdd()}
               maxLength={VALIDATION_LIMITS.LINK_URL_MAX}
               disabled={isLimitReached}
             />
@@ -89,7 +89,7 @@ const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({
             }
             className="w-full md:w-auto"
           >
-            {addingFavorite ? "Adding..." : "Add Favorite"}
+            {addingFavorite ? 'Adding...' : 'Add Favorite'}
           </Button>
           <div className="text-sm text-muted-foreground">
             {favoritesCount}/{favoritesLimit} favorites

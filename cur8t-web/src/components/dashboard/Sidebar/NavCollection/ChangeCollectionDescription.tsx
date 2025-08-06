@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -7,15 +7,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { useCollectionStore } from "@/store/collection-store";
-import { ChangeCollectionDescriptionAction } from "@/actions/collection/changeCollectionDescription";
-import { VALIDATION_LIMITS } from "@/types/types";
-import { PiFileText } from "react-icons/pi";
-import React from "react";
+} from '@/components/ui/dialog';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { useCollectionStore } from '@/store/collection-store';
+import { ChangeCollectionDescriptionAction } from '@/actions/collection/changeCollectionDescription';
+import { VALIDATION_LIMITS } from '@/types/types';
+import { PiFileText } from 'react-icons/pi';
+import React from 'react';
 
 const ChangeCollectionDescription = ({
   collectionId,
@@ -25,7 +25,7 @@ const ChangeCollectionDescription = ({
   collectionDescription: string;
 }) => {
   const [newDescription, setNewDescription] = React.useState(
-    collectionDescription || ""
+    collectionDescription || ''
   );
   const [open, setOpen] = React.useState(false);
   const { updateCollectionDescription } = useCollectionStore();
@@ -35,7 +35,7 @@ const ChangeCollectionDescription = ({
   const handleUpdateConfirm = async (data: { description: string }) => {
     if (data.description === collectionDescription) {
       toast({
-        title: "Description is the same",
+        title: 'Description is the same',
       });
       return;
     }
@@ -44,9 +44,9 @@ const ChangeCollectionDescription = ({
       data.description.length > VALIDATION_LIMITS.COLLECTION_DESCRIPTION_MAX
     ) {
       toast({
-        title: "Description is too long",
+        title: 'Description is too long',
         description: `Please enter a description with ${VALIDATION_LIMITS.COLLECTION_DESCRIPTION_MAX} characters or less`,
-        variant: "destructive",
+        variant: 'destructive',
       });
       return;
     }
@@ -61,12 +61,12 @@ const ChangeCollectionDescription = ({
       // Check for rate limiting
       if (result.error && result.retryAfter) {
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
           message:
-            "Too many description update attempts. Please try again later.",
+            'Too many description update attempts. Please try again later.',
         });
         return;
       }
@@ -74,18 +74,18 @@ const ChangeCollectionDescription = ({
       if (result.success) {
         await updateCollectionDescription(collectionId, data.description);
         toast({
-          title: "Collection description updated successfully",
+          title: 'Collection description updated successfully',
         });
       } else {
         toast({
-          title: "Failed to update collection description",
-          variant: "destructive",
+          title: 'Failed to update collection description',
+          variant: 'destructive',
         });
       }
     } catch (error) {
       toast({
-        title: "Failed to update collection description",
-        variant: "destructive",
+        title: 'Failed to update collection description',
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -137,7 +137,7 @@ const ChangeCollectionDescription = ({
               }
               disabled={newDescription === collectionDescription || loading}
             >
-              {loading ? "Saving" : "Save Changes"}
+              {loading ? 'Saving' : 'Save Changes'}
             </Button>
           </DialogFooter>
         </DialogContent>

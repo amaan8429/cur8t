@@ -9,18 +9,18 @@ This guide explains how to use the custom error handling components throughout t
 Custom toast notifications specifically for rate limiting scenarios.
 
 ```typescript
-import { showRateLimitToast } from "@/components/ui/rate-limit-toast";
+import { showRateLimitToast } from '@/components/ui/rate-limit-toast';
 
 // Basic usage
 showRateLimitToast({
   retryAfter: 60,
-  message: "Too many requests. Please wait before trying again."
+  message: 'Too many requests. Please wait before trying again.',
 });
 
 // With countdown (updates in real-time)
 showRateLimitToastWithCountdown({
   retryAfter: 120,
-  message: "API rate limit exceeded."
+  message: 'API rate limit exceeded.',
 });
 ```
 
@@ -40,20 +40,21 @@ import { ErrorPage, RateLimitErrorPage, NetworkErrorPage } from "@/components/ui
 />
 
 // Specific error types
-<RateLimitErrorPage 
+<RateLimitErrorPage
   retryAfter={60}
   onRetry={handleRetry}
 />
 
-<NetworkErrorPage 
+<NetworkErrorPage
   onRetry={handleRetry}
   onGoHome={() => router.push("/")}
 />
 ```
 
 #### Available Error Types:
+
 - `rate-limit` - For rate limiting scenarios
-- `network` - For connection issues  
+- `network` - For connection issues
 - `server` - For server-side errors
 - `permission` - For access denied scenarios
 - `not-found` - For 404 scenarios
@@ -76,7 +77,7 @@ import { useErrorBoundary } from "@/components/providers/ErrorBoundary";
 
 function MyComponent() {
   const { captureError, resetError } = useErrorBoundary();
-  
+
   const handleAsyncError = async () => {
     try {
       await riskyOperation();
@@ -96,34 +97,34 @@ When your server actions return rate limit errors:
 ```typescript
 // In your React Query hook
 const { data, error } = useQuery({
-  queryKey: ["data"],
+  queryKey: ['data'],
   queryFn: async () => {
     const response = await fetchData();
-    
-    if ("error" in response && response.error) {
-      if (response.error.includes("Too many requests")) {
+
+    if ('error' in response && response.error) {
+      if (response.error.includes('Too many requests')) {
         showRateLimitToast({
           retryAfter: response.retryAfter,
-          message: "Data temporarily unavailable due to rate limiting.",
+          message: 'Data temporarily unavailable due to rate limiting.',
         });
         // Return empty data instead of throwing
         return { data: [] };
       }
-      
+
       // For other errors, show regular toast
       toast({
-        title: "Failed to load data",
+        title: 'Failed to load data',
         description: response.error,
-        variant: "destructive",
+        variant: 'destructive',
       });
       return { data: [] };
     }
-    
+
     return response;
   },
   retry: (failureCount, error) => {
     // Don't retry rate limit errors
-    if (error?.message?.includes("Too many requests")) {
+    if (error?.message?.includes('Too many requests')) {
       return false;
     }
     return failureCount < 2;
@@ -165,7 +166,7 @@ For smaller components that might fail:
 ```typescript
 function DataComponent() {
   const [error, setError] = useState(null);
-  
+
   if (error) {
     return (
       <ErrorPage
@@ -178,7 +179,7 @@ function DataComponent() {
       />
     );
   }
-  
+
   // Normal component render...
 }
 ```
@@ -191,28 +192,28 @@ function DataComponent() {
 // Server action returns different response shapes
 async function handleApiCall() {
   const response = await serverAction();
-  
-  if ("error" in response) {
-    if (response.error.includes("Rate limit")) {
+
+  if ('error' in response) {
+    if (response.error.includes('Rate limit')) {
       showRateLimitToast({ retryAfter: response.retryAfter });
       return;
     }
-    
-    if (response.error.includes("Network")) {
+
+    if (response.error.includes('Network')) {
       // Show network error page
-      setErrorType("network");
+      setErrorType('network');
       return;
     }
-    
+
     // Generic error toast
     toast({
-      title: "Error",
+      title: 'Error',
       description: response.error,
-      variant: "destructive",
+      variant: 'destructive',
     });
     return;
   }
-  
+
   // Handle successful response
   setData(response.data);
 }
@@ -223,29 +224,29 @@ async function handleApiCall() {
 ```typescript
 function useDataWithFallback() {
   const [fallbackMode, setFallbackMode] = useState(false);
-  
+
   const { data, error } = useQuery({
-    queryKey: ["data", fallbackMode],
+    queryKey: ['data', fallbackMode],
     queryFn: async () => {
       if (fallbackMode) {
         // Use cached/offline data
         return getCachedData();
       }
-      
+
       const response = await fetchLiveData();
-      if ("error" in response) {
-        if (response.error.includes("Rate limit")) {
+      if ('error' in response) {
+        if (response.error.includes('Rate limit')) {
           showRateLimitToast({ retryAfter: response.retryAfter });
           setFallbackMode(true); // Switch to fallback mode
           return getCachedData();
         }
         throw new Error(response.error);
       }
-      
+
       return response;
     },
   });
-  
+
   return { data, error, fallbackMode };
 }
 ```
@@ -266,11 +267,11 @@ function useDataWithFallback() {
 // In ErrorBoundary or error handlers
 const logError = (error: Error, context?: any) => {
   // Log to your monitoring service
-  console.error("Error:", error, context);
-  
+  console.error('Error:', error, context);
+
   // Example: Send to monitoring service
   // errorReportingService.captureException(error, context);
 };
 ```
 
-This error handling system provides a consistent, user-friendly way to handle all types of errors throughout your application while respecting rate limits and providing appropriate feedback to users. 
+This error handling system provides a consistent, user-friendly way to handle all types of errors throughout your application while respecting rate limits and providing appropriate feedback to users.

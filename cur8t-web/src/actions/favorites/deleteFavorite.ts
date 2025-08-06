@@ -1,22 +1,22 @@
-"use server";
+'use server';
 
-import { auth } from "@clerk/nextjs/server";
-import { db } from "@/db";
-import { FavoritesTable } from "@/schema";
-import { eq, and } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { auth } from '@clerk/nextjs/server';
+import { db } from '@/db';
+import { FavoritesTable } from '@/schema';
+import { eq, and } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function deleteFavorite(favoriteId: string) {
   try {
     const { userId } = await auth();
 
     if (!userId) {
-      throw new Error("Unauthorized");
+      throw new Error('Unauthorized');
     }
 
     // Apply rate limiting
@@ -24,7 +24,7 @@ export async function deleteFavorite(favoriteId: string) {
     const rateLimitResult = await checkRateLimit(
       rateLimiters.deleteFavoriteLimiter,
       identifier,
-      "Too many requests to delete favorites. Please try again later."
+      'Too many requests to delete favorites. Please try again later.'
     );
     if (!rateLimitResult.success) {
       const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -48,16 +48,16 @@ export async function deleteFavorite(favoriteId: string) {
       );
     }
 
-    revalidatePath("/settings");
-    revalidatePath("/dashboard");
+    revalidatePath('/settings');
+    revalidatePath('/dashboard');
 
     return { success: true, data: deletedFavorites[0] };
   } catch (error) {
-    console.error("Error deleting favorite:", error);
+    console.error('Error deleting favorite:', error);
     return {
       success: false,
       error:
-        error instanceof Error ? error.message : "Failed to delete favorite",
+        error instanceof Error ? error.message : 'Failed to delete favorite',
     };
   }
 }

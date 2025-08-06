@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { PiHeart, PiLink, PiCalendar, PiPushPin } from "react-icons/pi";
-import { type Collection } from "@/types/profile";
+import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
+import { PiHeart, PiLink, PiCalendar, PiPushPin } from 'react-icons/pi';
+import { type Collection } from '@/types/profile';
 
 interface CollectionCardProps {
   collection: Collection;
@@ -15,7 +15,7 @@ export function CollectionCard({
   return (
     <div
       className={`p-4 border border-border rounded-md hover:bg-muted/50 transition-colors min-h-[120px] flex flex-col ${
-        isPinned ? "border-l-4 border-l-primary" : ""
+        isPinned ? 'border-l-4 border-l-primary' : ''
       }`}
     >
       <div className="flex-1">

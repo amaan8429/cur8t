@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,12 +9,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { requestAccessAction } from "@/actions/collection/accessRequests";
-import { PiPaperPlaneRight } from "react-icons/pi";
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { requestAccessAction } from '@/actions/collection/accessRequests';
+import { PiPaperPlaneRight } from 'react-icons/pi';
 
 interface AccessRequestDialogProps {
   isOpen: boolean;
@@ -31,7 +31,7 @@ export function AccessRequestDialog({
   collectionId,
   onRequestSent,
 }: AccessRequestDialogProps) {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast, success: toastSuccess, error: toastError } = useToast();
 
@@ -44,11 +44,11 @@ export function AccessRequestDialog({
       // Check for rate limiting
       if (result.error && result.retryAfter) {
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
-          message: "Too many access requests. Please try again later.",
+          message: 'Too many access requests. Please try again later.',
         });
         setIsSubmitting(false);
         return;
@@ -56,25 +56,25 @@ export function AccessRequestDialog({
 
       if (result.success) {
         toastSuccess({
-          title: "Request Sent!",
+          title: 'Request Sent!',
           description:
             "Your access request has been sent to the collection owner. You'll be notified when they respond.",
         });
-        setMessage("");
+        setMessage('');
         onClose();
         onRequestSent?.();
       } else {
         toastError({
-          title: "Request Failed",
+          title: 'Request Failed',
           description:
-            result.error || "Failed to send access request. Please try again.",
+            result.error || 'Failed to send access request. Please try again.',
         });
       }
     } catch (error) {
-      console.error("Error sending access request:", error);
+      console.error('Error sending access request:', error);
       toastError({
-        title: "Request Failed",
-        description: "Something went wrong. Please try again.",
+        title: 'Request Failed',
+        description: 'Something went wrong. Please try again.',
       });
     } finally {
       setIsSubmitting(false);
@@ -83,7 +83,7 @@ export function AccessRequestDialog({
 
   const handleClose = () => {
     if (!isSubmitting) {
-      setMessage("");
+      setMessage('');
       onClose();
     }
   };

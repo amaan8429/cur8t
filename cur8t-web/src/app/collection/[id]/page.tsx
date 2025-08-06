@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useAuth, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useAuth, SignInButton, SignUpButton } from '@clerk/nextjs';
 import {
   PiClock,
   PiEye,
@@ -18,13 +18,13 @@ import {
   PiCheck,
   PiBookmark,
   PiArrowSquareOut,
-} from "react-icons/pi";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import Link from "next/link";
+} from 'react-icons/pi';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import Link from 'next/link';
 import {
   Dialog,
   DialogContent,
@@ -33,24 +33,24 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { getSingleCollectionAction } from "@/actions/collection/getSingleCollection";
-import { getCollectionLinksAction } from "@/actions/linkActions/getCollectionLinks";
+} from '@/components/ui/dialog';
+import { getSingleCollectionAction } from '@/actions/collection/getSingleCollection';
+import { getCollectionLinksAction } from '@/actions/linkActions/getCollectionLinks';
 import {
   likeCollectionAction,
   unlikeCollectionAction,
   checkIfLikedAction,
-} from "@/actions/collection/likeCollection";
-import { duplicatePublicCollectionAction } from "@/actions/collection/duplicatePublicCollection";
+} from '@/actions/collection/likeCollection';
+import { duplicatePublicCollectionAction } from '@/actions/collection/duplicatePublicCollection';
 import {
   saveCollectionAction,
   unsaveCollectionAction,
   checkIfSavedAction,
-} from "@/actions/collection/saveCollection";
-import { ReadOnlyLinkGrid } from "@/components/collection/ReadOnlyLinkGrid";
-import { AccessDenied } from "@/components/collection/AccessDenied";
-import { Link as LinkType } from "@/types/types";
-import { Footer } from "@/components/layout/Footer";
+} from '@/actions/collection/saveCollection';
+import { ReadOnlyLinkGrid } from '@/components/collection/ReadOnlyLinkGrid';
+import { AccessDenied } from '@/components/collection/AccessDenied';
+import { Link as LinkType } from '@/types/types';
+import { Footer } from '@/components/layout/Footer';
 
 interface Collection {
   id: string;
@@ -79,7 +79,7 @@ export default function CollectionPage() {
   const [collection, setCollection] = useState<Collection | null>(null);
   const [links, setLinks] = useState<LinkType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
   const [isLinksLoading, setIsLinksLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
@@ -90,8 +90,8 @@ export default function CollectionPage() {
   const [duplicateDialogOpen, setDuplicateDialogOpen] = useState(false);
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [authDialogAction, setAuthDialogAction] = useState<
-    "like" | "save" | "duplicate"
-  >("like");
+    'like' | 'save' | 'duplicate'
+  >('like');
 
   // Loading states for buttons to prevent flash
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
@@ -109,11 +109,11 @@ export default function CollectionPage() {
         // Check for rate limiting
         if (result.error && result.retryAfter) {
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter: result.retryAfter * 60,
-            message: "Too many collection requests. Please try again later.",
+            message: 'Too many collection requests. Please try again later.',
           });
           setIsLoading(false);
           return;
@@ -139,11 +139,11 @@ export default function CollectionPage() {
           // Check for rate limiting
           if (linksResult.error && linksResult.retryAfter) {
             const { showRateLimitToast } = await import(
-              "@/components/ui/rate-limit-toast"
+              '@/components/ui/rate-limit-toast'
             );
             showRateLimitToast({
               retryAfter: linksResult.retryAfter * 60,
-              message: "Too many link requests. Please try again later.",
+              message: 'Too many link requests. Please try again later.',
             });
             setIsLinksLoading(false);
             return;
@@ -155,8 +155,8 @@ export default function CollectionPage() {
           setIsLinksLoading(false);
         }
       } catch (error) {
-        console.error("Error fetching collection:", error);
-        setError("Failed to load collection");
+        console.error('Error fetching collection:', error);
+        setError('Failed to load collection');
       }
       setIsLoading(false);
     };
@@ -169,19 +169,19 @@ export default function CollectionPage() {
     const checkLikeStatus = async () => {
       if (isLoaded && userId && collectionId) {
         setIsCheckingStatus(true);
-        console.log("Auth loaded, checking like status. UserId:", userId);
+        console.log('Auth loaded, checking like status. UserId:', userId);
         try {
           const likeStatus = await checkIfLikedAction(collectionId);
-          console.log("Like status check result:", likeStatus);
+          console.log('Like status check result:', likeStatus);
           setIsLiked(likeStatus.isLiked || false);
-          console.log("Set isLiked state to:", likeStatus.isLiked || false);
+          console.log('Set isLiked state to:', likeStatus.isLiked || false);
 
           const saveStatus = await checkIfSavedAction(collectionId);
-          console.log("Save status check result:", saveStatus);
+          console.log('Save status check result:', saveStatus);
           setIsSaved(saveStatus.isSaved || false);
-          console.log("Set isSaved state to:", saveStatus.isSaved || false);
+          console.log('Set isSaved state to:', saveStatus.isSaved || false);
         } catch (error) {
-          console.error("Error checking like/save status:", error);
+          console.error('Error checking like/save status:', error);
           setIsLiked(false);
           setIsSaved(false);
         } finally {
@@ -189,7 +189,7 @@ export default function CollectionPage() {
         }
       } else if (isLoaded && !userId) {
         console.log(
-          "Auth loaded but no user, setting isLiked and isSaved to false"
+          'Auth loaded but no user, setting isLiked and isSaved to false'
         );
         setIsLiked(false);
         setIsSaved(false);
@@ -204,26 +204,26 @@ export default function CollectionPage() {
 
   const getVisibilityInfo = () => {
     switch (collection?.visibility) {
-      case "public":
+      case 'public':
         return {
           icon: <PiEye className="h-4 w-4" />,
-          label: "Public",
-          description: "Anyone with the link can view",
-          color: "bg-primary/10 text-primary border-primary/20",
+          label: 'Public',
+          description: 'Anyone with the link can view',
+          color: 'bg-primary/10 text-primary border-primary/20',
         };
-      case "private":
+      case 'private':
         return {
           icon: <PiLock className="h-4 w-4" />,
-          label: "Private",
-          description: "Only you can view",
-          color: "bg-destructive/10 text-destructive border-destructive/20",
+          label: 'Private',
+          description: 'Only you can view',
+          color: 'bg-destructive/10 text-destructive border-destructive/20',
         };
-      case "protected":
+      case 'protected':
         return {
           icon: <PiShield className="h-4 w-4" />,
-          label: "Protected",
-          description: "Only you and invited people can view",
-          color: "bg-secondary/50 text-secondary-foreground border-secondary",
+          label: 'Protected',
+          description: 'Only you and invited people can view',
+          color: 'bg-secondary/50 text-secondary-foreground border-secondary',
         };
       default:
         return null;
@@ -236,22 +236,22 @@ export default function CollectionPage() {
       await navigator.clipboard.writeText(url);
       setLinkCopied(true);
       toast({
-        title: "Link copied!",
-        description: "Collection link has been copied to your clipboard.",
+        title: 'Link copied!',
+        description: 'Collection link has been copied to your clipboard.',
       });
       setTimeout(() => setLinkCopied(false), 2000);
     } catch (error) {
       toast({
-        title: "Failed to copy link",
-        description: "Please try again.",
-        variant: "destructive",
+        title: 'Failed to copy link',
+        description: 'Please try again.',
+        variant: 'destructive',
       });
     }
   };
 
   const handleLike = async () => {
     if (!isSignedIn) {
-      setAuthDialogAction("like");
+      setAuthDialogAction('like');
       setAuthDialogOpen(true);
       return;
     }
@@ -278,11 +278,11 @@ export default function CollectionPage() {
             prev ? { ...prev, likes: previousLikes } : null
           );
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter: result.retryAfter * 60,
-            message: "Too many unlike attempts. Please try again later.",
+            message: 'Too many unlike attempts. Please try again later.',
           });
           return;
         }
@@ -294,8 +294,8 @@ export default function CollectionPage() {
             prev ? { ...prev, likes: previousLikes } : null
           );
           toastError({
-            title: "Unlike Failed",
-            description: result.error || "Failed to unlike collection",
+            title: 'Unlike Failed',
+            description: result.error || 'Failed to unlike collection',
           });
         }
       } else {
@@ -308,11 +308,11 @@ export default function CollectionPage() {
             prev ? { ...prev, likes: previousLikes } : null
           );
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter: result.retryAfter * 60,
-            message: "Too many like attempts. Please try again later.",
+            message: 'Too many like attempts. Please try again later.',
           });
           return;
         }
@@ -324,8 +324,8 @@ export default function CollectionPage() {
             prev ? { ...prev, likes: previousLikes } : null
           );
           toastError({
-            title: "Like Failed",
-            description: result.error || "Failed to like collection",
+            title: 'Like Failed',
+            description: result.error || 'Failed to like collection',
           });
         }
       }
@@ -336,8 +336,8 @@ export default function CollectionPage() {
         prev ? { ...prev, likes: previousLikes } : null
       );
       toastError({
-        title: "Action Failed",
-        description: "Something went wrong. Please try again.",
+        title: 'Action Failed',
+        description: 'Something went wrong. Please try again.',
       });
     } finally {
       setIsLiking(false);
@@ -346,7 +346,7 @@ export default function CollectionPage() {
 
   const handleDuplicate = async () => {
     if (!isSignedIn) {
-      setAuthDialogAction("duplicate");
+      setAuthDialogAction('duplicate');
       setAuthDialogOpen(true);
       return;
     }
@@ -355,40 +355,40 @@ export default function CollectionPage() {
     try {
       const result = await duplicatePublicCollectionAction(collectionId, {
         includeLinks: true,
-        visibility: "private",
+        visibility: 'private',
       });
 
       // Check for rate limiting
       if (result.error && result.retryAfter) {
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
-          message: "Too many duplicate attempts. Please try again later.",
+          message: 'Too many duplicate attempts. Please try again later.',
         });
         return;
       }
 
       if (result.success) {
         toastSuccess({
-          title: "Collection Duplicated!",
-          description: "The collection has been added to your account.",
+          title: 'Collection Duplicated!',
+          description: 'The collection has been added to your account.',
         });
         setDuplicateDialogOpen(false);
 
         // Redirect to dashboard with new collection
-        window.open(`/dashboard?collectionId=${result.data.id}`, "_blank");
+        window.open(`/dashboard?collectionId=${result.data.id}`, '_blank');
       } else {
         toastError({
-          title: "Duplicate Failed",
-          description: result.error || "Failed to duplicate collection",
+          title: 'Duplicate Failed',
+          description: result.error || 'Failed to duplicate collection',
         });
       }
     } catch (error) {
       toastError({
-        title: "Duplicate Failed",
-        description: "Something went wrong. Please try again.",
+        title: 'Duplicate Failed',
+        description: 'Something went wrong. Please try again.',
       });
     } finally {
       setIsDuplicating(false);
@@ -397,12 +397,12 @@ export default function CollectionPage() {
 
   const handleSave = async () => {
     if (!isSignedIn) {
-      setAuthDialogAction("save");
+      setAuthDialogAction('save');
       setAuthDialogOpen(true);
       return;
     }
 
-    console.log("HandleSave called. Current isSaved state:", isSaved);
+    console.log('HandleSave called. Current isSaved state:', isSaved);
 
     // Optimistic update
     const previousIsSaved = isSaved;
@@ -411,19 +411,19 @@ export default function CollectionPage() {
 
     try {
       if (previousIsSaved) {
-        console.log("About to call unsaveCollectionAction");
+        console.log('About to call unsaveCollectionAction');
         const result = await unsaveCollectionAction(collectionId);
-        console.log("Unsave action result:", result);
+        console.log('Unsave action result:', result);
 
         // Check for rate limiting
         if (result.error && result.retryAfter) {
           setIsSaved(previousIsSaved);
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter: result.retryAfter * 60,
-            message: "Too many unsave attempts. Please try again later.",
+            message: 'Too many unsave attempts. Please try again later.',
           });
           return;
         }
@@ -431,32 +431,32 @@ export default function CollectionPage() {
         if (!result.success) {
           // Revert optimistic update
           setIsSaved(previousIsSaved);
-          console.log("Unsave failed:", result.error);
+          console.log('Unsave failed:', result.error);
           toastError({
-            title: "Unsave Failed",
-            description: result.error || "Failed to unsave collection",
+            title: 'Unsave Failed',
+            description: result.error || 'Failed to unsave collection',
           });
         } else {
-          console.log("Unsave successful");
+          console.log('Unsave successful');
           toastInfo({
-            title: "Collection Removed",
-            description: "Collection removed from saved collections.",
+            title: 'Collection Removed',
+            description: 'Collection removed from saved collections.',
           });
         }
       } else {
-        console.log("About to call saveCollectionAction");
+        console.log('About to call saveCollectionAction');
         const result = await saveCollectionAction(collectionId);
-        console.log("Save action result:", result);
+        console.log('Save action result:', result);
 
         // Check for rate limiting
         if (result.error && result.retryAfter) {
           setIsSaved(previousIsSaved);
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter: result.retryAfter * 60,
-            message: "Too many save attempts. Please try again later.",
+            message: 'Too many save attempts. Please try again later.',
           });
           return;
         }
@@ -464,26 +464,26 @@ export default function CollectionPage() {
         if (!result.success) {
           // Revert optimistic update
           setIsSaved(previousIsSaved);
-          console.log("Save failed:", result.error);
+          console.log('Save failed:', result.error);
           toastError({
-            title: "Save Failed",
-            description: result.error || "Failed to save collection",
+            title: 'Save Failed',
+            description: result.error || 'Failed to save collection',
           });
         } else {
-          console.log("Save successful");
+          console.log('Save successful');
           toastSuccess({
-            title: "Collection Saved!",
-            description: "You can find it in your saved collections.",
+            title: 'Collection Saved!',
+            description: 'You can find it in your saved collections.',
           });
         }
       }
     } catch (error) {
       // Revert optimistic update
       setIsSaved(previousIsSaved);
-      console.error("Error in handleSave:", error);
+      console.error('Error in handleSave:', error);
       toastError({
-        title: "Save Failed",
-        description: "Something went wrong. Please try again.",
+        title: 'Save Failed',
+        description: 'Something went wrong. Please try again.',
       });
     } finally {
       setIsSaving(false);
@@ -497,22 +497,22 @@ export default function CollectionPage() {
         {/* Simple Navigation Header */}
         <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
           <div className="container mx-auto px-4 flex h-14 items-center justify-between">
-            <PiLink href="/" className="font-bold text-xl">
+            <Link href="/" className="font-bold text-xl">
               Cur8t
-            </PiLink>
+            </Link>
             <nav className="flex items-center space-x-6">
-              <PiLink
+              <Link
                 href="/add-extension"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Add Extension
-              </PiLink>
-              <PiLink
+              </Link>
+              <Link
                 href="/dashboard"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Dashboard
-              </PiLink>
+              </Link>
             </nav>
           </div>
         </header>
@@ -576,22 +576,22 @@ export default function CollectionPage() {
       {/* Simple Navigation Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
         <div className="container mx-auto px-4 flex h-14 items-center justify-between">
-          <PiLink href="/" className="font-bold text-xl">
+          <Link href="/" className="font-bold text-xl">
             Cur8t
-          </PiLink>
+          </Link>
           <nav className="flex items-center space-x-6">
-            <PiLink
+            <Link
               href="/add-extension"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Add Extension
-            </PiLink>
-            <PiLink
+            </Link>
+            <Link
               href="/dashboard"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Dashboard
-            </PiLink>
+            </Link>
           </nav>
         </div>
       </header>
@@ -621,14 +621,14 @@ export default function CollectionPage() {
                         onClick={() =>
                           window.open(
                             `/profile/${collection.authorUsername}`,
-                            "_blank"
+                            '_blank'
                           )
                         }
                         className="flex items-center gap-2 hover:text-foreground transition-colors group"
                       >
                         <Avatar className="h-5 w-5 group-hover:ring-1 group-hover:ring-primary/20 transition-all">
                           <AvatarFallback className="text-xs bg-muted text-muted-foreground">
-                            {collection.author?.charAt(0)?.toUpperCase() || "?"}
+                            {collection.author?.charAt(0)?.toUpperCase() || '?'}
                           </AvatarFallback>
                         </Avatar>
                         <span className="text-sm">By {collection.author}</span>
@@ -645,7 +645,10 @@ export default function CollectionPage() {
 
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <div className="p-1 rounded-full bg-muted">
-                      <PiLink className="h-3.5 w-3.5" />
+                      <Link
+                        href={`/collection/${collectionId}`}
+                        className="h-3.5 w-3.5"
+                      />
                     </div>
                     <span className="text-sm">
                       {collection.totalLinks} links
@@ -694,7 +697,7 @@ export default function CollectionPage() {
                   ) : (
                     <PiCopy className="h-3.5 w-3.5" />
                   )}
-                  {linkCopied ? "Copied!" : "Copy Link"}
+                  {linkCopied ? 'Copied!' : 'Copy Link'}
                 </Button>
 
                 {/* Save Button - Show skeleton while checking status */}
@@ -702,7 +705,7 @@ export default function CollectionPage() {
                   <Skeleton className="h-9 w-16" />
                 ) : (
                   <Button
-                    variant={isSaved ? "default" : "outline"}
+                    variant={isSaved ? 'default' : 'outline'}
                     size="sm"
                     onClick={handleSave}
                     disabled={isSaving}
@@ -711,10 +714,10 @@ export default function CollectionPage() {
                     <PiBookmark
                       className="h-3.5 w-3.5 transition-colors"
                       style={{
-                        fill: isSaved ? "currentColor" : "none",
+                        fill: isSaved ? 'currentColor' : 'none',
                       }}
                     />
-                    {isSaving ? "..." : isSaved ? "Unsave" : "Save"}
+                    {isSaving ? '...' : isSaved ? 'Unsave' : 'Save'}
                   </Button>
                 )}
 
@@ -725,7 +728,7 @@ export default function CollectionPage() {
                       <Skeleton className="h-9 w-16" />
                     ) : (
                       <Button
-                        variant={isLiked ? "default" : "outline"}
+                        variant={isLiked ? 'default' : 'outline'}
                         size="sm"
                         onClick={handleLike}
                         disabled={isLiking}
@@ -734,10 +737,10 @@ export default function CollectionPage() {
                         <PiHeart
                           className="h-3.5 w-3.5 transition-colors"
                           style={{
-                            fill: isLiked ? "currentColor" : "none",
+                            fill: isLiked ? 'currentColor' : 'none',
                           }}
                         />
-                        {isLiking ? "..." : isLiked ? "Unlike" : "Like"}
+                        {isLiking ? '...' : isLiked ? 'Unlike' : 'Like'}
                       </Button>
                     )}
 
@@ -780,8 +783,8 @@ export default function CollectionPage() {
                               className="bg-primary hover:bg-primary/90"
                             >
                               {isDuplicating
-                                ? "Duplicating..."
-                                : "Duplicate to My Account"}
+                                ? 'Duplicating...'
+                                : 'Duplicate to My Account'}
                             </Button>
                           </DialogFooter>
                         </DialogContent>

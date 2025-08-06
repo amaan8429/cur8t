@@ -1,16 +1,24 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { useState, useMemo } from "react";
-import {PiGlobe, PiList, PiTable, PiMagnifyingGlass, PiX, PiArrowSquareOut, PiGridFour, } from "react-icons/pi";
-import { Button } from "@/components/ui/button";
+import * as React from 'react';
+import { useState, useMemo } from 'react';
+import {
+  PiGlobe,
+  PiList,
+  PiTable,
+  PiMagnifyingGlass,
+  PiX,
+  PiArrowSquareOut,
+  PiGridFour,
+} from 'react-icons/pi';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -18,16 +26,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "@/types/types";
-import { truncateUrl } from "@/lib/truncate";
-import LoadingStates from "./Loading";
-import EmptyStates from "./NoLinks";
+} from '@/components/ui/table';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Link } from '@/types/types';
+import { truncateUrl } from '@/lib/truncate';
+import LoadingStates from './Loading';
+import EmptyStates from './NoLinks';
 
-type ViewMode = "grid" | "list" | "table";
+type ViewMode = 'grid' | 'list' | 'table';
 
 interface ReadOnlyLinkGridProps {
   links: Link[];
@@ -38,8 +46,8 @@ export function ReadOnlyLinkGrid({
   links,
   isLoading = false,
 }: ReadOnlyLinkGridProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Filter links based on search query
   const filteredLinks = useMemo(() => {
@@ -53,7 +61,7 @@ export function ReadOnlyLinkGrid({
     );
   }, [links, searchQuery]);
 
-  const clearSearch = () => setSearchQuery("");
+  const clearSearch = () => setSearchQuery('');
 
   if (isLoading) {
     return <LoadingStates view={viewMode} />;
@@ -62,25 +70,25 @@ export function ReadOnlyLinkGrid({
   const renderViewToggle = () => (
     <div className="flex items-center gap-2 p-1 bg-muted rounded-lg">
       <Button
-        variant={viewMode === "grid" ? "default" : "ghost"}
+        variant={viewMode === 'grid' ? 'default' : 'ghost'}
         size="sm"
-        onClick={() => setViewMode("grid")}
+        onClick={() => setViewMode('grid')}
         className="h-8 px-3"
       >
         <PiGridFour className="h-4 w-4" />
       </Button>
       <Button
-        variant={viewMode === "list" ? "default" : "ghost"}
+        variant={viewMode === 'list' ? 'default' : 'ghost'}
         size="sm"
-        onClick={() => setViewMode("list")}
+        onClick={() => setViewMode('list')}
         className="h-8 px-3"
       >
         <PiList className="h-4 w-4" />
       </Button>
       <Button
-        variant={viewMode === "table" ? "default" : "ghost"}
+        variant={viewMode === 'table' ? 'default' : 'ghost'}
         size="sm"
-        onClick={() => setViewMode("table")}
+        onClick={() => setViewMode('table')}
         className="h-8 px-3"
       >
         <PiTable className="h-4 w-4" />
@@ -150,7 +158,7 @@ export function ReadOnlyLinkGrid({
               variant="outline"
               size="sm"
               className="w-full hover:bg-primary hover:text-primary-foreground transition-colors"
-              onClick={() => window.open(link.url, "_blank")}
+              onClick={() => window.open(link.url, '_blank')}
             >
               <PiArrowSquareOut className="h-4 w-4 mr-2" />
               Visit Link
@@ -194,7 +202,7 @@ export function ReadOnlyLinkGrid({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => window.open(link.url, "_blank")}
+                onClick={() => window.open(link.url, '_blank')}
                 className="ml-4 shrink-0"
               >
                 <PiArrowSquareOut className="h-4 w-4" />
@@ -254,7 +262,7 @@ export function ReadOnlyLinkGrid({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.open(link.url, "_blank")}
+                  onClick={() => window.open(link.url, '_blank')}
                 >
                   <PiArrowSquareOut className="h-4 w-4" />
                 </Button>
@@ -303,9 +311,9 @@ export function ReadOnlyLinkGrid({
         </Card>
       ) : (
         <>
-          {viewMode === "grid" && renderGridView()}
-          {viewMode === "list" && renderListView()}
-          {viewMode === "table" && renderTableView()}
+          {viewMode === 'grid' && renderGridView()}
+          {viewMode === 'list' && renderListView()}
+          {viewMode === 'table' && renderTableView()}
         </>
       )}
     </div>

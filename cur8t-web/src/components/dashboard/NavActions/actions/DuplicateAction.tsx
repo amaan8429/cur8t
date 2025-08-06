@@ -1,22 +1,22 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { DialogFooter } from "@/components/ui/dialog";
-import { PiInfo } from "react-icons/pi";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { DialogFooter } from '@/components/ui/dialog';
+import { PiInfo } from 'react-icons/pi';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useCollectionStore } from "@/store/collection-store";
-import { useActiveState } from "@/store/activeStateStore";
-import { useToast } from "@/hooks/use-toast";
-import { createCollectionAction } from "@/actions/collection/createCollection";
-import { getLinksAction } from "@/actions/linkActions/getLinks";
-import { createLinkAction } from "@/actions/linkActions/createLink";
+} from '@/components/ui/tooltip';
+import { useCollectionStore } from '@/store/collection-store';
+import { useActiveState } from '@/store/activeStateStore';
+import { useToast } from '@/hooks/use-toast';
+import { createCollectionAction } from '@/actions/collection/createCollection';
+import { getLinksAction } from '@/actions/linkActions/getLinks';
+import { createLinkAction } from '@/actions/linkActions/createLink';
 
 interface DuplicateActionProps {
   duplicateName: string;
@@ -57,8 +57,8 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
   const handleConfirm = async () => {
     if (!activeCollectionId || !duplicateName.trim()) {
       toastWarning({
-        title: "Name Required",
-        description: "Please enter a collection name.",
+        title: 'Name Required',
+        description: 'Please enter a collection name.',
       });
       return;
     }
@@ -68,14 +68,14 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
       const active = getActiveCollection();
       if (!active) {
         toastError({
-          title: "Source Not Found",
-          description: "Original collection not found.",
+          title: 'Source Not Found',
+          description: 'Original collection not found.',
         });
         return;
       }
 
       // Determine visibility and emails for the duplicate
-      let duplicateVisibility = "private";
+      let duplicateVisibility = 'private';
       let duplicateEmails: string[] = [];
 
       if (copyPermissions) {
@@ -86,26 +86,26 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
       // Create the duplicate collection
       const result = await createCollectionAction(
         duplicateName,
-        active.description || "",
+        active.description || '',
         duplicateVisibility
       );
 
       // Check for rate limiting
       if (result.error && result.retryAfter) {
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
-          message: "Too many duplicate attempts. Please try again later.",
+          message: 'Too many duplicate attempts. Please try again later.',
         });
         return;
       }
 
       if (!result.success) {
         toastError({
-          title: "Duplicate Failed",
-          description: "Failed to duplicate collection. Please try again.",
+          title: 'Duplicate Failed',
+          description: 'Failed to duplicate collection. Please try again.',
         });
         return;
       }
@@ -122,11 +122,11 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
         // Check for rate limiting on getLinksAction
         if (linksResult.error && linksResult.retryAfter) {
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter: linksResult.retryAfter * 60,
-            message: "Too many link fetch attempts. Please try again later.",
+            message: 'Too many link fetch attempts. Please try again later.',
           });
           return;
         }
@@ -134,16 +134,21 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
         if (linksResult.success && linksResult.data) {
           // Copy each link to the new collection
           for (const link of linksResult.data) {
-            const linkResult = await createLinkAction(newCollection.id, link.title, link.url);
-            
+            const linkResult = await createLinkAction(
+              newCollection.id,
+              link.title,
+              link.url
+            );
+
             // Check for rate limiting on createLinkAction
             if (linkResult.error && linkResult.retryAfter) {
               const { showRateLimitToast } = await import(
-                "@/components/ui/rate-limit-toast"
+                '@/components/ui/rate-limit-toast'
               );
               showRateLimitToast({
                 retryAfter: linkResult.retryAfter * 60,
-                message: "Too many link creation attempts. Please try again later.",
+                message:
+                  'Too many link creation attempts. Please try again later.',
               });
               return;
             }
@@ -154,7 +159,7 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
       // Update visibility with emails if needed (for protected collections)
       if (
         copyPermissions &&
-        duplicateVisibility === "protected" &&
+        duplicateVisibility === 'protected' &&
         duplicateEmails.length > 0
       ) {
         await updateCollectionVisibility(
@@ -165,17 +170,17 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
       }
 
       toastSuccess({
-        title: "Collection Duplicated!",
-        description: "Your collection has been successfully duplicated.",
+        title: 'Collection Duplicated!',
+        description: 'Your collection has been successfully duplicated.',
       });
 
       onClose();
     } catch (error) {
       console.error(error);
       toastError({
-        title: "An error occurred while duplicating",
+        title: 'An error occurred while duplicating',
         description:
-          "An error occurred while duplicating the collection. Please try again later.",
+          'An error occurred while duplicating the collection. Please try again later.',
       });
     } finally {
       setIsDuplicating(false);
@@ -264,7 +269,7 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
           onClick={handleConfirm}
           disabled={!duplicateName.trim() || isDuplicating}
         >
-          {isDuplicating ? "Duplicating..." : "Duplicate"}
+          {isDuplicating ? 'Duplicating...' : 'Duplicate'}
         </Button>
       </DialogFooter>
     </>

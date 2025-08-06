@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { PiCheckCircle } from "react-icons/pi";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
+import { PiCheckCircle } from 'react-icons/pi';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 interface ReplyProps {
   authorName: string;
@@ -24,48 +24,48 @@ interface TweetCardProps {
 }
 
 export default function TweetCard({
-  authorName = "Subhadeep",
-  authorHandle = "mvp_Subha",
-  authorImage = "https://pbs.twimg.com/profile_images/1763223695898681344/2mvSadJl_400x400.jpg",
+  authorName = 'Subhadeep',
+  authorHandle = 'mvp_Subha',
+  authorImage = 'https://pbs.twimg.com/profile_images/1763223695898681344/2mvSadJl_400x400.jpg',
   content = [
-    "Mvpblocks is the best ever UI component collection library 🎉",
-    "1. Can be opened in v0",
-    "2. Can be installed with CLI",
-    "3. Deploy to your app",
+    'Mvpblocks is the best ever UI component collection library 🎉',
+    '1. Can be opened in v0',
+    '2. Can be installed with CLI',
+    '3. Deploy to your app',
   ],
   isVerified = true,
-  timestamp = "Mar 3, 2025",
+  timestamp = 'Mar 3, 2025',
   reply = {
-    authorName: "shadcn",
-    authorHandle: "shadcn",
+    authorName: 'shadcn',
+    authorHandle: 'shadcn',
     authorImage:
-      "https://pbs.twimg.com/profile_images/1593304942210478080/TUYae5z7_400x400.jpg",
-    content: "Awesome.",
+      'https://pbs.twimg.com/profile_images/1593304942210478080/TUYae5z7_400x400.jpg',
+    content: 'Awesome.',
     isVerified: true,
-    timestamp: "March 3",
+    timestamp: 'March 3',
   },
 }: TweetCardProps) {
   return (
     <Link href="https://x.com/mvp_Subha" target="_blank">
       <div
         className={cn(
-          "relative isolate w-full max-w-xl min-w-[400px] overflow-hidden rounded-2xl p-1.5 md:min-w-[500px]",
-          "bg-card/80 border border-border",
-          "backdrop-blur-xl backdrop-saturate-[180%]",
-          "shadow-lg",
-          "translate-z-0 will-change-transform"
+          'relative isolate w-full max-w-xl min-w-[400px] overflow-hidden rounded-2xl p-1.5 md:min-w-[500px]',
+          'bg-card/80 border border-border',
+          'backdrop-blur-xl backdrop-saturate-[180%]',
+          'shadow-lg',
+          'translate-z-0 will-change-transform'
         )}
       >
         <div
           className={cn(
-            "relative w-full rounded-xl p-5",
-            "bg-card/50 border border-border/50",
-            "backdrop-blur-md backdrop-saturate-150",
-            "text-foreground",
-            "shadow-sm",
-            "translate-z-0 will-change-transform",
-            "before:pointer-events-none before:absolute before:inset-0 before:bg-muted/20 before:opacity-0 before:transition-opacity before:rounded-xl",
-            "hover:before:opacity-100"
+            'relative w-full rounded-xl p-5',
+            'bg-card/50 border border-border/50',
+            'backdrop-blur-md backdrop-saturate-150',
+            'text-foreground',
+            'shadow-sm',
+            'translate-z-0 will-change-transform',
+            'before:pointer-events-none before:absolute before:inset-0 before:bg-muted/20 before:opacity-0 before:transition-opacity before:rounded-xl',
+            'hover:before:opacity-100'
           )}
         >
           <div className="flex gap-3">

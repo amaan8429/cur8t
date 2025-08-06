@@ -1,13 +1,13 @@
-import { create } from "zustand";
-import { Link } from "@/types/types";
-import { getLinksAction } from "@/actions/linkActions/getLinks";
+import { create } from 'zustand';
+import { Link } from '@/types/types';
+import { getLinksAction } from '@/actions/linkActions/getLinks';
 import {
   addLinkAction,
   deleteLinkAction,
   updateLinkAction,
-} from "@/actions/linkActions/link-actions";
-import { generateFallbackTitle } from "@/lib/extractTitle";
-import { showRateLimitToast } from "@/components/ui/rate-limit-toast";
+} from '@/actions/linkActions/link-actions';
+import { generateFallbackTitle } from '@/lib/extractTitle';
+import { showRateLimitToast } from '@/components/ui/rate-limit-toast';
 
 interface LinkStore {
   links: Link[];
@@ -26,7 +26,7 @@ interface LinkStore {
   deleteLink: (id: string) => Promise<void>;
   updateLink: (
     id: string,
-    data: Partial<Pick<Link, "title" | "url">>
+    data: Partial<Pick<Link, 'title' | 'url'>>
   ) => Promise<void>;
 }
 
@@ -39,7 +39,7 @@ export const useLinkStore = create<LinkStore>((set) => ({
     try {
       set({ isLoading: true });
       const data = await getLinksAction(collectionId);
-      if ("error" in data) {
+      if ('error' in data) {
         console.error(data.error);
       } else {
         set((state) => ({
@@ -52,7 +52,7 @@ export const useLinkStore = create<LinkStore>((set) => ({
         }));
       }
     } catch (error) {
-      console.error("Failed to refresh links:", error);
+      console.error('Failed to refresh links:', error);
     } finally {
       set({ isLoading: false });
     }
@@ -64,14 +64,14 @@ export const useLinkStore = create<LinkStore>((set) => ({
     const optimisticTitle: string =
       trimmedTitle && trimmedTitle.length > 0
         ? trimmedTitle
-        : generateFallbackTitle(newLink.url) || "Untitled Link";
+        : generateFallbackTitle(newLink.url) || 'Untitled Link';
 
     const optimisticLink: Link = {
       id: optimisticId,
       title: optimisticTitle,
       url: newLink.url,
       linkCollectionId: collectionId,
-      userId: "temp-user", // Will be replaced by real data
+      userId: 'temp-user', // Will be replaced by real data
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -95,17 +95,17 @@ export const useLinkStore = create<LinkStore>((set) => ({
 
         showRateLimitToast({
           retryAfter: createdLink.retryAfter * 60,
-          message: "Too many link creation attempts. Please try again later.",
+          message: 'Too many link creation attempts. Please try again later.',
         });
         return;
       }
 
-      if ("error" in createdLink) {
+      if ('error' in createdLink) {
         // Remove optimistic link and show error
         set((state) => ({
           links: state.links.filter((link) => link.id !== optimisticId),
         }));
-        onError?.(createdLink.error || "An unknown error occurred");
+        onError?.(createdLink.error || 'An unknown error occurred');
         return;
       }
 
@@ -122,8 +122,8 @@ export const useLinkStore = create<LinkStore>((set) => ({
       set((state) => ({
         links: state.links.filter((link) => link.id !== optimisticId),
       }));
-      console.error("Failed to add link:", error);
-      onError?.("Failed to add link. Please try again.");
+      console.error('Failed to add link:', error);
+      onError?.('Failed to add link. Please try again.');
     }
   },
   deleteLink: async (id) => {
@@ -151,7 +151,7 @@ export const useLinkStore = create<LinkStore>((set) => ({
 
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
-          message: "Too many delete attempts. Please try again later.",
+          message: 'Too many delete attempts. Please try again later.',
         });
         return;
       }
@@ -163,7 +163,7 @@ export const useLinkStore = create<LinkStore>((set) => ({
             links: [...state.links, linkToDelete],
           }));
         }
-        console.error("Failed to delete link:", result.error);
+        console.error('Failed to delete link:', result.error);
       }
     } catch (error) {
       // Restore the link on error
@@ -172,7 +172,7 @@ export const useLinkStore = create<LinkStore>((set) => ({
           links: [...state.links, linkToDelete],
         }));
       }
-      console.error("Failed to delete link:", error);
+      console.error('Failed to delete link:', error);
     }
   },
   updateLink: async (id, data) => {
@@ -184,7 +184,7 @@ export const useLinkStore = create<LinkStore>((set) => ({
       if (result && result.error && result.retryAfter) {
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
-          message: "Too many update attempts. Please try again later.",
+          message: 'Too many update attempts. Please try again later.',
         });
         return;
       }
@@ -195,7 +195,7 @@ export const useLinkStore = create<LinkStore>((set) => ({
         ),
       }));
     } catch (error) {
-      console.error("Failed to update link:", error);
+      console.error('Failed to update link:', error);
     } finally {
       // set({ isLoading: false });
     }

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -8,13 +8,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
 import {
   PiFileText,
   PiPlus,
@@ -26,15 +26,15 @@ import {
   PiArrowSquareOut,
   PiTrash,
   PiSpinner,
-} from "react-icons/pi";
-import { toast, useToast } from "@/hooks/use-toast";
+} from 'react-icons/pi';
+import { toast, useToast } from '@/hooks/use-toast';
 import {
   agentsApi,
   AgentsApiError,
   type ExtractedLink,
   type ArticleExtractionResponse,
-} from "@/lib/api/agents";
-import { saveExtractedCollectionAction } from "@/actions/collection/saveExtractedCollection";
+} from '@/lib/api/agents';
+import { saveExtractedCollectionAction } from '@/actions/collection/saveExtractedCollection';
 
 interface ArticleExtractorDialogProps {
   open: boolean;
@@ -45,12 +45,12 @@ export function ArticleExtractorDialog({
   open,
   onOpenChange,
 }: ArticleExtractorDialogProps) {
-  const [step, setStep] = useState<"input" | "results">("input");
+  const [step, setStep] = useState<'input' | 'results'>('input');
   const [loading, setLoading] = useState(false);
-  const [articleUrl, setArticleUrl] = useState("");
-  const [collectionName, setCollectionName] = useState("");
+  const [articleUrl, setArticleUrl] = useState('');
+  const [collectionName, setCollectionName] = useState('');
   const [isEditingCollectionName, setIsEditingCollectionName] = useState(false);
-  const [tempCollectionName, setTempCollectionName] = useState("");
+  const [tempCollectionName, setTempCollectionName] = useState('');
 
   // Results state
   const [extractedData, setExtractedData] =
@@ -58,8 +58,8 @@ export function ArticleExtractorDialog({
 
   // New link form state
   const [showAddLinkForm, setShowAddLinkForm] = useState(false);
-  const [newLinkUrl, setNewLinkUrl] = useState("");
-  const [newLinkTitle, setNewLinkTitle] = useState("");
+  const [newLinkUrl, setNewLinkUrl] = useState('');
+  const [newLinkTitle, setNewLinkTitle] = useState('');
   const [savingCollection, setSavingCollection] = useState(false);
 
   const {
@@ -71,23 +71,23 @@ export function ArticleExtractorDialog({
   } = useToast();
 
   const resetDialog = () => {
-    setStep("input");
-    setArticleUrl("");
-    setCollectionName("");
+    setStep('input');
+    setArticleUrl('');
+    setCollectionName('');
     setExtractedData(null);
     setShowAddLinkForm(false);
-    setNewLinkUrl("");
-    setNewLinkTitle("");
+    setNewLinkUrl('');
+    setNewLinkTitle('');
     setIsEditingCollectionName(false);
-    setTempCollectionName("");
+    setTempCollectionName('');
     setSavingCollection(false);
   };
 
   const handleExtractLinks = async () => {
     if (!articleUrl.trim()) {
       toastWarning({
-        title: "Missing URL",
-        description: "Please enter an article URL to extract links from.",
+        title: 'Missing URL',
+        description: 'Please enter an article URL to extract links from.',
       });
       return;
     }
@@ -101,23 +101,23 @@ export function ArticleExtractorDialog({
       });
 
       setExtractedData(data);
-      setStep("results");
+      setStep('results');
       toastSuccess({
-        title: "Links extracted successfully!",
+        title: 'Links extracted successfully!',
         description: `Found ${data.total_links_found} links from the article.`,
       });
     } catch (error) {
-      console.error("Error extracting links:", error);
+      console.error('Error extracting links:', error);
 
       if (error instanceof AgentsApiError) {
         toastError({
-          title: "Extraction failed",
+          title: 'Extraction failed',
           description: error.details || error.message,
         });
       } else {
         toastError({
-          title: "Unexpected error",
-          description: "An unexpected error occurred. Please try again.",
+          title: 'Unexpected error',
+          description: 'An unexpected error occurred. Please try again.',
         });
       }
     } finally {
@@ -138,16 +138,16 @@ export function ArticleExtractorDialog({
     });
 
     toastInfo({
-      title: "Link removed",
-      description: "The link has been removed from your collection.",
+      title: 'Link removed',
+      description: 'The link has been removed from your collection.',
     });
   };
 
   const handleAddNewLink = () => {
     if (!newLinkUrl.trim()) {
       toastWarning({
-        title: "Missing URL",
-        description: "Please enter a URL for the new link.",
+        title: 'Missing URL',
+        description: 'Please enter a URL for the new link.',
       });
       return;
     }
@@ -160,8 +160,8 @@ export function ArticleExtractorDialog({
     );
     if (isDuplicate) {
       toastWarning({
-        title: "Duplicate link",
-        description: "This link is already in your collection.",
+        title: 'Duplicate link',
+        description: 'This link is already in your collection.',
       });
       return;
     }
@@ -171,7 +171,7 @@ export function ArticleExtractorDialog({
 
       const newLink: ExtractedLink = {
         url: newLinkUrl,
-        title: newLinkTitle || "Manually added link",
+        title: newLinkTitle || 'Manually added link',
         description: newLinkTitle || undefined,
         domain: domain,
       };
@@ -183,24 +183,24 @@ export function ArticleExtractorDialog({
         total_links_found: updatedLinks.length,
       });
 
-      setNewLinkUrl("");
-      setNewLinkTitle("");
+      setNewLinkUrl('');
+      setNewLinkTitle('');
       setShowAddLinkForm(false);
 
       toastInfo({
-        title: "Link added",
-        description: "The new link has been added to your collection.",
+        title: 'Link added',
+        description: 'The new link has been added to your collection.',
       });
     } catch (error) {
       toastError({
-        title: "Invalid URL",
-        description: "Please enter a valid URL.",
+        title: 'Invalid URL',
+        description: 'Please enter a valid URL.',
       });
     }
   };
 
   const handleCollectionNameEdit = () => {
-    setTempCollectionName(extractedData?.collection_name || "");
+    setTempCollectionName(extractedData?.collection_name || '');
     setIsEditingCollectionName(true);
   };
 
@@ -214,14 +214,14 @@ export function ArticleExtractorDialog({
     setIsEditingCollectionName(false);
 
     toastInfo({
-      title: "Collection name updated",
-      description: "Your collection name has been changed.",
+      title: 'Collection name updated',
+      description: 'Your collection name has been changed.',
     });
   };
 
   const handleCollectionNameCancel = () => {
     setIsEditingCollectionName(false);
-    setTempCollectionName("");
+    setTempCollectionName('');
   };
 
   const handleSaveCollection = async () => {
@@ -234,7 +234,7 @@ export function ArticleExtractorDialog({
         collection_name: extractedData.collection_name,
         extracted_links: extractedData.extracted_links.map((link) => ({
           ...link,
-          title: link.title || `Link from ${link.domain || "unknown"}`,
+          title: link.title || `Link from ${link.domain || 'unknown'}`,
           domain: link.domain || new URL(link.url).hostname,
         })),
         article_url: extractedData.article_url,
@@ -244,35 +244,35 @@ export function ArticleExtractorDialog({
       // Check for rate limiting
       if (result.error && result.retryAfter) {
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
-          message: "Too many save attempts. Please try again later.",
+          message: 'Too many save attempts. Please try again later.',
         });
         return;
       }
 
       if (result.error) {
         toastError({
-          title: "Save Failed",
+          title: 'Save Failed',
           description: result.error,
         });
         return;
       }
 
       toastSuccess({
-        title: "Collection Saved!",
+        title: 'Collection Saved!',
         description: `Saved "${result.data?.collection.title}" with ${result.data?.totalLinks} links.`,
       });
 
       resetDialog();
       onOpenChange(false);
     } catch (error) {
-      console.error("Error saving collection:", error);
+      console.error('Error saving collection:', error);
       toastError({
-        title: "Save Failed",
-        description: "An unexpected error occurred. Please try again.",
+        title: 'Save Failed',
+        description: 'An unexpected error occurred. Please try again.',
       });
     } finally {
       setSavingCollection(false);
@@ -299,7 +299,7 @@ export function ArticleExtractorDialog({
         </DialogHeader>
 
         <div className="flex-1 overflow-auto px-1">
-          {step === "input" && (
+          {step === 'input' && (
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="article-url" className="text-sm font-medium">
@@ -350,14 +350,14 @@ export function ArticleExtractorDialog({
             </div>
           )}
 
-          {step === "results" && extractedData && (
+          {step === 'results' && extractedData && (
             <div className="space-y-6">
               {/* Article Info */}
               <div className="p-4 rounded-lg bg-muted/30 border border-border/30">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1 flex-1">
                     <h3 className="font-medium">
-                      {extractedData.article_title || "Article"}
+                      {extractedData.article_title || 'Article'}
                     </h3>
                     <a
                       href={extractedData.article_url}
@@ -370,7 +370,7 @@ export function ArticleExtractorDialog({
                     </a>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <PiCalendar className="h-3 w-3" />
-                      Extracted{" "}
+                      Extracted{' '}
                       {new Date(extractedData.created_at).toLocaleString()}
                     </div>
                   </div>
@@ -393,8 +393,8 @@ export function ArticleExtractorDialog({
                       onChange={(e) => setTempCollectionName(e.target.value)}
                       className="flex-1"
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") handleCollectionNameSave();
-                        if (e.key === "Escape") handleCollectionNameCancel();
+                        if (e.key === 'Enter') handleCollectionNameSave();
+                        if (e.key === 'Escape') handleCollectionNameCancel();
                       }}
                     />
                     <Button size="sm" onClick={handleCollectionNameSave}>
@@ -491,8 +491,8 @@ export function ArticleExtractorDialog({
                             <h5 className="font-medium text-sm truncate">
                               {link.title &&
                               link.title !== link.domain &&
-                              link.title.toLowerCase() !== "untitled link" &&
-                              !link.title.toLowerCase().includes("sitemap")
+                              link.title.toLowerCase() !== 'untitled link' &&
+                              !link.title.toLowerCase().includes('sitemap')
                                 ? link.title
                                 : `Link from ${link.domain}`}
                             </h5>
@@ -514,10 +514,10 @@ export function ArticleExtractorDialog({
                           {link.description &&
                             link.description !== link.title &&
                             link.description.toLowerCase() !==
-                              "untitled link" &&
+                              'untitled link' &&
                             !link.description
                               .toLowerCase()
-                              .includes("sitemap") && (
+                              .includes('sitemap') && (
                               <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
                                 {link.description}
                               </p>
@@ -527,7 +527,7 @@ export function ArticleExtractorDialog({
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => window.open(link.url, "_blank")}
+                            onClick={() => window.open(link.url, '_blank')}
                             className="h-8 w-8 p-0"
                           >
                             <PiArrowSquareOut className="h-3 w-3" />
@@ -551,7 +551,7 @@ export function ArticleExtractorDialog({
         </div>
 
         <DialogFooter className="px-1 pt-4">
-          {step === "input" && (
+          {step === 'input' && (
             <>
               <Button variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
@@ -563,9 +563,9 @@ export function ArticleExtractorDialog({
             </>
           )}
 
-          {step === "results" && (
+          {step === 'results' && (
             <>
-              <Button variant="outline" onClick={() => setStep("input")}>
+              <Button variant="outline" onClick={() => setStep('input')}>
                 Back
               </Button>
               <Button

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { create } from "zustand";
-import { getPinnedCollections } from "@/actions/collection/pinnedCollections";
+import { create } from 'zustand';
+import { getPinnedCollections } from '@/actions/collection/pinnedCollections';
 
 interface PinnedCollection {
   id: string;
@@ -46,7 +46,7 @@ export const usePinnedCollectionsStore = create<PinnedCollectionsStore>(
           });
         }
       } catch (error) {
-        console.error("Error fetching pinned collections:", error);
+        console.error('Error fetching pinned collections:', error);
         set({
           pinnedCollections: [],
           pinnedCollectionIds: [],

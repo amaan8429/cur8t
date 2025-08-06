@@ -1,14 +1,14 @@
-import React from "react";
-import {PiStar, PiLink, PiArrowSquareOut} from "react-icons/pi";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import React from 'react';
+import { PiStar, PiLink, PiArrowSquareOut } from 'react-icons/pi';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from '@/components/ui/tooltip';
 import {
   truncateText,
   handleCollectionClick,
@@ -17,7 +17,7 @@ import {
   formatFullDate,
   getAuthorInitial,
   formatLinkCount,
-} from "@/lib/exploreUtils";
+} from '@/lib/exploreUtils';
 
 // Define collection interface that works with all collection types
 interface BaseCollection {
@@ -33,7 +33,7 @@ interface BaseCollection {
   visibility?: string;
 }
 
-type CardVariant = "featured" | "trending" | "timeline" | "saved";
+type CardVariant = 'featured' | 'trending' | 'timeline' | 'saved';
 
 interface UnifiedCollectionCardProps {
   collection: BaseCollection;
@@ -87,7 +87,7 @@ export const UnifiedCollectionCard: React.FC<UnifiedCollectionCardProps> = ({
         </div>
         <p className="text-xs text-muted-foreground line-clamp-1">
           {truncateText(
-            collection.description || "Collection of curated links",
+            collection.description || 'Collection of curated links',
             50
           )}
         </p>
@@ -233,11 +233,11 @@ export const UnifiedCollectionCard: React.FC<UnifiedCollectionCardProps> = ({
                     }
                     className="text-sm text-muted-foreground hover:text-primary transition-colors truncate max-w-[120px]"
                   >
-                    {truncateText(collection.author || "Anonymous", 15)}
+                    {truncateText(collection.author || 'Anonymous', 15)}
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{collection.author || "Anonymous"}</p>
+                  <p>{collection.author || 'Anonymous'}</p>
                 </TooltipContent>
               </Tooltip>
               <span className="text-muted-foreground">/</span>
@@ -295,10 +295,10 @@ export const UnifiedCollectionCard: React.FC<UnifiedCollectionCardProps> = ({
 
   return (
     <TooltipProvider>
-      {variant === "trending" && renderTrendingCard()}
-      {variant === "saved" && renderSavedCard()}
-      {variant === "timeline" && renderTimelineCard()}
-      {variant === "featured" && renderFeaturedCard()}
+      {variant === 'trending' && renderTrendingCard()}
+      {variant === 'saved' && renderSavedCard()}
+      {variant === 'timeline' && renderTimelineCard()}
+      {variant === 'featured' && renderFeaturedCard()}
     </TooltipProvider>
   );
 };

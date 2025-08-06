@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/layout/ModeToggle";
-import { Footer } from "@/components/layout/Footer";
-import { useExploreDataOptimized } from "@/hooks/useExploreDataOptimized";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { ModeToggle } from '@/components/layout/ModeToggle';
+import { Footer } from '@/components/layout/Footer';
+import { useExploreDataOptimized } from '@/hooks/useExploreDataOptimized';
 
 // Import new components
-import { UserProfileSection } from "@/components/explore/UserProfileSection";
-import { TrendingSection } from "@/components/explore/TrendingSection";
-import { SavedCollectionsSection } from "@/components/explore/SavedCollectionsSection";
-import { FeaturedSection } from "@/components/explore/FeaturedSection";
-import { EventsTimelineSection } from "@/components/explore/EventsTimelineSection";
+import { UserProfileSection } from '@/components/explore/UserProfileSection';
+import { TrendingSection } from '@/components/explore/TrendingSection';
+import { SavedCollectionsSection } from '@/components/explore/SavedCollectionsSection';
+import { FeaturedSection } from '@/components/explore/FeaturedSection';
+import { EventsTimelineSection } from '@/components/explore/EventsTimelineSection';
 
 export default function ExplorePage() {
-  const [activeTab, setActiveTab] = useState<"explore" | "events">("explore");
+  const [activeTab, setActiveTab] = useState<'explore' | 'events'>('explore');
 
   const {
     trendingCollections,
@@ -40,22 +40,22 @@ export default function ExplorePage() {
               <Button
                 variant="ghost"
                 className={`font-medium rounded-none ${
-                  activeTab === "explore"
-                    ? "text-primary border-b-2 border-primary"
-                    : "text-muted-foreground"
+                  activeTab === 'explore'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-muted-foreground'
                 }`}
-                onClick={() => setActiveTab("explore")}
+                onClick={() => setActiveTab('explore')}
               >
                 Explore
               </Button>
               <Button
                 variant="ghost"
                 className={`font-medium rounded-none ${
-                  activeTab === "events"
-                    ? "text-primary border-b-2 border-primary"
-                    : "text-muted-foreground"
+                  activeTab === 'events'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-muted-foreground'
                 }`}
-                onClick={() => setActiveTab("events")}
+                onClick={() => setActiveTab('events')}
               >
                 Events
               </Button>
@@ -77,7 +77,7 @@ export default function ExplorePage() {
 
           {/* Main Content - Shows immediately when main data loads */}
           <div className="flex-1 max-w-3xl">
-            {activeTab === "explore" ? (
+            {activeTab === 'explore' ? (
               <div className="space-y-8">
                 <FeaturedSection
                   recentCollections={recentCollections}

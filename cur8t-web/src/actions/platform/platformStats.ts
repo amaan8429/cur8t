@@ -1,18 +1,13 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import {
-  CollectionsTable,
-  UsersTable,
-  LinksTable,
-  SavedCollectionsTable,
-} from "@/schema";
-import { eq, gte, sql } from "drizzle-orm";
+import { db } from '@/db';
+import { CollectionsTable, UsersTable, SavedCollectionsTable } from '@/schema';
+import { eq, gte, sql } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function getPlatformStats() {
   // IP-based rate limiting for public platform endpoint
@@ -20,7 +15,7 @@ export async function getPlatformStats() {
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getPlatformStatsLimiter,
     identifier,
-    "Too many requests to get platform stats. Please try again later."
+    'Too many requests to get platform stats. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -37,7 +32,7 @@ export async function getPlatformStats() {
     const publicCollectionsResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(CollectionsTable)
-      .where(eq(CollectionsTable.visibility, "public"));
+      .where(eq(CollectionsTable.visibility, 'public'));
 
     // Get total users count
     const totalUsersResult = await db
@@ -64,7 +59,7 @@ export async function getPlatformStats() {
     const mostLikedResult = await db
       .select({ maxLikes: sql<number>`MAX(${CollectionsTable.likes})` })
       .from(CollectionsTable)
-      .where(eq(CollectionsTable.visibility, "public"));
+      .where(eq(CollectionsTable.visibility, 'public'));
 
     // Get total saves count
     const totalSavesResult = await db
@@ -84,9 +79,9 @@ export async function getPlatformStats() {
       },
     };
   } catch (error) {
-    console.error("Error fetching platform stats:", error);
+    console.error('Error fetching platform stats:', error);
     return {
-      error: "Failed to fetch platform statistics",
+      error: 'Failed to fetch platform statistics',
     };
   }
 }

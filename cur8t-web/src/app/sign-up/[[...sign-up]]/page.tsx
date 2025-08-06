@@ -1,9 +1,9 @@
-import { SignUp } from "@clerk/nextjs";
+import { SignUp } from '@clerk/nextjs';
 
 export default function Page() {
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <SignUp forceRedirectUrl={"/dashboard/?item=Overview"} />
+      <SignUp forceRedirectUrl={'/dashboard/?item=Overview'} />
     </div>
   );
 }

@@ -1,1 +1,1 @@
-export { BookmarkImporterDialog } from "../BookmarkImporter/BookmarkImporterDialog";
+export { BookmarkImporterDialog } from '../BookmarkImporter/BookmarkImporterDialog';

@@ -1,27 +1,27 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { auth } from "@clerk/nextjs/server";
-import { UsersTable, CollectionsTable } from "@/schema";
-import { eq, and, inArray } from "drizzle-orm";
+import { db } from '@/db';
+import { auth } from '@clerk/nextjs/server';
+import { UsersTable, CollectionsTable } from '@/schema';
+import { eq, and, inArray } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function getTopCollections() {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not authenticated" };
+    return { error: 'User not authenticated' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getCollectionsLimiter,
     identifier,
-    "Too many requests to get top collections. Please try again later."
+    'Too many requests to get top collections. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -37,7 +37,7 @@ export async function getTopCollections() {
       .limit(1);
 
     if (!user.length) {
-      return { error: "User not found" };
+      return { error: 'User not found' };
     }
 
     const topCollectionIds = user[0].topCollections;
@@ -71,8 +71,8 @@ export async function getTopCollections() {
 
     return { data: orderedCollections };
   } catch (error) {
-    console.error("Error fetching top collections:", error);
-    return { error: "Failed to fetch top collections" };
+    console.error('Error fetching top collections:', error);
+    return { error: 'Failed to fetch top collections' };
   }
 }
 
@@ -80,14 +80,14 @@ export async function getUserCollections() {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not authenticated" };
+    return { error: 'User not authenticated' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getCollectionsLimiter,
     identifier,
-    "Too many requests to get user collections. Please try again later."
+    'Too many requests to get user collections. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -109,8 +109,8 @@ export async function getUserCollections() {
 
     return { data: collections };
   } catch (error) {
-    console.error("Error fetching user collections:", error);
-    return { error: "Failed to fetch collections" };
+    console.error('Error fetching user collections:', error);
+    return { error: 'Failed to fetch collections' };
   }
 }
 
@@ -118,14 +118,14 @@ export async function setTopCollections(collectionIds: string[]) {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not authenticated" };
+    return { error: 'User not authenticated' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.userUpdateLimiter, // Using user update limiter for modification operations
     identifier,
-    "Too many requests to set top collections. Please try again later."
+    'Too many requests to set top collections. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -133,7 +133,7 @@ export async function setTopCollections(collectionIds: string[]) {
   }
 
   if (collectionIds.length > 5) {
-    return { error: "Cannot set more than 5 top collections" };
+    return { error: 'Cannot set more than 5 top collections' };
   }
 
   try {
@@ -149,7 +149,7 @@ export async function setTopCollections(collectionIds: string[]) {
       );
 
     if (userCollections.length !== collectionIds.length) {
-      return { error: "One or more collections do not belong to you" };
+      return { error: 'One or more collections do not belong to you' };
     }
 
     // Update user's top collections
@@ -160,7 +160,7 @@ export async function setTopCollections(collectionIds: string[]) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error setting top collections:", error);
-    return { error: "Failed to update top collections" };
+    console.error('Error setting top collections:', error);
+    return { error: 'Failed to update top collections' };
   }
 }

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ErrorPage } from "@/components/ui/error-page";
-import { useEffect } from "react";
+import { ErrorPage } from '@/components/ui/error-page';
+import { useEffect } from 'react';
 
 export default function Error({
   error,
@@ -12,18 +12,18 @@ export default function Error({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error("App Error:", error);
+    console.error('App Error:', error);
   }, [error]);
 
   // Determine error type based on error message or other properties
-  let errorType: "network" | "server" | "generic" = "generic";
+  let errorType: 'network' | 'server' | 'generic' = 'generic';
   let errorCode: string | undefined;
 
-  if (error.message.includes("fetch") || error.message.includes("network")) {
-    errorType = "network";
-  } else if (error.message.includes("500") || error.digest) {
-    errorType = "server";
-    errorCode = "500";
+  if (error.message.includes('fetch') || error.message.includes('network')) {
+    errorType = 'network';
+  } else if (error.message.includes('500') || error.digest) {
+    errorType = 'server';
+    errorCode = '500';
   }
 
   return (
@@ -32,14 +32,14 @@ export default function Error({
         type={errorType}
         title="Something Went Wrong"
         description={
-          process.env.NODE_ENV === "development"
+          process.env.NODE_ENV === 'development'
             ? error.message
-            : "An unexpected error occurred. Please try again."
+            : 'An unexpected error occurred. Please try again.'
         }
         errorCode={errorCode}
         onRetry={reset}
       >
-        {process.env.NODE_ENV === "development" && (
+        {process.env.NODE_ENV === 'development' && (
           <details className="mt-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg text-left">
             <summary className="cursor-pointer text-sm font-medium">
               Error Details (Development)
@@ -52,4 +52,4 @@ export default function Error({
       </ErrorPage>
     </div>
   );
-} 
+}

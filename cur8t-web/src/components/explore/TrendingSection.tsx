@@ -1,10 +1,10 @@
-import React from "react";
-import { PiTrendUp } from "react-icons/pi";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { PublicCollection } from "@/actions/collection/fetchPublicCollections";
-import { UnifiedCollectionCard } from "./UnifiedCollectionCard";
-import Link from "next/link";
+import React from 'react';
+import { PiTrendUp } from 'react-icons/pi';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PublicCollection } from '@/actions/collection/fetchPublicCollections';
+import { UnifiedCollectionCard } from './UnifiedCollectionCard';
+import Link from 'next/link';
 
 interface TrendingSectionProps {
   trendingCollections: PublicCollection[];

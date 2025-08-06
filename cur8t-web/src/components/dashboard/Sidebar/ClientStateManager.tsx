@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import { useActiveState } from "@/store/activeStateStore";
+import { useEffect } from 'react';
+import { useActiveState } from '@/store/activeStateStore';
 
 interface ClientStateManagerProps {
   activeItem?: string;
@@ -28,10 +28,10 @@ export function ClientStateManager({
   );
 
   useEffect(() => {
-    setActiveItem(activeItem || "");
-    setActiveCollectionId(activeCollectionId || "");
-    setActiveSecondary(activeSecondary || "");
-    setActiveCollectionName(activeCollectionName || "");
+    setActiveItem(activeItem || '');
+    setActiveCollectionId(activeCollectionId || '');
+    setActiveSecondary(activeSecondary || '');
+    setActiveCollectionName(activeCollectionName || '');
   }, [
     activeItem,
     activeCollectionId,

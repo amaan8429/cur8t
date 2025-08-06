@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { PiLock, PiShield, PiSignIn, PiPaperPlaneRight } from "react-icons/pi";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from 'react';
+import { PiLock, PiShield, PiSignIn, PiPaperPlaneRight } from 'react-icons/pi';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -8,11 +8,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { useAuth } from "@clerk/nextjs";
-import { PiLink } from "react-icons/pi";
-import { AccessRequestDialog } from "./AccessRequestDialog";
-import { checkAccessRequestStatus } from "@/actions/collection/accessRequests";
+} from '@/components/ui/card';
+import { useAuth } from '@clerk/nextjs';
+import { PiLink } from 'react-icons/pi';
+import { AccessRequestDialog } from './AccessRequestDialog';
+import { checkAccessRequestStatus } from '@/actions/collection/accessRequests';
 
 interface AccessDeniedProps {
   error: string;
@@ -35,15 +35,15 @@ export function AccessDenied({
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
 
   // Determine the type of error and appropriate icon/action
-  const isPrivateError = error.includes("private");
-  const isProtectedError = error.includes("protected");
-  const needsAuth = error.includes("sign in");
+  const isPrivateError = error.includes('private');
+  const isProtectedError = error.includes('protected');
+  const needsAuth = error.includes('sign in');
   const canShowRequestButton =
     (isPrivateError || isProtectedError) && !!collectionId;
   const canActuallyRequest = canShowRequestButton && isSignedIn;
 
   // Use provided title or fallback
-  const finalCollectionTitle = collectionTitle || "this collection";
+  const finalCollectionTitle = collectionTitle || 'this collection';
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -53,7 +53,7 @@ export function AccessDenied({
           const status = await checkAccessRequestStatus(collectionId);
           setRequestStatus(status);
         } catch (error) {
-          console.error("Error checking access request status:", error);
+          console.error('Error checking access request status:', error);
         } finally {
           setIsCheckingStatus(false);
         }
@@ -74,44 +74,44 @@ export function AccessDenied({
   };
 
   const getTitle = () => {
-    if (isPrivateError) return "Private Collection";
-    if (isProtectedError) return "Protected Collection";
-    return "Access Required";
+    if (isPrivateError) return 'Private Collection';
+    if (isProtectedError) return 'Protected Collection';
+    return 'Access Required';
   };
 
   const getDescription = () => {
     if (isPrivateError) {
-      return "This collection is private and can only be viewed by its owner.";
+      return 'This collection is private and can only be viewed by its owner.';
     }
     if (isProtectedError) {
-      return "This collection is protected and can only be viewed by the owner and invited users.";
+      return 'This collection is protected and can only be viewed by the owner and invited users.';
     }
-    return "You need to sign in to view this collection.";
+    return 'You need to sign in to view this collection.';
   };
 
   const getRequestStatusMessage = () => {
     if (!requestStatus.hasRequest) return null;
 
     switch (requestStatus.status) {
-      case "pending":
+      case 'pending':
         return "You have already requested access to this collection. Please wait for the owner's response.";
-      case "approved":
-        return "Your access request has been approved! Please refresh the page to view the collection.";
-      case "denied":
-        return "Your previous access request was denied. You can request access again if needed.";
+      case 'approved':
+        return 'Your access request has been approved! Please refresh the page to view the collection.';
+      case 'denied':
+        return 'Your previous access request was denied. You can request access again if needed.';
       default:
         return null;
     }
   };
 
   const getRequestButtonText = () => {
-    if (requestStatus.hasRequest && requestStatus.status === "pending") {
-      return "Request Pending";
+    if (requestStatus.hasRequest && requestStatus.status === 'pending') {
+      return 'Request Pending';
     }
-    if (requestStatus.hasRequest && requestStatus.status === "denied") {
-      return "Request Again";
+    if (requestStatus.hasRequest && requestStatus.status === 'denied') {
+      return 'Request Again';
     }
-    return "Request Access";
+    return 'Request Access';
   };
 
   const shouldShowRequestButton = () => {
@@ -120,9 +120,9 @@ export function AccessDenied({
 
     // Only check request status for signed-in users
     if (isSignedIn) {
-      if (requestStatus.hasRequest && requestStatus.status === "pending")
+      if (requestStatus.hasRequest && requestStatus.status === 'pending')
         return false;
-      if (requestStatus.hasRequest && requestStatus.status === "approved")
+      if (requestStatus.hasRequest && requestStatus.status === 'approved')
         return false;
     }
 
@@ -133,7 +133,7 @@ export function AccessDenied({
     // Refresh the request status
     setRequestStatus({
       hasRequest: true,
-      status: "pending",
+      status: 'pending',
       requestedAt: new Date(),
     });
   };
@@ -170,29 +170,29 @@ export function AccessDenied({
                 onClick={() => {
                   if (!isSignedIn) {
                     // Redirect non-signed-in users to sign up
-                    window.location.href = "/sign-up";
+                    window.location.href = '/sign-up';
                     return;
                   }
                   setIsRequestDialogOpen(true);
                 }}
                 className={`w-full ${
                   isSignedIn
-                    ? "bg-primary hover:bg-primary/90"
-                    : "bg-muted hover:bg-muted/80 text-muted-foreground"
+                    ? 'bg-primary hover:bg-primary/90'
+                    : 'bg-muted hover:bg-muted/80 text-muted-foreground'
                 }`}
                 disabled={isCheckingStatus} // Only disable when checking status
               >
                 <PiPaperPlaneRight className="h-4 w-4 mr-2" />
                 {isCheckingStatus
-                  ? "Checking..."
+                  ? 'Checking...'
                   : !isSignedIn
-                    ? "Sign up to Request Access"
+                    ? 'Sign up to Request Access'
                     : getRequestButtonText()}
               </Button>
             )}
 
             {/* Show pending status as disabled button */}
-            {requestStatus.hasRequest && requestStatus.status === "pending" && (
+            {requestStatus.hasRequest && requestStatus.status === 'pending' && (
               <Button variant="outline" className="w-full" disabled>
                 <PiPaperPlaneRight className="h-4 w-4 mr-2" />
                 Request Pending

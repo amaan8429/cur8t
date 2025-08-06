@@ -1,12 +1,12 @@
-import React from "react";
-import { PiLink, PiPlus } from "react-icons/pi";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { PiLink, PiPlus } from 'react-icons/pi';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
-import { useLinkStore } from "@/store/link-store";
+import { useLinkStore } from '@/store/link-store';
 
 interface EmptyStatesProps {
-  view: "grid" | "table" | "list";
+  view: 'grid' | 'table' | 'list';
 }
 
 const EmptyStates = ({ view }: EmptyStatesProps) => {

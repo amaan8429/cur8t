@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { Component, ErrorInfo, ReactNode } from "react";
-import { ErrorPage } from "@/components/ui/error-page";
+import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { ErrorPage } from '@/components/ui/error-page';
 
 interface Props {
   children: ReactNode;
@@ -28,8 +28,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Log the error to monitoring service
-    console.error("ErrorBoundary caught an error:", error, errorInfo);
-    
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
+
     this.setState({ errorInfo });
 
     // Call the optional error handler
@@ -44,7 +44,7 @@ export class ErrorBoundary extends Component<Props, State> {
   };
 
   private handleGoHome = () => {
-    window.location.href = "/";
+    window.location.href = '/';
   };
 
   render() {
@@ -55,14 +55,14 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       // Determine error type based on error message
-      let errorType: "network" | "server" | "generic" = "generic";
+      let errorType: 'network' | 'server' | 'generic' = 'generic';
       let errorCode: string | undefined;
 
-      if (this.state.error?.message.includes("fetch")) {
-        errorType = "network";
-      } else if (this.state.error?.message.includes("500")) {
-        errorType = "server";
-        errorCode = "500";
+      if (this.state.error?.message.includes('fetch')) {
+        errorType = 'network';
+      } else if (this.state.error?.message.includes('500')) {
+        errorType = 'server';
+        errorCode = '500';
       }
 
       return (
@@ -71,22 +71,22 @@ export class ErrorBoundary extends Component<Props, State> {
             type={errorType}
             title="Unexpected Error"
             description={
-              process.env.NODE_ENV === "development" 
-                ? this.state.error?.message 
-                : "Something unexpected happened. Please try refreshing the page."
+              process.env.NODE_ENV === 'development'
+                ? this.state.error?.message
+                : 'Something unexpected happened. Please try refreshing the page.'
             }
             errorCode={errorCode}
             onRetry={this.handleRetry}
             onGoHome={this.handleGoHome}
           >
-            {process.env.NODE_ENV === "development" && this.state.errorInfo && (
+            {process.env.NODE_ENV === 'development' && this.state.errorInfo && (
               <details className="mt-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg text-left">
                 <summary className="cursor-pointer text-sm font-medium">
                   Error Details (Development)
                 </summary>
                 <pre className="mt-2 text-xs text-gray-600 dark:text-gray-400 whitespace-pre-wrap overflow-auto max-h-40">
                   {this.state.error?.stack}
-                  {"\n\n"}
+                  {'\n\n'}
                   {this.state.errorInfo.componentStack}
                 </pre>
               </details>
@@ -119,4 +119,4 @@ export const useErrorBoundary = () => {
   }, [error]);
 
   return { captureError, resetError };
-}; 
+};

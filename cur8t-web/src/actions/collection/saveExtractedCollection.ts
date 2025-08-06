@@ -1,12 +1,15 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { totalCollectionsCount } from "@/lib/totalCollectionCount";
-import { totalLinksCount } from "@/lib/totalLinksCount";
-import { CollectionsTable, LinksTable, UsersTable } from "@/schema";
-import { auth } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
-import { checkRateLimit, getClientIdFromHeaders, rateLimiters } from "@/lib/ratelimit";
+import { db } from '@/db';
+import { totalCollectionsCount } from '@/lib/totalCollectionCount';
+import { CollectionsTable, LinksTable, UsersTable } from '@/schema';
+import { auth } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from '@/lib/ratelimit';
 
 interface ExtractedLink {
   title: string;
@@ -28,14 +31,14 @@ export async function saveExtractedCollectionAction(
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not found" };
+    return { error: 'User not found' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.saveExtractedCollectionLimiter,
     identifier,
-    "Too many requests to save extracted collection. Please try again later."
+    'Too many requests to save extracted collection. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -43,11 +46,11 @@ export async function saveExtractedCollectionAction(
   }
 
   if (!data.collection_name?.trim()) {
-    return { error: "Collection name is required" };
+    return { error: 'Collection name is required' };
   }
 
   if (!data.extracted_links?.length) {
-    return { error: "No links to save" };
+    return { error: 'No links to save' };
   }
 
   try {
@@ -58,10 +61,10 @@ export async function saveExtractedCollectionAction(
         title: data.collection_name.trim(),
         description: data.article_title
           ? `Links extracted from: ${data.article_title}`
-          : "Links extracted from article",
+          : 'Links extracted from article',
         userId: userId,
-        url: data.article_url || "",
-        visibility: "private", // Default to private
+        url: data.article_url || '',
+        visibility: 'private', // Default to private
         totalLinks: data.extracted_links.length,
       })
       .returning();
@@ -90,7 +93,7 @@ export async function saveExtractedCollectionAction(
       })
       .where(eq(UsersTable.id, userId));
 
-    console.log("Collection and links created:", {
+    console.log('Collection and links created:', {
       collection: createdCollection[0],
       linksCount: createdLinks.length,
     });
@@ -104,7 +107,7 @@ export async function saveExtractedCollectionAction(
       },
     };
   } catch (error) {
-    console.error("Error saving extracted collection:", error);
-    return { error: "Failed to save collection. Please try again." };
+    console.error('Error saving extracted collection:', error);
+    return { error: 'Failed to save collection. Please try again.' };
   }
 }

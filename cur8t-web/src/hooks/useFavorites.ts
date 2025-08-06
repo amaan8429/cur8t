@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { createFavorite } from "@/actions/favorites/createFavorite";
-import { getFavorites } from "@/actions/favorites/getFavorites";
-import { deleteFavorite } from "@/actions/favorites/deleteFavorite";
-import { updateFavorite } from "@/actions/favorites/updateFavorite";
-import { VALIDATION_LIMITS } from "@/types/types";
+import { useState, useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { createFavorite } from '@/actions/favorites/createFavorite';
+import { getFavorites } from '@/actions/favorites/getFavorites';
+import { deleteFavorite } from '@/actions/favorites/deleteFavorite';
+import { updateFavorite } from '@/actions/favorites/updateFavorite';
+import { VALIDATION_LIMITS } from '@/types/types';
 
 interface Favorite {
   id: string;
@@ -22,9 +22,9 @@ export const useFavorites = () => {
   const [loading, setLoading] = useState(true);
   const [addingFavorite, setAddingFavorite] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [newTitle, setNewTitle] = useState("");
-  const [newUrl, setNewUrl] = useState("");
-  const [editTitle, setEditTitle] = useState("");
+  const [newTitle, setNewTitle] = useState('');
+  const [newUrl, setNewUrl] = useState('');
+  const [editTitle, setEditTitle] = useState('');
 
   const loadFavorites = async () => {
     try {
@@ -34,23 +34,23 @@ export const useFavorites = () => {
       } else {
         if (result.retryAfter) {
           toast({
-            title: "Rate Limited",
+            title: 'Rate Limited',
             description: `${result.error} Please try again in ${result.retryAfter} minutes.`,
-            variant: "destructive",
+            variant: 'destructive',
           });
         } else {
           toast({
-            title: "Error",
-            description: result.error || "Failed to load favorites",
-            variant: "destructive",
+            title: 'Error',
+            description: result.error || 'Failed to load favorites',
+            variant: 'destructive',
           });
         }
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to load favorites",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to load favorites',
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
@@ -60,36 +60,36 @@ export const useFavorites = () => {
   const validateInputs = (title: string, url: string) => {
     if (!title.trim() || !url.trim()) {
       toast({
-        title: "Error",
-        description: "Please fill in both title and URL",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Please fill in both title and URL',
+        variant: 'destructive',
       });
       return false;
     }
 
     if (favorites.length >= FAVORITES_LIMIT) {
       toast({
-        title: "Limit Reached",
+        title: 'Limit Reached',
         description: `You can only have up to ${FAVORITES_LIMIT} favorites. Please delete some before adding new ones.`,
-        variant: "destructive",
+        variant: 'destructive',
       });
       return false;
     }
 
     if (title.trim().length > VALIDATION_LIMITS.LINK_TITLE_MAX) {
       toast({
-        title: "Title Too Long",
+        title: 'Title Too Long',
         description: `Title must be at most ${VALIDATION_LIMITS.LINK_TITLE_MAX} characters long.`,
-        variant: "destructive",
+        variant: 'destructive',
       });
       return false;
     }
 
     if (url.trim().length > VALIDATION_LIMITS.LINK_URL_MAX) {
       toast({
-        title: "URL Too Long",
+        title: 'URL Too Long',
         description: `URL must be at most ${VALIDATION_LIMITS.LINK_URL_MAX} characters long.`,
-        variant: "destructive",
+        variant: 'destructive',
       });
       return false;
     }
@@ -98,9 +98,9 @@ export const useFavorites = () => {
       new URL(url.trim());
     } catch {
       toast({
-        title: "Invalid URL",
-        description: "Please enter a valid URL (e.g., https://example.com)",
-        variant: "destructive",
+        title: 'Invalid URL',
+        description: 'Please enter a valid URL (e.g., https://example.com)',
+        variant: 'destructive',
       });
       return false;
     }
@@ -116,32 +116,32 @@ export const useFavorites = () => {
       const result = await createFavorite(newTitle.trim(), newUrl.trim());
       if (result.success) {
         toast({
-          title: "Success",
-          description: "Favorite added successfully",
+          title: 'Success',
+          description: 'Favorite added successfully',
         });
-        setNewTitle("");
-        setNewUrl("");
+        setNewTitle('');
+        setNewUrl('');
         loadFavorites();
       } else {
         if (result.retryAfter) {
           toast({
-            title: "Rate Limited",
+            title: 'Rate Limited',
             description: `${result.error} Please try again in ${result.retryAfter} minutes.`,
-            variant: "destructive",
+            variant: 'destructive',
           });
         } else {
           toast({
-            title: "Error",
-            description: result.error || "Failed to add favorite",
-            variant: "destructive",
+            title: 'Error',
+            description: result.error || 'Failed to add favorite',
+            variant: 'destructive',
           });
         }
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to add favorite",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to add favorite',
+        variant: 'destructive',
       });
     } finally {
       setAddingFavorite(false);
@@ -153,30 +153,30 @@ export const useFavorites = () => {
       const result = await deleteFavorite(id);
       if (result.success) {
         toast({
-          title: "Success",
-          description: "Favorite deleted successfully",
+          title: 'Success',
+          description: 'Favorite deleted successfully',
         });
         loadFavorites();
       } else {
         if (result.retryAfter) {
           toast({
-            title: "Rate Limited",
+            title: 'Rate Limited',
             description: `${result.error} Please try again in ${result.retryAfter} minutes.`,
-            variant: "destructive",
+            variant: 'destructive',
           });
         } else {
           toast({
-            title: "Error",
-            description: result.error || "Failed to delete favorite",
-            variant: "destructive",
+            title: 'Error',
+            description: result.error || 'Failed to delete favorite',
+            variant: 'destructive',
           });
         }
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to delete favorite",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to delete favorite',
+        variant: 'destructive',
       });
     }
   };
@@ -184,18 +184,18 @@ export const useFavorites = () => {
   const handleEditFavorite = async (id: string) => {
     if (!editTitle.trim()) {
       toast({
-        title: "Error",
-        description: "Please enter a title",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Please enter a title',
+        variant: 'destructive',
       });
       return;
     }
 
     if (editTitle.trim().length > VALIDATION_LIMITS.LINK_TITLE_MAX) {
       toast({
-        title: "Title Too Long",
+        title: 'Title Too Long',
         description: `Title must be at most ${VALIDATION_LIMITS.LINK_TITLE_MAX} characters long.`,
-        variant: "destructive",
+        variant: 'destructive',
       });
       return;
     }
@@ -204,32 +204,32 @@ export const useFavorites = () => {
       const result = await updateFavorite(id, editTitle.trim());
       if (result.success) {
         toast({
-          title: "Success",
-          description: "Favorite updated successfully",
+          title: 'Success',
+          description: 'Favorite updated successfully',
         });
         setEditingId(null);
-        setEditTitle("");
+        setEditTitle('');
         loadFavorites();
       } else {
         if (result.retryAfter) {
           toast({
-            title: "Rate Limited",
+            title: 'Rate Limited',
             description: `${result.error} Please try again in ${result.retryAfter} minutes.`,
-            variant: "destructive",
+            variant: 'destructive',
           });
         } else {
           toast({
-            title: "Error",
-            description: result.error || "Failed to update favorite",
-            variant: "destructive",
+            title: 'Error',
+            description: result.error || 'Failed to update favorite',
+            variant: 'destructive',
           });
         }
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update favorite",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update favorite',
+        variant: 'destructive',
       });
     }
   };
@@ -241,14 +241,14 @@ export const useFavorites = () => {
 
   const cancelEdit = () => {
     setEditingId(null);
-    setEditTitle("");
+    setEditTitle('');
   };
 
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
     });
   };
 

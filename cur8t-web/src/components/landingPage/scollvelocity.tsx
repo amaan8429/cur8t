@@ -1,4 +1,4 @@
-import { VelocityScroll } from "../ui/scrollbasedvelocity";
+import { VelocityScroll } from '../ui/scrollbasedvelocity';
 
 export default function ScrollBasedVelocityDemo() {
   return (

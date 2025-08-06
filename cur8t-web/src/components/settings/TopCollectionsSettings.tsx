@@ -1,36 +1,36 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   PiStar,
   PiPlus,
   PiX,
   PiFlipVertical,
   PiPaperPlaneTilt,
-} from "react-icons/pi";
+} from 'react-icons/pi';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 import {
   getTopCollections,
   getUserCollections,
   setTopCollections,
-} from "@/actions/collection/topCollections";
+} from '@/actions/collection/topCollections';
 
 interface Collection {
   id: string;
@@ -68,11 +68,11 @@ const TopCollectionsSettings = () => {
       // Check for rate limiting on topCollectionsResult
       if (topCollectionsResult.error && topCollectionsResult.retryAfter) {
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter: topCollectionsResult.retryAfter * 60,
-          message: "Too many top collections requests. Please try again later.",
+          message: 'Too many top collections requests. Please try again later.',
         });
         return;
       }
@@ -80,29 +80,29 @@ const TopCollectionsSettings = () => {
       // Check for rate limiting on allCollectionsResult
       if (allCollectionsResult.error && allCollectionsResult.retryAfter) {
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter: allCollectionsResult.retryAfter * 60,
-          message: "Too many collections requests. Please try again later.",
+          message: 'Too many collections requests. Please try again later.',
         });
         return;
       }
 
       if (topCollectionsResult.error) {
         toast({
-          title: "Error",
+          title: 'Error',
           description: topCollectionsResult.error,
-          className: "bg-primary border-primary text-primary-foreground",
+          className: 'bg-primary border-primary text-primary-foreground',
         });
         return;
       }
 
       if (allCollectionsResult.error) {
         toast({
-          title: "Error",
+          title: 'Error',
           description: allCollectionsResult.error,
-          className: "bg-primary border-primary text-primary-foreground",
+          className: 'bg-primary border-primary text-primary-foreground',
         });
         return;
       }
@@ -114,11 +114,11 @@ const TopCollectionsSettings = () => {
       setInitialTopCollections(topCols);
       setAllCollections(allCols);
     } catch (error) {
-      console.error("Error fetching collections:", error);
+      console.error('Error fetching collections:', error);
       toast({
-        title: "Error",
-        description: "Failed to fetch collections",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Error',
+        description: 'Failed to fetch collections',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     } finally {
       setIsLoading(false);
@@ -134,9 +134,9 @@ const TopCollectionsSettings = () => {
 
       if (result.error) {
         toast({
-          title: "Error",
+          title: 'Error',
           description: result.error,
-          className: "bg-primary border-primary text-primary-foreground",
+          className: 'bg-primary border-primary text-primary-foreground',
         });
         return;
       }
@@ -144,16 +144,16 @@ const TopCollectionsSettings = () => {
       setInitialTopCollections([...topCollections]);
       setHasChanges(false);
       toast({
-        title: "Success",
-        description: "Top collections updated successfully",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Success',
+        description: 'Top collections updated successfully',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     } catch (error) {
-      console.error("Error saving top collections:", error);
+      console.error('Error saving top collections:', error);
       toast({
-        title: "Error",
-        description: "Failed to update top collections",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Error',
+        description: 'Failed to update top collections',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     } finally {
       setIsSaving(false);
@@ -163,18 +163,18 @@ const TopCollectionsSettings = () => {
   const handleAddCollection = (collection: Collection) => {
     if (topCollections.length >= 5) {
       toast({
-        title: "Limit reached",
-        description: "You can only have up to 5 top collections",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Limit reached',
+        description: 'You can only have up to 5 top collections',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
       return;
     }
 
     if (topCollections.some((col) => col.id === collection.id)) {
       toast({
-        title: "Already added",
-        description: "This collection is already in your top collections",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Already added',
+        description: 'This collection is already in your top collections',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
       return;
     }
@@ -279,7 +279,7 @@ const TopCollectionsSettings = () => {
                 className="bg-primary hover:bg-primary/90"
               >
                 <PiPaperPlaneTilt className="h-4 w-4 mr-2" />
-                {isSaving ? "Saving..." : "Save Changes"}
+                {isSaving ? 'Saving...' : 'Save Changes'}
               </Button>
             )}
           </div>
@@ -317,7 +317,7 @@ const TopCollectionsSettings = () => {
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDragEnd={handleDragEnd}
                 className={`p-4 border border-border/30 rounded-lg cursor-move transition-all ${
-                  draggedItem === index ? "opacity-50" : ""
+                  draggedItem === index ? 'opacity-50' : ''
                 } hover:bg-muted/50`}
               >
                 <div className="flex items-center gap-3">

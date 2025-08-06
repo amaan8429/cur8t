@@ -63,7 +63,7 @@ const clientId = getClientId(request, userId);
 const rateLimitResult = await checkRateLimit(
   rateLimiters.userUpdate, // 10 req/5min
   clientId,
-  "Too many requests. Please slow down."
+  'Too many requests. Please slow down.'
 );
 ```
 
@@ -75,7 +75,7 @@ const clientId = getClientId(request, userId);
 const rateLimitResult = await checkRateLimit(
   rateLimiters.heavyOperation, // 3 req/10min (create new limiter)
   clientId,
-  "This operation is rate limited. Please try again later."
+  'This operation is rate limited. Please try again later.'
 );
 ```
 
@@ -87,7 +87,7 @@ const clientId = getClientId(request); // IP-based, no userId
 const rateLimitResult = await checkRateLimit(
   rateLimiters.publicApi, // 100 req/hour
   clientId,
-  "Too many requests from your IP. Please slow down."
+  'Too many requests from your IP. Please slow down.'
 );
 ```
 
@@ -104,38 +104,38 @@ export const rateLimiters = {
   // ✅ Already exists
   username: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(5, "15 m"),
+    limiter: Ratelimit.slidingWindow(5, '15 m'),
     analytics: true,
-    prefix: "ratelimit:username",
+    prefix: 'ratelimit:username',
   }),
 
   // 🆕 Add these new ones
   heavyOperation: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(3, "10 m"),
+    limiter: Ratelimit.slidingWindow(3, '10 m'),
     analytics: true,
-    prefix: "ratelimit:heavy",
+    prefix: 'ratelimit:heavy',
   }),
 
   collectionCreate: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(20, "1 h"),
+    limiter: Ratelimit.slidingWindow(20, '1 h'),
     analytics: true,
-    prefix: "ratelimit:collection-create",
+    prefix: 'ratelimit:collection-create',
   }),
 
   linkActions: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(50, "10 m"),
+    limiter: Ratelimit.slidingWindow(50, '10 m'),
     analytics: true,
-    prefix: "ratelimit:links",
+    prefix: 'ratelimit:links',
   }),
 
   socialActions: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(100, "1 h"),
+    limiter: Ratelimit.slidingWindow(100, '1 h'),
     analytics: true,
-    prefix: "ratelimit:social",
+    prefix: 'ratelimit:social',
   }),
 };
 ```

@@ -1,14 +1,14 @@
-import { Label } from "@radix-ui/react-label";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Input } from "../ui/input";
-import { useEffect, useState } from "react";
-import { Switch } from "../ui/switch";
-import { Textarea } from "../ui/textarea";
-import { Separator } from "../ui/separator";
-import { useToast } from "@/hooks/use-toast";
-import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
-import { Skeleton } from "../ui/skeleton";
+import { Label } from '@radix-ui/react-label';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Input } from '../ui/input';
+import { useEffect, useState } from 'react';
+import { Switch } from '../ui/switch';
+import { Textarea } from '../ui/textarea';
+import { Separator } from '../ui/separator';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { Skeleton } from '../ui/skeleton';
 import {
   PiTwitterLogo,
   PiLinkedinLogo,
@@ -22,8 +22,8 @@ import {
   PiCircle,
   PiEye,
   PiEyeClosed,
-} from "react-icons/pi";
-import { cn } from "@/lib/utils";
+} from 'react-icons/pi';
+import { cn } from '@/lib/utils';
 
 interface SocialMediaData {
   twitterUsername: string;
@@ -48,54 +48,54 @@ interface SocialPlatform {
 
 const socialPlatforms: SocialPlatform[] = [
   {
-    key: "twitterUsername",
-    label: "Twitter/X",
+    key: 'twitterUsername',
+    label: 'Twitter/X',
     icon: PiTwitterLogo,
-    placeholder: "username",
-    baseUrl: "https://twitter.com/",
-    prefix: "@",
+    placeholder: 'username',
+    baseUrl: 'https://twitter.com/',
+    prefix: '@',
     validation: (value) => /^[a-zA-Z0-9_]{1,15}$/.test(value),
-    description: "Your Twitter/X handle (without @)",
+    description: 'Your Twitter/X handle (without @)',
   },
   {
-    key: "githubUsername",
-    label: "GitHub",
+    key: 'githubUsername',
+    label: 'GitHub',
     icon: PiGithubLogo,
-    placeholder: "username",
-    baseUrl: "https://github.com/",
+    placeholder: 'username',
+    baseUrl: 'https://github.com/',
     validation: (value) =>
       /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,37}[a-zA-Z0-9])?$/.test(value),
-    description: "Your GitHub username",
+    description: 'Your GitHub username',
   },
   {
-    key: "linkedinUsername",
-    label: "LinkedIn",
+    key: 'linkedinUsername',
+    label: 'LinkedIn',
     icon: PiLinkedinLogo,
-    placeholder: "username",
-    baseUrl: "https://linkedin.com/in/",
+    placeholder: 'username',
+    baseUrl: 'https://linkedin.com/in/',
     validation: (value) => /^[a-zA-Z0-9-]{3,100}$/.test(value),
-    description: "Your LinkedIn username (from your profile URL)",
+    description: 'Your LinkedIn username (from your profile URL)',
   },
   {
-    key: "instagramUsername",
-    label: "Instagram",
+    key: 'instagramUsername',
+    label: 'Instagram',
     icon: PiPentagram,
-    placeholder: "username",
-    baseUrl: "https://instagram.com/",
-    prefix: "@",
+    placeholder: 'username',
+    baseUrl: 'https://instagram.com/',
+    prefix: '@',
     validation: (value) => /^[a-zA-Z0-9._]{1,30}$/.test(value),
-    description: "Your Instagram username (without @)",
+    description: 'Your Instagram username (without @)',
   },
 ];
 
 export default function SocialMediaSettings() {
   const [formData, setFormData] = useState<SocialMediaData>({
-    twitterUsername: "",
-    linkedinUsername: "",
-    githubUsername: "",
-    instagramUsername: "",
-    personalWebsite: "",
-    bio: "",
+    twitterUsername: '',
+    linkedinUsername: '',
+    githubUsername: '',
+    instagramUsername: '',
+    personalWebsite: '',
+    bio: '',
     showSocialLinks: true,
   });
 
@@ -111,27 +111,27 @@ export default function SocialMediaSettings() {
   useEffect(() => {
     const fetchSocialMediaSettings = async () => {
       try {
-        const response = await fetch("/api/settings/socialmedia");
+        const response = await fetch('/api/settings/socialmedia');
         if (response.ok) {
           const data = await response.json();
           setFormData({
-            twitterUsername: data.twitterUsername ?? "",
-            linkedinUsername: data.linkedinUsername ?? "",
-            githubUsername: data.githubUsername ?? "",
-            instagramUsername: data.instagramUsername ?? "",
-            personalWebsite: data.personalWebsite ?? "",
-            bio: data.bio ?? "",
+            twitterUsername: data.twitterUsername ?? '',
+            linkedinUsername: data.linkedinUsername ?? '',
+            githubUsername: data.githubUsername ?? '',
+            instagramUsername: data.instagramUsername ?? '',
+            personalWebsite: data.personalWebsite ?? '',
+            bio: data.bio ?? '',
             showSocialLinks:
-              typeof data.showSocialLinks === "boolean"
+              typeof data.showSocialLinks === 'boolean'
                 ? data.showSocialLinks
                 : true,
           });
         }
       } catch (error) {
         toast({
-          title: "Error",
-          description: "Failed to load social media settings",
-          className: "bg-primary border-primary text-primary-foreground",
+          title: 'Error',
+          description: 'Failed to load social media settings',
+          className: 'bg-primary border-primary text-primary-foreground',
         });
       } finally {
         setIsLoading(false);
@@ -142,22 +142,22 @@ export default function SocialMediaSettings() {
   }, [toast]);
 
   const validateField = (key: string, value: string): string => {
-    if (!value.trim()) return "";
+    if (!value.trim()) return '';
 
     const platform = socialPlatforms.find((p) => p.key === key);
     if (platform?.validation && !platform.validation(value)) {
       return `Invalid ${platform.label} username format`;
     }
 
-    if (key === "personalWebsite" && value) {
+    if (key === 'personalWebsite' && value) {
       const urlPattern =
         /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
       if (!urlPattern.test(value)) {
-        return "Please enter a valid website URL";
+        return 'Please enter a valid website URL';
       }
     }
 
-    return "";
+    return '';
   };
 
   const handleInputChange = (key: keyof SocialMediaData, value: string) => {
@@ -176,10 +176,10 @@ export default function SocialMediaSettings() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const response = await fetch("/api/settings/socialmedia", {
-        method: "PUT",
+      const response = await fetch('/api/settings/socialmedia', {
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
@@ -188,18 +188,18 @@ export default function SocialMediaSettings() {
       if (response.status === 429) {
         const data = await response.json();
         const retryAfter =
-          response.headers.get("retry-after") || data.retryAfter || 60;
+          response.headers.get('retry-after') || data.retryAfter || 60;
 
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter:
-            typeof retryAfter === "string"
+            typeof retryAfter === 'string'
               ? parseInt(retryAfter) * 60
               : retryAfter * 60,
           message:
-            "Too many social media update attempts. Please try again later.",
+            'Too many social media update attempts. Please try again later.',
         });
         return;
       }
@@ -207,18 +207,18 @@ export default function SocialMediaSettings() {
       if (response.ok) {
         setHasChanges(false);
         toast({
-          title: "Success",
-          description: "Your social media settings have been updated",
-          className: "bg-primary border-primary text-primary-foreground",
+          title: 'Success',
+          description: 'Your social media settings have been updated',
+          className: 'bg-primary border-primary text-primary-foreground',
         });
       } else {
-        throw new Error("Failed to save");
+        throw new Error('Failed to save');
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update social media settings",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Error',
+        description: 'Failed to update social media settings',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     } finally {
       setIsSaving(false);
@@ -226,7 +226,7 @@ export default function SocialMediaSettings() {
   };
 
   const getProfileUrl = (platform: SocialPlatform, username: string) => {
-    if (!username) return "";
+    if (!username) return '';
     return platform.baseUrl + username;
   };
 
@@ -268,9 +268,9 @@ export default function SocialMediaSettings() {
               value={value}
               onChange={(e) => handleInputChange(platform.key, e.target.value)}
               className={cn(
-                platform.prefix ? "rounded-l-none" : "",
-                error ? "border-destructive focus:border-destructive" : "",
-                isValid ? "border-green-500 focus:border-green-500" : ""
+                platform.prefix ? 'rounded-l-none' : '',
+                error ? 'border-destructive focus:border-destructive' : '',
+                isValid ? 'border-green-500 focus:border-green-500' : ''
               )}
             />
             {value && (
@@ -347,7 +347,7 @@ export default function SocialMediaSettings() {
             ) : (
               <PiEye className="h-4 w-4" />
             )}
-            {previewMode ? "Edit" : "Preview"}
+            {previewMode ? 'Edit' : 'Preview'}
           </Button>
         </div>
       </CardHeader>
@@ -393,7 +393,7 @@ export default function SocialMediaSettings() {
               {formData.personalWebsite && (
                 <a
                   href={
-                    formData.personalWebsite.startsWith("http")
+                    formData.personalWebsite.startsWith('http')
                       ? formData.personalWebsite
                       : `https://${formData.personalWebsite}`
                   }
@@ -425,7 +425,7 @@ export default function SocialMediaSettings() {
                   id="bio"
                   placeholder="Tell us about yourself..."
                   value={formData.bio}
-                  onChange={(e) => handleInputChange("bio", e.target.value)}
+                  onChange={(e) => handleInputChange('bio', e.target.value)}
                   className="min-h-[100px]"
                 />
                 <p className="text-sm text-gray-600">
@@ -446,14 +446,14 @@ export default function SocialMediaSettings() {
                   placeholder="https://yourwebsite.com"
                   value={formData.personalWebsite}
                   onChange={(e) =>
-                    handleInputChange("personalWebsite", e.target.value)
+                    handleInputChange('personalWebsite', e.target.value)
                   }
                   className={cn(
-                    validationErrors.personalWebsite ? "border-red-500" : "",
+                    validationErrors.personalWebsite ? 'border-red-500' : '',
                     formData.personalWebsite &&
                       !validationErrors.personalWebsite
-                      ? "border-green-500"
-                      : ""
+                      ? 'border-green-500'
+                      : ''
                   )}
                 />
                 {validationErrors.personalWebsite && (
@@ -490,7 +490,7 @@ export default function SocialMediaSettings() {
                 id="showSocialLinks"
                 checked={formData.showSocialLinks}
                 onCheckedChange={(checked) =>
-                  handleToggleChange("showSocialLinks", checked)
+                  handleToggleChange('showSocialLinks', checked)
                 }
                 className="data-[state=checked]:bg-primary"
               />
@@ -508,7 +508,7 @@ export default function SocialMediaSettings() {
             }
             className="min-w-[100px] bg-primary hover:bg-primary/90"
           >
-            {isSaving ? "Saving..." : "Save Changes"}
+            {isSaving ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>
       </CardContent>

@@ -1,11 +1,11 @@
-import { create } from "zustand";
-import { getCollectionsAction } from "@/actions/collection/getCollections";
-import { deleteCollectionAction } from "@/actions/collection/deleteCollection";
-import { ChangeCollectionAction } from "@/actions/collection/changeCollectionName";
-import { ChangeCollectionDescriptionAction } from "@/actions/collection/changeCollectionDescription";
-import { Collection } from "@/types/types";
-import { ChangeCollectionVisibilityAction } from "@/actions/collection/changeCollectionVisi";
-import { showRateLimitToast } from "@/components/ui/rate-limit-toast";
+import { create } from 'zustand';
+import { getCollectionsAction } from '@/actions/collection/getCollections';
+import { deleteCollectionAction } from '@/actions/collection/deleteCollection';
+import { ChangeCollectionAction } from '@/actions/collection/changeCollectionName';
+import { ChangeCollectionDescriptionAction } from '@/actions/collection/changeCollectionDescription';
+import { Collection } from '@/types/types';
+import { ChangeCollectionVisibilityAction } from '@/actions/collection/changeCollectionVisi';
+import { showRateLimitToast } from '@/components/ui/rate-limit-toast';
 
 interface CollectionStore {
   collections: Collection[] | null;
@@ -39,7 +39,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
           : [collectionData],
       }));
     } catch (error) {
-      console.error("Failed to create collection:", error);
+      console.error('Failed to create collection:', error);
     }
   },
 
@@ -47,7 +47,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
   fetchCollections: async () => {
     try {
       const data = await getCollectionsAction();
-      if ("error" in data) {
+      if ('error' in data) {
         console.error(data.error);
         set({ collections: [] });
       } else {
@@ -61,7 +61,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
         });
       }
     } catch (error) {
-      console.error("Failed to fetch collections:", error);
+      console.error('Failed to fetch collections:', error);
       set({ collections: [] });
     }
   },
@@ -84,7 +84,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
         showRateLimitToast({
           retryAfter: response.retryAfter * 60,
           message:
-            "Too many visibility change attempts. Please try again later.",
+            'Too many visibility change attempts. Please try again later.',
         });
         return;
       }
@@ -98,14 +98,14 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
                     ...collection,
                     visibility,
                     sharedEmails:
-                      visibility === "protected" ? sharedEmails || [] : [],
+                      visibility === 'protected' ? sharedEmails || [] : [],
                   }
                 : collection
             ) || [],
         }));
       }
     } catch (error) {
-      console.error("Failed to update collection visibility:", error);
+      console.error('Failed to update collection visibility:', error);
       throw error;
     }
   },
@@ -119,12 +119,12 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
       if (result.error && result.retryAfter) {
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
-          message: "Too many delete attempts. Please try again later.",
+          message: 'Too many delete attempts. Please try again later.',
         });
         return { error: result.error as string };
       }
 
-      if ("error" in result) {
+      if ('error' in result) {
         console.log(result.error);
         return { error: result.error as string };
       }
@@ -136,7 +136,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
       }));
       return { success: true };
     } catch (error) {
-      console.error("Failed to delete collection:", error);
+      console.error('Failed to delete collection:', error);
       return;
     }
   },
@@ -150,7 +150,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
       if (response.error && response.retryAfter) {
         showRateLimitToast({
           retryAfter: response.retryAfter * 60,
-          message: "Too many name change attempts. Please try again later.",
+          message: 'Too many name change attempts. Please try again later.',
         });
         return;
       }
@@ -166,7 +166,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
         }));
       }
     } catch (error) {
-      console.error("Failed to update collection name:", error);
+      console.error('Failed to update collection name:', error);
     }
   },
 
@@ -183,7 +183,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
         showRateLimitToast({
           retryAfter: response.retryAfter * 60,
           message:
-            "Too many description change attempts. Please try again later.",
+            'Too many description change attempts. Please try again later.',
         });
         return;
       }
@@ -199,7 +199,7 @@ export const useCollectionStore = create<CollectionStore>((set) => ({
         }));
       }
     } catch (error) {
-      console.error("Failed to update collection description:", error);
+      console.error('Failed to update collection description:', error);
       throw error;
     }
   },

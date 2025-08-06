@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { IconType } from "react-icons";
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { IconType } from 'react-icons';
 
 interface DashboardStatsCardProps {
   title: string;
   value: string | number;
   subtitle: string;
   icon: IconType;
-  trend?: "up" | "down" | "neutral";
+  trend?: 'up' | 'down' | 'neutral';
 }
 
 export function DashboardStatsCard({
@@ -17,16 +17,16 @@ export function DashboardStatsCard({
   value,
   subtitle,
   icon: Icon,
-  trend = "neutral",
+  trend = 'neutral',
 }: DashboardStatsCardProps) {
   const getTrendColor = () => {
     switch (trend) {
-      case "up":
-        return "text-green-600 dark:text-green-400";
-      case "down":
-        return "text-red-600 dark:text-red-400";
+      case 'up':
+        return 'text-green-600 dark:text-green-400';
+      case 'down':
+        return 'text-red-600 dark:text-red-400';
       default:
-        return "text-muted-foreground";
+        return 'text-muted-foreground';
     }
   };
 

@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { PiArrowSquareOut } from "react-icons/pi";
+} from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { PiArrowSquareOut } from 'react-icons/pi';
 
 interface RecentCollection {
   id: string;
@@ -65,7 +65,7 @@ export function RecentCollections({
                     {collection.title}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {collection.totalLinks} links •{" "}
+                    {collection.totalLinks} links •{' '}
                     {formatDate(collection.createdAt)}
                   </p>
                 </div>

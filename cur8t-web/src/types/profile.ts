@@ -28,4 +28,4 @@ export interface Collection {
   updatedAt: Date;
 }
 
-export type SortOption = "recent" | "likes" | "links" | "alphabetical";
+export type SortOption = 'recent' | 'likes' | 'links' | 'alphabetical';

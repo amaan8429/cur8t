@@ -1,15 +1,15 @@
-import React from "react";
-import { PiClock } from "react-icons/pi";
+import React from 'react';
+import { PiClock } from 'react-icons/pi';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { PublicCollection } from "@/actions/collection/fetchPublicCollections";
-import { UnifiedCollectionCard } from "./UnifiedCollectionCard";
+} from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PublicCollection } from '@/actions/collection/fetchPublicCollections';
+import { UnifiedCollectionCard } from './UnifiedCollectionCard';
 
 interface FeaturedSectionProps {
   recentCollections: PublicCollection[];
@@ -47,7 +47,7 @@ export const FeaturedSection: React.FC<FeaturedSectionProps> = ({
                 key={collection.id}
                 collection={{
                   ...collection,
-                  visibility: "public",
+                  visibility: 'public',
                 }}
                 variant="featured"
               />

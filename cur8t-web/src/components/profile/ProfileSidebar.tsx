@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/dropdown-menu';
+import { useToast } from '@/hooks/use-toast';
 import {
   PiHeart,
   PiLink,
@@ -18,14 +18,14 @@ import {
   PiTwitterLogo,
   PiFacebookLogo,
   PiLinkedinLogo,
-} from "react-icons/pi";
+} from 'react-icons/pi';
 import {
   getSocialIcon,
   getSocialUrl,
   buildSocialLinks,
   type SocialLink,
-} from "@/utils/socialLinks";
-import { type User, type Collection } from "@/types/profile";
+} from '@/utils/socialLinks';
+import { type User, type Collection } from '@/types/profile';
 
 interface ProfileSidebarProps {
   user: User;
@@ -44,15 +44,15 @@ export function ProfileSidebar({ user, collections }: ProfileSidebarProps) {
       await navigator.clipboard.writeText(profileUrl);
       setCopied(true);
       toast({
-        title: "Profile link copied!",
-        description: "Share this link to let others view this profile.",
+        title: 'Profile link copied!',
+        description: 'Share this link to let others view this profile.',
       });
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       toast({
-        title: "Failed to copy link",
-        description: "Please try again.",
-        variant: "destructive",
+        title: 'Failed to copy link',
+        description: 'Please try again.',
+        variant: 'destructive',
       });
     }
   };
@@ -61,21 +61,21 @@ export function ProfileSidebar({ user, collections }: ProfileSidebarProps) {
     const profileUrl = `${window.location.origin}/profile/${user?.username}`;
     const text = `Check out ${user?.name}'s bookmark collections on Bukmarks!`;
 
-    let shareUrl = "";
+    let shareUrl = '';
     switch (platform) {
-      case "twitter":
+      case 'twitter':
         shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(profileUrl)}`;
         break;
-      case "facebook":
+      case 'facebook':
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(profileUrl)}`;
         break;
-      case "linkedin":
+      case 'linkedin':
         shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(profileUrl)}`;
         break;
     }
 
     if (shareUrl) {
-      window.open(shareUrl, "_blank", "width=600,height=400");
+      window.open(shareUrl, '_blank', 'width=600,height=400');
     }
   };
 
@@ -146,7 +146,7 @@ export function ProfileSidebar({ user, collections }: ProfileSidebarProps) {
               ) : (
                 <PiCopy className="h-3.5 w-3.5" />
               )}
-              {copied ? "Copied!" : "Copy Profile Link"}
+              {copied ? 'Copied!' : 'Copy Profile Link'}
             </Button>
 
             <DropdownMenu>
@@ -160,15 +160,15 @@ export function ProfileSidebar({ user, collections }: ProfileSidebarProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => handleSocialShare("twitter")}>
+                <DropdownMenuItem onClick={() => handleSocialShare('twitter')}>
                   <PiTwitterLogo className="h-4 w-4 mr-2" />
                   Twitter
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSocialShare("facebook")}>
+                <DropdownMenuItem onClick={() => handleSocialShare('facebook')}>
                   <PiFacebookLogo className="h-4 w-4 mr-2" />
                   Facebook
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSocialShare("linkedin")}>
+                <DropdownMenuItem onClick={() => handleSocialShare('linkedin')}>
                   <PiLinkedinLogo className="h-4 w-4 mr-2" />
                   LinkedIn
                 </DropdownMenuItem>

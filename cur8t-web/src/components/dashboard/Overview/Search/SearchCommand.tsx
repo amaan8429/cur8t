@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Command,
   CommandDialog,
@@ -9,16 +9,16 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { DialogTitle } from "@/components/ui/dialog";
-import { VisuallyHidden } from "@/components/ui/visually-hidden";
-import { PiMagnifyingGlass, PiBookmark, PiLink } from "react-icons/pi";
-import { useActiveState } from "@/store/activeStateStore";
+} from '@/components/ui/command';
+import { DialogTitle } from '@/components/ui/dialog';
+import { VisuallyHidden } from '@/components/ui/visually-hidden';
+import { PiMagnifyingGlass, PiBookmark, PiLink } from 'react-icons/pi';
+import { useActiveState } from '@/store/activeStateStore';
 
 interface SearchResult {
   id: string;
   title: string;
-  type: "collection" | "link";
+  type: 'collection' | 'link';
   description?: string;
   url?: string;
   collectionTitle?: string;
@@ -30,21 +30,21 @@ interface SearchCommandProps {
 
 export function SearchCommand({ onSearch }: SearchCommandProps) {
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const { setActiveItem } = useActiveState();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((open) => !open);
       }
     };
 
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
   }, []);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export function SearchCommand({ onSearch }: SearchCommandProps) {
         const searchResults = await onSearch(query);
         setResults(searchResults);
       } catch (error) {
-        console.error("Search error:", error);
+        console.error('Search error:', error);
         setResults([]);
       } finally {
         setLoading(false);
@@ -71,13 +71,13 @@ export function SearchCommand({ onSearch }: SearchCommandProps) {
 
   const handleSelect = (result: SearchResult) => {
     setOpen(false);
-    setQuery("");
+    setQuery('');
 
-    if (result.type === "collection") {
-      setActiveItem("Saved");
+    if (result.type === 'collection') {
+      setActiveItem('Saved');
       // You might want to add a way to filter to specific collection
-    } else if (result.type === "link" && result.url) {
-      window.open(result.url, "_blank");
+    } else if (result.type === 'link' && result.url) {
+      window.open(result.url, '_blank');
     }
   };
 
@@ -107,14 +107,14 @@ export function SearchCommand({ onSearch }: SearchCommandProps) {
         />
         <CommandList>
           <CommandEmpty>
-            {loading ? "Searching..." : "No results found."}
+            {loading ? 'Searching...' : 'No results found.'}
           </CommandEmpty>
 
           {results.length > 0 && (
             <>
               <CommandGroup heading="Collections">
                 {results
-                  .filter((result) => result.type === "collection")
+                  .filter((result) => result.type === 'collection')
                   .map((result) => (
                     <CommandItem
                       key={result.id}
@@ -136,7 +136,7 @@ export function SearchCommand({ onSearch }: SearchCommandProps) {
 
               <CommandGroup heading="Links">
                 {results
-                  .filter((result) => result.type === "link")
+                  .filter((result) => result.type === 'link')
                   .map((result) => (
                     <CommandItem
                       key={result.id}

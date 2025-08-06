@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from "react";
-import { PiTrash, PiPencilSimple, PiArrowSquareOut } from "react-icons/pi";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { PiTrash, PiPencilSimple, PiArrowSquareOut } from 'react-icons/pi';
+import { Button } from '@/components/ui/button';
 import {
   TableBody,
   TableCell,
@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
   Table,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,12 +28,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
-import { Link } from "@/types/types";
-import { truncateUrl } from "@/lib/truncate";
-import LoadingStates from "./Loading";
-import EmptyStates from "./NoLinks";
+} from '@/components/ui/alert-dialog';
+import { Input } from '@/components/ui/input';
+import { Link } from '@/types/types';
+import { truncateUrl } from '@/lib/truncate';
+import LoadingStates from './Loading';
+import EmptyStates from './NoLinks';
 
 interface LinkTableProps {
   collectionId: string;
@@ -51,8 +51,8 @@ const LinkTable = ({
   links,
 }: LinkTableProps) => {
   const [editingLink, setEditingLink] = React.useState<Link | null>(null);
-  const [newTitle, setNewTitle] = React.useState("");
-  const [newUrl, setNewUrl] = React.useState("");
+  const [newTitle, setNewTitle] = React.useState('');
+  const [newUrl, setNewUrl] = React.useState('');
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
 
   const filteredLinks = links.filter(
@@ -78,8 +78,8 @@ const LinkTable = ({
     }
     setIsEditDialogOpen(false);
     setEditingLink(null);
-    setNewTitle("");
-    setNewUrl("");
+    setNewTitle('');
+    setNewUrl('');
   };
 
   if (isLoading) {
@@ -112,7 +112,7 @@ const LinkTable = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => window.open(link.url, "_blank")}
+                    onClick={() => window.open(link.url, '_blank')}
                   >
                     <PiArrowSquareOut className="h-4 w-4" />
                   </Button>

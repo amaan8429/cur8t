@@ -1,39 +1,39 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
+import { db } from '@/db';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
-import { APIKeysTable, UsersTable } from "@/schema";
-import { auth } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
+} from '@/lib/ratelimit';
+import { APIKeysTable, UsersTable } from '@/schema';
+import { auth } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
 
 function generateKey() {
   const key =
-    "cur8t_api_" +
+    'cur8t_api_' +
     Array.from(crypto.getRandomValues(new Uint8Array(32)))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
   return key;
 }
 
 export async function CreateApiKey(name: string) {
   if (!name) {
-    return { error: "Name is required" };
+    return { error: 'Name is required' };
   }
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not found" };
+    return { error: 'User not found' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.createApiKeyLimiter,
     identifier,
-    "Too many requests to create API key. Please try again later."
+    'Too many requests to create API key. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -48,7 +48,7 @@ export async function CreateApiKey(name: string) {
     .where(eq(UsersTable.id, userId));
 
   if (userAPICount[0].APIKeysCount >= 3) {
-    return { error: "You have reached the maximum number of API keys" };
+    return { error: 'You have reached the maximum number of API keys' };
   }
 
   const key = await db
@@ -74,11 +74,11 @@ export async function DeleteApiKey(key: string) {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not found" };
+    return { error: 'User not found' };
   }
 
   if (!key) {
-    return { error: "Key ID is required" };
+    return { error: 'Key ID is required' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
@@ -86,7 +86,7 @@ export async function DeleteApiKey(key: string) {
   const rateLimitResult = await checkRateLimit(
     rateLimiters.deleteApiKeyLimiter,
     identifier,
-    "Too many requests to delete API key. Please try again later."
+    'Too many requests to delete API key. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -101,7 +101,7 @@ export async function DeleteApiKey(key: string) {
     .where(eq(UsersTable.id, userId));
 
   if (userAPICount[0].APIKeysCount <= 0) {
-    return { error: "You do not have any API keys" };
+    return { error: 'You do not have any API keys' };
   }
 
   await db.delete(APIKeysTable).where(eq(APIKeysTable.key, key)).returning();
@@ -119,7 +119,7 @@ export async function GetAPIKeys() {
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not found" };
+    return { error: 'User not found' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
@@ -127,7 +127,7 @@ export async function GetAPIKeys() {
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getApiKeysLimiter,
     identifier,
-    "Too many requests to get API keys. Please try again later."
+    'Too many requests to get API keys. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;

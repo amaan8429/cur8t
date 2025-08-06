@@ -1,5 +1,5 @@
-import React from "react";
-import { IconType } from "react-icons";
+import React from 'react';
+import { IconType } from 'react-icons';
 
 import {
   SidebarGroup,
@@ -8,9 +8,9 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import Link from "next/link";
-import { useActiveState } from "@/store/activeStateStore";
+} from '@/components/ui/sidebar';
+import Link from 'next/link';
+import { useActiveState } from '@/store/activeStateStore';
 
 interface NavSecondaryProps {
   items: {

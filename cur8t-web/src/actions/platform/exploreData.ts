@@ -1,16 +1,16 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { CollectionsTable, UsersTable, SavedCollectionsTable } from "@/schema";
-import { eq, desc, gte, and } from "drizzle-orm";
-import { sql } from "drizzle-orm";
-import { Collection } from "@/types/types";
-import { auth } from "@clerk/nextjs/server";
+import { db } from '@/db';
+import { CollectionsTable, UsersTable, SavedCollectionsTable } from '@/schema';
+import { eq, desc, gte, and } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
+import { Collection } from '@/types/types';
+import { auth } from '@clerk/nextjs/server';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export interface ExploreCollection extends Collection {
   author: string;
@@ -37,12 +37,12 @@ export async function getExploreData(): Promise<
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getPlatformStatsLimiter,
     identifier,
-    "Too many requests to get explore data. Please try again later."
+    'Too many requests to get explore data. Please try again later.'
   );
 
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
-    return { error: rateLimitResult.error ?? "Unknown error", retryAfter };
+    return { error: rateLimitResult.error ?? 'Unknown error', retryAfter };
   }
 
   try {
@@ -71,7 +71,7 @@ export async function getExploreData(): Promise<
           .select(selectFields)
           .from(CollectionsTable)
           .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
-          .where(eq(CollectionsTable.visibility, "public"))
+          .where(eq(CollectionsTable.visibility, 'public'))
           .orderBy(desc(CollectionsTable.likes))
           .limit(6),
 
@@ -80,7 +80,7 @@ export async function getExploreData(): Promise<
           .select(selectFields)
           .from(CollectionsTable)
           .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
-          .where(eq(CollectionsTable.visibility, "public"))
+          .where(eq(CollectionsTable.visibility, 'public'))
           .orderBy(desc(CollectionsTable.updatedAt))
           .limit(6),
 
@@ -95,7 +95,7 @@ export async function getExploreData(): Promise<
             .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
             .where(
               and(
-                eq(CollectionsTable.visibility, "public"),
+                eq(CollectionsTable.visibility, 'public'),
                 gte(CollectionsTable.createdAt, oneWeekAgo)
               )
             )
@@ -141,13 +141,13 @@ export async function getExploreData(): Promise<
         };
       } catch (error) {
         // Don't fail the entire request if saved collections fail
-        console.warn("Failed to fetch saved collections:", error);
+        console.warn('Failed to fetch saved collections:', error);
       }
     }
 
     return { success: true, data: response };
   } catch (error) {
-    console.error("Error fetching explore data:", error);
-    return { error: "Failed to fetch explore data" };
+    console.error('Error fetching explore data:', error);
+    return { error: 'Failed to fetch explore data' };
   }
 }

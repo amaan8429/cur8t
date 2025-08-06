@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   // AudioWaveform,
   PiCommand,
@@ -12,118 +12,118 @@ import {
   PiCreditCard,
   PiBell,
   PiStar,
-} from "react-icons/pi";
+} from 'react-icons/pi';
 
-import { NavCollection } from "@/components/dashboard/Sidebar/NavCollection/NavCollections";
-import { NavMain } from "@/components/dashboard/Sidebar/NavMain";
-import { NavSecondary } from "@/components/dashboard/Sidebar/NavSecondary";
-import { LogoNameDisplay } from "@/components/dashboard/Sidebar/LogoNameDisplay";
+import { NavCollection } from '@/components/dashboard/Sidebar/NavCollection/NavCollections';
+import { NavMain } from '@/components/dashboard/Sidebar/NavMain';
+import { NavSecondary } from '@/components/dashboard/Sidebar/NavSecondary';
+import { LogoNameDisplay } from '@/components/dashboard/Sidebar/LogoNameDisplay';
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
-import { Separator } from "../../ui/separator";
+} from '@/components/ui/sidebar';
+import { Separator } from '../../ui/separator';
 
 // This is sample data.
 const data = {
   LogoAndName: {
-    name: "Bukmarks",
+    name: 'Bukmarks',
     logo: PiCommand,
   },
   navMain: [
     {
-      title: "Overview",
-      url: "#",
+      title: 'Overview',
+      url: '#',
       icon: PiHouse,
       isActive: true,
     },
   ],
   navSecondary: [
     {
-      title: "Integrations",
+      title: 'Integrations',
       icon: PiChartLine,
     },
     {
-      title: "Notifications",
+      title: 'Notifications',
       icon: PiBell,
     },
     {
-      title: "Favorites",
+      title: 'Favorites',
       icon: PiStar,
     },
     {
-      title: "Manage Subscription",
+      title: 'Manage Subscription',
       icon: PiCreditCard,
     },
     {
-      title: "Saved Collections",
+      title: 'Saved Collections',
       icon: PiBookmark,
     },
     {
-      title: "Tools and Agents",
+      title: 'Tools and Agents',
       icon: PiCommand,
     },
     {
-      title: "Explore Collections",
+      title: 'Explore Collections',
       icon: PiMagnifyingGlass,
     },
     {
-      title: "Settings",
+      title: 'Settings',
       icon: PiGear,
     },
   ],
   lists: [
     {
-      name: "Project Management & Task Tracking",
-      url: "#",
-      emoji: "📊",
+      name: 'Project Management & Task Tracking',
+      url: '#',
+      emoji: '📊',
     },
     {
-      name: "Family Recipe Collection & Meal Planning",
-      url: "#",
-      emoji: "🍳",
+      name: 'Family Recipe Collection & Meal Planning',
+      url: '#',
+      emoji: '🍳',
     },
     {
-      name: "Fitness Tracker & Workout Routines",
-      url: "#",
-      emoji: "💪",
+      name: 'Fitness Tracker & Workout Routines',
+      url: '#',
+      emoji: '💪',
     },
     {
-      name: "Book Notes & Reading List",
-      url: "#",
-      emoji: "📚",
+      name: 'Book Notes & Reading List',
+      url: '#',
+      emoji: '📚',
     },
     {
-      name: "Sustainable Gardening Tips & Plant Care",
-      url: "#",
-      emoji: "🌱",
+      name: 'Sustainable Gardening Tips & Plant Care',
+      url: '#',
+      emoji: '🌱',
     },
     {
-      name: "Language Learning Progress & Resources",
-      url: "#",
-      emoji: "🗣️",
+      name: 'Language Learning Progress & Resources',
+      url: '#',
+      emoji: '🗣️',
     },
     {
-      name: "Home Renovation Ideas & Budget Tracker",
-      url: "#",
-      emoji: "🏠",
+      name: 'Home Renovation Ideas & Budget Tracker',
+      url: '#',
+      emoji: '🏠',
     },
     {
-      name: "Personal Finance & Investment Portfolio",
-      url: "#",
-      emoji: "💰",
+      name: 'Personal Finance & Investment Portfolio',
+      url: '#',
+      emoji: '💰',
     },
     {
-      name: "Movie & TV Show Watchlist with Reviews",
-      url: "#",
-      emoji: "🎬",
+      name: 'Movie & TV Show Watchlist with Reviews',
+      url: '#',
+      emoji: '🎬',
     },
     {
-      name: "Daily Habit Tracker & Goal Setting",
-      url: "#",
-      emoji: "✅",
+      name: 'Daily Habit Tracker & Goal Setting',
+      url: '#',
+      emoji: '✅',
     },
   ],
 };

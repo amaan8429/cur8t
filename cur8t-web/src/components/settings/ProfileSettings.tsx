@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+'use client';
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 import {
   PiUser,
   PiEnvelope,
@@ -10,22 +10,22 @@ import {
   PiCopy,
   PiCheck,
   PiArrowSquareOut,
-} from "react-icons/pi";
+} from 'react-icons/pi';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
-import Logout from "./Logout";
+} from '@/components/ui/card';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import Logout from './Logout';
 
 interface ProfileSettingsProps {
   user: any;
@@ -37,10 +37,10 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
 
   // Profile state
   const [initialState, setInitialState] = React.useState({
-    firstName: user.firstName || "",
-    lastName: user.lastName || "",
-    email: user.primaryEmailAddress?.emailAddress || "",
-    avatar: user.imageUrl || "",
+    firstName: user.firstName || '',
+    lastName: user.lastName || '',
+    email: user.primaryEmailAddress?.emailAddress || '',
+    avatar: user.imageUrl || '',
   });
 
   const [firstName, setFirstName] = React.useState(initialState.firstName);
@@ -51,8 +51,8 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const [isUploadingAvatar, setIsUploadingAvatar] = React.useState(false);
 
   // Username state
-  const [currentUsername, setCurrentUsername] = React.useState("");
-  const [newUsername, setNewUsername] = React.useState("");
+  const [currentUsername, setCurrentUsername] = React.useState('');
+  const [newUsername, setNewUsername] = React.useState('');
   const [isLoadingUsername, setIsLoadingUsername] = React.useState(true);
   const [isSavingUsername, setIsSavingUsername] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
@@ -63,7 +63,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
 
   const fetchUserInfo = async () => {
     try {
-      const response = await fetch("/api/user/info");
+      const response = await fetch('/api/user/info');
       const data = await response.json();
 
       if (data.username) {
@@ -71,7 +71,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
         setNewUsername(data.username);
       }
     } catch (error) {
-      console.error("Error fetching user info:", error);
+      console.error('Error fetching user info:', error);
     } finally {
       setIsLoadingUsername(false);
     }
@@ -90,8 +90,8 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
   const handleProfileSave = async () => {
     setIsSaving(true);
     const loadingToast = toast({
-      title: "Saving changes",
-      description: "Please wait while we update your profile...",
+      title: 'Saving changes',
+      description: 'Please wait while we update your profile...',
     });
 
     try {
@@ -100,10 +100,10 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
         lastName,
       });
 
-      const response = await fetch("/api/settings", {
-        method: "PUT",
+      const response = await fetch('/api/settings', {
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           firstName,
@@ -116,23 +116,23 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
         loadingToast.dismiss();
         const data = await response.json();
         const retryAfter =
-          response.headers.get("retry-after") || data.retryAfter || 60;
+          response.headers.get('retry-after') || data.retryAfter || 60;
 
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter:
-            typeof retryAfter === "string"
+            typeof retryAfter === 'string'
               ? parseInt(retryAfter) * 60
               : retryAfter * 60,
-          message: "Too many profile update attempts. Please try again later.",
+          message: 'Too many profile update attempts. Please try again later.',
         });
         return;
       }
 
       if (!response.ok) {
-        throw new Error("Failed to save changes");
+        throw new Error('Failed to save changes');
       }
 
       setInitialState({
@@ -144,17 +144,17 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
 
       loadingToast.dismiss();
       toast({
-        title: "Success",
-        description: "Your changes have been saved.",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Success',
+        description: 'Your changes have been saved.',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     } catch (error) {
-      console.log("Error saving changes:", error);
+      console.log('Error saving changes:', error);
       loadingToast.dismiss();
       toast({
-        title: "Error",
-        description: "Failed to save changes. Please try again.",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Error',
+        description: 'Failed to save changes. Please try again.',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     } finally {
       setIsSaving(false);
@@ -166,15 +166,15 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
 
     setIsSavingUsername(true);
     const loadingToast = toast({
-      title: "Updating username",
-      description: "Please wait while we update your username...",
+      title: 'Updating username',
+      description: 'Please wait while we update your username...',
     });
 
     try {
-      const response = await fetch("/api/user/username", {
-        method: "POST",
+      const response = await fetch('/api/user/username', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username: newUsername }),
       });
@@ -186,40 +186,40 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
         if (response.status === 429) {
           loadingToast.dismiss();
           const retryAfter =
-            response.headers.get("retry-after") || data.retryAfter || 60;
+            response.headers.get('retry-after') || data.retryAfter || 60;
 
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter:
-              typeof retryAfter === "string"
+              typeof retryAfter === 'string'
                 ? parseInt(retryAfter) * 60
                 : retryAfter * 60,
             message:
-              "Too many username change attempts. Please try again later.",
+              'Too many username change attempts. Please try again later.',
           });
           return;
         }
 
-        throw new Error(data.error || "Failed to update username");
+        throw new Error(data.error || 'Failed to update username');
       }
 
       setCurrentUsername(newUsername);
       loadingToast.dismiss();
       toast({
-        title: "Success",
-        description: "Username updated successfully.",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Success',
+        description: 'Username updated successfully.',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     } catch (error) {
-      console.error("Error updating username:", error);
+      console.error('Error updating username:', error);
       loadingToast.dismiss();
       toast({
-        title: "Error",
+        title: 'Error',
         description:
-          error instanceof Error ? error.message : "Failed to update username",
-        className: "bg-primary border-primary text-primary-foreground",
+          error instanceof Error ? error.message : 'Failed to update username',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     } finally {
       setIsSavingUsername(false);
@@ -238,8 +238,8 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
 
     setIsUploadingAvatar(true);
     const loadingToast = toast({
-      title: "Uploading avatar",
-      description: "Please wait while we update your profile picture...",
+      title: 'Uploading avatar',
+      description: 'Please wait while we update your profile picture...',
     });
 
     try {
@@ -253,22 +253,22 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
 
       loadingToast.dismiss();
       toast({
-        title: "Success",
-        description: "Profile picture updated successfully.",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Success',
+        description: 'Profile picture updated successfully.',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     } catch (error) {
-      console.log("Error uploading avatar:", error);
+      console.log('Error uploading avatar:', error);
       loadingToast.dismiss();
       toast({
-        title: "Error",
-        description: "Failed to update profile picture. Please try again.",
-        className: "bg-primary border-primary text-primary-foreground",
+        title: 'Error',
+        description: 'Failed to update profile picture. Please try again.',
+        className: 'bg-primary border-primary text-primary-foreground',
       });
     } finally {
       setIsUploadingAvatar(false);
       if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+        fileInputRef.current.value = '';
       }
     }
   };
@@ -278,19 +278,19 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
     navigator.clipboard.writeText(profileUrl);
     setCopied(true);
     toast({
-      title: "Profile link copied",
-      description: "Share your profile with others!",
-      className: "bg-primary border-primary text-primary-foreground",
+      title: 'Profile link copied',
+      description: 'Share your profile with others!',
+      className: 'bg-primary border-primary text-primary-foreground',
     });
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleOpenProfile = () => {
     const profileUrl = `${window.location.origin}/profile/${currentUsername}`;
-    window.open(profileUrl, "_blank");
+    window.open(profileUrl, '_blank');
   };
 
-  const profileUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/profile/${currentUsername}`;
+  const profileUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/profile/${currentUsername}`;
 
   return (
     <Card>
@@ -330,7 +330,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             className="flex items-center gap-2 border-primary/20 text-primary hover:bg-primary/10"
           >
             <PiCamera className="h-4 w-4" />
-            {isUploadingAvatar ? "Uploading..." : "Change Photo"}
+            {isUploadingAvatar ? 'Uploading...' : 'Change Photo'}
           </Button>
         </div>
 
@@ -366,7 +366,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
                 className="flex items-center gap-2 bg-primary hover:bg-primary/90"
               >
                 <PiPaperPlaneTilt className="h-4 w-4" />
-                {isSaving ? "Saving..." : "Save Changes"}
+                {isSaving ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
           )}
@@ -421,7 +421,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
                 disabled={isSavingUsername}
                 className="flex items-center gap-2 bg-primary hover:bg-primary/90"
               >
-                {isSavingUsername ? "Updating..." : "Update Username"}
+                {isSavingUsername ? 'Updating...' : 'Update Username'}
               </Button>
             </div>
           )}

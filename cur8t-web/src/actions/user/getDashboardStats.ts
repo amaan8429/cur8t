@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { auth } from "@clerk/nextjs/server";
-import { db } from "@/db";
-import { UsersTable, CollectionsTable, LinksTable } from "@/schema";
-import { eq, and, desc, sql, inArray } from "drizzle-orm";
+import { auth } from '@clerk/nextjs/server';
+import { db } from '@/db';
+import { UsersTable, CollectionsTable, LinksTable } from '@/schema';
+import { eq, and, desc, sql, inArray } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export interface DashboardStats {
   totalCollections: number;
@@ -36,11 +36,11 @@ export async function getDashboardStatsAction(): Promise<DashboardStats | null> 
     const rateLimitResult = await checkRateLimit(
       rateLimiters.getUserInfoLimiter,
       identifier,
-      "Too many requests to get dashboard stats. Please try again later."
+      'Too many requests to get dashboard stats. Please try again later.'
     );
     if (!rateLimitResult.success) {
       console.warn(
-        "Rate limit exceeded for dashboard stats:",
+        'Rate limit exceeded for dashboard stats:',
         rateLimitResult.error
       );
       return null; // Fail silently for dashboard stats
@@ -91,7 +91,7 @@ export async function getDashboardStatsAction(): Promise<DashboardStats | null> 
     ) {
       // Filter out any null/undefined values and ensure they're valid UUIDs
       const validPinnedIds = user[0].pinnedCollections.filter(
-        (id) => id && typeof id === "string" && id.trim() !== ""
+        (id) => id && typeof id === 'string' && id.trim() !== ''
       );
 
       if (validPinnedIds.length > 0) {
@@ -108,7 +108,7 @@ export async function getDashboardStatsAction(): Promise<DashboardStats | null> 
 
           pinnedCollectionNames.push(...pinnedCollections.map((c) => c.title));
         } catch (error) {
-          console.error("Error fetching pinned collections:", error);
+          console.error('Error fetching pinned collections:', error);
           // Continue without pinned collections if there's an error
         }
       }
@@ -128,7 +128,7 @@ export async function getDashboardStatsAction(): Promise<DashboardStats | null> 
       apiKeysCount: user[0].APIKeysCount,
     };
   } catch (error) {
-    console.error("Error fetching dashboard stats:", error);
+    console.error('Error fetching dashboard stats:', error);
     return null;
   }
 }

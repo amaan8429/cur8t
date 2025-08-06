@@ -1,9 +1,9 @@
-import { db } from "@/db";
-import { UsersTable, GitHubSettingsTable } from "@/schema";
-import { auth } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
-import { rateLimiters, checkRateLimit, getClientId } from "@/lib/ratelimit";
+import { db } from '@/db';
+import { UsersTable, GitHubSettingsTable } from '@/schema';
+import { auth } from '@clerk/nextjs/server';
+import { eq } from 'drizzle-orm';
+import { NextResponse } from 'next/server';
+import { rateLimiters, checkRateLimit, getClientId } from '@/lib/ratelimit';
 
 export async function GET(request: Request) {
   try {
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     // Check if the user ID is present
     if (!userId) {
       return NextResponse.json(
-        { error: "Unauthorized: Missing user ID" },
+        { error: 'Unauthorized: Missing user ID' },
         { status: 401 }
       );
     }
@@ -23,13 +23,13 @@ export async function GET(request: Request) {
     const rateLimitResult = await checkRateLimit(
       rateLimiters.getGithubStatusLimiter,
       identifier,
-      "Too many requests to GitHub status. Please try again later."
+      'Too many requests to GitHub status. Please try again later.'
     );
     if (!rateLimitResult.success) {
       const retryAfter = rateLimitResult.retryAfter ?? 60;
       return NextResponse.json(
         { error: rateLimitResult.error, retryAfter },
-        { status: 429, headers: { "Retry-After": retryAfter.toString() } }
+        { status: 429, headers: { 'Retry-After': retryAfter.toString() } }
       );
     }
 
@@ -45,7 +45,7 @@ export async function GET(request: Request) {
     // Check if the user exists in the database
     if (!userStatus || userStatus.length === 0) {
       return NextResponse.json(
-        { error: "User not found in the database" },
+        { error: 'User not found in the database' },
         { status: 404 }
       );
     }
@@ -83,16 +83,16 @@ export async function GET(request: Request) {
 
       if (gitHubSettings) {
         response.lastSync = gitHubSettings.updatedAt?.toISOString();
-        response.repositoryUrl = `https://github.com/${user.githubUsername}/${gitHubSettings.repoName || "bukmarksCollection"}`;
+        response.repositoryUrl = `https://github.com/${user.githubUsername}/${gitHubSettings.repoName || 'bukmarksCollection'}`;
       }
     }
 
     // Return the GitHub connection status with additional details
     return NextResponse.json(response);
   } catch (error) {
-    console.error("Error fetching GitHub connection status:", error);
+    console.error('Error fetching GitHub connection status:', error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

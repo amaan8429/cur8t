@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import IntegrationsPage from "../integrations/IntegrationsPage";
-import SettingsPage from "../settings/SettingsPage";
-import { useActiveState } from "@/store/activeStateStore";
-import SavedCollections from "../dashboard/TopSection/SavedCollections";
-import ToolsAndAgents from "../dashboard/TopSection/ToolsAndAgents";
-import ManageSubscription from "../settings/ManageSubscription";
-import Notifications from "../settings/Notifications";
-import FavoritesPage from "../settings/FavoritesPage";
+import React, { useEffect } from 'react';
+import IntegrationsPage from '../integrations/IntegrationsPage';
+import SettingsPage from '../settings/SettingsPage';
+import { useActiveState } from '@/store/activeStateStore';
+import SavedCollections from '../dashboard/TopSection/SavedCollections';
+import ToolsAndAgents from '../dashboard/TopSection/ToolsAndAgents';
+import ManageSubscription from '../settings/ManageSubscription';
+import Notifications from '../settings/Notifications';
+import FavoritesPage from '../settings/FavoritesPage';
 
 const SecondaryPage = () => {
   // Use the proper hook instead of getState() during render
@@ -15,27 +15,27 @@ const SecondaryPage = () => {
 
   // Handle Profile navigation as a side effect
   useEffect(() => {
-    if (activeSecondary === "Profile" && activeUserId) {
-      window.open(`/profile?userId=${activeUserId}`, "_blank");
+    if (activeSecondary === 'Profile' && activeUserId) {
+      window.open(`/profile?userId=${activeUserId}`, '_blank');
     }
   }, [activeSecondary, activeUserId]);
 
-  if (activeSecondary === "Integrations") {
+  if (activeSecondary === 'Integrations') {
     return <IntegrationsPage />;
-  } else if (activeSecondary === "Settings") {
+  } else if (activeSecondary === 'Settings') {
     return <SettingsPage />;
-  } else if (activeSecondary === "Notifications") {
+  } else if (activeSecondary === 'Notifications') {
     return <Notifications />;
-  } else if (activeSecondary === "Manage Subscription") {
+  } else if (activeSecondary === 'Manage Subscription') {
     return <ManageSubscription />;
-  } else if (activeSecondary === "Saved Collections") {
+  } else if (activeSecondary === 'Saved Collections') {
     return <SavedCollections />;
-  } else if (activeSecondary === "Tools and Agents") {
+  } else if (activeSecondary === 'Tools and Agents') {
     return <ToolsAndAgents />;
-  } else if (activeSecondary === "Favorites") {
+  } else if (activeSecondary === 'Favorites') {
     return <FavoritesPage />;
-  } else if (activeSecondary === "Explore") {
-    window.open("/explore", "_blank");
+  } else if (activeSecondary === 'Explore') {
+    window.open('/explore', '_blank');
   }
 
   return null;

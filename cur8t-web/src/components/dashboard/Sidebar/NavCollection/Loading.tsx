@@ -4,8 +4,8 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-} from "@/components/ui/sidebar";
-import {PiSpinner} from "react-icons/pi";
+} from '@/components/ui/sidebar';
+import { PiSpinner } from 'react-icons/pi';
 
 const LoadingCollections = () => {
   return (

@@ -1,6 +1,6 @@
 // Types shared across BookmarkImporter components
 
-export type Step = "upload" | "analyze" | "preview" | "create" | "complete";
+export type Step = 'upload' | 'analyze' | 'preview' | 'create' | 'complete';
 
 export interface BookmarkLink {
   url: string;
@@ -20,7 +20,7 @@ export interface BookmarkCategory {
   bookmarks: BookmarkLink[];
 }
 
-export interface EnhancedCategory extends Omit<BookmarkCategory, "bookmarks"> {
+export interface EnhancedCategory extends Omit<BookmarkCategory, 'bookmarks'> {
   bookmarks: BookmarkLink[];
 }
 

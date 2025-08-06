@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { useUser } from "@clerk/nextjs";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ProfileSettings from "./ProfileSettings";
-import GeneralSettings from "./GeneralSettings";
-import LoadingSettings from "./Loading";
-import APIKeySettings from "./ApiKeySettings";
-import TopCollectionsSettings from "./TopCollectionsSettings";
-import SocialMediaSettings from "./SocialMediaSettings";
-import FavoritesPage from "./FavoritesPage";
+import React, { useState } from 'react';
+import { useUser } from '@clerk/nextjs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ProfileSettings from './ProfileSettings';
+import GeneralSettings from './GeneralSettings';
+import LoadingSettings from './Loading';
+import APIKeySettings from './ApiKeySettings';
+import TopCollectionsSettings from './TopCollectionsSettings';
+import SocialMediaSettings from './SocialMediaSettings';
+import FavoritesPage from './FavoritesPage';
 
 const SettingsPage = () => {
   const { user, isLoaded } = useUser();
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState('profile');
 
   if (!isLoaded) {
     return <LoadingSettings />;

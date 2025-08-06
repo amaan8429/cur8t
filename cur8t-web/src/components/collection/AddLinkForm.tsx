@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import * as React from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,9 +13,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { FrontendLinkSchema, FrontendLink } from "@/types/types";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { FrontendLinkSchema, FrontendLink } from '@/types/types';
 
 interface AddLinkFormProps {
   onLinkAdded: (link: { id: string; title: string; url: string }) => void;
@@ -25,8 +25,8 @@ export function AddLinkForm({ onLinkAdded }: AddLinkFormProps) {
   const form = useForm<FrontendLink>({
     resolver: zodResolver(FrontendLinkSchema),
     defaultValues: {
-      title: "",
-      url: "",
+      title: '',
+      url: '',
     },
   });
 
@@ -34,7 +34,7 @@ export function AddLinkForm({ onLinkAdded }: AddLinkFormProps) {
     // Pass title as-is (empty string if not provided) - backend will handle auto-generation
     onLinkAdded({
       id: Math.random().toString(36).slice(2, 9),
-      title: values.title?.trim() || "",
+      title: values.title?.trim() || '',
       url: values.url,
     });
     form.reset();
@@ -74,7 +74,7 @@ export function AddLinkForm({ onLinkAdded }: AddLinkFormProps) {
         />
         <Button
           type="submit"
-          disabled={form.formState.isSubmitting || !form.watch("url")?.trim()}
+          disabled={form.formState.isSubmitting || !form.watch('url')?.trim()}
         >
           Add Link
         </Button>

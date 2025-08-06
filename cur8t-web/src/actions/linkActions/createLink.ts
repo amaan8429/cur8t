@@ -1,17 +1,17 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { totalLinksCount } from "@/lib/totalLinksCount";
-import { CollectionsTable, LinksTable } from "@/schema";
-import { FrontendLinkSchema } from "@/types/types";
-import { extractTitleFromUrl, generateFallbackTitle } from "@/lib/extractTitle";
-import { auth } from "@clerk/nextjs/server";
-import { and, eq } from "drizzle-orm";
+import { db } from '@/db';
+import { totalLinksCount } from '@/lib/totalLinksCount';
+import { CollectionsTable, LinksTable } from '@/schema';
+import { FrontendLinkSchema } from '@/types/types';
+import { extractTitleFromUrl, generateFallbackTitle } from '@/lib/extractTitle';
+import { auth } from '@clerk/nextjs/server';
+import { and, eq } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function createLinkAction(
   linkCollectionId: string,
@@ -21,14 +21,14 @@ export async function createLinkAction(
   const { userId } = await auth();
 
   if (!userId) {
-    return { error: "User not found" };
+    return { error: 'User not found' };
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.createLinkLimiter,
     identifier,
-    "Too many requests to create link. Please try again later."
+    'Too many requests to create link. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -36,7 +36,7 @@ export async function createLinkAction(
   }
 
   if (!linkCollectionId) {
-    return { error: "Link collection ID is required" };
+    return { error: 'Link collection ID is required' };
   }
 
   const parsedLink = FrontendLinkSchema.safeParse({
@@ -46,17 +46,17 @@ export async function createLinkAction(
 
   if (!parsedLink.success) {
     return {
-      error: "Invalid link data",
+      error: 'Invalid link data',
     };
   }
 
   // Extract title if not provided
-  let finalTitle: string = parsedLink.data.title || "";
+  let finalTitle: string = parsedLink.data.title || '';
   if (!finalTitle.trim()) {
     try {
       finalTitle = await extractTitleFromUrl(parsedLink.data.url);
     } catch (error) {
-      console.warn("Failed to extract title, using fallback:", error);
+      console.warn('Failed to extract title, using fallback:', error);
       finalTitle = generateFallbackTitle(parsedLink.data.url);
     }
   }
@@ -87,7 +87,7 @@ export async function createLinkAction(
       )
     );
 
-  console.log("Link created:", createdLink);
+  console.log('Link created:', createdLink);
 
   return { success: true, data: createdLink };
 }

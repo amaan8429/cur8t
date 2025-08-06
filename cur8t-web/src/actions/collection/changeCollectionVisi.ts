@@ -1,10 +1,14 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { CollectionsTable } from "@/schema";
-import { auth } from "@clerk/nextjs/server";
-import { and, eq } from "drizzle-orm";
-import { checkRateLimit, getClientIdFromHeaders, rateLimiters } from "@/lib/ratelimit";
+import { db } from '@/db';
+import { CollectionsTable } from '@/schema';
+import { auth } from '@clerk/nextjs/server';
+import { and, eq } from 'drizzle-orm';
+import {
+  checkRateLimit,
+  getClientIdFromHeaders,
+  rateLimiters,
+} from '@/lib/ratelimit';
 
 export async function ChangeCollectionVisibilityAction(
   collectionId: string,
@@ -14,14 +18,14 @@ export async function ChangeCollectionVisibilityAction(
   const { userId } = await auth();
 
   if (!userId) {
-    throw new Error("Not authenticated");
+    throw new Error('Not authenticated');
   }
 
   const identifier = await getClientIdFromHeaders(userId);
   const rateLimitResult = await checkRateLimit(
     rateLimiters.changeCollectionVisibilityLimiter,
     identifier,
-    "Too many requests to change collection visibility. Please try again later."
+    'Too many requests to change collection visibility. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -29,14 +33,14 @@ export async function ChangeCollectionVisibilityAction(
   }
 
   if (!collectionId) {
-    throw new Error("Collection ID is required");
+    throw new Error('Collection ID is required');
   }
 
   const targetCollection = await db
     .update(CollectionsTable)
     .set({
       visibility: visibility,
-      sharedEmails: visibility === "protected" ? sharedEmails : [],
+      sharedEmails: visibility === 'protected' ? sharedEmails : [],
     })
     .where(
       and(
@@ -47,7 +51,7 @@ export async function ChangeCollectionVisibilityAction(
 
   if (!targetCollection) {
     return {
-      error: "Collection not found",
+      error: 'Collection not found',
     };
   }
 

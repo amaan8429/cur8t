@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   PiPlus,
   PiX,
@@ -23,9 +23,9 @@ import {
   PiCaretRight,
   PiFlipVertical,
   PiBookmark,
-} from "react-icons/pi";
-import { motion, AnimatePresence, Reorder } from "framer-motion";
-import { useBookmarkImporter } from "./useBookmarkImporter";
+} from 'react-icons/pi';
+import { motion, AnimatePresence, Reorder } from 'framer-motion';
+import { useBookmarkImporter } from './useBookmarkImporter';
 
 interface Props {
   importer: ReturnType<typeof useBookmarkImporter>;
@@ -122,8 +122,8 @@ export function BookmarkPreviewStep({ importer }: Props) {
                     key={category.name}
                     className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
                       selectedCategoryForDetail === category.name
-                        ? "border-primary bg-primary/5 shadow-sm"
-                        : "border-border hover:border-border/60 hover:bg-muted/30"
+                        ? 'border-primary bg-primary/5 shadow-sm'
+                        : 'border-border hover:border-border/60 hover:bg-muted/30'
                     }`}
                     onClick={() => setSelectedCategoryForDetail(category.name)}
                   >
@@ -144,8 +144,8 @@ export function BookmarkPreviewStep({ importer }: Props) {
                           <PiCaretRight
                             className={`h-4 w-4 text-muted-foreground transition-transform ${
                               selectedCategoryForDetail === category.name
-                                ? "rotate-90"
-                                : ""
+                                ? 'rotate-90'
+                                : ''
                             }`}
                           />
                         </div>
@@ -191,7 +191,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
                   <Input
                     id={`custom-name-${selectedCategory.name}`}
                     placeholder={selectedCategory.suggested_collection_name}
-                    value={customNames[selectedCategory.name] || ""}
+                    value={customNames[selectedCategory.name] || ''}
                     onChange={(e) =>
                       updateCustomName(selectedCategory.name, e.target.value)
                     }
@@ -317,7 +317,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
                                           size="sm"
                                           variant="ghost"
                                           onClick={() =>
-                                            window.open(bookmark.url, "_blank")
+                                            window.open(bookmark.url, '_blank')
                                           }
                                           title="Open link"
                                           className="h-8 w-8 p-0"
@@ -397,7 +397,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
 
       {/* Action Buttons */}
       <div className="flex gap-3">
-        <Button variant="outline" onClick={() => setCurrentStep("analyze")}>
+        <Button variant="outline" onClick={() => setCurrentStep('analyze')}>
           Back to Analysis
         </Button>
         <Button
@@ -414,7 +414,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
             <>
               <PiPlus className="h-5 w-5 mr-2" />
               Create {selectedCategories.length} Collection
-              {selectedCategories.length !== 1 ? "s" : ""}
+              {selectedCategories.length !== 1 ? 's' : ''}
             </>
           )}
         </Button>

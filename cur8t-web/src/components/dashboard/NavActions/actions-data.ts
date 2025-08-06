@@ -5,56 +5,56 @@ import {
   PiChartLine,
   PiArrowDown,
   PiStar,
-} from "react-icons/pi";
-import { ActionItem } from "./ActionItems";
+} from 'react-icons/pi';
+import { ActionItem } from './ActionItems';
 
 // Define action types for better type safety
 export type ActionType =
-  | "customize"
-  | "visibility"
-  | "copy-link"
-  | "duplicate"
-  | "analytics"
-  | "export";
+  | 'customize'
+  | 'visibility'
+  | 'copy-link'
+  | 'duplicate'
+  | 'analytics'
+  | 'export';
 
 // Add type property to each action item
 export const actionsData: ActionItem[][] = [
   [
     {
-      label: "Customize Page",
+      label: 'Customize Page',
       icon: PiGear,
-      type: "customize",
+      type: 'customize',
     },
     {
-      label: "Change Visibility",
+      label: 'Change Visibility',
       icon: PiStar,
-      type: "visibility",
+      type: 'visibility',
     },
   ],
   [
     {
-      label: "Copy Link",
+      label: 'Copy Link',
       icon: PiLink,
-      type: "copy-link",
+      type: 'copy-link',
     },
     {
-      label: "Duplicate",
+      label: 'Duplicate',
       icon: PiCopy,
-      type: "duplicate",
+      type: 'duplicate',
     },
   ],
   [
     {
-      label: "View analytics",
+      label: 'View analytics',
       icon: PiChartLine,
-      type: "analytics",
+      type: 'analytics',
     },
   ],
   [
     {
-      label: "Export",
+      label: 'Export',
       icon: PiArrowDown,
-      type: "export",
+      type: 'export',
     },
   ],
 ];

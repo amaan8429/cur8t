@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -7,14 +7,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import { useCollectionStore } from "@/store/collection-store";
-import {PiPencilSimple} from "react-icons/pi";
-import { VALIDATION_LIMITS } from "@/types/types";
-import React from "react";
+} from '@/components/ui/dialog';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { useCollectionStore } from '@/store/collection-store';
+import { PiPencilSimple } from 'react-icons/pi';
+import { VALIDATION_LIMITS } from '@/types/types';
+import React from 'react';
 
 const ChangeCollectionName = ({
   collectionId,
@@ -37,23 +37,23 @@ const ChangeCollectionName = ({
   const handleUpdateConfirm = async (data: { title: string }) => {
     if (!data.title.trim()) {
       toastWarning({
-        title: "Title Required",
-        description: "Please enter a collection name.",
+        title: 'Title Required',
+        description: 'Please enter a collection name.',
       });
       return;
     }
 
     if (data.title === collectionName) {
       toastWarning({
-        title: "No Changes",
-        description: "Collection name is the same.",
+        title: 'No Changes',
+        description: 'Collection name is the same.',
       });
       return;
     }
 
     if (data.title.length > VALIDATION_LIMITS.COLLECTION_NAME_MAX) {
       toastWarning({
-        title: "Name Too Long",
+        title: 'Name Too Long',
         description: `Please enter a title with ${VALIDATION_LIMITS.COLLECTION_NAME_MAX} characters or less`,
       });
       return;
@@ -63,13 +63,13 @@ const ChangeCollectionName = ({
       setLoading(true);
       await updateCollectionName(collectionId, data.title);
       toastSuccess({
-        title: "Collection Updated",
-        description: "Collection name has been successfully updated.",
+        title: 'Collection Updated',
+        description: 'Collection name has been successfully updated.',
       });
     } catch (error) {
       toastError({
-        title: "Update Failed",
-        description: "Failed to update collection name. Please try again.",
+        title: 'Update Failed',
+        description: 'Failed to update collection name. Please try again.',
       });
     } finally {
       setLoading(false);
@@ -113,7 +113,7 @@ const ChangeCollectionName = ({
                 !newTitle.trim() || newTitle === collectionName || loading
               }
             >
-              {loading ? "Saving" : "Save Changes"}
+              {loading ? 'Saving' : 'Save Changes'}
             </Button>
           </DialogFooter>
         </DialogContent>

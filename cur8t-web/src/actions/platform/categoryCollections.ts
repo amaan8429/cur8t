@@ -1,129 +1,129 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { CollectionsTable, UsersTable } from "@/schema";
-import { eq, ilike, or } from "drizzle-orm";
-import { Collection } from "@/types/types";
+import { db } from '@/db';
+import { CollectionsTable, UsersTable } from '@/schema';
+import { eq, ilike, or } from 'drizzle-orm';
+import { Collection } from '@/types/types';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 // Define categories with their keywords
 const CATEGORIES = {
   development: {
-    name: "Development",
+    name: 'Development',
     keywords: [
-      "development",
-      "programming",
-      "coding",
-      "code",
-      "dev",
-      "software",
-      "web dev",
-      "frontend",
-      "backend",
-      "fullstack",
-      "javascript",
-      "react",
-      "node",
-      "python",
-      "api",
-      "github",
-      "git",
+      'development',
+      'programming',
+      'coding',
+      'code',
+      'dev',
+      'software',
+      'web dev',
+      'frontend',
+      'backend',
+      'fullstack',
+      'javascript',
+      'react',
+      'node',
+      'python',
+      'api',
+      'github',
+      'git',
     ],
-    description: "Programming and development resources",
+    description: 'Programming and development resources',
   },
   design: {
-    name: "Design",
+    name: 'Design',
     keywords: [
-      "design",
-      "ui",
-      "ux",
-      "figma",
-      "sketch",
-      "adobe",
-      "creative",
-      "graphics",
-      "visual",
-      "branding",
-      "logo",
-      "typography",
-      "color",
-      "layout",
-      "interface",
+      'design',
+      'ui',
+      'ux',
+      'figma',
+      'sketch',
+      'adobe',
+      'creative',
+      'graphics',
+      'visual',
+      'branding',
+      'logo',
+      'typography',
+      'color',
+      'layout',
+      'interface',
     ],
-    description: "Design inspiration and resources",
+    description: 'Design inspiration and resources',
   },
   tools: {
-    name: "Tools & Utilities",
+    name: 'Tools & Utilities',
     keywords: [
-      "tools",
-      "utilities",
-      "productivity",
-      "workflow",
-      "automation",
-      "app",
-      "software",
-      "extension",
-      "plugin",
-      "chrome",
-      "vscode",
-      "notion",
+      'tools',
+      'utilities',
+      'productivity',
+      'workflow',
+      'automation',
+      'app',
+      'software',
+      'extension',
+      'plugin',
+      'chrome',
+      'vscode',
+      'notion',
     ],
-    description: "Useful tools and utilities",
+    description: 'Useful tools and utilities',
   },
   learning: {
-    name: "Learning",
+    name: 'Learning',
     keywords: [
-      "tutorial",
-      "course",
-      "learning",
-      "education",
-      "guide",
-      "documentation",
-      "docs",
-      "reference",
-      "how to",
-      "tips",
-      "tricks",
-      "best practices",
+      'tutorial',
+      'course',
+      'learning',
+      'education',
+      'guide',
+      'documentation',
+      'docs',
+      'reference',
+      'how to',
+      'tips',
+      'tricks',
+      'best practices',
     ],
-    description: "Educational content and tutorials",
+    description: 'Educational content and tutorials',
   },
   business: {
-    name: "Business",
+    name: 'Business',
     keywords: [
-      "business",
-      "startup",
-      "entrepreneurship",
-      "marketing",
-      "sales",
-      "finance",
-      "management",
-      "strategy",
-      "growth",
-      "seo",
-      "analytics",
+      'business',
+      'startup',
+      'entrepreneurship',
+      'marketing',
+      'sales',
+      'finance',
+      'management',
+      'strategy',
+      'growth',
+      'seo',
+      'analytics',
     ],
-    description: "Business and entrepreneurship",
+    description: 'Business and entrepreneurship',
   },
   news: {
-    name: "News & Articles",
+    name: 'News & Articles',
     keywords: [
-      "news",
-      "article",
-      "blog",
-      "medium",
-      "newsletter",
-      "update",
-      "announcement",
-      "trend",
-      "industry",
-      "tech news",
+      'news',
+      'article',
+      'blog',
+      'medium',
+      'newsletter',
+      'update',
+      'announcement',
+      'trend',
+      'industry',
+      'tech news',
     ],
-    description: "News and articles",
+    description: 'News and articles',
   },
 };
 
@@ -133,7 +133,7 @@ export async function getCategorizedCollections() {
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getPlatformStatsLimiter,
     identifier,
-    "Too many requests to get categorized collections. Please try again later."
+    'Too many requests to get categorized collections. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -164,7 +164,7 @@ export async function getCategorizedCollections() {
         .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
         .where(
           or(
-            eq(CollectionsTable.visibility, "public"),
+            eq(CollectionsTable.visibility, 'public'),
             ...category.keywords.map((keyword) =>
               or(
                 ilike(CollectionsTable.title, `%${keyword}%`),
@@ -177,7 +177,7 @@ export async function getCategorizedCollections() {
 
       // Filter collections that actually match the keywords and are public
       const filteredCollections = collections.filter((collection) => {
-        const isPublic = collection.visibility === "public";
+        const isPublic = collection.visibility === 'public';
         const titleLower = collection.title.toLowerCase();
         const descLower = collection.description.toLowerCase();
 
@@ -206,9 +206,9 @@ export async function getCategorizedCollections() {
       },
     };
   } catch (error) {
-    console.error("Error fetching categorized collections:", error);
+    console.error('Error fetching categorized collections:', error);
     return {
-      error: "Failed to fetch categorized collections",
+      error: 'Failed to fetch categorized collections',
     };
   }
 }

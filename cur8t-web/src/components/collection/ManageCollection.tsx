@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useLinkStore } from "@/store/link-store";
-import { useToast } from "@/hooks/use-toast";
-import { FrontendLink, FrontendLinkSchema } from "@/types/types";
-import { LinkGrid } from "./LinkGrid";
-import LinkTable from "./LinkTable";
-import ManageLinksHeader, { FilterOptions } from "./LinkHeader";
-import { PiPlusCircle } from "react-icons/pi";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { useLinkStore } from '@/store/link-store';
+import { useToast } from '@/hooks/use-toast';
+import { FrontendLink, FrontendLinkSchema } from '@/types/types';
+import { LinkGrid } from './LinkGrid';
+import LinkTable from './LinkTable';
+import ManageLinksHeader, { FilterOptions } from './LinkHeader';
+import { PiPlusCircle } from 'react-icons/pi';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { AddLinkForm } from "./AddLinkForm";
+} from '@/components/ui/dialog';
+import { AddLinkForm } from './AddLinkForm';
 
 export function ManageCollectionLinks({
   collectionId,
@@ -34,12 +34,12 @@ export function ManageCollectionLinks({
     links,
   } = useLinkStore();
   const { toast } = useToast();
-  const [view, setView] = React.useState<"grid" | "table">("grid");
+  const [view, setView] = React.useState<'grid' | 'table'>('grid');
   const fetchedLinks = React.useRef(new Set());
-  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchQuery, setSearchQuery] = React.useState('');
   const [filterOptions, setFilterOptions] = React.useState<FilterOptions>({
-    sortBy: "newest",
-    dateRange: "all",
+    sortBy: 'newest',
+    dateRange: 'all',
     domains: [],
   });
 
@@ -63,11 +63,11 @@ export function ManageCollectionLinks({
     const parsedLink = FrontendLinkSchema.safeParse(linkToValidate);
     if (!parsedLink.success) {
       return toast({
-        title: "Failed to add link",
+        title: 'Failed to add link',
         description:
           parsedLink.error.errors.length > 0
             ? parsedLink.error.errors[0].message
-            : "Unknown error",
+            : 'Unknown error',
       });
     }
 
@@ -80,9 +80,9 @@ export function ManageCollectionLinks({
     // Use optimistic updates - dialog closes immediately and link appears
     await addLink(linkData, collectionId, (error) => {
       toast({
-        title: "Failed to add link",
+        title: 'Failed to add link',
         description: error,
-        variant: "destructive",
+        variant: 'destructive',
       });
     });
   };
@@ -92,7 +92,7 @@ export function ManageCollectionLinks({
     try {
       await deleteLink(id);
     } catch (error) {
-      console.error("Failed to delete link:", error);
+      console.error('Failed to delete link:', error);
     }
   };
 
@@ -103,7 +103,7 @@ export function ManageCollectionLinks({
     try {
       await updateLink(id, data);
     } catch (error) {
-      console.error("Failed to update link:", error);
+      console.error('Failed to update link:', error);
     }
   };
 
@@ -112,7 +112,7 @@ export function ManageCollectionLinks({
     const domains = new Set<string>();
     links.forEach((link) => {
       try {
-        const domain = new URL(link.url).hostname.replace("www.", "");
+        const domain = new URL(link.url).hostname.replace('www.', '');
         domains.add(domain);
       } catch {
         // Skip invalid URLs
@@ -132,7 +132,7 @@ export function ManageCollectionLinks({
       if (!matchesSearch) return false;
 
       // Date range filter
-      if (filterOptions.dateRange !== "all") {
+      if (filterOptions.dateRange !== 'all') {
         const linkDate = new Date(link.createdAt);
         const now = new Date();
         const today = new Date(
@@ -142,14 +142,14 @@ export function ManageCollectionLinks({
         );
 
         switch (filterOptions.dateRange) {
-          case "today":
+          case 'today':
             if (linkDate < today) return false;
             break;
-          case "week":
+          case 'week':
             const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
             if (linkDate < weekAgo) return false;
             break;
-          case "month":
+          case 'month':
             const monthAgo = new Date(
               today.getTime() - 30 * 24 * 60 * 60 * 1000
             );
@@ -161,7 +161,7 @@ export function ManageCollectionLinks({
       // Domain filter
       if (filterOptions.domains.length > 0) {
         try {
-          const linkDomain = new URL(link.url).hostname.replace("www.", "");
+          const linkDomain = new URL(link.url).hostname.replace('www.', '');
           if (!filterOptions.domains.includes(linkDomain)) return false;
         } catch {
           return false; // Skip invalid URLs
@@ -173,27 +173,27 @@ export function ManageCollectionLinks({
 
     // Sort links
     switch (filterOptions.sortBy) {
-      case "oldest":
+      case 'oldest':
         filtered.sort(
           (a, b) =>
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
         );
         break;
-      case "title":
+      case 'title':
         filtered.sort((a, b) => a.title.localeCompare(b.title));
         break;
-      case "domain":
+      case 'domain':
         filtered.sort((a, b) => {
           try {
-            const domainA = new URL(a.url).hostname.replace("www.", "");
-            const domainB = new URL(b.url).hostname.replace("www.", "");
+            const domainA = new URL(a.url).hostname.replace('www.', '');
+            const domainB = new URL(b.url).hostname.replace('www.', '');
             return domainA.localeCompare(domainB);
           } catch {
             return 0;
           }
         });
         break;
-      case "newest":
+      case 'newest':
       default:
         filtered.sort(
           (a, b) =>
@@ -217,7 +217,7 @@ export function ManageCollectionLinks({
         availableDomains={availableDomains}
       />
 
-      {view === "grid" ? (
+      {view === 'grid' ? (
         <LinkGrid
           collectionId={collectionId}
           onDeleteLink={handleDeleteLink}

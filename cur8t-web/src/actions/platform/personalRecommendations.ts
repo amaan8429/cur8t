@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { CollectionsTable, SavedCollectionsTable, UsersTable } from "@/schema";
-import { eq, and, ne, inArray, desc } from "drizzle-orm";
-import { auth } from "@clerk/nextjs/server";
+import { db } from '@/db';
+import { CollectionsTable, SavedCollectionsTable, UsersTable } from '@/schema';
+import { eq, and, ne, inArray, desc } from 'drizzle-orm';
+import { auth } from '@clerk/nextjs/server';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function getPersonalRecommendations() {
   const { userId } = await auth();
@@ -18,7 +18,7 @@ export async function getPersonalRecommendations() {
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getPlatformStatsLimiter,
     identifier,
-    "Too many requests to get personal recommendations. Please try again later."
+    'Too many requests to get personal recommendations. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -30,7 +30,7 @@ export async function getPersonalRecommendations() {
       return {
         success: true,
         data: [],
-        message: "User not authenticated",
+        message: 'User not authenticated',
       };
     }
 
@@ -59,7 +59,7 @@ export async function getPersonalRecommendations() {
         .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
         .where(
           and(
-            eq(CollectionsTable.visibility, "public"),
+            eq(CollectionsTable.visibility, 'public'),
             ne(CollectionsTable.userId, userId)
           )
         )
@@ -69,7 +69,7 @@ export async function getPersonalRecommendations() {
       return {
         success: true,
         data: popularCollections,
-        message: "Popular collections",
+        message: 'Popular collections',
       };
     }
 
@@ -114,7 +114,7 @@ export async function getPersonalRecommendations() {
             .where(
               and(
                 inArray(CollectionsTable.userId, similarCreators),
-                eq(CollectionsTable.visibility, "public"),
+                eq(CollectionsTable.visibility, 'public'),
                 ne(CollectionsTable.userId, userId)
               )
             )
@@ -139,7 +139,7 @@ export async function getPersonalRecommendations() {
       .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
       .where(
         and(
-          eq(CollectionsTable.visibility, "public"),
+          eq(CollectionsTable.visibility, 'public'),
           ne(CollectionsTable.userId, userId)
         )
       )
@@ -165,12 +165,12 @@ export async function getPersonalRecommendations() {
     return {
       success: true,
       data: finalRecommendations,
-      message: "Personalized recommendations",
+      message: 'Personalized recommendations',
     };
   } catch (error) {
-    console.error("Error fetching personal recommendations:", error);
+    console.error('Error fetching personal recommendations:', error);
     return {
-      error: "Failed to fetch personal recommendations",
+      error: 'Failed to fetch personal recommendations',
     };
   }
 }

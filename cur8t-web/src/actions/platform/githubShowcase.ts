@@ -1,13 +1,13 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { CollectionsTable, LinksTable, UsersTable } from "@/schema";
-import { eq, and, ilike, desc } from "drizzle-orm";
+import { db } from '@/db';
+import { CollectionsTable, LinksTable, UsersTable } from '@/schema';
+import { eq, and, ilike, desc } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function getGitHubShowcase() {
   // IP-based rate limiting for public platform endpoint
@@ -15,7 +15,7 @@ export async function getGitHubShowcase() {
   const rateLimitResult = await checkRateLimit(
     rateLimiters.getPlatformStatsLimiter,
     identifier,
-    "Too many requests to get GitHub showcase. Please try again later."
+    'Too many requests to get GitHub showcase. Please try again later.'
   );
   if (!rateLimitResult.success) {
     const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -39,8 +39,8 @@ export async function getGitHubShowcase() {
       .leftJoin(UsersTable, eq(CollectionsTable.userId, UsersTable.id))
       .where(
         and(
-          eq(CollectionsTable.visibility, "public"),
-          ilike(CollectionsTable.description, "%github%")
+          eq(CollectionsTable.visibility, 'public'),
+          ilike(CollectionsTable.description, '%github%')
         )
       )
       .orderBy(desc(CollectionsTable.likes))
@@ -66,8 +66,8 @@ export async function getGitHubShowcase() {
       )
       .where(
         and(
-          eq(CollectionsTable.visibility, "public"),
-          ilike(LinksTable.url, "%github.com%")
+          eq(CollectionsTable.visibility, 'public'),
+          ilike(LinksTable.url, '%github.com%')
         )
       )
       .groupBy(
@@ -103,9 +103,9 @@ export async function getGitHubShowcase() {
       data: sortedCollections,
     };
   } catch (error) {
-    console.error("Error fetching GitHub showcase:", error);
+    console.error('Error fetching GitHub showcase:', error);
     return {
-      error: "Failed to fetch GitHub showcase",
+      error: 'Failed to fetch GitHub showcase',
     };
   }
 }

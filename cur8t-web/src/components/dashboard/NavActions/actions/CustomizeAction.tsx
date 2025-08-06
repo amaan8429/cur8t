@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { DialogFooter } from "@/components/ui/dialog";
-import { useCollectionStore } from "@/store/collection-store";
-import { useActiveState } from "@/store/activeStateStore";
-import { PiSpinner } from "react-icons/pi";
-import { VALIDATION_LIMITS } from "@/types/types";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { DialogFooter } from '@/components/ui/dialog';
+import { useCollectionStore } from '@/store/collection-store';
+import { useActiveState } from '@/store/activeStateStore';
+import { PiSpinner } from 'react-icons/pi';
+import { VALIDATION_LIMITS } from '@/types/types';
 
 interface CustomizeActionProps {
   pageTitle: string;
@@ -31,12 +31,12 @@ export const CustomizeAction: React.FC<CustomizeActionProps> = ({
 
   const handleUpdateCollection = async () => {
     if (!pageTitle.trim()) {
-      console.error("Page title cannot be empty");
+      console.error('Page title cannot be empty');
       return;
     }
 
     if (!activeCollectionId) {
-      console.error("No active collection ID found");
+      console.error('No active collection ID found');
       return;
     }
 
@@ -50,11 +50,11 @@ export const CustomizeAction: React.FC<CustomizeActionProps> = ({
       // Update collection description
       await updateCollectionDescription(activeCollectionId, pageDescription);
 
-      console.log("Updated collection name to:", pageTitle);
-      console.log("Updated collection description to:", pageDescription);
+      console.log('Updated collection name to:', pageTitle);
+      console.log('Updated collection description to:', pageDescription);
       onClose();
     } catch (error) {
-      console.error("Failed to update collection:", error);
+      console.error('Failed to update collection:', error);
     } finally {
       setIsSaving(false);
     }
@@ -108,7 +108,7 @@ export const CustomizeAction: React.FC<CustomizeActionProps> = ({
               Saving...
             </>
           ) : (
-            "Save Changes"
+            'Save Changes'
           )}
         </Button>
       </DialogFooter>

@@ -1,6 +1,6 @@
-import { db } from "@/db";
-import { CollectionsTable } from "@/schema";
-import { and, eq } from "drizzle-orm";
+import { db } from '@/db';
+import { CollectionsTable } from '@/schema';
+import { and, eq } from 'drizzle-orm';
 
 export async function totalLinksCount({
   userId,
@@ -10,11 +10,11 @@ export async function totalLinksCount({
   collectionId: string;
 }): Promise<number> {
   if (!userId) {
-    throw new Error("User ID is required");
+    throw new Error('User ID is required');
   }
 
   if (!collectionId) {
-    throw new Error("Collection ID is required");
+    throw new Error('Collection ID is required');
   }
 
   const totalLinks = await db

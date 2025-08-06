@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
+import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import {
   PiGlobe,
   PiLock,
   PiUsers,
   PiPlusCircle,
   PiSpinner,
-} from "react-icons/pi";
-import { useState } from "react";
+} from 'react-icons/pi';
+import { useState } from 'react';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Progress } from "@/components/ui/progress";
-import { useCollectionStore } from "@/store/collection-store";
-import { useToast } from "@/hooks/use-toast";
-import { createCollectionAction } from "@/actions/collection/createCollection";
-import { useActiveState } from "@/store/activeStateStore";
-import { VALIDATION_LIMITS } from "@/types/types";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Progress } from '@/components/ui/progress';
+import { useCollectionStore } from '@/store/collection-store';
+import { useToast } from '@/hooks/use-toast';
+import { createCollectionAction } from '@/actions/collection/createCollection';
+import { useActiveState } from '@/store/activeStateStore';
+import { VALIDATION_LIMITS } from '@/types/types';
 
 interface CreateCollectionComponentProps {
   onSuccess?: (collectionId: string) => void;
@@ -30,12 +30,12 @@ export function CreateCollectionComponent({
   onSuccess,
   isDialog = false,
 }: CreateCollectionComponentProps = {}) {
-  const [collectionName, setCollectionName] = useState("");
-  const [description, setDescription] = useState("");
-  const [visibility, setVisibility] = useState("private");
+  const [collectionName, setCollectionName] = useState('');
+  const [description, setDescription] = useState('');
+  const [visibility, setVisibility] = useState('private');
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
-  const [loadingMessage, setLoadingMessage] = useState("");
+  const [loadingMessage, setLoadingMessage] = useState('');
   const router = useRouter();
   const { createACollection } = useCollectionStore();
   const {
@@ -45,7 +45,7 @@ export function CreateCollectionComponent({
     warning: toastWarning,
   } = useToast();
   const { activeCollectionId, setActiveCollectionId } = useActiveState();
-  const [newCollectionTitle, setNewCollectionTitle] = React.useState("");
+  const [newCollectionTitle, setNewCollectionTitle] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
@@ -54,15 +54,15 @@ export function CreateCollectionComponent({
 
     if (collectionName.trim().length === 0) {
       toastWarning({
-        title: "Collection Name Required",
-        description: "Please enter a name for your collection.",
+        title: 'Collection Name Required',
+        description: 'Please enter a name for your collection.',
       });
       return;
     }
 
     if (collectionName.length > VALIDATION_LIMITS.COLLECTION_NAME_MAX) {
       toastWarning({
-        title: "Name Too Long",
+        title: 'Name Too Long',
         description: `Collection name must be ${VALIDATION_LIMITS.COLLECTION_NAME_MAX} characters or less.`,
       });
       return;
@@ -70,7 +70,7 @@ export function CreateCollectionComponent({
 
     setIsLoading(true);
     setLoadingProgress(10);
-    setLoadingMessage("Creating collection...");
+    setLoadingMessage('Creating collection...');
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 300));
@@ -83,25 +83,25 @@ export function CreateCollectionComponent({
       );
 
       setLoadingProgress(70);
-      setLoadingMessage("Setting up collection...");
+      setLoadingMessage('Setting up collection...');
 
       if (collectionCreated.success) {
         setLoadingProgress(90);
-        setLoadingMessage("Finalizing...");
+        setLoadingMessage('Finalizing...');
 
         await createACollection(collectionCreated.data);
         setActiveCollectionId(collectionCreated.data.id);
 
         setLoadingProgress(100);
-        setLoadingMessage("Collection created successfully!");
+        setLoadingMessage('Collection created successfully!');
 
         // Reset form
-        setCollectionName("");
-        setDescription("");
-        setVisibility("private");
+        setCollectionName('');
+        setDescription('');
+        setVisibility('private');
 
         toastSuccess({
-          title: "Collection Created!",
+          title: 'Collection Created!',
           description: `"${collectionName}" has been successfully created.`,
         });
 
@@ -117,59 +117,59 @@ export function CreateCollectionComponent({
         }
       } else {
         toastError({
-          title: "Creation Failed",
+          title: 'Creation Failed',
           description:
             collectionCreated.error ||
-            "Failed to create collection. Please try again.",
+            'Failed to create collection. Please try again.',
         });
       }
     } catch (err) {
-      console.error("Error creating collection:", err);
+      console.error('Error creating collection:', err);
       toastError({
-        title: "Creation Failed",
-        description: "Something went wrong. Please try again.",
+        title: 'Creation Failed',
+        description: 'Something went wrong. Please try again.',
       });
     } finally {
       setIsLoading(false);
       setLoadingProgress(0);
-      setLoadingMessage("");
+      setLoadingMessage('');
     }
   };
 
   const visibilityOptions = [
     {
-      id: "private",
+      id: 'private',
       icon: PiLock,
-      title: "Private",
-      description: "Only you can access this collection",
+      title: 'Private',
+      description: 'Only you can access this collection',
     },
     {
-      id: "public",
+      id: 'public',
       icon: PiGlobe,
-      title: "Public",
-      description: "Anyone can view this collection",
+      title: 'Public',
+      description: 'Anyone can view this collection',
     },
     {
-      id: "protected",
+      id: 'protected',
       icon: PiUsers,
-      title: "Protected",
-      description: "Only selected people can access",
+      title: 'Protected',
+      description: 'Only selected people can access',
     },
   ];
 
   const handleCreateCollection = async () => {
     if (!newCollectionTitle.trim()) {
       toastWarning({
-        title: "Collection Name Required",
-        description: "Please enter a name for your collection.",
+        title: 'Collection Name Required',
+        description: 'Please enter a name for your collection.',
       });
       return;
     }
 
     if (newCollectionTitle.length > 50) {
       toastWarning({
-        title: "Name Too Long",
-        description: "Collection name must be 50 characters or less.",
+        title: 'Name Too Long',
+        description: 'Collection name must be 50 characters or less.',
       });
       return;
     }
@@ -178,19 +178,19 @@ export function CreateCollectionComponent({
       setLoading(true);
       const result = await createCollectionAction(
         newCollectionTitle,
-        "",
-        "private"
+        '',
+        'private'
       );
 
       // Check for rate limiting
       if (result.error && result.retryAfter) {
         const { showRateLimitToast } = await import(
-          "@/components/ui/rate-limit-toast"
+          '@/components/ui/rate-limit-toast'
         );
         showRateLimitToast({
           retryAfter: result.retryAfter * 60,
           message:
-            "Too many collection creation attempts. Please try again later.",
+            'Too many collection creation attempts. Please try again later.',
         });
         return;
       }
@@ -201,24 +201,24 @@ export function CreateCollectionComponent({
         setActiveCollectionId(newCollection.id);
 
         toastSuccess({
-          title: "Collection Created!",
+          title: 'Collection Created!',
           description: `"${newCollectionTitle}" has been successfully created.`,
         });
 
-        setNewCollectionTitle("");
+        setNewCollectionTitle('');
         setOpen(false);
       } else {
         toastError({
-          title: "Creation Failed",
+          title: 'Creation Failed',
           description:
-            result.error || "Failed to create collection. Please try again.",
+            result.error || 'Failed to create collection. Please try again.',
         });
       }
     } catch (error) {
-      console.error("Error creating collection:", error);
+      console.error('Error creating collection:', error);
       toastError({
-        title: "Creation Failed",
-        description: "Something went wrong. Please try again.",
+        title: 'Creation Failed',
+        description: 'Something went wrong. Please try again.',
       });
     } finally {
       setLoading(false);
@@ -228,10 +228,10 @@ export function CreateCollectionComponent({
   return (
     <div
       className={
-        isDialog ? "space-y-6" : "flex items-center justify-center p-4"
+        isDialog ? 'space-y-6' : 'flex items-center justify-center p-4'
       }
     >
-      <div className={isDialog ? "w-full" : "w-full max-w-xl space-y-8"}>
+      <div className={isDialog ? 'w-full' : 'w-full max-w-xl space-y-8'}>
         {!isDialog && (
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold">Create New Collection</h1>
@@ -258,7 +258,7 @@ export function CreateCollectionComponent({
 
         <form
           onSubmit={handleSubmit}
-          className={isDialog ? "space-y-6" : "space-y-8"}
+          className={isDialog ? 'space-y-6' : 'space-y-8'}
         >
           <div className="space-y-4">
             <div className="relative">
@@ -266,7 +266,7 @@ export function CreateCollectionComponent({
                 value={collectionName}
                 onChange={(e) => setCollectionName(e.target.value)}
                 className={
-                  isDialog ? "h-12 px-4" : "h-16 text-lg px-6 rounded-xl"
+                  isDialog ? 'h-12 px-4' : 'h-16 text-lg px-6 rounded-xl'
                 }
                 placeholder="Collection name"
                 disabled={isLoading}
@@ -282,8 +282,8 @@ export function CreateCollectionComponent({
                 onChange={(e) => setDescription(e.target.value)}
                 className={
                   isDialog
-                    ? "min-h-[80px] px-4 py-3 resize-none"
-                    : "min-h-[100px] text-lg px-6 py-4 rounded-xl resize-none"
+                    ? 'min-h-[80px] px-4 py-3 resize-none'
+                    : 'min-h-[100px] text-lg px-6 py-4 rounded-xl resize-none'
                 }
                 placeholder="Collection description (optional)"
                 disabled={isLoading}
@@ -302,8 +302,8 @@ export function CreateCollectionComponent({
             <div
               className={
                 isDialog
-                  ? "grid gap-3 grid-cols-1 sm:grid-cols-3"
-                  : "grid gap-4 md:grid-cols-3"
+                  ? 'grid gap-3 grid-cols-1 sm:grid-cols-3'
+                  : 'grid gap-4 md:grid-cols-3'
               }
             >
               {visibilityOptions.map((option) => (
@@ -311,10 +311,10 @@ export function CreateCollectionComponent({
                   key={option.id}
                   type="button"
                   onClick={() => setVisibility(option.id)}
-                  className={`${isDialog ? "p-3" : "p-4"} rounded-xl border border-border/30 text-left transition-all hover:border-border/50 ${
+                  className={`${isDialog ? 'p-3' : 'p-4'} rounded-xl border border-border/30 text-left transition-all hover:border-border/50 ${
                     visibility === option.id
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:bg-accent"
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border hover:bg-accent'
                   }`}
                 >
                   <option.icon className="h-6 w-6 mb-2" />
@@ -331,7 +331,7 @@ export function CreateCollectionComponent({
             type="submit"
             disabled={isLoading}
             className={
-              isDialog ? "w-full h-12" : "w-full h-16 text-lg rounded-xl"
+              isDialog ? 'w-full h-12' : 'w-full h-16 text-lg rounded-xl'
             }
           >
             {isLoading ? (
@@ -339,7 +339,7 @@ export function CreateCollectionComponent({
             ) : (
               <PiPlusCircle className="mr-2 h-5 w-5" />
             )}
-            {isLoading ? loadingMessage || "Creating..." : "Create Collection"}
+            {isLoading ? loadingMessage || 'Creating...' : 'Create Collection'}
           </Button>
         </form>
       </div>

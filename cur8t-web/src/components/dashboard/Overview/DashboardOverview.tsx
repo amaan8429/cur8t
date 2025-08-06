@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -12,20 +12,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   PiBookmark,
   PiPlus,
@@ -42,29 +42,29 @@ import {
   PiDotsThreeThin,
   PiEyeClosed,
   PiLock,
-} from "react-icons/pi";
-import { useActiveState } from "@/store/activeStateStore";
+} from 'react-icons/pi';
+import { useActiveState } from '@/store/activeStateStore';
 import {
   getDashboardStatsAction,
   type DashboardStats,
-} from "@/actions/user/getDashboardStats";
-import { useEffect, useState } from "react";
-import { DashboardStatsCard } from "./DashboardStatsCard";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
-import { CreateCollectionComponent } from "../TopSection/CreateCollection";
+} from '@/actions/user/getDashboardStats';
+import { useEffect, useState } from 'react';
+import { DashboardStatsCard } from './DashboardStatsCard';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
+import { CreateCollectionComponent } from '../TopSection/CreateCollection';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { useCollectionStore } from "@/store/collection-store";
-import { usePinnedCollectionsStore } from "@/store/pinned-collections-store";
+} from '@/components/ui/dialog';
+import { useCollectionStore } from '@/store/collection-store';
+import { usePinnedCollectionsStore } from '@/store/pinned-collections-store';
 
 type FilterState = {
-  visibility: "all" | "public" | "private" | "protected";
-  dateRange: "all" | "today" | "week" | "month" | "year";
+  visibility: 'all' | 'public' | 'private' | 'protected';
+  dateRange: 'all' | 'today' | 'week' | 'month' | 'year';
   minLinks: number;
 };
 
@@ -75,12 +75,12 @@ export function DashboardOverview() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<FilterState>({
-    visibility: "all",
-    dateRange: "all",
+    visibility: 'all',
+    dateRange: 'all',
     minLinks: 0,
   });
   const router = useRouter();
@@ -105,7 +105,7 @@ export function DashboardOverview() {
 
         setStats(dashboardStats);
       } catch (error) {
-        console.error("Error fetching dashboard stats:", error);
+        console.error('Error fetching dashboard stats:', error);
       } finally {
         setLoading(false);
       }
@@ -127,7 +127,7 @@ export function DashboardOverview() {
         try {
           await Promise.all([fetchCollections(), fetchPinnedCollections()]);
         } catch (error) {
-          console.error("Error fetching collections:", error);
+          console.error('Error fetching collections:', error);
         }
       }
     }
@@ -153,28 +153,28 @@ export function DashboardOverview() {
 
         // Visibility filter
         const matchesVisibility =
-          filters.visibility === "all" ||
+          filters.visibility === 'all' ||
           collection.visibility === filters.visibility;
 
         // Date filter
         let matchesDate = true;
-        if (filters.dateRange !== "all") {
+        if (filters.dateRange !== 'all') {
           const now = new Date();
           const createdAt = new Date(collection.createdAt);
           const daysDiff =
             (now.getTime() - createdAt.getTime()) / (1000 * 3600 * 24);
 
           switch (filters.dateRange) {
-            case "today":
+            case 'today':
               matchesDate = daysDiff <= 1;
               break;
-            case "week":
+            case 'week':
               matchesDate = daysDiff <= 7;
               break;
-            case "month":
+            case 'month':
               matchesDate = daysDiff <= 30;
               break;
-            case "year":
+            case 'year':
               matchesDate = daysDiff <= 365;
               break;
           }
@@ -207,16 +207,16 @@ export function DashboardOverview() {
   // Get visibility icon and text
   const getVisibilityInfo = (visibility: string) => {
     switch (visibility) {
-      case "public":
-        return { icon: PiGlobe, text: "Public", variant: "default" as const };
-      case "protected":
+      case 'public':
+        return { icon: PiGlobe, text: 'Public', variant: 'default' as const };
+      case 'protected':
         return {
           icon: PiLock,
-          text: "Protected",
-          variant: "secondary" as const,
+          text: 'Protected',
+          variant: 'secondary' as const,
         };
       default:
-        return { icon: PiLock, text: "Private", variant: "outline" as const };
+        return { icon: PiLock, text: 'Private', variant: 'outline' as const };
     }
   };
 
@@ -229,13 +229,13 @@ export function DashboardOverview() {
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
     if (diffInMinutes < 10080)
       return `${Math.floor(diffInMinutes / 1440)}d ago`;
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
   const resetFilters = () => {
     setFilters({
-      visibility: "all",
-      dateRange: "all",
+      visibility: 'all',
+      dateRange: 'all',
       minLinks: 0,
     });
     setShowFilters(false);
@@ -259,7 +259,7 @@ export function DashboardOverview() {
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className={`p-6 ${i < 3 ? "border-r border-border/10" : ""}`}
+              className={`p-6 ${i < 3 ? 'border-r border-border/10' : ''}`}
             >
               <div className="flex items-center justify-between">
                 <div className="space-y-3">
@@ -446,7 +446,7 @@ export function DashboardOverview() {
                 PUBLIC
               </p>
               <p className="text-3xl font-bold mt-1">
-                {collections?.filter((c) => c.visibility === "public").length ||
+                {collections?.filter((c) => c.visibility === 'public').length ||
                   0}
               </p>
               <p className="text-sm text-muted-foreground mt-1">
@@ -510,7 +510,7 @@ export function DashboardOverview() {
                   </label>
                   <Select
                     value={filters.visibility}
-                    onValueChange={(value: FilterState["visibility"]) =>
+                    onValueChange={(value: FilterState['visibility']) =>
                       setFilters((prev) => ({ ...prev, visibility: value }))
                     }
                   >
@@ -532,7 +532,7 @@ export function DashboardOverview() {
                   </label>
                   <Select
                     value={filters.dateRange}
-                    onValueChange={(value: FilterState["dateRange"]) =>
+                    onValueChange={(value: FilterState['dateRange']) =>
                       setFilters((prev) => ({ ...prev, dateRange: value }))
                     }
                   >
@@ -613,11 +613,11 @@ export function DashboardOverview() {
                     <PiFolder className="h-8 w-8 text-muted-foreground" />
                     <p className="text-muted-foreground font-medium">
                       {searchQuery ||
-                      filters.visibility !== "all" ||
-                      filters.dateRange !== "all" ||
+                      filters.visibility !== 'all' ||
+                      filters.dateRange !== 'all' ||
                       filters.minLinks > 0
-                        ? "No collections found matching your filters."
-                        : "No collections yet. Create your first one!"}
+                        ? 'No collections found matching your filters.'
+                        : 'No collections yet. Create your first one!'}
                     </p>
                   </div>
                 </TableCell>
@@ -677,11 +677,11 @@ export function DashboardOverview() {
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {new Date(collection.createdAt).toLocaleDateString(
-                        "en-US",
+                        'en-US',
                         {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
                         }
                       )}
                     </TableCell>
@@ -716,7 +716,7 @@ export function DashboardOverview() {
                               e.stopPropagation();
                               window.open(
                                 `/collection/${collection.id}`,
-                                "_blank"
+                                '_blank'
                               );
                             }}
                           >
@@ -737,8 +737,8 @@ export function DashboardOverview() {
         {filteredCollections.length > 0 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-border/10">
             <div className="text-sm text-muted-foreground">
-              Showing {startIndex + 1} to{" "}
-              {Math.min(endIndex, filteredCollections.length)} of{" "}
+              Showing {startIndex + 1} to{' '}
+              {Math.min(endIndex, filteredCollections.length)} of{' '}
               {filteredCollections.length} results
             </div>
             <div className="flex items-center gap-2">
@@ -767,10 +767,10 @@ export function DashboardOverview() {
                         <span className="px-2 text-muted-foreground">...</span>
                       )}
                       <Button
-                        variant={currentPage === page ? "default" : "outline"}
+                        variant={currentPage === page ? 'default' : 'outline'}
                         size="sm"
                         onClick={() => setCurrentPage(page)}
-                        className={`w-8 h-8 p-0 ${currentPage === page ? "" : "border-border/20"}`}
+                        className={`w-8 h-8 p-0 ${currentPage === page ? '' : 'border-border/20'}`}
                       >
                         {page}
                       </Button>

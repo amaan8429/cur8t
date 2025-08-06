@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { PiGitBranch, PiDatabase, PiLightning } from "react-icons/pi";
-import { Badge } from "@/components/ui/badge";
+import React, { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PiGitBranch, PiDatabase, PiLightning } from 'react-icons/pi';
+import { Badge } from '@/components/ui/badge';
 
 const GitHubSyncAnimation = () => {
   const [activeSync, setActiveSync] = useState(0);
 
   const collections = [
-    { id: 1, name: "Web Dev Tools", count: 25, color: "bg-blue-500" },
-    { id: 2, name: "Design Resources", count: 18, color: "bg-purple-500" },
-    { id: 3, name: "AI/ML Papers", count: 32, color: "bg-green-500" },
+    { id: 1, name: 'Web Dev Tools', count: 25, color: 'bg-blue-500' },
+    { id: 2, name: 'Design Resources', count: 18, color: 'bg-purple-500' },
+    { id: 3, name: 'AI/ML Papers', count: 32, color: 'bg-green-500' },
   ];
 
   useEffect(() => {
@@ -77,8 +77,8 @@ const GitHubSyncAnimation = () => {
                   transition={{ delay: index * 0.2 }}
                   className={`relative p-4 rounded-xl border bg-card transition-all duration-500 ${
                     activeSync === index
-                      ? "border-primary shadow-lg shadow-primary/20 scale-105"
-                      : "border-border"
+                      ? 'border-primary shadow-lg shadow-primary/20 scale-105'
+                      : 'border-border'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -129,7 +129,7 @@ const GitHubSyncAnimation = () => {
                             initial={{ pathLength: 0, opacity: 0 }}
                             animate={{ pathLength: 1, opacity: 1 }}
                             exit={{ pathLength: 0, opacity: 0 }}
-                            transition={{ duration: 1, ease: "easeInOut" }}
+                            transition={{ duration: 1, ease: 'easeInOut' }}
                           />
                         )}
                       </AnimatePresence>
@@ -194,8 +194,8 @@ const GitHubSyncAnimation = () => {
                       key={collection.id}
                       className={`flex items-center gap-2 p-2 rounded text-sm transition-all duration-300 ${
                         activeSync === index
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground"
+                          ? 'bg-primary/10 text-primary'
+                          : 'text-muted-foreground'
                       }`}
                     >
                       <div

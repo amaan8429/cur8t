@@ -14,14 +14,14 @@ export default function CodeBlock() {
           </div>
           <pre className="m-0 overflow-x-auto rounded-lg bg-transparent p-0 text-sm leading-relaxed whitespace-pre text-muted-foreground">
             <code>
-              <span className="text-primary">import</span>{" "}
-              <span className="text-foreground">{"{"}</span>useState
-              <span className="text-foreground">{"}"}</span>{" "}
-              <span className="text-primary">from</span>{" "}
+              <span className="text-primary">import</span>{' '}
+              <span className="text-foreground">{'{'}</span>useState
+              <span className="text-foreground">{'}'}</span>{' '}
+              <span className="text-primary">from</span>{' '}
               <span className="text-accent">&apos;react&apos;</span>;<br />
               <br />
-              <span className="text-primary">function</span>{" "}
-              <span className="text-secondary-foreground">Counter</span>() {"{"}
+              <span className="text-primary">function</span>{' '}
+              <span className="text-secondary-foreground">Counter</span>() {'{'}
               <br />
               &nbsp;&nbsp;<span className="text-primary">const</span> [count,
               setCount] = useState(<span className="text-accent">0</span>);
@@ -29,21 +29,21 @@ export default function CodeBlock() {
               <br />
               &nbsp;&nbsp;<span className="text-primary">return</span> (<br />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <span className="text-secondary-foreground">&lt;button</span>{" "}
+              <span className="text-secondary-foreground">&lt;button</span>{' '}
               <span className="text-emerald-400">onClick</span>=
-              <span className="text-accent">{"{"}</span>() =&gt; setCount(count
+              <span className="text-accent">{'{'}</span>() =&gt; setCount(count
               + <span className="text-accent">1</span>)
-              <span className="text-accent">{"}"}</span>
+              <span className="text-accent">{'}'}</span>
               <span className="text-secondary-foreground">&gt;</span>
               <br />
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clicked {"{"}count{"}"} times
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clicked {'{'}count{'}'} times
               <br />
               &nbsp;&nbsp;&nbsp;&nbsp;
               <span className="text-secondary-foreground">&lt;/button&gt;</span>
               <br />
               &nbsp;&nbsp;);
               <br />
-              {"}"}
+              {'}'}
             </code>
           </pre>
         </div>

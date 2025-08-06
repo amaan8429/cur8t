@@ -1,6 +1,6 @@
-import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { PiPlus, PiBookmark } from "react-icons/pi";
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { PiPlus, PiBookmark } from 'react-icons/pi';
 
 const FavoritesEmptyState: React.FC = () => {
   return (

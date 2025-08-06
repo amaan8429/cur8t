@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import type React from "react";
-import { cn } from "@/lib/utils";
+import type React from 'react';
+import { cn } from '@/lib/utils';
 import {
   PiBookmark,
   PiGlobe,
@@ -11,15 +11,15 @@ import {
   PiMagnifyingGlass,
   PiBrowser,
   PiPhone,
-} from "react-icons/pi";
+} from 'react-icons/pi';
 import {
   Card,
   CardHeader,
   CardContent,
   CardFooter,
-} from "@/components/ui/card";
-import { motion } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
+} from '@/components/ui/card';
+import { motion } from 'framer-motion';
+import { Badge } from '@/components/ui/badge';
 
 interface BentoItem {
   title: string;
@@ -39,65 +39,65 @@ interface BentoGridProps {
 
 const itemsSample: BentoItem[] = [
   {
-    title: "Smart Collections",
-    meta: "AI-Powered",
+    title: 'Smart Collections',
+    meta: 'AI-Powered',
     description:
-      "Organize your bookmarks into intelligent collections with automatic categorization and tagging. Never lose track of important content again.",
+      'Organize your bookmarks into intelligent collections with automatic categorization and tagging. Never lose track of important content again.',
     icon: <PiBookmark className="text-primary h-4 w-4" />,
-    status: "Popular",
-    tags: ["AI", "Organization", "Smart"],
+    status: 'Popular',
+    tags: ['AI', 'Organization', 'Smart'],
     colSpan: 2,
     hasPersistentHover: true,
   },
   {
-    title: "Browser Extension",
-    meta: "Chrome & Firefox",
+    title: 'Browser Extension',
+    meta: 'Chrome & Firefox',
     description:
-      "Save any webpage instantly with our seamless browser extension. One-click bookmarking with automatic metadata extraction.",
+      'Save any webpage instantly with our seamless browser extension. One-click bookmarking with automatic metadata extraction.',
     icon: <PiBrowser className="text-primary h-4 w-4" />,
-    status: "Essential",
-    tags: ["Extension", "Chrome"],
+    status: 'Essential',
+    tags: ['Extension', 'Chrome'],
   },
   {
-    title: "Universal Access",
+    title: 'Universal Access',
     description:
-      "Access your bookmarks from any device, anywhere. Seamless sync across desktop, mobile, and web platforms.",
+      'Access your bookmarks from any device, anywhere. Seamless sync across desktop, mobile, and web platforms.',
     icon: <PiGlobe className="text-primary h-4 w-4" />,
-    status: "Sync",
+    status: 'Sync',
   },
   {
-    title: "Mobile Apps",
+    title: 'Mobile Apps',
     description:
-      "Native mobile apps for iOS and Android. Save and access your bookmarks on the go with offline support.",
+      'Native mobile apps for iOS and Android. Save and access your bookmarks on the go with offline support.',
     icon: <PiPhone className="text-primary h-4 w-4" />,
-    meta: "iOS & Android",
-    tags: ["Mobile", "Offline"],
+    meta: 'iOS & Android',
+    tags: ['Mobile', 'Offline'],
   },
   {
-    title: "Advanced Search",
+    title: 'Advanced Search',
     description:
-      "Find any bookmark instantly with powerful search capabilities. Search by title, content, tags, or even within saved pages.",
+      'Find any bookmark instantly with powerful search capabilities. Search by title, content, tags, or even within saved pages.',
     icon: <PiMagnifyingGlass className="text-primary h-4 w-4" />,
-    meta: "Full-text",
-    tags: ["Search", "Fast"],
+    meta: 'Full-text',
+    tags: ['Search', 'Fast'],
   },
   {
-    title: "Social Sharing",
-    meta: "Public Collections",
+    title: 'Social Sharing',
+    meta: 'Public Collections',
     description:
-      "Share your curated collections with the world. Discover amazing bookmarks from other users and build your network.",
+      'Share your curated collections with the world. Discover amazing bookmarks from other users and build your network.',
     icon: <PiShare className="text-primary h-4 w-4" />,
-    status: "Community",
-    tags: ["Sharing", "Social"],
+    status: 'Community',
+    tags: ['Sharing', 'Social'],
   },
   {
-    title: "Privacy & Security",
-    meta: "End-to-End",
+    title: 'Privacy & Security',
+    meta: 'End-to-End',
     description:
-      "Your bookmarks are encrypted and secure. Private collections stay private, with enterprise-grade security and data protection.",
+      'Your bookmarks are encrypted and secure. Private collections stay private, with enterprise-grade security and data protection.',
     icon: <PiShield className="text-primary h-4 w-4" />,
-    status: "Secure",
-    tags: ["Privacy", "Encryption"],
+    status: 'Secure',
+    tags: ['Privacy', 'Encryption'],
     colSpan: 2,
   },
 ];
@@ -142,8 +142,8 @@ export default function Integrations({ items = itemsSample }: BentoGridProps) {
           <motion.div
             key={`${item.title}-${item.status || item.meta}`}
             className={cn(
-              item.colSpan || "col-span-1",
-              item.colSpan === 2 ? "md:col-span-2" : ""
+              item.colSpan || 'col-span-1',
+              item.colSpan === 2 ? 'md:col-span-2' : ''
             )}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -151,21 +151,21 @@ export default function Integrations({ items = itemsSample }: BentoGridProps) {
           >
             <Card
               className={cn(
-                "group bg-card/40 relative h-full transition-all duration-300 hover:shadow-md",
-                "will-change-transform hover:-translate-y-1",
-                "border-border/60 overflow-hidden",
+                'group bg-card/40 relative h-full transition-all duration-300 hover:shadow-md',
+                'will-change-transform hover:-translate-y-1',
+                'border-border/60 overflow-hidden',
                 {
-                  "-translate-y-1 shadow-md": item.hasPersistentHover,
+                  '-translate-y-1 shadow-md': item.hasPersistentHover,
                 }
               )}
             >
               <div
                 className={cn(
-                  "absolute inset-0",
+                  'absolute inset-0',
                   item.hasPersistentHover
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100",
-                  "transition-opacity duration-300"
+                    ? 'opacity-100'
+                    : 'opacity-0 group-hover:opacity-100',
+                  'transition-opacity duration-300'
                 )}
               >
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[length:4px_4px] dark:bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)]" />
@@ -177,7 +177,7 @@ export default function Integrations({ items = itemsSample }: BentoGridProps) {
                     {item.icon}
                   </div>
                   <span className="bg-secondary text-secondary-foreground rounded-md px-2 py-1 text-xs font-medium">
-                    {item.status || "Active"}
+                    {item.status || 'Active'}
                   </span>
                 </div>
               </CardHeader>
@@ -209,18 +209,18 @@ export default function Integrations({ items = itemsSample }: BentoGridProps) {
                     ))}
                   </div>
                   <span className="text-primary text-xs font-medium opacity-0 transition-opacity group-hover:opacity-100">
-                    {item.cta || "Learn More →"}
+                    {item.cta || 'Learn More →'}
                   </span>
                 </div>
               </CardFooter>
 
               <div
                 className={cn(
-                  "via-primary/10 absolute inset-0 -z-10 rounded-xl bg-gradient-to-br from-transparent to-transparent p-px",
+                  'via-primary/10 absolute inset-0 -z-10 rounded-xl bg-gradient-to-br from-transparent to-transparent p-px',
                   item.hasPersistentHover
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100",
-                  "transition-opacity duration-300"
+                    ? 'opacity-100'
+                    : 'opacity-0 group-hover:opacity-100',
+                  'transition-opacity duration-300'
                 )}
               />
             </Card>

@@ -1,22 +1,22 @@
-import { useState, useCallback } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { useState, useCallback } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 import {
   agentsApi,
   type BookmarkUploadResponse,
   type BookmarkAnalysisResponse,
-} from "@/lib/api/agents";
-import { createCollectionAction } from "@/actions/collection/createCollection";
-import { createLinkAction } from "@/actions/linkActions/createLink";
+} from '@/lib/api/agents';
+import { createCollectionAction } from '@/actions/collection/createCollection';
+import { createLinkAction } from '@/actions/linkActions/createLink';
 import {
   Step,
   BookmarkLink,
   EnhancedCategory,
   CreatedCollection,
-} from "./types";
+} from './types';
 
 export function useBookmarkImporter() {
-  const [currentStep, setCurrentStep] = useState<Step>("upload");
+  const [currentStep, setCurrentStep] = useState<Step>('upload');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadResult, setUploadResult] =
@@ -32,8 +32,8 @@ export function useBookmarkImporter() {
     categoryIndex: number;
     linkIndex: number;
   } | null>(null);
-  const [editedTitle, setEditedTitle] = useState("");
-  const [editedUrl, setEditedUrl] = useState("");
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editedUrl, setEditedUrl] = useState('');
   const [createdCollections, setCreatedCollections] = useState<
     CreatedCollection[]
   >([]);
@@ -41,7 +41,7 @@ export function useBookmarkImporter() {
   const router = useRouter();
 
   const resetDialog = useCallback(() => {
-    setCurrentStep("upload");
+    setCurrentStep('upload');
     setIsLoading(false);
     setSelectedFile(null);
     setUploadResult(null);
@@ -50,21 +50,21 @@ export function useBookmarkImporter() {
     setCustomNames({});
     setEnhancedCategories([]);
     setEditingLink(null);
-    setEditedTitle("");
-    setEditedUrl("");
+    setEditedTitle('');
+    setEditedUrl('');
     setCreatedCollections([]);
   }, []);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (file.type === "text/html" || file.name.endsWith(".html")) {
+      if (file.type === 'text/html' || file.name.endsWith('.html')) {
         setSelectedFile(file);
       } else {
         toast({
-          title: "Invalid file type",
-          description: "Please select an HTML bookmark file.",
-          variant: "destructive",
+          title: 'Invalid file type',
+          description: 'Please select an HTML bookmark file.',
+          variant: 'destructive',
         });
       }
     }
@@ -76,16 +76,16 @@ export function useBookmarkImporter() {
     try {
       const result = await agentsApi.uploadBookmarks(selectedFile);
       setUploadResult(result);
-      setCurrentStep("analyze");
+      setCurrentStep('analyze');
       toast({
-        title: "Upload successful!",
+        title: 'Upload successful!',
         description: `Found ${result.total_bookmarks} bookmarks from ${result.browser_detected}`,
       });
     } catch (error) {
       toast({
-        title: "Upload failed",
-        description: error instanceof Error ? error.message : "Unknown error",
-        variant: "destructive",
+        title: 'Upload failed',
+        description: error instanceof Error ? error.message : 'Unknown error',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -118,16 +118,16 @@ export function useBookmarkImporter() {
         })
       );
       setEnhancedCategories(enhanced);
-      setCurrentStep("preview");
+      setCurrentStep('preview');
       toast({
-        title: "Analysis complete!",
+        title: 'Analysis complete!',
         description: `Created ${result.categories.length} smart categories`,
       });
     } catch (error) {
       toast({
-        title: "Analysis failed",
-        description: error instanceof Error ? error.message : "Unknown error",
-        variant: "destructive",
+        title: 'Analysis failed',
+        description: error instanceof Error ? error.message : 'Unknown error',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -156,14 +156,14 @@ export function useBookmarkImporter() {
     };
     setEnhancedCategories(updatedCategories);
     setEditingLink(null);
-    setEditedTitle("");
-    setEditedUrl("");
+    setEditedTitle('');
+    setEditedUrl('');
   };
 
   const cancelEditingLink = () => {
     setEditingLink(null);
-    setEditedTitle("");
-    setEditedUrl("");
+    setEditedTitle('');
+    setEditedUrl('');
   };
 
   const deleteLink = (categoryIndex: number, linkIndex: number) => {
@@ -208,19 +208,19 @@ export function useBookmarkImporter() {
           category.name;
         const collectionResult = await createCollectionAction(
           collectionName,
-          category.description || "",
-          "private"
+          category.description || '',
+          'private'
         );
 
         // Check for rate limiting
         if (collectionResult.error && collectionResult.retryAfter) {
           const { showRateLimitToast } = await import(
-            "@/components/ui/rate-limit-toast"
+            '@/components/ui/rate-limit-toast'
           );
           showRateLimitToast({
             retryAfter: collectionResult.retryAfter * 60,
             message:
-              "Too many collection creation attempts. Please try again later.",
+              'Too many collection creation attempts. Please try again later.',
           });
           return;
         }
@@ -243,12 +243,12 @@ export function useBookmarkImporter() {
             // Check for rate limiting
             if (linkResult.error && linkResult.retryAfter) {
               const { showRateLimitToast } = await import(
-                "@/components/ui/rate-limit-toast"
+                '@/components/ui/rate-limit-toast'
               );
               showRateLimitToast({
                 retryAfter: linkResult.retryAfter * 60,
                 message:
-                  "Too many link creation attempts. Please try again later.",
+                  'Too many link creation attempts. Please try again later.',
               });
               return;
             }
@@ -270,16 +270,16 @@ export function useBookmarkImporter() {
         });
       }
       setCreatedCollections(createdCollectionsData);
-      setCurrentStep("complete");
+      setCurrentStep('complete');
       toast({
-        title: "Collections created!",
+        title: 'Collections created!',
         description: `Successfully created ${createdCollectionsData.length} collections with ${createdCollectionsData.reduce((sum, col) => sum + col.linksCount, 0)} links`,
       });
     } catch (error) {
       toast({
-        title: "Creation failed",
-        description: error instanceof Error ? error.message : "Unknown error",
-        variant: "destructive",
+        title: 'Creation failed',
+        description: error instanceof Error ? error.message : 'Unknown error',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);

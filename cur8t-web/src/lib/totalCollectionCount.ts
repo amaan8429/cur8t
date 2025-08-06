@@ -1,6 +1,6 @@
-import { db } from "@/db";
-import { UsersTable } from "@/schema";
-import { eq } from "drizzle-orm";
+import { db } from '@/db';
+import { UsersTable } from '@/schema';
+import { eq } from 'drizzle-orm';
 
 export async function totalCollectionsCount({
   userId,

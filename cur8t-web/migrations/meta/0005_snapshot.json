@@ -53,12 +53,8 @@
           "name": "api_keys_user_id_users_id_fk",
           "tableFrom": "api_keys",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -132,12 +128,8 @@
           "name": "access_requests_requester_id_users_id_fk",
           "tableFrom": "access_requests",
           "tableTo": "users",
-          "columnsFrom": [
-            "requester_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["requester_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -145,12 +137,8 @@
           "name": "access_requests_collection_id_collections_id_fk",
           "tableFrom": "access_requests",
           "tableTo": "collections",
-          "columnsFrom": [
-            "collection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["collection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -158,12 +146,8 @@
           "name": "access_requests_owner_id_users_id_fk",
           "tableFrom": "access_requests",
           "tableTo": "users",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -173,10 +157,7 @@
         "access_requests_requester_id_collection_id_unique": {
           "name": "access_requests_requester_id_collection_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "requester_id",
-            "collection_id"
-          ]
+          "columns": ["requester_id", "collection_id"]
         }
       },
       "policies": {},
@@ -220,12 +201,8 @@
           "name": "collection_likes_user_id_users_id_fk",
           "tableFrom": "collection_likes",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -233,12 +210,8 @@
           "name": "collection_likes_collection_id_collections_id_fk",
           "tableFrom": "collection_likes",
           "tableTo": "collections",
-          "columnsFrom": [
-            "collection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["collection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -333,12 +306,8 @@
           "name": "collections_user_id_users_id_fk",
           "tableFrom": "collections",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -398,12 +367,8 @@
           "name": "favorites_user_id_users_id_fk",
           "tableFrom": "favorites",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -464,12 +429,8 @@
           "name": "github_settings_user_id_users_id_fk",
           "tableFrom": "github_settings",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -535,12 +496,8 @@
           "name": "links_link_collection_id_collections_id_fk",
           "tableFrom": "links",
           "tableTo": "collections",
-          "columnsFrom": [
-            "link_collection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["link_collection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -548,12 +505,8 @@
           "name": "links_user_id_users_id_fk",
           "tableFrom": "links",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -601,12 +554,8 @@
           "name": "saved_collections_user_id_users_id_fk",
           "tableFrom": "saved_collections",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -614,12 +563,8 @@
           "name": "saved_collections_collection_id_collections_id_fk",
           "tableFrom": "saved_collections",
           "tableTo": "collections",
-          "columnsFrom": [
-            "collection_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["collection_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -629,10 +574,7 @@
         "saved_collections_user_id_collection_id_unique": {
           "name": "saved_collections_user_id_collection_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id",
-            "collection_id"
-          ]
+          "columns": ["user_id", "collection_id"]
         }
       },
       "policies": {},
@@ -754,51 +696,37 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         },
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "columns": ["username"]
         },
         "users_twitter_username_unique": {
           "name": "users_twitter_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "twitter_username"
-          ]
+          "columns": ["twitter_username"]
         },
         "users_linkedin_username_unique": {
           "name": "users_linkedin_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "linkedin_username"
-          ]
+          "columns": ["linkedin_username"]
         },
         "users_github_username_unique": {
           "name": "users_github_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "github_username"
-          ]
+          "columns": ["github_username"]
         },
         "users_instagram_username_unique": {
           "name": "users_instagram_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "instagram_username"
-          ]
+          "columns": ["instagram_username"]
         },
         "users_personal_website_unique": {
           "name": "users_personal_website_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "personal_website"
-          ]
+          "columns": ["personal_website"]
         }
       },
       "policies": {},

@@ -1,56 +1,56 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
-import { Ratelimit } from "@upstash/ratelimit";
-import { redis } from "@/lib/ratelimit";
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+import { Ratelimit } from '@upstash/ratelimit';
+import { redis } from '@/lib/ratelimit';
 
 // Middleware-specific rate limiters using existing Redis connection
 const middlewareRateLimiters = {
   // Global rate limit: 1000 requests per hour per IP (very generous for normal use)
   globalLimiter: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(1000, "1 h"),
+    limiter: Ratelimit.slidingWindow(1000, '1 h'),
     analytics: true,
-    prefix: "middleware:global",
+    prefix: 'middleware:global',
   }),
 
   // API routes: 500 requests per hour per IP
   apiLimiter: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(500, "1 h"),
+    limiter: Ratelimit.slidingWindow(500, '1 h'),
     analytics: true,
-    prefix: "middleware:api",
+    prefix: 'middleware:api',
   }),
 
   // Auth routes: 50 requests per hour per IP (sign-in, sign-up)
   authLimiter: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(50, "1 h"),
+    limiter: Ratelimit.slidingWindow(50, '1 h'),
     analytics: true,
-    prefix: "middleware:auth",
+    prefix: 'middleware:auth',
   }),
 
   // Public pages: 2000 requests per hour per IP (higher for browsing)
   publicPagesLimiter: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(2000, "1 h"),
+    limiter: Ratelimit.slidingWindow(2000, '1 h'),
     analytics: true,
-    prefix: "middleware:public",
+    prefix: 'middleware:public',
   }),
 
   // Webhooks: 100 requests per hour per IP
   webhookLimiter: new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(100, "1 h"),
+    limiter: Ratelimit.slidingWindow(100, '1 h'),
     analytics: true,
-    prefix: "middleware:webhook",
+    prefix: 'middleware:webhook',
   }),
 };
 
 // Helper function to get client IP
 function getClientIP(request: Request): string {
-  const forwardedFor = request.headers.get("x-forwarded-for");
-  const realIp = request.headers.get("x-real-ip");
-  const clientIp = forwardedFor?.split(",")[0] || realIp || "unknown";
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  const realIp = request.headers.get('x-real-ip');
+  const clientIp = forwardedFor?.split(',')[0] || realIp || 'unknown';
   return clientIp;
 }
 
@@ -58,38 +58,38 @@ function getClientIP(request: Request): string {
 function createRateLimitResponse(retryAfter: number = 60): NextResponse {
   return new NextResponse(
     JSON.stringify({
-      error: "Too many requests. Please try again later.",
+      error: 'Too many requests. Please try again later.',
       retryAfter,
     }),
     {
       status: 429,
       headers: {
-        "Content-Type": "application/json",
-        "Retry-After": retryAfter.toString(),
-        "X-RateLimit-Limit": "Rate limit exceeded",
-        "X-RateLimit-Remaining": "0",
+        'Content-Type': 'application/json',
+        'Retry-After': retryAfter.toString(),
+        'X-RateLimit-Limit': 'Rate limit exceeded',
+        'X-RateLimit-Remaining': '0',
       },
     }
   );
 }
 
 const isPublicRoute = createRouteMatcher([
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/",
-  "/explore(.*)",
-  "/api/webhooks(.*)",
-  "/api/profile(.*)",
-  "/collection(.*)",
-  "/profile(.*)",
-  "/onboarding(.*)",
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  '/',
+  '/explore(.*)',
+  '/api/webhooks(.*)',
+  '/api/profile(.*)',
+  '/collection(.*)',
+  '/profile(.*)',
+  '/onboarding(.*)',
 ]);
 
-const isAuthRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
+const isAuthRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)']);
 
-const isApiRoute = createRouteMatcher(["/api(.*)"]);
+const isApiRoute = createRouteMatcher(['/api(.*)']);
 
-const isWebhookRoute = createRouteMatcher(["/api/webhooks(.*)"]);
+const isWebhookRoute = createRouteMatcher(['/api/webhooks(.*)']);
 
 export default clerkMiddleware(async (auth, request) => {
   const clientIP = getClientIP(request);
@@ -162,10 +162,10 @@ export default clerkMiddleware(async (auth, request) => {
     // Only log actual errors, not expected redirects or not found responses
     if (
       error instanceof Error &&
-      !error.message.includes("NEXT_REDIRECT") &&
-      !error.message.includes("NEXT_NOT_FOUND")
+      !error.message.includes('NEXT_REDIRECT') &&
+      !error.message.includes('NEXT_NOT_FOUND')
     ) {
-      console.error("Rate limiting error in middleware:", error);
+      console.error('Rate limiting error in middleware:', error);
     }
     // Continue without rate limiting if Redis fails (graceful degradation)
   }
@@ -174,8 +174,8 @@ export default clerkMiddleware(async (auth, request) => {
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
     // Always run for API routes
-    "/(api|trpc)(.*)",
+    '/(api|trpc)(.*)',
   ],
 };

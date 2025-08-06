@@ -1,5 +1,5 @@
-import React from "react";
-import {PiTrash} from "react-icons/pi";
+import React from 'react';
+import { PiTrash } from 'react-icons/pi';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,13 +10,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Collection } from "@/types/types";
-import { useCollectionStore } from "@/store/collection-store";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
-import { useActiveState } from "@/store/activeStateStore";
+} from '@/components/ui/alert-dialog';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Collection } from '@/types/types';
+import { useCollectionStore } from '@/store/collection-store';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { useActiveState } from '@/store/activeStateStore';
 
 const DeleteCollectionOption = ({ collection }: { collection: Collection }) => {
   const [loading, setLoading] = React.useState(false);
@@ -32,25 +32,25 @@ const DeleteCollectionOption = ({ collection }: { collection: Collection }) => {
       if (result?.error) {
         console.log(result.error);
         toastError({
-          title: "Delete Failed",
-          description: "Failed to delete collection. Please try again.",
+          title: 'Delete Failed',
+          description: 'Failed to delete collection. Please try again.',
         });
         return;
       }
       toastSuccess({
-        title: "Collection Deleted",
-        description: "Your collection has been successfully deleted.",
+        title: 'Collection Deleted',
+        description: 'Your collection has been successfully deleted.',
       });
 
       // Redirect to overview if the deleted collection was currently active
       if (activeCollectionId === collection.id) {
-        router.push("/dashboard?item=Overview");
+        router.push('/dashboard?item=Overview');
       }
     } catch (error) {
-      console.error("Failed to delete collection: ", error);
+      console.error('Failed to delete collection: ', error);
       toastError({
-        title: "Delete Failed",
-        description: "Failed to delete collection. Please try again.",
+        title: 'Delete Failed',
+        description: 'Failed to delete collection. Please try again.',
       });
     } finally {
       setLoading(false);
@@ -83,7 +83,7 @@ const DeleteCollectionOption = ({ collection }: { collection: Collection }) => {
             onClick={handleDeleteCollection}
             disabled={loading}
           >
-            {loading ? "Deleting..." : "Delete"}
+            {loading ? 'Deleting...' : 'Delete'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

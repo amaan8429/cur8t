@@ -1,12 +1,12 @@
-import React from "react";
-import { PiStar, PiUser } from "react-icons/pi";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useUser } from "@clerk/nextjs";
-import { SavedCollection } from "@/actions/collection/fetchSavedCollections";
-import { UnifiedCollectionCard } from "./UnifiedCollectionCard";
-import Link from "next/link";
+import React from 'react';
+import { PiStar, PiUser } from 'react-icons/pi';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useUser } from '@clerk/nextjs';
+import { SavedCollection } from '@/actions/collection/fetchSavedCollections';
+import { UnifiedCollectionCard } from './UnifiedCollectionCard';
+import Link from 'next/link';
 
 interface SavedCollectionsSectionProps {
   savedCollections: SavedCollection[];

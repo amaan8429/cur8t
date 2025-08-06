@@ -1,5 +1,5 @@
-import { toast } from "@/hooks/use-toast";
-import {PiClock, PiWarning} from "react-icons/pi";
+import { toast } from '@/hooks/use-toast';
+import { PiClock, PiWarning } from 'react-icons/pi';
 
 interface RateLimitToastProps {
   retryAfter?: number;
@@ -8,16 +8,16 @@ interface RateLimitToastProps {
 
 export const showRateLimitToast = ({
   retryAfter = 60,
-  message = "Too many requests. Please wait before trying again.",
+  message = 'Too many requests. Please wait before trying again.',
 }: RateLimitToastProps = {}) => {
   const formatRetryTime = (seconds: number) => {
     if (seconds < 60) return `${seconds} seconds`;
     const minutes = Math.ceil(seconds / 60);
-    return `${minutes} minute${minutes > 1 ? "s" : ""}`;
+    return `${minutes} minute${minutes > 1 ? 's' : ''}`;
   };
 
   toast({
-    title: "Rate Limit Reached",
+    title: 'Rate Limit Reached',
     description: (
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
@@ -30,14 +30,14 @@ export const showRateLimitToast = ({
         </div>
       </div>
     ),
-    variant: "destructive",
+    variant: 'destructive',
     duration: retryAfter > 60 ? 10000 : 5000, // Show longer for longer wait times
   });
 };
 
 export const showRateLimitToastWithCountdown = ({
   retryAfter = 60,
-  message = "Too many requests. Please wait before trying again.",
+  message = 'Too many requests. Please wait before trying again.',
 }: RateLimitToastProps = {}) => {
   let remainingTime = retryAfter;
 
@@ -45,11 +45,11 @@ export const showRateLimitToastWithCountdown = ({
     const formatRetryTime = (seconds: number) => {
       if (seconds < 60) return `${seconds} seconds`;
       const minutes = Math.ceil(seconds / 60);
-      return `${minutes} minute${minutes > 1 ? "s" : ""}`;
+      return `${minutes} minute${minutes > 1 ? 's' : ''}`;
     };
 
     toast({
-      title: "Rate Limit Reached",
+      title: 'Rate Limit Reached',
       description: (
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
@@ -62,7 +62,7 @@ export const showRateLimitToastWithCountdown = ({
           </div>
         </div>
       ),
-      variant: "destructive",
+      variant: 'destructive',
       duration: 2000,
     });
   };
@@ -78,9 +78,9 @@ export const showRateLimitToastWithCountdown = ({
       if (remainingTime <= 0) {
         clearInterval(interval);
         toast({
-          title: "Ready to Try Again",
+          title: 'Ready to Try Again',
           description:
-            "Rate limit has been reset. You can now make requests again.",
+            'Rate limit has been reset. You can now make requests again.',
           duration: 3000,
         });
         return;

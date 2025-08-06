@@ -1,22 +1,22 @@
-import React from "react";
+import React from 'react';
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
   PiSpinner,
   PiUpload,
   PiFileText,
   PiDownload,
   PiSparkle,
-} from "react-icons/pi";
-import { useBookmarkImporter } from "./useBookmarkImporter";
+} from 'react-icons/pi';
+import { useBookmarkImporter } from './useBookmarkImporter';
 
 interface Props {
   importer: ReturnType<typeof useBookmarkImporter>;
@@ -27,9 +27,9 @@ export function BookmarkUploadStep({ importer }: Props) {
     importer;
 
   const handleDownloadSample = () => {
-    const link = document.createElement("a");
-    link.href = "/test-bookmarks.html";
-    link.download = "sample-bookmarks.html";
+    const link = document.createElement('a');
+    link.href = '/test-bookmarks.html';
+    link.download = 'sample-bookmarks.html';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -37,11 +37,11 @@ export function BookmarkUploadStep({ importer }: Props) {
 
   const handleLoadSample = async () => {
     try {
-      const response = await fetch("/test-bookmarks.html");
+      const response = await fetch('/test-bookmarks.html');
       const content = await response.text();
-      const blob = new Blob([content], { type: "text/html" });
-      const file = new File([blob], "sample-bookmarks.html", {
-        type: "text/html",
+      const blob = new Blob([content], { type: 'text/html' });
+      const file = new File([blob], 'sample-bookmarks.html', {
+        type: 'text/html',
       });
 
       // Create a synthetic file input event
@@ -53,7 +53,7 @@ export function BookmarkUploadStep({ importer }: Props) {
 
       handleFileSelect(event);
     } catch (error) {
-      console.error("Failed to load sample file:", error);
+      console.error('Failed to load sample file:', error);
     }
   };
 

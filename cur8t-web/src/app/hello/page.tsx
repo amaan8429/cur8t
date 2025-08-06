@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export default function Hello() {
   const [count, setCount] = useState(0);
@@ -10,11 +10,11 @@ export default function Hello() {
   };
 
   useEffect(() => {
-    console.log("useEffect hook", count);
+    console.log('useEffect hook', count);
 
     //cleanup function
     return () => {
-      console.log("unmount", count);
+      console.log('unmount', count);
     };
   }, []);
 

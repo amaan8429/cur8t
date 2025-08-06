@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -12,14 +12,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 
 interface LoadingStatesProps {
-  view: "grid" | "table" | "list";
+  view: 'grid' | 'table' | 'list';
 }
 
 const LoadingStates = ({ view }: LoadingStatesProps) => {
-  if (view === "table") {
+  if (view === 'table') {
     return (
       <div className="rounded-md border border-border/30">
         <Table>
@@ -59,7 +59,7 @@ const LoadingStates = ({ view }: LoadingStatesProps) => {
     );
   }
 
-  if (view === "list") {
+  if (view === 'list') {
     return (
       <div className="space-y-4">
         {[1, 2, 3, 4, 5].map((i) => (

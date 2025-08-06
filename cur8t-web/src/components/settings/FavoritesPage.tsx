@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useFavorites } from "@/hooks/useFavorites";
-import AddFavoriteForm from "./AddFavoriteForm";
-import FavoriteCard from "./FavoriteCard";
-import FavoritesLoadingSkeleton from "./FavoritesLoadingSkeleton";
-import FavoritesEmptyState from "./FavoritesEmptyState";
+import React from 'react';
+import { useFavorites } from '@/hooks/useFavorites';
+import AddFavoriteForm from './AddFavoriteForm';
+import FavoriteCard from './FavoriteCard';
+import FavoritesLoadingSkeleton from './FavoritesLoadingSkeleton';
+import FavoritesEmptyState from './FavoritesEmptyState';
 
 const FavoritesPage = () => {
   const {

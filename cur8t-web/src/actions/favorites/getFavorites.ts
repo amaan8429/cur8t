@@ -1,21 +1,21 @@
-"use server";
+'use server';
 
-import { auth } from "@clerk/nextjs/server";
-import { db } from "@/db";
-import { FavoritesTable } from "@/schema";
-import { desc, eq } from "drizzle-orm";
+import { auth } from '@clerk/nextjs/server';
+import { db } from '@/db';
+import { FavoritesTable } from '@/schema';
+import { desc, eq } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
-} from "@/lib/ratelimit";
+} from '@/lib/ratelimit';
 
 export async function getFavorites() {
   try {
     const { userId } = await auth();
 
     if (!userId) {
-      throw new Error("Unauthorized");
+      throw new Error('Unauthorized');
     }
 
     // Apply rate limiting
@@ -23,7 +23,7 @@ export async function getFavorites() {
     const rateLimitResult = await checkRateLimit(
       rateLimiters.getFavoritesLimiter,
       identifier,
-      "Too many requests to fetch favorites. Please try again later."
+      'Too many requests to fetch favorites. Please try again later.'
     );
     if (!rateLimitResult.success) {
       const retryAfter = rateLimitResult.retryAfter ?? 60;
@@ -38,11 +38,11 @@ export async function getFavorites() {
 
     return { success: true, data: favorites };
   } catch (error) {
-    console.error("Error fetching favorites:", error);
+    console.error('Error fetching favorites:', error);
     return {
       success: false,
       error:
-        error instanceof Error ? error.message : "Failed to fetch favorites",
+        error instanceof Error ? error.message : 'Failed to fetch favorites',
     };
   }
 }
