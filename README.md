@@ -8,6 +8,92 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104-green)](https://fastapi.tiangolo.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 
+## 📋 Table of Contents
+
+- [🎯 What's Cur8t?](#whats-cur8t)
+  - [The Problem](#the-problem)
+  - [The Solution](#the-solution)
+- [🚀 What Can You Do?](#what-can-you-do)
+  - [🧠 Smart Organization](#-smart-organization)
+  - [🔌 Browser Integration](#-browser-integration)
+  - [👥 Sharing & Collaboration](#-sharing--collaboration)
+  - [🛠️ Developer Features](#️-developer-features)
+  - [📊 Analytics & Insights](#-analytics--insights)
+  - [🔧 Advanced Features](#-advanced-features)
+- [✨ Collection Features Deep Dive](#-collection-features-deep-dive)
+  - [📁 Collection Management](#-collection-management)
+  - [🎯 Core Collection Actions](#-core-collection-actions)
+  - [⚙️ Collection Actions Menu](#️-collection-actions-menu)
+- [🎨 User Interface Features](#-user-interface-features)
+  - [🎛️ Dashboard Overview](#️-dashboard-overview)
+  - [🔍 Search & Discovery](#-search--discovery)
+  - [📱 Mobile Responsive](#-mobile-responsive)
+- [🛠️ Technical Features](#️-technical-features)
+  - [🔐 Authentication & Security](#-authentication--security)
+  - [⚡ Performance Optimizations](#-performance-optimizations)
+  - [🔄 Real-time Features](#-real-time-features)
+- [🏗️ Architecture](#️-architecture)
+  - [🎨 Frontend (Next.js)](#-frontend-nextjs)
+  - [🤖 Backend (FastAPI)](#-backend-fastapi)
+  - [🗄️ Database](#️-database)
+  - [🔌 APIs](#-apis)
+- [📊 Database Schema](#database-schema)
+- [🔄 How It Works](#how-it-works)
+  - [The Stack](#the-stack)
+  - [The Architecture](#the-architecture)
+  - [Project Structure](#project-structure)
+    - [🎨 cur8t-web (Next.js Frontend)](#-cur8t-web-nextjs-frontend)
+    - [🤖 agents-api (FastAPI AI Agents)](#-agents-api-fastapi-ai-agents)
+    - [🔌 extension-api (FastAPI Extension Backend)](#-extension-api-fastapi-extension-backend)
+    - [🔧 Browser Extension (React + TypeScript)](#-browser-extension-react--typescript)
+  - [Data Flow](#data-flow)
+- [🚀 Getting Started](#-getting-started)
+  - [📋 Prerequisites](#-prerequisites)
+  - [🔧 Installation](#-installation)
+  - [⚙️ Configuration](#️-configuration)
+  - [🌐 Environment Variables](#-environment-variables)
+- [🛠️ Development](#️-development)
+  - [📁 Project Structure](#-project-structure)
+  - [🔧 Development Setup](#-development-setup)
+  - [🧪 Testing](#-testing)
+  - [📦 Deployment](#-deployment)
+- [🔌 API Documentation](#-api-documentation)
+  - [🔑 Authentication](#-authentication)
+  - [📚 Collections API](#-collections-api)
+  - [🔗 Links API](#-links-api)
+  - [👤 Users API](#-users-api)
+- [🤖 AI Agents](#-ai-agents)
+  - [📰 Article Extractor](#-article-extractor)
+  - [📚 Bookmark Importer](#-bookmark-importer)
+  - [🎯 Collection Generator](#-collection-generator)
+  - [📤 Smart Export](#-smart-export)
+  - [⏰ Watch Later Organizer](#-watch-later-organizer)
+  - [📺 YouTube Extractor](#-youtube-extractor)
+- [🔧 Browser Extension](#-browser-extension)
+  - [📱 Features](#-features)
+  - [🛠️ Installation](#️-installation)
+  - [⚙️ Configuration](#️-configuration-1)
+- [📊 Analytics & Monitoring](#-analytics--monitoring)
+  - [📈 Usage Analytics](#-usage-analytics)
+  - [🔍 Error Tracking](#-error-tracking)
+  - [⚡ Performance Monitoring](#-performance-monitoring)
+- [🔒 Security](#-security)
+  - [🔐 Authentication](#-authentication-1)
+  - [🛡️ Rate Limiting](#️-rate-limiting)
+  - [🔒 Data Protection](#-data-protection)
+- [📦 Deployment](#-deployment)
+  - [🐳 Docker](#-docker)
+  - [☁️ Cloud Deployment](#️-cloud-deployment)
+  - [🔧 Environment Setup](#-environment-setup)
+- [🤝 Contributing](#-contributing)
+  - [📋 Development Guidelines](#-development-guidelines)
+  - [🐛 Bug Reports](#-bug-reports)
+  - [💡 Feature Requests](#-feature-requests)
+- [📄 License](#-license)
+- [🙏 Acknowledgments](#-acknowledgments)
+
+---
+
 ## What's Cur8t?
 
 Think of Cur8t as your digital librarian that actually knows what you're into. It's a bookmark manager that doesn't just save links - it organizes them intelligently, learns your habits, and makes sharing collections actually fun.
@@ -1113,6 +1199,14 @@ This AI agents and tools system transforms Cur8t from a simple bookmark manager 
 
 This browser extension transforms your browsing experience by seamlessly integrating AI-powered bookmark organization directly into your browser, making content curation effortless and intelligent.
 
+## Database Schema
+
+<div align="center">
+
+![Database Schema](schema.svg)
+
+</div>
+
 ## How It Works
 
 ### The Stack
@@ -1371,171 +1465,248 @@ cur8t/
 └── flutter/            # 📱 Mobile app (coming)
 ```
 
+### Project Structure
+
+#### 🎨 **cur8t-web** (Next.js Frontend)
+
+```
+cur8t-web/
+├── src/
+│   ├── app/                    # App Router pages
+│   │   ├── api/               # API routes
+│   │   │   ├── github/        # GitHub OAuth endpoints
+│   │   │   ├── profile/       # User profile API
+│   │   │   ├── settings/      # Settings API
+│   │   │   ├── user/          # User management API
+│   │   │   └── webhooks/      # Webhook handlers
+│   │   ├── collection/        # Collection pages
+│   │   ├── dashboard/         # Dashboard pages
+│   │   ├── explore/           # Explore/discovery pages
+│   │   ├── onboarding/        # User onboarding
+│   │   ├── profile/           # User profile pages
+│   │   ├── sign-in/           # Authentication pages
+│   │   ├── sign-up/           # Registration pages
+│   │   ├── globals.css        # Global styles
+│   │   ├── layout.tsx         # Root layout
+│   │   └── page.tsx           # Homepage
+│   ├── components/            # React components
+│   │   ├── collection/        # Collection components
+│   │   ├── dashboard/         # Dashboard components
+│   │   │   ├── ContentArea/   # Main content area
+│   │   │   ├── NavActions/    # Navigation actions
+│   │   │   ├── Overview/      # Dashboard overview
+│   │   │   ├── Sidebar/       # App sidebar
+│   │   │   └── TopSection/    # Top section components
+│   │   ├── explore/           # Explore page components
+│   │   ├── help/              # Help components
+│   │   ├── homepage/          # Landing page components
+│   │   ├── icons/             # Icon components
+│   │   ├── integrations/      # Integration components
+│   │   ├── landingPage/       # Landing page components
+│   │   ├── layout/            # Layout components
+│   │   ├── profile/           # Profile components
+│   │   ├── providers/         # Context providers
+│   │   ├── secondary/         # Secondary pages
+│   │   ├── settings/          # Settings components
+│   │   └── ui/                # shadcn/ui components
+│   ├── actions/               # Server actions
+│   │   ├── collection/        # Collection actions
+│   │   ├── favorites/         # Favorites actions
+│   │   ├── linkActions/       # Link management actions
+│   │   ├── platform/          # Platform actions
+│   │   ├── sharedEmails/      # Email sharing actions
+│   │   └── user/              # User actions
+│   ├── hooks/                 # Custom React hooks
+│   ├── lib/                   # Utility libraries
+│   │   ├── api/               # API client utilities
+│   │   └── ratelimit/         # Rate limiting utilities
+│   ├── store/                 # State management
+│   ├── types/                 # TypeScript type definitions
+│   └── utils/                 # Utility functions
+├── migrations/                # Database migrations
+├── public/                    # Static assets
+├── scripts/                   # Build scripts
+├── drizzle.config.ts          # Database configuration
+├── next.config.ts             # Next.js configuration
+├── package.json               # Dependencies
+├── tailwind.config.ts         # Tailwind CSS configuration
+└── tsconfig.json              # TypeScript configuration
+```
+
+#### 🤖 **agents-api** (FastAPI AI Agents)
+
+```
+agents-api/
+├── agents/                    # AI agent modules
+│   ├── article_extractor/     # Article link extraction
+│   │   ├── models.py          # Data models
+│   │   ├── routes.py          # API routes
+│   │   ├── service.py         # Business logic
+│   │   └── tests.py           # Unit tests
+│   ├── bookmark_importer/     # Bookmark import agent
+│   │   ├── models.py          # Data models
+│   │   ├── routes.py          # API routes
+│   │   ├── service.py         # Business logic
+│   │   ├── tests.py           # Unit tests
+│   │   └── README.md          # Documentation
+│   ├── collection_generator/  # Collection generation agent
+│   ├── smart_export/          # Smart export agent
+│   ├── watch_later_organizer/ # YouTube organizer agent
+│   └── youtube_extractor/     # YouTube link extraction
+├── config/                    # Configuration
+│   ├── __init__.py
+│   └── settings.py            # App settings
+├── core/                      # Core utilities
+│   ├── __init__.py
+│   ├── models.py              # Base models
+│   └── utils.py               # Utility functions
+├── tests/                     # Integration tests
+│   ├── __init__.py
+│   └── test_integration.py    # Integration test suite
+├── Dockerfile                 # Production Docker config
+├── Dockerfile.dev             # Development Docker config
+├── env.example                # Environment variables template
+├── main.py                    # FastAPI application entry
+├── pyproject.toml             # Python project configuration
+├── README.md                  # Project documentation
+├── requirements.txt            # Python dependencies
+├── run_dev.py                 # Development server script
+└── test_api.py                # API testing script
+```
+
+#### 🔌 **extension-api** (FastAPI Extension Backend)
+
+```
+extension-api/
+├── app/                       # Application code
+│   ├── api/                   # API endpoints
+│   │   └── routes.py          # Route definitions
+│   └── core/                  # Core functionality
+│       ├── config.py          # Configuration settings
+│       ├── database.py        # Database connection
+│       └── utils.py           # Utility functions
+├── models/                    # Data models
+│   ├── __init__.py
+│   └── schemas.py             # Pydantic schemas
+├── Dockerfile                 # Production Docker config
+├── Dockerfile.dev             # Development Docker config
+├── env.example                # Environment variables template
+├── main.py                    # FastAPI application entry
+├── pyproject.toml             # Python project configuration
+├── README.md                  # Project documentation
+├── requirements.txt            # Python dependencies
+├── run_dev.py                 # Development server script
+├── API_CHANGES_SUMMARY.md     # API changes documentation
+├── API_DOCUMENTATION.md       # API documentation
+├── API_KEY_AUTHENTICATION.md  # Authentication guide
+├── API_QUICK_REFERENCE.md     # Quick reference guide
+└── EXTENSION_STARTER_TEMPLATE.md # Extension template guide
+```
+
+#### 🔧 **Browser Extension** (React + TypeScript)
+
+```
+cur8t-extension/
+├── 📄 Configuration Files
+│   ├── package.json              # Dependencies & scripts
+│   ├── manifest.json             # Extension manifest (Chrome)
+│   ├── manifest.dev.json         # Development manifest
+│   ├── tsconfig.json             # TypeScript configuration
+│   ├── tailwind.config.ts        # Tailwind CSS config
+│   ├── components.json           # shadcn/ui configuration
+│   └── vite.config.*.ts          # Vite build configurations
+│
+├── 🎨 Public Assets
+│   ├── icon-32.png              # Extension icon (32px)
+│   ├── icon-128.png             # Extension icon (128px)
+│   ├── dev-icon-32.png          # Development icon
+│   ├── dev-icon-128.png         # Development icon
+│   └── contentStyle.css          # Content script styles
+│
+├── 📚 Documentation
+│   ├── README.md                 # Project overview
+│   ├── API_DOCUMENTATION.md      # API reference
+│   ├── BOOKMARK_ORGANIZATION_API.md
+│   ├── CACHING_SYSTEM.md         # Cache implementation
+│   ├── EXTENSION_USAGE.md        # Usage guide
+│   └── LICENSE                   # MIT license
+│
+└── 🚀 Source Code (src/)
+    ├── 📱 Pages
+    │   ├── popup/                # Main extension popup
+    │   │   ├── index.tsx         # Popup entry point
+    │   │   ├── Popup.tsx         # Main popup component
+    │   │   ├── CollectionsTab.tsx # Collections management
+    │   │   ├── FavoritesTab.tsx  # Favorites management
+    │   │   ├── BookmarksTab.tsx  # Bookmark organization
+    │   │   ├── index.css         # Popup styles
+    │   │   └── index.html        # Popup HTML template
+    │   │
+    │   ├── options/              # Extension options page
+    │   │   ├── index.tsx         # Options entry point
+    │   │   ├── Options.tsx       # Options component
+    │   │   ├── index.css         # Options styles
+    │   │   └── index.html        # Options HTML template
+    │   │
+    │   ├── panel/                # DevTools panel
+    │   │   ├── index.tsx         # Panel entry point
+    │   │   ├── Panel.tsx         # Panel component
+    │   │   ├── index.css         # Panel styles
+    │   │   └── index.html        # Panel HTML template
+    │   │
+    │   ├── newtab/               # New tab page (future)
+    │   │
+    │   ├── content/              # Content scripts
+    │   │   ├── index.tsx         # Content script entry
+    │   │   └── style.css         # Content styles
+    │   │
+    │   ├── background/           # Background service
+    │   │   └── index.ts          # Background script
+    │   │
+    │   └── devtools/             # DevTools integration
+    │       ├── index.ts          # DevTools script
+    │       └── index.html        # DevTools HTML
+    │
+    ├── 🧩 Components
+    │   └── ui/                   # shadcn/ui components
+    │       ├── button.tsx        # Button component
+    │       ├── card.tsx          # Card component
+    │       ├── badge.tsx         # Badge component
+    │       ├── input.tsx         # Input component
+    │       ├── label.tsx         # Label component
+    │       ├── separator.tsx     # Separator component
+    │       ├── sonner.tsx        # Toast notifications
+    │       ├── tabs.tsx          # Tabs component
+    │       └── theme-toggle.tsx  # Theme toggle
+    │
+    ├── 🔧 Libraries (lib/)
+    │   ├── api.ts                # API client & data models
+    │   ├── auth.ts               # Authentication service
+    │   ├── bookmarks.ts          # Browser bookmark manager
+    │   ├── cache.ts              # Offline caching system
+    │   ├── preloader.ts          # Data preloading service
+    │   ├── theme.ts              # Theme management
+    │   ├── utils.ts              # Utility functions
+    │   └── bookmarks.test.ts     # Bookmark tests
+    │
+    ├── 🎨 Assets
+    │   ├── img/
+    │   │   └── logo.svg          # Application logo
+    │   └── styles/
+    │       └── tailwind.css      # Tailwind CSS imports
+    │
+    ├── 🌐 Localization
+    │   └── locales/
+    │       └── en/
+    │           └── messages.json # English translations
+    │
+    └── 📝 Type Definitions
+        ├── global.d.ts           # Global type definitions
+        └── vite-env.d.ts         # Vite environment types
+```
+
 ### Data Flow
 
 1. **Save a bookmark** → Browser extension → Extension API → Main app
 2. **AI processes it** → Agents API → Categorizes → Updates collections
 3. **Share it** → Public/private settings → Social features → GitHub sync
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- Python 3.8+
-- PostgreSQL
-- Redis
-- OpenAI API key
-
-### Quick Setup
-
-```bash
-# Clone the repo
-git clone https://github.com/yourusername/cur8t.git
-cd cur8t
-
-# Set up the web app
-cd cur8t-web
-pnpm install
-cp .env.example .env
-# Edit .env with your keys
-
-# Set up the AI agents
-cd ../agents-api
-pip install -r requirements.txt
-cp env.example .env
-# Add your OpenAI key
-
-# Start everything
-docker-compose up -d
-```
-
-### Environment Variables
-
-**Web App (.env)**
-
-```env
-DATABASE_URL=postgresql://user:pass@localhost:5432/cur8t
-CLERK_SECRET_KEY=your_clerk_key
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_secret
-```
-
-**Agents API (.env)**
-
-```env
-OPENAI_API_KEY=your_openai_key
-DATABASE_URL=postgresql://user:pass@localhost:5432/cur8t
-```
-
-## Features Deep Dive
-
-### AI Agents (Active)
-
-- **Article Link Extractor**: Extract all links from any article
-- **Bookmark Importer**: Import and categorize bookmarks with AI
-- **Smart Export Guide**: Export collections as formatted guides (coming)
-- **Collection Generator**: AI-powered collection creation (coming)
-- **YouTube Link Extractor**: Extract links from YouTube descriptions (coming)
-- **Watch Later Organizer**: Organize playlists into collections (coming)
-
-### Collection Management
-
-- **Customize**: Change collection names, descriptions, emojis
-- **Visibility**: Public, private, or protected with email invites
-- **Duplicate**: Copy collections with or without content
-- **Export**: JSON, CSV, PDF formats
-- **Analytics**: View collection performance and engagement
-
-### Social Features
-
-- **Profile Customization**: Bio, social media links, personal website
-- **Social Integration**: Twitter, GitHub, LinkedIn, Instagram
-- **Public Profiles**: Showcase your collections to the world
-- **Follow System**: Follow other users and their collections
-
-### GitHub Integration
-
-- **OAuth Connect**: Connect your GitHub account
-- **Repository Sync**: Back up collections to GitHub
-- **Two-way Sync**: Changes sync between Cur8t and GitHub
-- **API Key Management**: Generate and manage API keys
-
-### Settings & Preferences
-
-- **Profile Settings**: Username, email, profile picture
-- **General Settings**: Theme, notifications, preferences
-- **API Keys**: Manage your API access
-- **Top Collections**: Pin your favorite collections
-- **Favorites**: Save and organize favorite collections
-
-## Development
-
-### Running Locally
-
-```bash
-# Web app
-cd cur8t-web
-pnpm dev
-
-# AI agents
-cd agents-api
-python run_dev.py
-
-# Extension API
-cd extension-api
-python run_dev.py
-```
-
-### Database Migrations
-
-```bash
-cd cur8t-web
-pnpm db:generate
-pnpm db:migrate
-```
-
-### Testing
-
-```bash
-# Web app tests
-pnpm test
-
-# API tests
-cd agents-api
-pytest tests/
-```
-
-## Contributing
-
-1. Fork the repo
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## Roadmap
-
-### Coming Soon
-
-- [ ] Mobile app (Flutter)
-- [ ] VS Code extension
-- [ ] Discord/Telegram bot
-- [ ] Advanced analytics
-- [ ] Team collaboration features
-- [ ] Advanced AI features
-
-### In Progress
-
-- [ ] Rate limiting implementation
-- [ ] Performance optimizations
-- [ ] Enhanced search capabilities
-- [ ] More export formats
-
-## License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
----
-
-**Built with ❤️ and way too much coffee**
