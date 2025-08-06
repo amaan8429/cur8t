@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  # Web Application
+  web:
+    build: ./cur8t-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./cur8t-web/.env.local
+    depends_on:
+      - agents-api
+      - extension-api
+    networks:
+      - cur8t-network
+
+  # Agents API
+  agents-api:
+    build: ./agents-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./agents-api/.env
+    networks:
+      - cur8t-network
+
+  # Extension API
+  extension-api:
+    build: ./extension-api
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./extension-api/.env
+    networks:
+      - cur8t-network
+
+networks:
+  cur8t-network:
+    driver: bridge

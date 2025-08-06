@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  # Web Application (Development)
+  web:
+    build:
+      context: ./cur8t-web
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - ./cur8t-web/.env.local
+    volumes:
+      - ./cur8t-web:/app
+      - /app/node_modules
+    depends_on:
+      - agents-api
+      - extension-api
+    networks:
+      - cur8t-network
+
+  # Agents API (Development)
+  agents-api:
+    build:
+      context: ./agents-api
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./agents-api/.env
+    volumes:
+      - ./agents-api:/app
+    networks:
+      - cur8t-network
+
+  # Extension API (Development)
+  extension-api:
+    build:
+      context: ./extension-api
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./extension-api/.env
+    volumes:
+      - ./extension-api:/app
+    networks:
+      - cur8t-network
+
+networks:
+  cur8t-network:
+    driver: bridge
