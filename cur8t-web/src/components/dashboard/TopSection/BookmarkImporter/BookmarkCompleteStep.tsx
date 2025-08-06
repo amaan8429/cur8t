@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FolderOpen, CheckCircle, ExternalLink } from "lucide-react";
+import {PiFolderOpen, PiCheckCircle, PiArrowSquareOut} from "react-icons/pi";
 import { motion } from "framer-motion";
 import { useBookmarkImporter } from "./useBookmarkImporter";
 
@@ -26,7 +26,7 @@ export function BookmarkCompleteStep({ importer, onOpenChange }: Props) {
           <div className="text-center space-y-6">
             <div className="relative">
               <div className="absolute inset-0 bg-primary/10 dark:bg-primary/20 rounded-full blur-xl scale-150 opacity-30"></div>
-              <CheckCircle className="h-16 w-16 text-primary mx-auto relative" />
+              <PiCheckCircle className="h-16 w-16 text-primary mx-auto relative" />
             </div>
             <div className="space-y-2">
               <h3 className="text-xl font-bold text-foreground">
@@ -48,7 +48,7 @@ export function BookmarkCompleteStep({ importer, onOpenChange }: Props) {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FolderOpen className="h-4 w-4" />
+              <PiFolderOpen className="h-4 w-4" />
               Created Collections
             </CardTitle>
             <CardDescription>
@@ -74,7 +74,7 @@ export function BookmarkCompleteStep({ importer, onOpenChange }: Props) {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                           <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/20">
-                            <FolderOpen className="h-6 w-6 text-primary" />
+                            <PiFolderOpen className="h-6 w-6 text-primary" />
                           </div>
                           <div>
                             <h4 className="font-semibold text-foreground text-base">
@@ -93,7 +93,7 @@ export function BookmarkCompleteStep({ importer, onOpenChange }: Props) {
                           >
                             {collection.linksCount} links
                           </Badge>
-                          <ExternalLink className="h-5 w-5 text-muted-foreground/70" />
+                          <PiArrowSquareOut className="h-5 w-5 text-muted-foreground/70" />
                         </div>
                       </div>
                     </CardContent>
@@ -119,7 +119,7 @@ export function BookmarkCompleteStep({ importer, onOpenChange }: Props) {
           }}
           className="flex-1 h-11 bg-primary hover:bg-primary/90"
         >
-          <FolderOpen className="h-5 w-5 mr-2" />
+          <PiFolderOpen className="h-5 w-5 mr-2" />
           Open Dashboard
         </Button>
       </div>

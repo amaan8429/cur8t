@@ -2,7 +2,13 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Globe2, Lock, Users, PlusCircle, Loader2 } from "lucide-react";
+import {
+  PiGlobe,
+  PiLock,
+  PiUsers,
+  PiPlusCircle,
+  PiSpinner,
+} from "react-icons/pi";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -133,19 +139,19 @@ export function CreateCollectionComponent({
   const visibilityOptions = [
     {
       id: "private",
-      icon: Lock,
+      icon: PiLock,
       title: "Private",
       description: "Only you can access this collection",
     },
     {
       id: "public",
-      icon: Globe2,
+      icon: PiGlobe,
       title: "Public",
       description: "Anyone can view this collection",
     },
     {
       id: "protected",
-      icon: Users,
+      icon: PiUsers,
       title: "Protected",
       description: "Only selected people can access",
     },
@@ -238,7 +244,7 @@ export function CreateCollectionComponent({
         {isLoading && (
           <div className="space-y-4 p-4 bg-muted/30 rounded-lg border border-border/30">
             <div className="flex items-center space-x-3">
-              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              <PiSpinner className="h-5 w-5 animate-spin text-primary" />
               <span className="text-sm font-medium">{loadingMessage}</span>
             </div>
             <div className="space-y-2">
@@ -329,9 +335,9 @@ export function CreateCollectionComponent({
             }
           >
             {isLoading ? (
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              <PiSpinner className="mr-2 h-5 w-5 animate-spin" />
             ) : (
-              <PlusCircle className="mr-2 h-5 w-5" />
+              <PiPlusCircle className="mr-2 h-5 w-5" />
             )}
             {isLoading ? loadingMessage || "Creating..." : "Create Collection"}
           </Button>

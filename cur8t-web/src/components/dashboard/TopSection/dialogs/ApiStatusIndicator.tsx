@@ -19,14 +19,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  CheckCircle,
-  XCircle,
-  Loader2,
-  AlertCircle,
-  RefreshCw,
-  Server,
-  Activity,
-} from "lucide-react";
+  PiCheckCircle,
+  PiXCircle,
+  PiSpinner,
+  PiWarning,
+  PiSubtractSquare,
+} from "react-icons/pi";
 import { agentsApi, AgentsApiError } from "@/lib/api/agents";
 
 interface ApiStatusIndicatorProps {
@@ -95,14 +93,14 @@ export function ApiStatusIndicator({ className }: ApiStatusIndicatorProps) {
 
   const getStatusIcon = () => {
     if (status.isLoading) {
-      return <Loader2 className="h-3 w-3 animate-spin" />;
+      return <PiSpinner className="h-3 w-3 animate-spin" />;
     }
 
     if (status.isConnected) {
-      return <CheckCircle className="h-3 w-3 text-green-600" />;
+      return <PiCheckCircle className="h-3 w-3 text-green-600" />;
     }
 
-    return <XCircle className="h-3 w-3 text-red-600" />;
+    return <PiXCircle className="h-3 w-3 text-red-600" />;
   };
 
   const getStatusText = () => {
@@ -139,7 +137,7 @@ export function ApiStatusIndicator({ className }: ApiStatusIndicatorProps) {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Server className="h-5 w-5" />
+              <PiSubtractSquare className="h-5 w-5" />
               Agents API Status
             </DialogTitle>
             <DialogDescription>
@@ -207,7 +205,7 @@ export function ApiStatusIndicator({ className }: ApiStatusIndicatorProps) {
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4" />
+                    <PiWarning className="h-4 w-4" />
                     Connection Help
                   </CardTitle>
                 </CardHeader>

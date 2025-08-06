@@ -3,27 +3,16 @@
 import * as React from "react";
 import {
   // AudioWaveform,
-  Blocks,
-  Calendar,
-  Command,
-  Home,
-  User,
-  // Inbox,
-  MessageCircleQuestion,
-  SunMoon,
-  Search,
-  Settings2,
-  Workflow,
-  // Sparkles,
-  Trash2,
-  Plus,
-  Wallpaper,
-  Save,
-  PlusCircle,
-  CreditCard,
-  Bell,
-  Star,
-} from "lucide-react";
+  PiCommand,
+  PiHouse,
+  PiMagnifyingGlass,
+  PiGear,
+  PiChartLine,
+  PiBookmark,
+  PiCreditCard,
+  PiBell,
+  PiStar,
+} from "react-icons/pi";
 
 import { NavCollection } from "@/components/dashboard/Sidebar/NavCollection/NavCollections";
 import { NavMain } from "@/components/dashboard/Sidebar/NavMain";
@@ -41,48 +30,48 @@ import { Separator } from "../../ui/separator";
 const data = {
   LogoAndName: {
     name: "Bukmarks",
-    logo: Command,
+    logo: PiCommand,
   },
   navMain: [
     {
       title: "Overview",
       url: "#",
-      icon: Home,
+      icon: PiHouse,
       isActive: true,
     },
   ],
   navSecondary: [
     {
       title: "Integrations",
-      icon: Workflow,
+      icon: PiChartLine,
     },
     {
       title: "Notifications",
-      icon: Bell,
+      icon: PiBell,
     },
     {
       title: "Favorites",
-      icon: Star,
+      icon: PiStar,
     },
     {
       title: "Manage Subscription",
-      icon: CreditCard,
+      icon: PiCreditCard,
     },
     {
       title: "Saved Collections",
-      icon: Save,
+      icon: PiBookmark,
     },
     {
       title: "Tools and Agents",
-      icon: Command,
+      icon: PiCommand,
     },
     {
       title: "Explore Collections",
-      icon: Search,
+      icon: PiMagnifyingGlass,
     },
     {
       title: "Settings",
-      icon: Settings2,
+      icon: PiGear,
     },
   ],
   lists: [

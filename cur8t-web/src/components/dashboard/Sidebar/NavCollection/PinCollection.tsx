@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Pin, PinOff, Loader2 } from "lucide-react";
+import {PiPushPin, PiPushPinSlash, PiSpinner} from "react-icons/pi";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -118,11 +118,11 @@ const PinCollection = ({
       }
     >
       {isLoading ? (
-        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+        <PiSpinner className="h-4 w-4 mr-2 animate-spin" />
       ) : isPinned ? (
-        <PinOff className="h-4 w-4 mr-2" />
+        <PiPushPinSlash className="h-4 w-4 mr-2" />
       ) : (
-        <Pin
+        <PiPushPin
           className={`h-4 w-4 mr-2 ${isPinLimitReached ? "opacity-50" : ""}`}
         />
       )}

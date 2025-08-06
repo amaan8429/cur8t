@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { PiPlus } from "react-icons/pi";
 
 interface AddFavoriteFormProps {
   newTitle: string;
@@ -13,7 +13,10 @@ interface AddFavoriteFormProps {
   addingFavorite: boolean;
   favoritesCount: number;
   favoritesLimit: number;
-  VALIDATION_LIMITS: any;
+  VALIDATION_LIMITS: {
+    LINK_TITLE_MAX: number;
+    LINK_URL_MAX: number;
+  };
 }
 
 const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({
@@ -33,7 +36,7 @@ const AddFavoriteForm: React.FC<AddFavoriteFormProps> = ({
     <Card className="border-dashed border-2 border-muted-foreground/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Plus className="h-5 w-5" />
+          <PiPlus className="h-5 w-5" />
           Add New Favorite
         </CardTitle>
       </CardHeader>

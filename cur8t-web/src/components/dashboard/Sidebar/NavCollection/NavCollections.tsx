@@ -1,16 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
+import { PiLink } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import {
-  MoreHorizontal,
-  Folder,
-  FolderOpen,
-  Pin,
-  Plus,
-  ChevronDown,
-} from "lucide-react";
+  PiFolder,
+  PiFolderOpen,
+  PiPushPin,
+  PiPlus,
+  PiDotsThreeThin,
+  PiCaretDown,
+} from "react-icons/pi";
 
 import {
   SidebarGroup,
@@ -138,7 +138,7 @@ export function NavCollection() {
                   size="icon"
                   className="h-6 w-6 opacity-60 hover:opacity-100 transition-opacity"
                 >
-                  <Plus className="h-4 w-4" />
+                  <PiPlus className="h-4 w-4" />
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-2xl">
@@ -180,21 +180,21 @@ export function NavCollection() {
                   tooltip={tooltipContent}
                   className="group hover:bg-sidebar-accent/50 transition-colors"
                 >
-                  <Link
+                  <PiLink
                     href={`?collectionId=${encodeURIComponent(collection.id)}`}
                     title={collection.title}
                     className="flex items-center"
                   >
                     {isActive ? (
-                      <FolderOpen className="h-4 w-4 mr-2 shrink-0" />
+                      <PiFolderOpen className="h-4 w-4 mr-2 shrink-0" />
                     ) : (
-                      <Folder className="h-4 w-4 mr-2 shrink-0" />
+                      <PiFolder className="h-4 w-4 mr-2 shrink-0" />
                     )}
                     <span className="truncate">{collection.title}</span>
                     {isPinned && (
-                      <Pin className="h-3 w-3 ml-auto opacity-60 text-sidebar-primary" />
+                      <PiPushPin className="h-3 w-3 ml-auto opacity-60 text-sidebar-primary" />
                     )}
-                  </Link>
+                  </PiLink>
                 </SidebarMenuButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -202,7 +202,7 @@ export function NavCollection() {
                       showOnHover
                       className="opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      <MoreHorizontal className="h-4 w-4" />
+                      <PiDotsThreeThin className="h-4 w-4" />
                       <span className="sr-only">
                         More options for {collection.title}
                       </span>
@@ -251,7 +251,7 @@ export function NavCollection() {
                 className="w-full justify-start text-muted-foreground hover:text-foreground h-8 px-2"
                 onClick={() => setShowAll(true)}
               >
-                <ChevronDown className="h-4 w-4 mr-2" />
+                <PiCaretDown className="h-4 w-4 mr-2" />
                 Show {sortedCollections.length - INITIAL_DISPLAY_COUNT} more
                 collections
               </Button>
@@ -266,7 +266,7 @@ export function NavCollection() {
                 className="w-full justify-start text-muted-foreground hover:text-foreground h-8 px-2"
                 onClick={() => setShowAll(false)}
               >
-                <ChevronDown className="h-4 w-4 mr-2 rotate-180" />
+                <PiCaretDown className="h-4 w-4 mr-2 rotate-180" />
                 Show less
               </Button>
             </SidebarMenuItem>

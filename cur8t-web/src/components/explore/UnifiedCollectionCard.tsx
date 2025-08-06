@@ -1,5 +1,5 @@
 import React from "react";
-import { Star, Link2, ExternalLink } from "lucide-react";
+import {PiStar, PiLink, PiArrowSquareOut} from "react-icons/pi";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -93,7 +93,7 @@ export const UnifiedCollectionCard: React.FC<UnifiedCollectionCardProps> = ({
         </p>
       </div>
       <div className="flex items-center gap-1 text-xs text-muted-foreground flex-shrink-0">
-        <Star className="h-3 w-3" />
+        <PiStar className="h-3 w-3" />
         <span>{collection.likes}</span>
       </div>
     </div>
@@ -124,7 +124,7 @@ export const UnifiedCollectionCard: React.FC<UnifiedCollectionCardProps> = ({
           {formatLinkCount(collection.totalLinks)}
         </div>
       </div>
-      <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+      <PiArrowSquareOut className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
     </div>
   );
 
@@ -191,7 +191,7 @@ export const UnifiedCollectionCard: React.FC<UnifiedCollectionCardProps> = ({
 
                 <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
                   <div className="flex items-center gap-1.5">
-                    <Link2 className="h-3 w-3" />
+                    <PiLink className="h-3 w-3" />
                     <span>{formatLinkCount(collection.totalLinks)}</span>
                   </div>
                   <span>
@@ -203,7 +203,7 @@ export const UnifiedCollectionCard: React.FC<UnifiedCollectionCardProps> = ({
                   </span>
                 </div>
               </div>
-              <ExternalLink className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+              <PiArrowSquareOut className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
@@ -274,20 +274,20 @@ export const UnifiedCollectionCard: React.FC<UnifiedCollectionCardProps> = ({
 
               {collection.likes > 0 && (
                 <div className="flex items-center gap-1.5">
-                  <Star className="h-3 w-3" />
+                  <PiStar className="h-3 w-3" />
                   <span>{collection.likes}</span>
                 </div>
               )}
 
               <div className="flex items-center gap-1.5">
-                <Link2 className="h-3 w-3" />
+                <PiLink className="h-3 w-3" />
                 <span>{formatLinkCount(collection.totalLinks)}</span>
               </div>
 
               <span>Updated {formatDate(collection.updatedAt.toString())}</span>
             </div>
           </div>
-          <ExternalLink className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+          <PiArrowSquareOut className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
         </div>
       </CardContent>
     </Card>

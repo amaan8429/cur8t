@@ -12,7 +12,7 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useCollectionStore } from "@/store/collection-store";
-import { EditIcon } from "lucide-react";
+import {PiPencilSimple} from "react-icons/pi";
 import { VALIDATION_LIMITS } from "@/types/types";
 import React from "react";
 
@@ -83,7 +83,7 @@ const ChangeCollectionName = ({
         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
           <DialogTrigger asChild>
             <div className="flex items-center">
-              <EditIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+              <PiPencilSimple className="h-4 w-4 mr-2 text-muted-foreground" />
               <span>Change Title</span>
             </div>
           </DialogTrigger>

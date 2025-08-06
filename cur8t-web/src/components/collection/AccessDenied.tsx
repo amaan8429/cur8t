@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Lock, Shield, LogIn, Send } from "lucide-react";
+import { PiLock, PiShield, PiSignIn, PiPaperPlaneRight } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAuth } from "@clerk/nextjs";
-import Link from "next/link";
+import { PiLink } from "react-icons/pi";
 import { AccessRequestDialog } from "./AccessRequestDialog";
 import { checkAccessRequestStatus } from "@/actions/collection/accessRequests";
 
@@ -67,10 +67,10 @@ export function AccessDenied({
 
   const getIcon = () => {
     if (isPrivateError)
-      return <Lock className="h-12 w-12 text-muted-foreground" />;
+      return <PiLock className="h-12 w-12 text-muted-foreground" />;
     if (isProtectedError)
-      return <Shield className="h-12 w-12 text-muted-foreground" />;
-    return <LogIn className="h-12 w-12 text-muted-foreground" />;
+      return <PiShield className="h-12 w-12 text-muted-foreground" />;
+    return <PiSignIn className="h-12 w-12 text-muted-foreground" />;
   };
 
   const getTitle = () => {
@@ -182,7 +182,7 @@ export function AccessDenied({
                 }`}
                 disabled={isCheckingStatus} // Only disable when checking status
               >
-                <Send className="h-4 w-4 mr-2" />
+                <PiPaperPlaneRight className="h-4 w-4 mr-2" />
                 {isCheckingStatus
                   ? "Checking..."
                   : !isSignedIn
@@ -194,7 +194,7 @@ export function AccessDenied({
             {/* Show pending status as disabled button */}
             {requestStatus.hasRequest && requestStatus.status === "pending" && (
               <Button variant="outline" className="w-full" disabled>
-                <Send className="h-4 w-4 mr-2" />
+                <PiPaperPlaneRight className="h-4 w-4 mr-2" />
                 Request Pending
               </Button>
             )}
@@ -202,25 +202,25 @@ export function AccessDenied({
             {/* Auth buttons for non-signed in users */}
             {!isSignedIn && !canShowRequestButton && (
               <>
-                <Link href="/sign-in" className="w-full">
+                <PiLink href="/sign-in" className="w-full">
                   <Button className="w-full">
-                    <LogIn className="h-4 w-4 mr-2" />
+                    <PiSignIn className="h-4 w-4 mr-2" />
                     Sign In
                   </Button>
-                </Link>
-                <Link href="/sign-up" className="w-full">
+                </PiLink>
+                <PiLink href="/sign-up" className="w-full">
                   <Button variant="outline" className="w-full">
                     Create Account
                   </Button>
-                </Link>
+                </PiLink>
               </>
             )}
 
-            <Link href="/" className="w-full">
+            <PiLink href="/" className="w-full">
               <Button variant="secondary" className="w-full">
                 Go to Homepage
               </Button>
-            </Link>
+            </PiLink>
           </CardFooter>
         </Card>
       </div>

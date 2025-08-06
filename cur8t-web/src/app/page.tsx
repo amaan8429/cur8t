@@ -22,7 +22,7 @@ import SimplePricing from "@/components/landingPage/pricing";
 import ScrollBasedVelocityDemo from "@/components/landingPage/scollvelocity";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Code2, Heart, MessageCircle } from "lucide-react";
+import { PiCode, PiHeart, PiChatCircle } from "react-icons/pi";
 import Faq1 from "@/components/landingPage/faq";
 import Footer from "@/components/layout/Footer";
 

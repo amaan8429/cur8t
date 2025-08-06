@@ -11,15 +11,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  FileText,
-  Download,
-  Sparkles,
-  Youtube,
-  PlayCircle,
-  Upload,
-  Bot,
-  ExternalLink,
-} from "lucide-react";
+  PiFileText,
+  PiDownload,
+  PiSparkle,
+  PiPlayCircle,
+  PiUpload,
+  PiArrowSquareOut,
+  PiYoutubeLogo,
+  PiRobot,
+} from "react-icons/pi";
 import { ArticleExtractorDialog } from "./dialogs/ArticleExtractorDialog";
 import { BookmarkImporterDialog } from "./dialogs/BookmarkImporterDialog";
 import { ApiStatusIndicator } from "./dialogs/ApiStatusIndicator";
@@ -29,7 +29,7 @@ const agents = [
     id: 1,
     title: "Article Link Extractor",
     description: "Extract all links from any article and create a collection",
-    icon: FileText,
+    icon: PiFileText,
     status: "Active",
     features: ["Smart detection", "Auto collections", "Content analysis"],
   },
@@ -37,7 +37,7 @@ const agents = [
     id: 6,
     title: "Bookmark File Importer",
     description: "Import bookmarks and sort them into organized collections",
-    icon: Upload,
+    icon: PiUpload,
     status: "Active",
     features: ["Multiple browsers", "AI categorization", "Smart sorting"],
   },
@@ -45,7 +45,7 @@ const agents = [
     id: 2,
     title: "Smart Export Guide",
     description: "Export collections as formatted guides with descriptions",
-    icon: Download,
+    icon: PiDownload,
     status: "Coming Soon",
     features: ["Custom formatting", "Templates", "Multiple formats"],
   },
@@ -53,7 +53,7 @@ const agents = [
     id: 3,
     title: "Collection Generator",
     description: "AI-powered collection creation based on topics and interests",
-    icon: Sparkles,
+    icon: PiSparkle,
     status: "Coming Soon",
     features: ["Topic-based", "Interest matching", "Auto categorization"],
   },
@@ -61,7 +61,7 @@ const agents = [
     id: 4,
     title: "YouTube Link Extractor",
     description: "Extract links from YouTube video descriptions and comments",
-    icon: Youtube,
+    icon: PiYoutubeLogo,
     status: "Coming Soon",
     features: ["Description parsing", "Comment scanning", "Timestamps"],
   },
@@ -69,7 +69,7 @@ const agents = [
     id: 5,
     title: "Watch Later Organizer",
     description: "Sort Watch Later playlists into topic-based collections",
-    icon: PlayCircle,
+    icon: PiPlayCircle,
     status: "Coming Soon",
     features: ["Topic detection", "Auto sorting", "Custom playlists"],
   },
@@ -142,7 +142,7 @@ export default function ToolsAndAgents() {
                 disabled={agent.status === "Coming Soon"}
                 onClick={() => handleTryAgent(agent.id)}
               >
-                <ExternalLink className="h-4 w-4 mr-2" />
+                <PiArrowSquareOut className="h-4 w-4 mr-2" />
                 Try Agent
               </Button>
             </CardContent>
@@ -152,7 +152,7 @@ export default function ToolsAndAgents() {
 
       <div className="mt-8 p-6 rounded-lg bg-muted/30 border border-dashed border-border/30">
         <div className="text-center space-y-2">
-          <Bot className="h-8 w-8 mx-auto text-muted-foreground" />
+          <PiRobot className="h-8 w-8 mx-auto text-muted-foreground" />
           <h3 className="text-lg font-semibold">More Agents Coming Soon</h3>
           <p className="text-muted-foreground text-sm max-w-md mx-auto">
             New AI agents in development to enhance your bookmark management.

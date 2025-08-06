@@ -1,14 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
 import React from "react";
-import { Trash2, Pencil, ExternalLink } from "lucide-react";
+import { PiTrash, PiPencilSimple, PiArrowSquareOut } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
+  Table,
 } from "@/components/ui/table";
 import {
   Dialog,
@@ -114,7 +114,7 @@ const LinkTable = ({
                     size="sm"
                     onClick={() => window.open(link.url, "_blank")}
                   >
-                    <ExternalLink className="h-4 w-4" />
+                    <PiArrowSquareOut className="h-4 w-4" />
                   </Button>
                 </div>
               </TableCell>
@@ -125,12 +125,12 @@ const LinkTable = ({
                     size="sm"
                     onClick={() => handleEditClick(link)}
                   >
-                    <Pencil className="h-4 w-4" />
+                    <PiPencilSimple className="h-4 w-4" />
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="ghost" size="sm">
-                        <Trash2 className="h-4 w-4 text-destructive" />
+                        <PiTrash className="h-4 w-4 text-destructive" />
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>

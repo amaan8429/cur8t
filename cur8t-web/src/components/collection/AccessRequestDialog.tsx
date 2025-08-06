@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { requestAccessAction } from "@/actions/collection/accessRequests";
-import { Send } from "lucide-react";
+import { PiPaperPlaneRight } from "react-icons/pi";
 
 interface AccessRequestDialogProps {
   isOpen: boolean;
@@ -93,7 +93,7 @@ export function AccessRequestDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Send className="h-5 w-5 text-primary" />
+            <PiPaperPlaneRight className="h-5 w-5 text-primary" />
             Request Access
           </DialogTitle>
         </DialogHeader>
@@ -133,12 +133,12 @@ export function AccessRequestDialog({
           >
             {isSubmitting ? (
               <>
-                <Send className="h-4 w-4 mr-2 animate-pulse" />
+                <PiPaperPlaneRight className="h-4 w-4 mr-2 animate-pulse" />
                 Sending...
               </>
             ) : (
               <>
-                <Send className="h-4 w-4 mr-2" />
+                <PiPaperPlaneRight className="h-4 w-4 mr-2" />
                 Send Request
               </>
             )}

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Trash2, Globe, Pencil } from "lucide-react";
+import { PiTrash, PiGlobe, PiPencilSimple } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -118,7 +118,7 @@ export function LinkGrid({
                     alt={link.title}
                   />
                   <AvatarFallback>
-                    <Globe className="h-6 w-6" />
+                    <PiGlobe className="h-6 w-6" />
                   </AvatarFallback>
                 </Avatar>
                 <CardTitle className="truncate">{link.title}</CardTitle>
@@ -150,7 +150,7 @@ export function LinkGrid({
                       size="sm"
                       onClick={() => handleEditClick(link)}
                     >
-                      <Pencil className="h-4 w-4" />
+                      <PiPencilSimple className="h-4 w-4" />
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
@@ -196,7 +196,7 @@ export function LinkGrid({
                     size="sm"
                     onClick={() => setLinkToDelete(link.id)}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <PiTrash className="h-4 w-4" />
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>

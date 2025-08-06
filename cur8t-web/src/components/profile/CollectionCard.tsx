@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Link2, Calendar, Pin } from "lucide-react";
+import { PiHeart, PiLink, PiCalendar, PiPushPin } from "react-icons/pi";
 import { type Collection } from "@/types/profile";
 
 interface CollectionCardProps {
@@ -21,14 +21,14 @@ export function CollectionCard({
       <div className="flex-1">
         <div className="flex items-center gap-2 mb-2">
           {isPinned && (
-            <Pin className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+            <PiPushPin className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
           )}
-          <Link
+          <PiLink
             href={`/collection/${collection.id}`}
             className="font-semibold text-foreground hover:text-primary transition-colors truncate"
           >
             {collection.title}
-          </Link>
+          </PiLink>
           <Badge variant="outline" className="text-xs flex-shrink-0">
             Public
           </Badge>
@@ -49,19 +49,19 @@ export function CollectionCard({
 
       <div className="flex items-center gap-4 text-xs text-muted-foreground mt-auto">
         <div className="flex items-center gap-1 flex-shrink-0">
-          <Link2 className="h-3 w-3" />
+          <PiLink className="h-3 w-3" />
           <span>{collection.totalLinks} links</span>
         </div>
 
         {collection.likes > 0 && (
           <div className="flex items-center gap-1 flex-shrink-0">
-            <Heart className="h-3 w-3" />
+            <PiHeart className="h-3 w-3" />
             <span>{collection.likes}</span>
           </div>
         )}
 
         <div className="flex items-center gap-1 flex-shrink-0 ml-auto">
-          <Calendar className="h-3 w-3" />
+          <PiCalendar className="h-3 w-3" />
           <span className="truncate">
             Updated {new Date(collection.updatedAt).toLocaleDateString()}
           </span>

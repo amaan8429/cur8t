@@ -1,7 +1,7 @@
 import React from "react";
-import { Search, Filter, ChevronDown, X } from "lucide-react";
+import { PiMagnifyingGlass, PiFunnel, PiCaretDown, PiX } from "react-icons/pi";
 import { Input } from "@/components/ui/input";
-import { LayoutGrid, Table } from "lucide-react";
+import { PiGridFour, PiTable } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -72,7 +72,7 @@ const ManageLinksHeader = ({
         {/* Search and View Toggle Group */}
         <div className="flex-1 flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <PiMagnifyingGlass className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search links..."
               value={searchQuery}
@@ -87,7 +87,7 @@ const ManageLinksHeader = ({
               onClick={() => setView("grid")}
               disabled={view === "grid"}
             >
-              <LayoutGrid className="h-4 w-4" />
+              <PiGridFour className="h-4 w-4" />
             </Button>
             <Button
               variant="outline"
@@ -95,7 +95,7 @@ const ManageLinksHeader = ({
               onClick={() => setView("table")}
               disabled={view === "table"}
             >
-              <Table className="h-4 w-4" />
+              <PiTable className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -104,9 +104,9 @@ const ManageLinksHeader = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="w-full sm:w-auto relative">
-              <Filter className="h-4 w-4 mr-2" />
+              <PiFunnel className="h-4 w-4 mr-2" />
               Filters
-              <ChevronDown className="h-4 w-4 ml-2" />
+              <PiCaretDown className="h-4 w-4 ml-2" />
               {activeFiltersCount > 0 && (
                 <Badge
                   variant="secondary"
@@ -242,7 +242,7 @@ const ManageLinksHeader = ({
                 : filterOptions.sortBy === "title"
                   ? "Title A-Z"
                   : "Domain A-Z"}
-              <X
+              <PiX
                 className="h-3 w-3 cursor-pointer"
                 onClick={() =>
                   setFilterOptions({ ...filterOptions, sortBy: "newest" })
@@ -257,7 +257,7 @@ const ManageLinksHeader = ({
                 : filterOptions.dateRange === "week"
                   ? "This Week"
                   : "This Month"}
-              <X
+              <PiX
                 className="h-3 w-3 cursor-pointer"
                 onClick={() =>
                   setFilterOptions({ ...filterOptions, dateRange: "all" })
@@ -272,7 +272,7 @@ const ManageLinksHeader = ({
               className="flex items-center gap-1"
             >
               {domain}
-              <X
+              <PiX
                 className="h-3 w-3 cursor-pointer"
                 onClick={() => toggleDomain(domain)}
               />

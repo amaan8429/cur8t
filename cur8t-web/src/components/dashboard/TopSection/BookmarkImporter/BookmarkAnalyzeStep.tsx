@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Brain } from "lucide-react";
+import {PiSpinner, PiBrain} from "react-icons/pi";
 import { useBookmarkImporter } from "./useBookmarkImporter";
 
 interface Props {
@@ -22,7 +22,7 @@ export function BookmarkAnalyzeStep({ importer }: Props) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Brain className="h-4 w-4" />
+          <PiBrain className="h-4 w-4" />
           Analyze Bookmarks
         </CardTitle>
         <CardDescription>
@@ -71,12 +71,12 @@ export function BookmarkAnalyzeStep({ importer }: Props) {
         >
           {isLoading ? (
             <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <PiSpinner className="h-4 w-4 mr-2 animate-spin" />
               Analyzing with AI...
             </>
           ) : (
             <>
-              <Brain className="h-4 w-4 mr-2" />
+              <PiBrain className="h-4 w-4 mr-2" />
               Start AI Analysis
             </>
           )}

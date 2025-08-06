@@ -1,5 +1,5 @@
 import React from "react";
-import { TrendingUp } from "lucide-react";
+import { PiTrendUp } from "react-icons/pi";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PublicCollection } from "@/actions/collection/fetchPublicCollections";
@@ -19,7 +19,7 @@ export const TrendingSection: React.FC<TrendingSectionProps> = ({
     <CardHeader className="pb-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          <PiTrendUp className="h-4 w-4 text-muted-foreground" />
           <h3 className="text-sm font-semibold">Trending collections</h3>
           <span className="text-xs text-muted-foreground">today</span>
         </div>

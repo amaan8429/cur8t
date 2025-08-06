@@ -4,19 +4,19 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowRight,
-  ArrowUpRight,
-  Bookmark,
-  Globe,
-  Chrome,
-  Share2,
-  Search,
-  Star,
-  Heart,
-  Zap,
-  Sparkles,
-  Tag,
-} from "lucide-react";
+  PiArrowRight,
+  PiArrowUpRight,
+  PiBookmark,
+  PiGlobe,
+  PiShare,
+  PiMagnifyingGlass,
+  PiStar,
+  PiHeart,
+  PiLightning,
+  PiSparkle,
+  PiTag,
+  PiBrowser,
+} from "react-icons/pi";
 import Image from "next/image";
 
 export default function Hero() {
@@ -194,7 +194,7 @@ export default function Hero() {
               ease: "easeInOut",
             }}
           >
-            <Bookmark className="h-6 w-6 text-primary" />
+            <PiBookmark className="h-6 w-6 text-primary" />
           </motion.div>
 
           {/* Globe Icon - Top Right */}
@@ -211,7 +211,7 @@ export default function Hero() {
               delay: 1,
             }}
           >
-            <Globe className="h-5 w-5 text-primary" />
+            <PiGlobe className="h-5 w-5 text-primary" />
           </motion.div>
 
           {/* Chrome Icon - Top Center Right */}
@@ -228,7 +228,7 @@ export default function Hero() {
               delay: 0.5,
             }}
           >
-            <Chrome className="h-6 w-6 text-primary" />
+            <PiBrowser className="h-6 w-6 text-primary" />
           </motion.div>
 
           {/* Search Icon - Bottom Right */}
@@ -245,7 +245,7 @@ export default function Hero() {
               delay: 1.5,
             }}
           >
-            <Search className="h-6 w-6 text-primary" />
+            <PiMagnifyingGlass className="h-6 w-6 text-primary" />
           </motion.div>
 
           {/* Share Icon - Bottom Left */}
@@ -262,7 +262,7 @@ export default function Hero() {
               delay: 2,
             }}
           >
-            <Share2 className="h-5 w-5 text-primary" />
+            <PiShare className="h-5 w-5 text-primary" />
           </motion.div>
 
           {/* Star Icon - Middle Left */}
@@ -280,7 +280,7 @@ export default function Hero() {
               delay: 3,
             }}
           >
-            <Star className="h-5 w-5 text-primary" />
+            <PiStar className="h-5 w-5 text-primary" />
           </motion.div>
 
           {/* Sparkles Icon - Middle Right */}
@@ -298,7 +298,7 @@ export default function Hero() {
               delay: 1.8,
             }}
           >
-            <Sparkles className="h-5 w-5 text-primary" />
+            <PiSparkle className="h-5 w-5 text-primary" />
           </motion.div>
 
           {/* Zap Icon - Bottom Center */}
@@ -315,7 +315,7 @@ export default function Hero() {
               delay: 0.8,
             }}
           >
-            <Zap className="h-6 w-6 text-primary" />
+            <PiLightning className="h-6 w-6 text-primary" />
           </motion.div>
         </div>
 
@@ -496,7 +496,7 @@ export default function Hero() {
             size="lg"
           >
             Get Started
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            <PiArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Button>
 
           <Button
@@ -559,7 +559,7 @@ export default function Hero() {
             <span className="font-semibold text-foreground">500+</span> users
             already curating
           </span>
-          <ArrowUpRight className="h-4 w-4 text-primary" />
+          <PiArrowUpRight className="h-4 w-4 text-primary" />
         </motion.div>
       </motion.main>
 

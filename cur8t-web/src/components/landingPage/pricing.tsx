@@ -12,7 +12,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Sparkles, ArrowRight, Check, Star, Zap, Shield } from "lucide-react";
+import {
+  PiSparkle,
+  PiArrowRight,
+  PiCheck,
+  PiStar,
+  PiLightning,
+  PiShield,
+} from "react-icons/pi";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
@@ -20,7 +27,7 @@ const plans = [
   {
     id: "hobby",
     name: "Hobby",
-    icon: Star,
+    icon: PiStar,
     price: {
       monthly: "Free forever",
       yearly: "Free forever",
@@ -39,7 +46,7 @@ const plans = [
   {
     id: "pro",
     name: "Pro",
-    icon: Zap,
+    icon: PiLightning,
     price: {
       monthly: 90,
       yearly: 75,
@@ -58,7 +65,7 @@ const plans = [
   {
     id: "enterprise",
     name: "Enterprise",
-    icon: Shield,
+    icon: PiShield,
     price: {
       monthly: "Get in touch for pricing",
       yearly: "Get in touch for pricing",
@@ -99,7 +106,7 @@ export default function SimplePricing() {
             variant="outline"
             className="border-primary/20 bg-primary/5 mb-4 rounded-full px-4 py-1 text-sm font-medium"
           >
-            <Sparkles className="text-primary mr-1 h-3.5 w-3.5 animate-pulse" />
+            <PiSparkle className="text-primary mr-1 h-3.5 w-3.5 animate-pulse" />
             Pricing Plans
           </Badge>
           <motion.h1
@@ -177,7 +184,7 @@ export default function SimplePricing() {
                 {plan.popular && (
                   <div className="absolute -top-3 right-0 left-0 mx-auto w-fit">
                     <Badge className="bg-primary text-primary-foreground rounded-full px-4 py-1 shadow-sm">
-                      <Sparkles className="mr-1 h-3.5 w-3.5" />
+                      <PiSparkle className="mr-1 h-3.5 w-3.5" />
                       Popular
                     </Badge>
                   </div>
@@ -260,7 +267,7 @@ export default function SimplePricing() {
                             : "bg-secondary text-secondary-foreground"
                         )}
                       >
-                        <Check className="h-3.5 w-3.5" />
+                        <PiCheck className="h-3.5 w-3.5" />
                       </div>
                       <span
                         className={
@@ -285,7 +292,7 @@ export default function SimplePricing() {
                     )}
                   >
                     {plan.cta}
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                    <PiArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
                 </CardFooter>
 

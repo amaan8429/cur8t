@@ -1,14 +1,14 @@
 import React from "react";
 import {
-  AlertTriangle,
-  RefreshCw,
-  Home,
-  Wifi,
-  Server,
-  Shield,
-  Clock,
-  Bug,
-} from "lucide-react";
+  PiTriangle,
+  PiWifiX,
+  PiShield,
+  PiClock,
+  PiBug,
+  PiHouse,
+  PiArrowClockwise,
+} from "react-icons/pi";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,7 +37,7 @@ interface ErrorPageProps {
 
 const errorConfig = {
   "rate-limit": {
-    icon: Clock,
+    icon: PiClock,
     title: "Rate Limit Exceeded",
     description:
       "You've made too many requests. Please wait a moment before trying again.",
@@ -46,7 +46,7 @@ const errorConfig = {
     borderColor: "border-amber-200 dark:border-amber-800",
   },
   network: {
-    icon: Wifi,
+    icon: PiWifiX,
     title: "Connection Error",
     description:
       "Unable to connect to the server. Please check your internet connection.",
@@ -55,7 +55,7 @@ const errorConfig = {
     borderColor: "border-red-200 dark:border-red-800",
   },
   server: {
-    icon: Server,
+    icon: PiBug,
     title: "Server Error",
     description: "Something went wrong on our end. Our team has been notified.",
     color: "text-red-500",
@@ -63,7 +63,7 @@ const errorConfig = {
     borderColor: "border-red-200 dark:border-red-800",
   },
   permission: {
-    icon: Shield,
+    icon: PiShield,
     title: "Access Denied",
     description: "You don't have permission to access this resource.",
     color: "text-orange-500",
@@ -71,7 +71,7 @@ const errorConfig = {
     borderColor: "border-orange-200 dark:border-orange-800",
   },
   "not-found": {
-    icon: AlertTriangle,
+    icon: PiTriangle,
     title: "Not Found",
     description: "The page or resource you're looking for doesn't exist.",
     color: "text-gray-500",
@@ -79,7 +79,7 @@ const errorConfig = {
     borderColor: "border-gray-200 dark:border-gray-800",
   },
   generic: {
-    icon: Bug,
+    icon: PiBug,
     title: "Something Went Wrong",
     description: "An unexpected error occurred. Please try again.",
     color: "text-red-500",
@@ -139,7 +139,7 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
               className={`p-3 rounded-lg ${config.bgColor} ${config.borderColor} border`}
             >
               <div className="flex items-center justify-center gap-2 text-sm">
-                <Clock className="h-4 w-4" />
+                <PiClock className="h-4 w-4" />
                 <span>Try again in {formatRetryTime(retryAfter)}</span>
               </div>
             </div>
@@ -150,7 +150,7 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
           <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
             {onRetry && (
               <Button onClick={onRetry} className="w-full sm:w-auto">
-                <RefreshCw className="h-4 w-4 mr-2" />
+                <PiArrowClockwise className="h-4 w-4 mr-2" />
                 Try Again
               </Button>
             )}
@@ -164,12 +164,12 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({
               >
                 {onGoHome ? (
                   <>
-                    <Home className="h-4 w-4 mr-2" />
+                    <PiHouse className="h-4 w-4 mr-2" />
                     Go Home
                   </>
                 ) : (
                   <Link href="/">
-                    <Home className="h-4 w-4 mr-2" />
+                    <PiHouse className="h-4 w-4 mr-2" />
                     Go Home
                   </Link>
                 )}

@@ -2,7 +2,12 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Trash2, Edit, ExternalLink, Calendar } from "lucide-react";
+import {
+  PiTrash,
+  PiPencilSimple,
+  PiArrowSquareOut,
+  PiCalendar,
+} from "react-icons/pi";
 
 interface Favorite {
   id: string;
@@ -23,7 +28,10 @@ interface FavoriteCardProps {
   onDelete: (id: string) => void;
   onStartEdit: (favorite: Favorite) => void;
   formatDate: (date: Date) => string;
-  VALIDATION_LIMITS: any;
+  VALIDATION_LIMITS: {
+    LINK_TITLE_MAX: number;
+    LINK_URL_MAX: number;
+  };
 }
 
 const FavoriteCard: React.FC<FavoriteCardProps> = ({
@@ -84,11 +92,11 @@ const FavoriteCard: React.FC<FavoriteCardProps> = ({
                     onClick={() => onStartEdit(favorite)}
                     className="h-6 w-6 p-0"
                   >
-                    <Edit className="h-3 w-3" />
+                    <PiPencilSimple className="h-3 w-3" />
                   </Button>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <ExternalLink className="h-4 w-4 flex-shrink-0" />
+                  <PiArrowSquareOut className="h-4 w-4 flex-shrink-0" />
                   <a
                     href={favorite.url}
                     target="_blank"
@@ -99,7 +107,7 @@ const FavoriteCard: React.FC<FavoriteCardProps> = ({
                   </a>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <Calendar className="h-3 w-3 flex-shrink-0" />
+                  <PiCalendar className="h-3 w-3 flex-shrink-0" />
                   <span>Added {formatDate(favorite.createdAt)}</span>
                 </div>
               </div>
@@ -111,7 +119,7 @@ const FavoriteCard: React.FC<FavoriteCardProps> = ({
             onClick={() => onDelete(favorite.id)}
             className="text-destructive hover:text-destructive h-8 w-8 p-0"
           >
-            <Trash2 className="h-4 w-4" />
+            <PiTrash className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>

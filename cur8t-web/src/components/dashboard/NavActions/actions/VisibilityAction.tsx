@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { DialogFooter } from "@/components/ui/dialog";
-import { PlusIcon, X } from "lucide-react";
+import { PiPlus, PiX } from "react-icons/pi";
 import {
   Select,
   SelectContent,
@@ -143,7 +143,7 @@ export const VisibilityAction: React.FC<VisibilityActionProps> = ({
                 onClick={addEmail}
                 disabled={!newEmail}
               >
-                <PlusIcon className="h-4 w-4" />
+                <PiPlus className="h-4 w-4" />
               </Button>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -161,7 +161,7 @@ export const VisibilityAction: React.FC<VisibilityActionProps> = ({
                     className="h-4 w-4 p-0 hover:bg-transparent"
                     onClick={() => removeEmail(email)}
                   >
-                    <X className="h-3 w-3" />
+                    <PiX className="h-3 w-3" />
                   </Button>
                 </Badge>
               ))}

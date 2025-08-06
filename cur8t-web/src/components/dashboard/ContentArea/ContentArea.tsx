@@ -1,15 +1,9 @@
 "use client";
 
-import React from "react";
 import { ManageCollectionLinks } from "@/components/collection/ManageCollection";
 import SecondaryPage from "@/components/secondary/SecondaryPage";
-import { CreateCollectionComponent } from "../TopSection/CreateCollection";
 import { useActiveState } from "@/store/activeStateStore";
-import SavedCollections from "../TopSection/SavedCollections";
-import ToolsAndAgents from "../TopSection/ToolsAndAgents";
 import { DashboardOverview } from "../Overview/DashboardOverview";
-import ExplorePage from "@/app/explore/page";
-import ProfilePage from "@/app/profile/[username]/page";
 
 export function ContentArea() {
   // Use the hook to subscribe to state changes, not .getState()

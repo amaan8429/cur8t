@@ -9,7 +9,13 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Upload, FileText, Download, Sparkles } from "lucide-react";
+import {
+  PiSpinner,
+  PiUpload,
+  PiFileText,
+  PiDownload,
+  PiSparkle,
+} from "react-icons/pi";
 import { useBookmarkImporter } from "./useBookmarkImporter";
 
 interface Props {
@@ -57,7 +63,7 @@ export function BookmarkUploadStep({ importer }: Props) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
+            <PiFileText className="h-4 w-4" />
             Upload Bookmark File
           </CardTitle>
           <CardDescription>
@@ -107,12 +113,12 @@ export function BookmarkUploadStep({ importer }: Props) {
           >
             {isLoading ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <PiSpinner className="h-4 w-4 mr-2 animate-spin" />
                 Uploading...
               </>
             ) : (
               <>
-                <Upload className="h-4 w-4 mr-2" />
+                <PiUpload className="h-4 w-4 mr-2" />
                 Upload & Parse Bookmarks
               </>
             )}
@@ -124,7 +130,7 @@ export function BookmarkUploadStep({ importer }: Props) {
       <Card className="border-dashed border-primary/30 bg-primary/5">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-primary">
-            <Sparkles className="h-4 w-4" />
+            <PiSparkle className="h-4 w-4" />
             Try Sample Data
           </CardTitle>
           <CardDescription>
@@ -139,7 +145,7 @@ export function BookmarkUploadStep({ importer }: Props) {
               onClick={handleLoadSample}
               className="flex-1 border-primary/30 hover:bg-primary/10"
             >
-              <Sparkles className="h-4 w-4 mr-2" />
+              <PiSparkle className="h-4 w-4 mr-2" />
               Load Sample Data
             </Button>
             <Button
@@ -147,7 +153,7 @@ export function BookmarkUploadStep({ importer }: Props) {
               onClick={handleDownloadSample}
               className="flex-1"
             >
-              <Download className="h-4 w-4 mr-2" />
+              <PiDownload className="h-4 w-4 mr-2" />
               Download Sample
             </Button>
           </div>

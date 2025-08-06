@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { GitBranch, Database, Zap } from "lucide-react";
+import { PiGitBranch, PiDatabase, PiLightning } from "react-icons/pi";
 import { Badge } from "@/components/ui/badge";
 
 const GitHubSyncAnimation = () => {
@@ -31,7 +31,7 @@ const GitHubSyncAnimation = () => {
             variant="outline"
             className="border-primary/20 bg-primary/5 mb-4 rounded-full px-4 py-1 text-sm font-medium"
           >
-            <Zap className="text-primary mr-1 h-3.5 w-3.5" />
+            <PiLightning className="text-primary mr-1 h-3.5 w-3.5" />
             GitHub Integration
           </Badge>
 
@@ -64,7 +64,7 @@ const GitHubSyncAnimation = () => {
                   Your Collections
                 </h3>
                 <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                  <Database className="w-5 h-5" />
+                  <PiDatabase className="w-5 h-5" />
                   <span>Cur8t</span>
                 </div>
               </div>
@@ -165,7 +165,7 @@ const GitHubSyncAnimation = () => {
                   GitHub Repository
                 </h3>
                 <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                  <GitBranch className="w-5 h-5" />
+                  <PiGitBranch className="w-5 h-5" />
                   <span>Your GitHub</span>
                 </div>
               </div>
@@ -176,7 +176,7 @@ const GitHubSyncAnimation = () => {
                 className="relative p-6 rounded-xl border border-primary bg-card shadow-lg w-full max-w-sm"
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <GitBranch className="w-6 h-6 text-primary" />
+                  <PiGitBranch className="w-6 h-6 text-primary" />
                   <div>
                     <p className="font-semibold text-foreground text-lg">
                       awesome-collection

@@ -10,19 +10,19 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Skeleton } from "../ui/skeleton";
 import {
-  Twitter,
-  Linkedin,
-  Github,
-  Instagram,
-  Globe,
-  User,
-  ExternalLink,
-  Check,
-  X,
-  AlertCircle,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+  PiTwitterLogo,
+  PiLinkedinLogo,
+  PiGithubLogo,
+  PiPentagram,
+  PiGlobe,
+  PiUser,
+  PiArrowSquareOut,
+  PiCheck,
+  PiX,
+  PiCircle,
+  PiEye,
+  PiEyeClosed,
+} from "react-icons/pi";
 import { cn } from "@/lib/utils";
 
 interface SocialMediaData {
@@ -50,7 +50,7 @@ const socialPlatforms: SocialPlatform[] = [
   {
     key: "twitterUsername",
     label: "Twitter/X",
-    icon: Twitter,
+    icon: PiTwitterLogo,
     placeholder: "username",
     baseUrl: "https://twitter.com/",
     prefix: "@",
@@ -60,7 +60,7 @@ const socialPlatforms: SocialPlatform[] = [
   {
     key: "githubUsername",
     label: "GitHub",
-    icon: Github,
+    icon: PiGithubLogo,
     placeholder: "username",
     baseUrl: "https://github.com/",
     validation: (value) =>
@@ -70,7 +70,7 @@ const socialPlatforms: SocialPlatform[] = [
   {
     key: "linkedinUsername",
     label: "LinkedIn",
-    icon: Linkedin,
+    icon: PiLinkedinLogo,
     placeholder: "username",
     baseUrl: "https://linkedin.com/in/",
     validation: (value) => /^[a-zA-Z0-9-]{3,100}$/.test(value),
@@ -79,7 +79,7 @@ const socialPlatforms: SocialPlatform[] = [
   {
     key: "instagramUsername",
     label: "Instagram",
-    icon: Instagram,
+    icon: PiPentagram,
     placeholder: "username",
     baseUrl: "https://instagram.com/",
     prefix: "@",
@@ -250,7 +250,7 @@ export default function SocialMediaSettings() {
               rel="noopener noreferrer"
               className="text-primary hover:text-primary/80 transition-colors"
             >
-              <ExternalLink className="h-4 w-4" />
+              <PiArrowSquareOut className="h-4 w-4" />
             </a>
           )}
         </div>
@@ -276,9 +276,9 @@ export default function SocialMediaSettings() {
             {value && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 {error ? (
-                  <X className="h-4 w-4 text-destructive" />
+                  <PiX className="h-4 w-4 text-destructive" />
                 ) : (
-                  <Check className="h-4 w-4 text-green-600" />
+                  <PiCheck className="h-4 w-4 text-green-600" />
                 )}
               </div>
             )}
@@ -293,7 +293,7 @@ export default function SocialMediaSettings() {
 
         {error && (
           <p className="text-sm text-destructive flex items-center gap-1">
-            <AlertCircle className="h-3 w-3" />
+            <PiCircle className="h-3 w-3" />
             {error}
           </p>
         )}
@@ -333,7 +333,7 @@ export default function SocialMediaSettings() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5 text-primary" />
+            <PiUser className="h-5 w-5 text-primary" />
             Social Media Settings
           </CardTitle>
           <Button
@@ -343,9 +343,9 @@ export default function SocialMediaSettings() {
             className="border-primary/20 text-primary hover:bg-primary/10"
           >
             {previewMode ? (
-              <EyeOff className="h-4 w-4" />
+              <PiEyeClosed className="h-4 w-4" />
             ) : (
-              <Eye className="h-4 w-4" />
+              <PiEye className="h-4 w-4" />
             )}
             {previewMode ? "Edit" : "Preview"}
           </Button>
@@ -385,7 +385,7 @@ export default function SocialMediaSettings() {
                         {value}
                       </p>
                     </div>
-                    <ExternalLink className="h-4 w-4 ml-auto" />
+                    <PiArrowSquareOut className="h-4 w-4 ml-auto" />
                   </a>
                 );
               })}
@@ -401,14 +401,14 @@ export default function SocialMediaSettings() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  <Globe className="h-5 w-5" />
+                  <PiGlobe className="h-5 w-5" />
                   <div>
                     <p className="font-medium">Personal Website</p>
                     <p className="text-sm text-gray-600">
                       {formData.personalWebsite}
                     </p>
                   </div>
-                  <ExternalLink className="h-4 w-4 ml-auto" />
+                  <PiArrowSquareOut className="h-4 w-4 ml-auto" />
                 </a>
               )}
             </div>
@@ -418,7 +418,7 @@ export default function SocialMediaSettings() {
             <div className="space-y-4">
               <div className="space-y-3">
                 <Label htmlFor="bio" className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
+                  <PiUser className="h-4 w-4" />
                   Bio
                 </Label>
                 <Textarea
@@ -438,7 +438,7 @@ export default function SocialMediaSettings() {
                   htmlFor="personalWebsite"
                   className="flex items-center gap-2"
                 >
-                  <Globe className="h-4 w-4" />
+                  <PiGlobe className="h-4 w-4" />
                   Personal Website
                 </Label>
                 <Input
@@ -458,7 +458,7 @@ export default function SocialMediaSettings() {
                 />
                 {validationErrors.personalWebsite && (
                   <p className="text-sm text-red-600 flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" />
+                    <PiCircle className="h-3 w-3" />
                     {validationErrors.personalWebsite}
                   </p>
                 )}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Star, User } from "lucide-react";
+import { PiStar, PiUser } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -49,13 +49,13 @@ export const SavedCollectionsSection: React.FC<
       <Card className="border border-border/50">
         <CardHeader className="pb-4">
           <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-muted-foreground" />
+            <PiUser className="h-4 w-4 text-muted-foreground" />
             <h3 className="text-sm font-semibold">Join Cur8t</h3>
           </div>
         </CardHeader>
         <CardContent>
           <div className="text-center py-6">
-            <User className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+            <PiUser className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
             <p className="text-sm text-muted-foreground mb-3">
               Sign up to save collections and track your favorites
             </p>
@@ -74,7 +74,7 @@ export const SavedCollectionsSection: React.FC<
     <Card className="border border-border/50">
       <CardHeader className="pb-4">
         <div className="flex items-center gap-2">
-          <Star className="h-4 w-4 text-muted-foreground" />
+          <PiStar className="h-4 w-4 text-muted-foreground" />
           <h3 className="text-sm font-semibold">Your saved collections</h3>
         </div>
       </CardHeader>
@@ -101,7 +101,7 @@ export const SavedCollectionsSection: React.FC<
             ))
         ) : (
           <div className="text-center py-8">
-            <Star className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+            <PiStar className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
             <p className="text-xs text-muted-foreground">
               No saved collections yet
             </p>

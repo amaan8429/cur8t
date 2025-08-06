@@ -1,5 +1,5 @@
 import React from "react";
-import { type LucideIcon } from "lucide-react";
+import { IconType } from "react-icons";
 
 import {
   SidebarGroup,
@@ -15,7 +15,7 @@ import { useActiveState } from "@/store/activeStateStore";
 interface NavSecondaryProps {
   items: {
     title: string;
-    icon: LucideIcon;
+    icon: IconType;
     badge?: React.ReactNode;
   }[];
 }

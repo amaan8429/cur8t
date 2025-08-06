@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCollectionStore } from "@/store/collection-store";
 import { ChangeCollectionDescriptionAction } from "@/actions/collection/changeCollectionDescription";
 import { VALIDATION_LIMITS } from "@/types/types";
-import { FileText } from "lucide-react";
+import { PiFileText } from "react-icons/pi";
 import React from "react";
 
 const ChangeCollectionDescription = ({
@@ -99,7 +99,7 @@ const ChangeCollectionDescription = ({
         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
           <DialogTrigger asChild>
             <div className="flex items-center">
-              <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
+              <PiFileText className="h-4 w-4 mr-2 text-muted-foreground" />
               <span>Change Description</span>
             </div>
           </DialogTrigger>

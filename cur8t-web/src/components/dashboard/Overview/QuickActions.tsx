@@ -9,12 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { LucideIcon } from "lucide-react";
+import { IconType } from "react-icons";
 
 interface QuickAction {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: IconType;
   action: () => void;
   variant?: "primary" | "secondary" | "accent" | "neutral";
 }

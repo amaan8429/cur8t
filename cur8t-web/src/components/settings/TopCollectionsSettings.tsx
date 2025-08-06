@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Star, Plus, X, GripVertical, Save } from "lucide-react";
+import {
+  PiStar,
+  PiPlus,
+  PiX,
+  PiFlipVertical,
+  PiPaperPlaneTilt,
+} from "react-icons/pi";
 import {
   Card,
   CardContent,
@@ -251,7 +257,7 @@ const TopCollectionsSettings = () => {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Star className="h-5 w-5 text-primary" />
+          <PiStar className="h-5 w-5 text-primary" />
           Top Collections
         </CardTitle>
         <CardDescription>
@@ -272,7 +278,7 @@ const TopCollectionsSettings = () => {
                 size="sm"
                 className="bg-primary hover:bg-primary/90"
               >
-                <Save className="h-4 w-4 mr-2" />
+                <PiPaperPlaneTilt className="h-4 w-4 mr-2" />
                 {isSaving ? "Saving..." : "Save Changes"}
               </Button>
             )}
@@ -286,7 +292,7 @@ const TopCollectionsSettings = () => {
             variant="outline"
             className="border-primary/20 text-primary hover:bg-primary/10"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <PiPlus className="w-4 h-4 mr-2" />
             Add Collection
           </Button>
         </div>
@@ -294,7 +300,7 @@ const TopCollectionsSettings = () => {
         <div className="space-y-3">
           {topCollections.length === 0 ? (
             <div className="text-center py-8">
-              <Star className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <PiStar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <p className="text-muted-foreground">
                 No top collections selected
               </p>
@@ -315,7 +321,7 @@ const TopCollectionsSettings = () => {
                 } hover:bg-muted/50`}
               >
                 <div className="flex items-center gap-3">
-                  <GripVertical className="h-5 w-5 text-muted-foreground" />
+                  <PiFlipVertical className="h-5 w-5 text-muted-foreground" />
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-medium">{collection.title}</h4>
@@ -338,7 +344,7 @@ const TopCollectionsSettings = () => {
                     onClick={() => handleRemoveCollection(collection.id)}
                     className="text-destructive hover:bg-destructive/10"
                   >
-                    <X className="h-4 w-4" />
+                    <PiX className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -385,7 +391,7 @@ const TopCollectionsSettings = () => {
                         size="sm"
                         className="bg-primary hover:bg-primary/90"
                       >
-                        <Plus className="h-4 w-4 mr-2" />
+                        <PiPlus className="h-4 w-4 mr-2" />
                         Add
                       </Button>
                     </div>

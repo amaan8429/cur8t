@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Users, Heart, BookOpen } from "lucide-react";
+import { PiUsers, PiHeart, PiBookOpen } from "react-icons/pi";
 import Link from "next/link";
 import { getFeaturedUsers } from "@/actions/platform/featuredUsers";
 
@@ -65,7 +65,7 @@ export default function FeaturedUsers() {
     return (
       <div className="space-y-4">
         <div className="flex items-center gap-2 mb-6">
-          <Users className="w-6 h-6" />
+          <PiUsers className="w-6 h-6" />
           <h2 className="text-2xl font-bold">Featured Creators</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -102,7 +102,7 @@ export default function FeaturedUsers() {
   if (users.length === 0) {
     return (
       <div className="text-center py-12">
-        <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+        <PiUsers className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
         <h3 className="text-lg font-semibold mb-2">No Featured Users Yet</h3>
         <p className="text-muted-foreground">
           Check back soon to see our top content creators!
@@ -114,7 +114,7 @@ export default function FeaturedUsers() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-6">
-        <Users className="w-6 h-6" />
+        <PiUsers className="w-6 h-6" />
         <h2 className="text-2xl font-bold">Featured Creators</h2>
         <p className="text-muted-foreground ml-2">
           Top content creators in our community
@@ -155,11 +155,11 @@ export default function FeaturedUsers() {
               {/* Stats */}
               <div className="flex gap-2 flex-wrap">
                 <Badge variant="secondary" className="text-xs">
-                  <BookOpen className="w-3 h-3 mr-1" />
+                  <PiBookOpen className="w-3 h-3 mr-1" />
                   {user.publicCollections} collections
                 </Badge>
                 <Badge variant="secondary" className="text-xs">
-                  <Heart className="w-3 h-3 mr-1" />
+                  <PiHeart className="w-3 h-3 mr-1" />
                   {user.totalLikes} likes
                 </Badge>
               </div>

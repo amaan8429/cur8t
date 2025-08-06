@@ -5,14 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Users,
-  FolderOpen,
-  Link2,
-  Star,
-  TrendingUp,
-  Bookmark,
-  Calendar,
-} from "lucide-react";
+  PiUsers,
+  PiFolderOpen,
+  PiLink,
+  PiStar,
+  PiTrendUp,
+  PiBookmark,
+  PiCalendar,
+} from "react-icons/pi";
 import { getPlatformStats } from "@/actions/platform/platformStats";
 
 interface PlatformStatsData {
@@ -114,7 +114,7 @@ const PlatformStats = () => {
         <StatCard
           title="Total Users"
           value={stats?.totalUsers || 0}
-          icon={Users}
+          icon={PiUsers}
           description="Active community members"
           badge="Growing"
         />
@@ -122,21 +122,21 @@ const PlatformStats = () => {
         <StatCard
           title="Public Collections"
           value={stats?.publicCollections || 0}
-          icon={FolderOpen}
+          icon={PiFolderOpen}
           description="Shared with the community"
         />
 
         <StatCard
           title="Links Bookmarked"
           value={stats?.totalLinks || 0}
-          icon={Link2}
+          icon={PiLink}
           description="Total links across all collections"
         />
 
         <StatCard
           title="Collections Saved"
           value={stats?.totalSaves || 0}
-          icon={Bookmark}
+          icon={PiBookmark}
           description="Times collections were saved"
         />
       </div>
@@ -145,7 +145,7 @@ const PlatformStats = () => {
         <StatCard
           title="New This Week"
           value={stats?.collectionsThisWeek || 0}
-          icon={Calendar}
+          icon={PiCalendar}
           description="Fresh collections created"
           badge="Recent"
         />
@@ -153,14 +153,14 @@ const PlatformStats = () => {
         <StatCard
           title="Most Liked Collection"
           value={stats?.mostLikedCollection || 0}
-          icon={Star}
+          icon={PiStar}
           description="Highest likes on a single collection"
         />
 
         <StatCard
           title="Total Collections"
           value={stats?.totalCollections || 0}
-          icon={TrendingUp}
+          icon={PiTrendUp}
           description="Public and private combined"
         />
       </div>

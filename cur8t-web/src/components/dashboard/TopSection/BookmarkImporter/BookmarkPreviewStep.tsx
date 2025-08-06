@@ -12,19 +12,18 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Loader2,
-  Eye,
-  Plus,
-  Save,
-  X,
-  Edit2,
-  Trash2,
-  ExternalLink,
-  GripVertical,
-  FileText,
-  FolderOpen,
-  ChevronRight,
-} from "lucide-react";
+  PiPlus,
+  PiX,
+  PiPencilSimple,
+  PiTrash,
+  PiFileText,
+  PiFolderOpen,
+  PiSpinner,
+  PiArrowSquareOut,
+  PiCaretRight,
+  PiFlipVertical,
+  PiBookmark,
+} from "react-icons/pi";
 import { motion, AnimatePresence, Reorder } from "framer-motion";
 import { useBookmarkImporter } from "./useBookmarkImporter";
 
@@ -142,7 +141,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
                           <h4 className="font-medium text-sm truncate">
                             {category.name}
                           </h4>
-                          <ChevronRight
+                          <PiCaretRight
                             className={`h-4 w-4 text-muted-foreground transition-transform ${
                               selectedCategoryForDetail === category.name
                                 ? "rotate-90"
@@ -176,7 +175,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
             <Card className="h-full">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FolderOpen className="h-4 w-4" />
+                  <PiFolderOpen className="h-4 w-4" />
                   {selectedCategory.name}
                 </CardTitle>
                 <CardDescription>
@@ -219,7 +218,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
                 {/* Bookmarks Section */}
                 <div className="border-2 border-dashed border-muted-foreground/20 rounded-xl p-4 bg-muted/10">
                   <h5 className="font-semibold mb-4 flex items-center gap-2">
-                    <GripVertical className="h-4 w-4 text-muted-foreground" />
+                    <PiFlipVertical className="h-4 w-4 text-muted-foreground" />
                     Links ({selectedCategory.bookmarks.length})
                   </h5>
 
@@ -287,7 +286,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
                                           onClick={saveEditedLink}
                                           className="flex-1"
                                         >
-                                          <Save className="h-4 w-4 mr-2" />
+                                          <PiBookmark className="h-4 w-4 mr-2" />
                                           Save
                                         </Button>
                                         <Button
@@ -295,7 +294,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
                                           variant="outline"
                                           onClick={cancelEditingLink}
                                         >
-                                          <X className="h-4 w-4 mr-2" />
+                                          <PiX className="h-4 w-4 mr-2" />
                                           Cancel
                                         </Button>
                                       </div>
@@ -303,7 +302,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
                                   ) : (
                                     <div className="flex items-center justify-between">
                                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                                        <GripVertical className="h-4 w-4 text-muted-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <PiFlipVertical className="h-4 w-4 text-muted-foreground/60 opacity-0 group-hover:opacity-100 transition-opacity" />
                                         <div className="flex-1 min-w-0">
                                           <div className="font-medium text-sm truncate">
                                             {bookmark.title}
@@ -323,7 +322,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
                                           title="Open link"
                                           className="h-8 w-8 p-0"
                                         >
-                                          <ExternalLink className="h-4 w-4" />
+                                          <PiArrowSquareOut className="h-4 w-4" />
                                         </Button>
                                         <Button
                                           size="sm"
@@ -337,7 +336,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
                                           title="Edit link"
                                           className="h-8 w-8 p-0"
                                         >
-                                          <Edit2 className="h-4 w-4" />
+                                          <PiPencilSimple className="h-4 w-4" />
                                         </Button>
                                         <Button
                                           size="sm"
@@ -351,7 +350,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
                                           title="Delete link"
                                           className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
                                         >
-                                          <Trash2 className="h-4 w-4" />
+                                          <PiTrash className="h-4 w-4" />
                                         </Button>
                                       </div>
                                     </div>
@@ -364,7 +363,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
                       </Reorder.Group>
                     ) : (
                       <div className="text-center py-8 text-muted-foreground">
-                        <FileText className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                        <PiFileText className="h-8 w-8 mx-auto mb-2 opacity-30" />
                         <p className="text-sm font-medium">
                           No links in this category
                         </p>
@@ -381,7 +380,7 @@ export function BookmarkPreviewStep({ importer }: Props) {
             <Card className="h-full flex items-center justify-center">
               <CardContent>
                 <div className="text-center text-muted-foreground">
-                  <FolderOpen className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                  <PiFolderOpen className="h-12 w-12 mx-auto mb-3 opacity-30" />
                   <p className="font-medium">
                     Select a category to view details
                   </p>
@@ -408,12 +407,12 @@ export function BookmarkPreviewStep({ importer }: Props) {
         >
           {isLoading ? (
             <>
-              <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+              <PiSpinner className="h-5 w-5 mr-2 animate-spin" />
               Creating Collections...
             </>
           ) : (
             <>
-              <Plus className="h-5 w-5 mr-2" />
+              <PiPlus className="h-5 w-5 mr-2" />
               Create {selectedCategories.length} Collection
               {selectedCategories.length !== 1 ? "s" : ""}
             </>

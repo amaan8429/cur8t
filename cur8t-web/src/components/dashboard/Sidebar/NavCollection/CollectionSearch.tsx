@@ -1,7 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { SearchIcon, Folder, FolderOpen, Pin } from "lucide-react";
+import {
+  PiMagnifyingGlass,
+  PiFolder,
+  PiFolderOpen,
+  PiPushPin,
+} from "react-icons/pi";
 import { useRouter } from "next/navigation";
 
 import {
@@ -86,12 +91,12 @@ export function CollectionSearch({
                   className="flex items-center gap-2 cursor-pointer"
                 >
                   {isActive ? (
-                    <FolderOpen className="h-4 w-4 shrink-0" />
+                    <PiFolderOpen className="h-4 w-4 shrink-0" />
                   ) : (
-                    <Folder className="h-4 w-4 shrink-0" />
+                    <PiFolder className="h-4 w-4 shrink-0" />
                   )}
                   <span className="flex-1 truncate">{collection.title}</span>
-                  <Pin className="h-3 w-3 opacity-60" />
+                  <PiPushPin className="h-3 w-3 opacity-60" />
                 </CommandItem>
               );
             })}
@@ -109,9 +114,9 @@ export function CollectionSearch({
                   className="flex items-center gap-2 cursor-pointer"
                 >
                   {isActive ? (
-                    <FolderOpen className="h-4 w-4 shrink-0" />
+                    <PiFolderOpen className="h-4 w-4 shrink-0" />
                   ) : (
-                    <Folder className="h-4 w-4 shrink-0" />
+                    <PiFolder className="h-4 w-4 shrink-0" />
                   )}
                   <span className="flex-1 truncate">{collection.title}</span>
                 </CommandItem>
@@ -146,7 +151,7 @@ export function CollectionSearchButton() {
         onClick={() => setOpen(true)}
         title="Search collections (⇧⌘K)"
       >
-        <SearchIcon className="h-4 w-4" />
+        <PiMagnifyingGlass className="h-4 w-4" />
       </button>
       <CollectionSearch open={open} onOpenChange={setOpen} />
     </>

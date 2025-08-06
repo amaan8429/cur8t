@@ -3,16 +3,15 @@
 import type React from "react";
 import { cn } from "@/lib/utils";
 import {
-  Bookmark,
-  Globe,
-  Chrome,
-  Smartphone,
-  Share2,
-  Search,
-  Zap,
-  Shield,
-  Sparkles,
-} from "lucide-react";
+  PiBookmark,
+  PiGlobe,
+  PiShare,
+  PiShield,
+  PiSparkle,
+  PiMagnifyingGlass,
+  PiBrowser,
+  PiPhone,
+} from "react-icons/pi";
 import {
   Card,
   CardHeader,
@@ -44,7 +43,7 @@ const itemsSample: BentoItem[] = [
     meta: "AI-Powered",
     description:
       "Organize your bookmarks into intelligent collections with automatic categorization and tagging. Never lose track of important content again.",
-    icon: <Bookmark className="text-primary h-4 w-4" />,
+    icon: <PiBookmark className="text-primary h-4 w-4" />,
     status: "Popular",
     tags: ["AI", "Organization", "Smart"],
     colSpan: 2,
@@ -55,7 +54,7 @@ const itemsSample: BentoItem[] = [
     meta: "Chrome & Firefox",
     description:
       "Save any webpage instantly with our seamless browser extension. One-click bookmarking with automatic metadata extraction.",
-    icon: <Chrome className="text-primary h-4 w-4" />,
+    icon: <PiBrowser className="text-primary h-4 w-4" />,
     status: "Essential",
     tags: ["Extension", "Chrome"],
   },
@@ -63,14 +62,14 @@ const itemsSample: BentoItem[] = [
     title: "Universal Access",
     description:
       "Access your bookmarks from any device, anywhere. Seamless sync across desktop, mobile, and web platforms.",
-    icon: <Globe className="text-primary h-4 w-4" />,
+    icon: <PiGlobe className="text-primary h-4 w-4" />,
     status: "Sync",
   },
   {
     title: "Mobile Apps",
     description:
       "Native mobile apps for iOS and Android. Save and access your bookmarks on the go with offline support.",
-    icon: <Smartphone className="text-primary h-4 w-4" />,
+    icon: <PiPhone className="text-primary h-4 w-4" />,
     meta: "iOS & Android",
     tags: ["Mobile", "Offline"],
   },
@@ -78,7 +77,7 @@ const itemsSample: BentoItem[] = [
     title: "Advanced Search",
     description:
       "Find any bookmark instantly with powerful search capabilities. Search by title, content, tags, or even within saved pages.",
-    icon: <Search className="text-primary h-4 w-4" />,
+    icon: <PiMagnifyingGlass className="text-primary h-4 w-4" />,
     meta: "Full-text",
     tags: ["Search", "Fast"],
   },
@@ -87,7 +86,7 @@ const itemsSample: BentoItem[] = [
     meta: "Public Collections",
     description:
       "Share your curated collections with the world. Discover amazing bookmarks from other users and build your network.",
-    icon: <Share2 className="text-primary h-4 w-4" />,
+    icon: <PiShare className="text-primary h-4 w-4" />,
     status: "Community",
     tags: ["Sharing", "Social"],
   },
@@ -96,7 +95,7 @@ const itemsSample: BentoItem[] = [
     meta: "End-to-End",
     description:
       "Your bookmarks are encrypted and secure. Private collections stay private, with enterprise-grade security and data protection.",
-    icon: <Shield className="text-primary h-4 w-4" />,
+    icon: <PiShield className="text-primary h-4 w-4" />,
     status: "Secure",
     tags: ["Privacy", "Encryption"],
     colSpan: 2,
@@ -112,7 +111,7 @@ export default function Integrations({ items = itemsSample }: BentoGridProps) {
           variant="outline"
           className="border-primary/20 bg-primary/5 mb-4 rounded-full px-4 py-1 text-sm font-medium"
         >
-          <Sparkles className="text-primary mr-1 h-3.5 w-3.5" />
+          <PiSparkle className="text-primary mr-1 h-3.5 w-3.5" />
           Features
         </Badge>
         <motion.h2

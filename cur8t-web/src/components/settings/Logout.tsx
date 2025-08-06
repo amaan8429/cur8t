@@ -11,7 +11,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import {PiSignOut} from "react-icons/pi";
 import { useToast } from "@/hooks/use-toast";
 import { useClerk } from "@clerk/nextjs";
 
@@ -47,7 +47,7 @@ const Logout = () => {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="destructive" disabled={isLoggingOut}>
-          <LogOut className="h-4 w-4 mr-2" />
+          <PiSignOut className="h-4 w-4 mr-2" />
           {isLoggingOut ? "Logging out..." : "Logout"}
         </Button>
       </AlertDialogTrigger>

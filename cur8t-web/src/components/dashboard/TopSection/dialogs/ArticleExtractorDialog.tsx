@@ -16,17 +16,17 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Loader2,
-  FileText,
-  ExternalLink,
-  Trash2,
-  Plus,
-  Edit3,
-  Check,
-  X,
-  Globe,
-  Calendar,
-} from "lucide-react";
+  PiFileText,
+  PiPlus,
+  PiCheck,
+  PiX,
+  PiGlobe,
+  PiCalendar,
+  PiPencilSimple,
+  PiArrowSquareOut,
+  PiTrash,
+  PiSpinner,
+} from "react-icons/pi";
 import { toast, useToast } from "@/hooks/use-toast";
 import {
   agentsApi,
@@ -290,7 +290,7 @@ export function ArticleExtractorDialog({
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col mx-4 sm:mx-6 lg:mx-8">
         <DialogHeader className="px-1 pb-4">
           <DialogTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
+            <PiFileText className="h-5 w-5" />
             Article Link Extractor
           </DialogTitle>
           <DialogDescription>
@@ -365,11 +365,11 @@ export function ArticleExtractorDialog({
                       rel="noopener noreferrer"
                       className="text-sm text-muted-foreground hover:text-blue-600 flex items-center gap-1 transition-colors"
                     >
-                      <Globe className="h-3 w-3" />
+                      <PiGlobe className="h-3 w-3" />
                       {extractedData.article_url}
                     </a>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Calendar className="h-3 w-3" />
+                      <PiCalendar className="h-3 w-3" />
                       Extracted{" "}
                       {new Date(extractedData.created_at).toLocaleString()}
                     </div>
@@ -398,14 +398,14 @@ export function ArticleExtractorDialog({
                       }}
                     />
                     <Button size="sm" onClick={handleCollectionNameSave}>
-                      <Check className="h-4 w-4" />
+                      <PiCheck className="h-4 w-4" />
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={handleCollectionNameCancel}
                     >
-                      <X className="h-4 w-4" />
+                      <PiX className="h-4 w-4" />
                     </Button>
                   </div>
                 ) : (
@@ -420,7 +420,7 @@ export function ArticleExtractorDialog({
                       variant="outline"
                       onClick={handleCollectionNameEdit}
                     >
-                      <Edit3 className="h-4 w-4" />
+                      <PiPencilSimple className="h-4 w-4" />
                     </Button>
                   </div>
                 )}
@@ -435,7 +435,7 @@ export function ArticleExtractorDialog({
                     variant="outline"
                     onClick={() => setShowAddLinkForm(!showAddLinkForm)}
                   >
-                    <Plus className="h-4 w-4 mr-2" />
+                    <PiPlus className="h-4 w-4 mr-2" />
                     Add Link
                   </Button>
                 </div>
@@ -530,7 +530,7 @@ export function ArticleExtractorDialog({
                             onClick={() => window.open(link.url, "_blank")}
                             className="h-8 w-8 p-0"
                           >
-                            <ExternalLink className="h-3 w-3" />
+                            <PiArrowSquareOut className="h-3 w-3" />
                           </Button>
                           <Button
                             size="sm"
@@ -538,7 +538,7 @@ export function ArticleExtractorDialog({
                             onClick={() => handleDeleteLink(link.url)}
                             className="h-8 w-8 p-0 text-muted-foreground hover:text-red-600 hover:bg-red-50"
                           >
-                            <Trash2 className="h-3 w-3" />
+                            <PiTrash className="h-3 w-3" />
                           </Button>
                         </div>
                       </div>
@@ -557,7 +557,7 @@ export function ArticleExtractorDialog({
                 Cancel
               </Button>
               <Button onClick={handleExtractLinks} disabled={loading}>
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {loading && <PiSpinner className="mr-2 h-4 w-4 animate-spin" />}
                 Extract Links
               </Button>
             </>
@@ -573,7 +573,7 @@ export function ArticleExtractorDialog({
                 disabled={savingCollection}
               >
                 {savingCollection && (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <PiSpinner className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Save Collection
               </Button>

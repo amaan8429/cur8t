@@ -1,6 +1,6 @@
 "use client";
 
-import { VerifiedIcon } from "lucide-react";
+import { PiCheckCircle } from "react-icons/pi";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -87,7 +87,7 @@ export default function TweetCard({
                       {authorName}
                     </span>
                     {isVerified && (
-                      <VerifiedIcon className="h-4 w-4 text-primary" />
+                      <PiCheckCircle className="h-4 w-4 text-primary" />
                     )}
                   </div>
                   <span className="text-sm text-muted-foreground">
@@ -146,7 +146,7 @@ export default function TweetCard({
                       {reply.authorName}
                     </span>
                     {reply.isVerified && (
-                      <VerifiedIcon className="h-4 w-4 text-primary" />
+                      <PiCheckCircle className="h-4 w-4 text-primary" />
                     )}
                     <span className="text-sm text-muted-foreground">
                       @{reply.authorHandle}

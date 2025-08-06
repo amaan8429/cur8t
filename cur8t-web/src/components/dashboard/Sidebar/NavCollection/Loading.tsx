@@ -5,7 +5,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { Loader2 } from "lucide-react";
+import {PiSpinner} from "react-icons/pi";
 
 const LoadingCollections = () => {
   return (
@@ -14,7 +14,7 @@ const LoadingCollections = () => {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton className="text-sidebar-foreground/70">
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <PiSpinner className="h-4 w-4 animate-spin" />
             <span>Loading collections...</span>
           </SidebarMenuButton>
         </SidebarMenuItem>

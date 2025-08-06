@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/command";
 import { DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
-import { Search, Bookmark, Link as LinkIcon, FileText } from "lucide-react";
+import { PiMagnifyingGlass, PiBookmark, PiLink } from "react-icons/pi";
 import { useActiveState } from "@/store/activeStateStore";
 
 interface SearchResult {
@@ -84,7 +84,7 @@ export function SearchCommand({ onSearch }: SearchCommandProps) {
   return (
     <>
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <PiMagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <button
           onClick={() => setOpen(true)}
           className="flex h-10 w-full items-center rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm text-muted-foreground ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
@@ -121,7 +121,7 @@ export function SearchCommand({ onSearch }: SearchCommandProps) {
                       value={result.title}
                       onSelect={() => handleSelect(result)}
                     >
-                      <Bookmark className="mr-2 h-4 w-4" />
+                      <PiBookmark className="mr-2 h-4 w-4" />
                       <div className="flex flex-col">
                         <span>{result.title}</span>
                         {result.description && (
@@ -143,7 +143,7 @@ export function SearchCommand({ onSearch }: SearchCommandProps) {
                       value={result.title}
                       onSelect={() => handleSelect(result)}
                     >
-                      <LinkIcon className="mr-2 h-4 w-4" />
+                      <PiLink className="mr-2 h-4 w-4" />
                       <div className="flex flex-col">
                         <span>{result.title}</span>
                         <div className="text-xs text-muted-foreground">

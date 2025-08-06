@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useEffect, useState } from "react";
-import { Copy, Plus } from "lucide-react";
+import { PiCopy, PiPlus } from "react-icons/pi";
 import {
   Card,
   CardContent,
@@ -217,7 +217,7 @@ const APIKeySettings = () => {
             size="sm"
             className="bg-primary hover:bg-primary/90"
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <PiPlus className="w-4 h-4 mr-2" />
             Generate New Key
           </Button>
         </div>
@@ -242,7 +242,7 @@ const APIKeySettings = () => {
                     onClick={() => copyToClipboard(apiKey.key, apiKey.name)}
                     className="text-primary hover:bg-primary/10"
                   >
-                    <Copy className="w-4 h-4" />
+                    <PiCopy className="w-4 h-4" />
                   </Button>
                   <Button
                     variant="ghost"

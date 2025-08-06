@@ -1,5 +1,5 @@
 import React from "react";
-import { CheckCircle } from "lucide-react";
+import { PiCheckCircle } from "react-icons/pi";
 import { Step } from "./types";
 
 interface Props {
@@ -30,7 +30,7 @@ export function BookmarkImporterSteps({ currentStep }: Props) {
             }`}
           >
             {index < steps.indexOf(currentStep) ? (
-              <CheckCircle className="h-5 w-5" />
+              <PiCheckCircle className="h-5 w-5" />
             ) : (
               index + 1
             )}

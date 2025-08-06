@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Moon, Sun } from "lucide-react";
+import { PiMoon, PiSun } from "react-icons/pi";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -54,7 +54,7 @@ export function ModeToggle() {
       />
 
       {/* Sun icon */}
-      <Sun
+      <PiSun
         className={cn(
           "absolute h-[1.2rem] w-[1.2rem] transition-all duration-500 ease-in-out",
           "text-amber-500",
@@ -71,7 +71,7 @@ export function ModeToggle() {
       />
 
       {/* Moon icon */}
-      <Moon
+      <PiMoon
         className={cn(
           "absolute h-[1.2rem] w-[1.2rem] transition-all duration-500 ease-in-out",
           "text-blue-400",

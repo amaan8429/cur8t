@@ -3,14 +3,14 @@
 
 import React, { useRef, useEffect } from "react";
 import {
-  User,
-  Mail,
-  Save,
-  Camera,
-  Copy,
-  ExternalLink,
-  Check,
-} from "lucide-react";
+  PiUser,
+  PiEnvelope,
+  PiPaperPlaneTilt,
+  PiCamera,
+  PiCopy,
+  PiCheck,
+  PiArrowSquareOut,
+} from "react-icons/pi";
 import {
   Card,
   CardContent,
@@ -305,14 +305,14 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             <Avatar className="h-24 w-24">
               <AvatarImage src={avatar} alt="Profile" />
               <AvatarFallback>
-                <User className="h-12 w-12" />
+                <PiUser className="h-12 w-12" />
               </AvatarFallback>
             </Avatar>
             <div
               className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
               onClick={handleAvatarClick}
             >
-              <Camera className="h-8 w-8 text-primary-foreground" />
+              <PiCamera className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
           <input
@@ -329,7 +329,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
             disabled={isUploadingAvatar}
             className="flex items-center gap-2 border-primary/20 text-primary hover:bg-primary/10"
           >
-            <Camera className="h-4 w-4" />
+            <PiCamera className="h-4 w-4" />
             {isUploadingAvatar ? "Uploading..." : "Change Photo"}
           </Button>
         </div>
@@ -365,7 +365,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
                 disabled={isSaving}
                 className="flex items-center gap-2 bg-primary hover:bg-primary/90"
               >
-                <Save className="h-4 w-4" />
+                <PiPaperPlaneTilt className="h-4 w-4" />
                 {isSaving ? "Saving..." : "Save Changes"}
               </Button>
             </div>
@@ -378,7 +378,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
           <div className="flex gap-2">
             <Input id="email" value={email} disabled className="bg-muted" />
             <Button variant="outline" size="icon" disabled>
-              <Mail className="h-4 w-4" />
+              <PiEnvelope className="h-4 w-4" />
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
@@ -439,9 +439,9 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
                   className="border-primary/20 text-primary hover:bg-primary/10"
                 >
                   {copied ? (
-                    <Check className="h-4 w-4" />
+                    <PiCheck className="h-4 w-4" />
                   ) : (
-                    <Copy className="h-4 w-4" />
+                    <PiCopy className="h-4 w-4" />
                   )}
                 </Button>
                 <Button
@@ -450,7 +450,7 @@ const ProfileSettings = ({ user }: ProfileSettingsProps) => {
                   onClick={handleOpenProfile}
                   className="border-primary/20 text-primary hover:bg-primary/10"
                 >
-                  <ExternalLink className="h-4 w-4" />
+                  <PiArrowSquareOut className="h-4 w-4" />
                 </Button>
               </div>
               <p className="text-sm text-muted-foreground">

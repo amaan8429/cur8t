@@ -1,20 +1,11 @@
 import {
-  Settings2,
-  FileText,
-  Link,
-  Copy,
-  CornerUpRight,
-  Trash2,
-  CornerUpLeft,
-  LineChart,
-  GalleryVerticalEnd,
-  Trash,
-  Bell,
-  ArrowUp,
-  ArrowDown,
-  StarHalf,
-  StarOff,
-} from "lucide-react";
+  PiGear,
+  PiLink,
+  PiCopy,
+  PiChartLine,
+  PiArrowDown,
+  PiStar,
+} from "react-icons/pi";
 import { ActionItem } from "./ActionItems";
 
 // Define action types for better type safety
@@ -31,38 +22,38 @@ export const actionsData: ActionItem[][] = [
   [
     {
       label: "Customize Page",
-      icon: Settings2,
+      icon: PiGear,
       type: "customize",
     },
     {
       label: "Change Visibility",
-      icon: StarOff,
+      icon: PiStar,
       type: "visibility",
     },
   ],
   [
     {
       label: "Copy Link",
-      icon: Link,
+      icon: PiLink,
       type: "copy-link",
     },
     {
       label: "Duplicate",
-      icon: Copy,
+      icon: PiCopy,
       type: "duplicate",
     },
   ],
   [
     {
       label: "View analytics",
-      icon: LineChart,
+      icon: PiChartLine,
       type: "analytics",
     },
   ],
   [
     {
       label: "Export",
-      icon: ArrowDown,
+      icon: PiArrowDown,
       type: "export",
     },
   ],

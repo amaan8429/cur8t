@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { PlusIcon, StarOff, X, Link as LinkIcon } from "lucide-react";
+import { PiPlus, PiStar, PiX, PiLink } from "react-icons/pi";
 import {
   Dialog,
   DialogClose,
@@ -147,7 +147,7 @@ const ChangeVisibility = ({
       <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
         <DialogTrigger asChild>
           <div className="flex items-center">
-            <StarOff className="h-4 w-4 mr-2 text-muted-foreground" />
+            <PiStar className="h-4 w-4 mr-2 text-muted-foreground" />
             <span>Visibility</span>
           </div>
         </DialogTrigger>
@@ -213,7 +213,7 @@ const ChangeVisibility = ({
                     onClick={addEmail}
                     disabled={!newEmail}
                   >
-                    <PlusIcon className="h-4 w-4" />
+                    <PiPlus className="h-4 w-4" />
                   </Button>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -231,7 +231,7 @@ const ChangeVisibility = ({
                         className="h-4 w-4 p-0 hover:bg-transparent"
                         onClick={() => removeEmail(email)}
                       >
-                        <X className="h-3 w-3" />
+                        <PiX className="h-3 w-3" />
                       </Button>
                     </Badge>
                   ))}
@@ -247,7 +247,7 @@ const ChangeVisibility = ({
 
             <div className="space-y-4">
               <FormLabel className="flex items-center gap-2">
-                <LinkIcon className="h-4 w-4" />
+                <PiLink className="h-4 w-4" />
                 Collection Link
               </FormLabel>
               <div className="flex space-x-2">

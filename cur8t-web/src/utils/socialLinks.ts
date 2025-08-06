@@ -1,11 +1,11 @@
 import {
-  Twitter,
-  Linkedin,
-  Github,
-  Instagram,
-  Globe,
-  ExternalLink,
-} from "lucide-react";
+  PiTwitterLogo,
+  PiLinkedinLogo,
+  PiGithubLogo,
+  PiPentagram,
+  PiGlobe,
+  PiArrowSquareOut,
+} from "react-icons/pi";
 
 export interface SocialLink {
   platform: string;
@@ -24,17 +24,17 @@ export interface User {
 export const getSocialIcon = (platform: string) => {
   switch (platform) {
     case "twitter":
-      return Twitter;
+      return PiTwitterLogo;
     case "linkedin":
-      return Linkedin;
+      return PiLinkedinLogo;
     case "github":
-      return Github;
+      return PiGithubLogo;
     case "instagram":
-      return Instagram;
+      return PiPentagram;
     case "website":
-      return Globe;
+      return PiGlobe;
     default:
-      return ExternalLink;
+      return PiArrowSquareOut;
   }
 };
 

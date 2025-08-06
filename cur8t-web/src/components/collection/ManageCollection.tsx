@@ -7,7 +7,7 @@ import { FrontendLink, FrontendLinkSchema } from "@/types/types";
 import { LinkGrid } from "./LinkGrid";
 import LinkTable from "./LinkTable";
 import ManageLinksHeader, { FilterOptions } from "./LinkHeader";
-import { PlusCircle } from "lucide-react";
+import { PiPlusCircle } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -252,7 +252,7 @@ export function ManageCollectionLinks({
               <div className="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-bounce"></div>
               <div className="absolute -bottom-1 -left-1 h-2 w-2 bg-blue-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-bounce delay-150"></div>
 
-              <PlusCircle className="h-7 w-7 text-white transition-all duration-500 group-hover:scale-110 drop-shadow-lg" />
+              <PiPlusCircle className="h-7 w-7 text-white transition-all duration-500 group-hover:scale-110 drop-shadow-lg" />
             </Button>
           </div>
         </DialogTrigger>

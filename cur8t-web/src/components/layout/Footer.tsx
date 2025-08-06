@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Mail, Twitter } from "lucide-react";
+import { PiGithubLogo, PiEnvelope, PiTwitterLogo } from "react-icons/pi";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -37,21 +37,21 @@ export function Footer() {
               aria-label="Twitter"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              <Twitter className="h-5 w-5" />
+              <PiTwitterLogo className="h-5 w-5" />
             </Link>
             <Link
               href="https://github.com/cur8t"
               aria-label="GitHub"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              <Github className="h-5 w-5" />
+              <PiGithubLogo className="h-5 w-5" />
             </Link>
             <Link
               href="mailto:hello@cur8t.com"
               aria-label="Email"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              <Mail className="h-5 w-5" />
+              <PiEnvelope className="h-5 w-5" />
             </Link>
           </div>
         </div>

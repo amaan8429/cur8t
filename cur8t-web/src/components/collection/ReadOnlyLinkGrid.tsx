@@ -2,15 +2,7 @@
 
 import * as React from "react";
 import { useState, useMemo } from "react";
-import {
-  Globe,
-  ExternalLink,
-  Search,
-  LayoutGrid,
-  List,
-  Table as TableIcon,
-  X,
-} from "lucide-react";
+import {PiGlobe, PiList, PiTable, PiMagnifyingGlass, PiX, PiArrowSquareOut, PiGridFour, } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -75,7 +67,7 @@ export function ReadOnlyLinkGrid({
         onClick={() => setViewMode("grid")}
         className="h-8 px-3"
       >
-        <LayoutGrid className="h-4 w-4" />
+        <PiGridFour className="h-4 w-4" />
       </Button>
       <Button
         variant={viewMode === "list" ? "default" : "ghost"}
@@ -83,7 +75,7 @@ export function ReadOnlyLinkGrid({
         onClick={() => setViewMode("list")}
         className="h-8 px-3"
       >
-        <List className="h-4 w-4" />
+        <PiList className="h-4 w-4" />
       </Button>
       <Button
         variant={viewMode === "table" ? "default" : "ghost"}
@@ -91,14 +83,14 @@ export function ReadOnlyLinkGrid({
         onClick={() => setViewMode("table")}
         className="h-8 px-3"
       >
-        <TableIcon className="h-4 w-4" />
+        <PiTable className="h-4 w-4" />
       </Button>
     </div>
   );
 
   const renderSearchBar = () => (
     <div className="relative">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+      <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
       <Input
         placeholder="Search links..."
         value={searchQuery}
@@ -112,7 +104,7 @@ export function ReadOnlyLinkGrid({
           onClick={clearSearch}
           className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
         >
-          <X className="h-3 w-3" />
+          <PiX className="h-3 w-3 text-muted-foreground" />
         </Button>
       )}
     </div>
@@ -133,7 +125,7 @@ export function ReadOnlyLinkGrid({
                   alt={link.title}
                 />
                 <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
-                  <Globe className="h-6 w-6 text-primary" />
+                  <PiGlobe className="h-6 w-6 text-primary" />
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
@@ -160,7 +152,7 @@ export function ReadOnlyLinkGrid({
               className="w-full hover:bg-primary hover:text-primary-foreground transition-colors"
               onClick={() => window.open(link.url, "_blank")}
             >
-              <ExternalLink className="h-4 w-4 mr-2" />
+              <PiArrowSquareOut className="h-4 w-4 mr-2" />
               Visit Link
             </Button>
           </CardFooter>
@@ -182,7 +174,7 @@ export function ReadOnlyLinkGrid({
                     alt={link.title}
                   />
                   <AvatarFallback>
-                    <Globe className="h-5 w-5" />
+                    <PiGlobe className="h-5 w-5" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
@@ -205,7 +197,7 @@ export function ReadOnlyLinkGrid({
                 onClick={() => window.open(link.url, "_blank")}
                 className="ml-4 shrink-0"
               >
-                <ExternalLink className="h-4 w-4" />
+                <PiArrowSquareOut className="h-4 w-4" />
               </Button>
             </div>
           </CardContent>
@@ -216,7 +208,7 @@ export function ReadOnlyLinkGrid({
 
   const renderTableView = () => (
     <Card>
-      <Table>
+      <PiTable>
         <TableHeader>
           <TableRow>
             <TableHead className="w-12"></TableHead>
@@ -236,7 +228,7 @@ export function ReadOnlyLinkGrid({
                     alt={link.title}
                   />
                   <AvatarFallback>
-                    <Globe className="h-4 w-4" />
+                    <PiGlobe className="h-4 w-4" />
                   </AvatarFallback>
                 </Avatar>
               </TableCell>
@@ -264,13 +256,13 @@ export function ReadOnlyLinkGrid({
                   size="sm"
                   onClick={() => window.open(link.url, "_blank")}
                 >
-                  <ExternalLink className="h-4 w-4" />
+                  <PiArrowSquareOut className="h-4 w-4" />
                 </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-      </Table>
+      </PiTable>
     </Card>
   );
 
@@ -299,7 +291,7 @@ export function ReadOnlyLinkGrid({
       {filteredLinks.length === 0 && searchQuery ? (
         <Card className="p-12 text-center">
           <div className="mx-auto w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
-            <Search className="h-12 w-12 text-muted-foreground" />
+            <PiMagnifyingGlass className="h-12 w-12 text-muted-foreground" />
           </div>
           <h3 className="text-lg font-semibold mb-2">No links found</h3>
           <p className="text-muted-foreground mb-4">

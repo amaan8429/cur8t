@@ -9,16 +9,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import {
-  Heart,
-  Link2,
-  Copy,
-  Check,
-  Share,
-  Book,
-  Twitter,
-  Facebook,
-  Linkedin,
-} from "lucide-react";
+  PiHeart,
+  PiLink,
+  PiCopy,
+  PiCheck,
+  PiShare,
+  PiBook,
+  PiTwitterLogo,
+  PiFacebookLogo,
+  PiLinkedinLogo,
+} from "react-icons/pi";
 import {
   getSocialIcon,
   getSocialUrl,
@@ -142,9 +142,9 @@ export function ProfileSidebar({ user, collections }: ProfileSidebarProps) {
               className="w-full justify-start gap-2 h-8 text-sm"
             >
               {copied ? (
-                <Check className="h-3.5 w-3.5" />
+                <PiCheck className="h-3.5 w-3.5" />
               ) : (
-                <Copy className="h-3.5 w-3.5" />
+                <PiCopy className="h-3.5 w-3.5" />
               )}
               {copied ? "Copied!" : "Copy Profile Link"}
             </Button>
@@ -155,21 +155,21 @@ export function ProfileSidebar({ user, collections }: ProfileSidebarProps) {
                   variant="outline"
                   className="w-full justify-start gap-2 h-8 text-sm"
                 >
-                  <Share className="h-3.5 w-3.5" />
+                  <PiShare className="h-3.5 w-3.5" />
                   Share Profile
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => handleSocialShare("twitter")}>
-                  <Twitter className="h-4 w-4 mr-2" />
+                  <PiTwitterLogo className="h-4 w-4 mr-2" />
                   Twitter
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleSocialShare("facebook")}>
-                  <Facebook className="h-4 w-4 mr-2" />
+                  <PiFacebookLogo className="h-4 w-4 mr-2" />
                   Facebook
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleSocialShare("linkedin")}>
-                  <Linkedin className="h-4 w-4 mr-2" />
+                  <PiLinkedinLogo className="h-4 w-4 mr-2" />
                   LinkedIn
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -179,19 +179,19 @@ export function ProfileSidebar({ user, collections }: ProfileSidebarProps) {
           {/* Stats */}
           <div className="space-y-2 text-sm">
             <div className="flex items-center gap-2">
-              <Book className="h-4 w-4 text-muted-foreground" />
+              <PiBook className="h-4 w-4 text-muted-foreground" />
               <span>
                 <strong>{collections.length}</strong> public repositories
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Heart className="h-4 w-4 text-muted-foreground" />
+              <PiHeart className="h-4 w-4 text-muted-foreground" />
               <span>
                 <strong>{totalLikes}</strong> total likes
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Link2 className="h-4 w-4 text-muted-foreground" />
+              <PiLink className="h-4 w-4 text-muted-foreground" />
               <span>
                 <strong>{totalLinks}</strong> total links
               </span>

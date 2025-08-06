@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ExternalLink } from "lucide-react";
+import { PiArrowSquareOut } from "react-icons/pi";
 
 interface RecentCollection {
   id: string;
@@ -74,7 +74,7 @@ export function RecentCollections({
                   size="sm"
                   onClick={() => handleViewCollection(collection.id)}
                 >
-                  <ExternalLink className="h-4 w-4" />
+                  <PiArrowSquareOut className="h-4 w-4" />
                 </Button>
               </div>
             ))}

@@ -11,7 +11,7 @@ import {
 } from "motion/react";
 import Balancer from "react-wrap-balancer";
 import { cn } from "@/lib/utils";
-import { Chrome } from "lucide-react";
+import {PiBrowser} from "react-icons/pi";
 import { Badge } from "@/components/ui/badge";
 
 type WrapperStyle = MotionStyle & {
@@ -361,7 +361,7 @@ export default function BrowserExtensionShowcase() {
             variant="outline"
             className="border-primary/20 bg-primary/5 mb-4 rounded-full px-4 py-1 text-sm font-medium"
           >
-            <Chrome className="text-primary mr-1 h-3.5 w-3.5" />
+            <PiBrowser className="text-primary mr-1 h-3.5 w-3.5" />
             Browser Extension
           </Badge>
 

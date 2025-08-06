@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { LinkIcon, Check, Twitter, Linkedin } from "lucide-react";
+import { PiLink, PiCheck, PiTwitterLogo, PiLinkedinLogo } from "react-icons/pi";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 
@@ -63,7 +63,7 @@ const CopyCollectionLink = ({ collectionId }: { collectionId: string }) => {
         <DialogTrigger asChild>
           <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
             <div className="flex items-center">
-              <LinkIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+              <PiLink className="h-4 w-4 mr-2 text-muted-foreground" />
               <span>Copy Link</span>
             </div>
           </DropdownMenuItem>
@@ -103,7 +103,7 @@ const CopyCollectionLink = ({ collectionId }: { collectionId: string }) => {
                   animate={{ scale: 1 }}
                   exit={{ scale: 0 }}
                 >
-                  <Check className="h-4 w-4" />
+                  <PiCheck className="h-4 w-4" />
                 </motion.span>
               )}
             </Button>
@@ -114,7 +114,7 @@ const CopyCollectionLink = ({ collectionId }: { collectionId: string }) => {
               size="icon"
               onClick={() => shareToSocialMedia("twitter")}
             >
-              <Twitter className="h-4 w-4" />
+              <PiTwitterLogo className="h-4 w-4" />
               <span className="sr-only">Share on Twitter</span>
             </Button>
             <Button
@@ -122,7 +122,7 @@ const CopyCollectionLink = ({ collectionId }: { collectionId: string }) => {
               size="icon"
               onClick={() => shareToSocialMedia("linkedin")}
             >
-              <Linkedin className="h-4 w-4" />
+              <PiLinkedinLogo className="h-4 w-4" />
               <span className="sr-only">Share on LinkedIn</span>
             </Button>
           </div>

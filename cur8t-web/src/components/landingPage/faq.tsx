@@ -1,5 +1,5 @@
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { PlusIcon, Sparkles } from "lucide-react";
+import { PiPlus, PiSparkle } from "react-icons/pi";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -66,7 +66,7 @@ export default function Faq1() {
             variant="outline"
             className="border-primary/20 bg-primary/5 mb-4 rounded-full px-4 py-1 text-sm font-medium"
           >
-            <Sparkles className="text-primary mr-1 h-3.5 w-3.5 animate-pulse" />
+            <PiSparkle className="text-primary mr-1 h-3.5 w-3.5 animate-pulse" />
             FAQ
           </Badge>
           <motion.h1
@@ -130,7 +130,7 @@ export default function Faq1() {
                       )}
                     >
                       {item.title}
-                      <PlusIcon
+                      <PiPlus
                         size={18}
                         className={cn(
                           "text-primary/70 shrink-0 transition-transform duration-300 ease-out",

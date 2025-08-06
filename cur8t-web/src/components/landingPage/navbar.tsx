@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { IconMenu2, IconX } from "@tabler/icons-react";
+import { PiHamburger, PiX } from "react-icons/pi";
 import Image from "next/image";
 import {
   motion,
@@ -224,9 +224,9 @@ export const MobileNavToggle = ({
   onClick: () => void;
 }) => {
   return isOpen ? (
-    <IconX className="text-foreground cursor-pointer" onClick={onClick} />
+    <PiX className="text-foreground cursor-pointer" onClick={onClick} />
   ) : (
-    <IconMenu2 className="text-foreground cursor-pointer" onClick={onClick} />
+    <PiHamburger className="text-foreground cursor-pointer" onClick={onClick} />
   );
 };
 

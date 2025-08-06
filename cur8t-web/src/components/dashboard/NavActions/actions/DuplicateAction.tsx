@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DialogFooter } from "@/components/ui/dialog";
-import { Info } from "lucide-react";
+import { PiInfo } from "react-icons/pi";
 import {
   Tooltip,
   TooltipContent,
@@ -216,7 +216,7 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
                 Include all contents
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                    <PiInfo className="h-3 w-3 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>
@@ -242,7 +242,7 @@ export const DuplicateAction: React.FC<DuplicateActionProps> = ({
                 Copy permissions
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                    <PiInfo className="h-3 w-3 text-muted-foreground cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>

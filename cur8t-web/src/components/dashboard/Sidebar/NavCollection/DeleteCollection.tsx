@@ -1,5 +1,5 @@
 import React from "react";
-import { Trash2 } from "lucide-react";
+import {PiTrash} from "react-icons/pi";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -62,7 +62,7 @@ const DeleteCollectionOption = ({ collection }: { collection: Collection }) => {
       <AlertDialogTrigger asChild>
         <DropdownMenuItem onSelect={(e: Event) => e.preventDefault()}>
           <div className="flex items-center">
-            <Trash2 className="h-4 w-4 mr-2 text-muted-foreground" />
+            <PiTrash className="h-4 w-4 mr-2 text-muted-foreground" />
             <span>Delete</span>
           </div>
         </DropdownMenuItem>

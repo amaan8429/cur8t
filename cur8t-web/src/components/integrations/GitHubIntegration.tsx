@@ -10,12 +10,12 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  Github,
-  Loader2,
-  ExternalLink,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react";
+  PiGithubLogo,
+  PiCheckCircle,
+  PiWarningCircle,
+  PiArrowSquareOut,
+  PiSpinner,
+} from "react-icons/pi";
 import { useUser } from "@clerk/nextjs";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -233,7 +233,7 @@ const GitHubIntegrationComponent = () => {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Github className="h-6 w-6" />
+            <PiGithubLogo className="h-6 w-6" />
             <div>
               <div className="flex items-center gap-2">
                 <CardTitle>GitHub Integration</CardTitle>
@@ -242,12 +242,12 @@ const GitHubIntegrationComponent = () => {
                     variant="secondary"
                     className="flex items-center gap-1"
                   >
-                    <CheckCircle className="h-3 w-3" />
+                    <PiCheckCircle className="h-3 w-3" />
                     Connected
                   </Badge>
                 ) : (
                   <Badge variant="outline" className="flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3" />
+                    <PiWarningCircle className="h-3 w-3" />
                     Disconnected
                   </Badge>
                 )}
@@ -281,7 +281,7 @@ const GitHubIntegrationComponent = () => {
                     }
                     className="flex items-center gap-2"
                   >
-                    <ExternalLink className="h-4 w-4" />
+                    <PiArrowSquareOut className="h-4 w-4" />
                     View Repository
                   </Button>
                 )}
@@ -305,7 +305,7 @@ const GitHubIntegrationComponent = () => {
                 >
                   {isSyncing ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <PiSpinner className="mr-2 h-4 w-4 animate-spin" />
                       Syncing...
                     </>
                   ) : (
@@ -319,7 +319,7 @@ const GitHubIntegrationComponent = () => {
                   className="px-4"
                 >
                   {isDisconnecting ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <PiSpinner className="h-4 w-4 animate-spin" />
                   ) : (
                     "Disconnect"
                   )}
@@ -344,7 +344,7 @@ const GitHubIntegrationComponent = () => {
               </div>
 
               <Button onClick={handleConnectGitHub} className="w-full">
-                <Github className="mr-2 h-4 w-4" />
+                <PiGithubLogo className="mr-2 h-4 w-4" />
                 Connect GitHub
               </Button>
             </>

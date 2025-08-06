@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Button } from "../../ui/button";
-import { Star } from "lucide-react";
+import { PiStar } from "react-icons/pi";
 import { saveCollectionAction } from "@/actions/collection/saveCollection";
 
 const SavedCollection = ({ collectionId }: { collectionId: string }) => {
@@ -38,7 +38,7 @@ const SavedCollection = ({ collectionId }: { collectionId: string }) => {
       className="h-7 w-7"
       onClick={handleSave}
     >
-      <Star />
+      <PiStar />
     </Button>
   );
 };

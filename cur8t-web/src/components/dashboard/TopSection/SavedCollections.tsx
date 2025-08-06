@@ -2,19 +2,19 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  Search,
-  Grid,
-  List,
-  TrendingUp,
-  Clock,
-  Star,
-  ChevronLeft,
-  ChevronRight,
-  Link2,
-  Heart,
-  Calendar,
-  Sparkles,
-} from "lucide-react";
+  PiMagnifyingGlass,
+  PiList,
+  PiTrendUp,
+  PiClock,
+  PiStar,
+  PiCaretLeft,
+  PiCaretRight,
+  PiLink,
+  PiHeart,
+  PiCalendar,
+  PiSparkle,
+  PiSquaresFour,
+} from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -121,13 +121,13 @@ const SavedCollections = () => {
           <div className="space-y-3">
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Link2 className="h-3.5 w-3.5" />
+                <PiLink className="h-3.5 w-3.5" />
                 <span>{collection.totalLinks}</span>
               </div>
 
               {collection.likes > 0 && (
                 <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <Heart className="h-3.5 w-3.5" />
+                  <PiHeart className="h-3.5 w-3.5" />
                   <span>{collection.likes}</span>
                 </div>
               )}
@@ -139,7 +139,7 @@ const SavedCollections = () => {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Calendar className="h-3 w-3" />
+                <PiCalendar className="h-3 w-3" />
                 <span>
                   Updated {formatDate(collection.updatedAt.toString())}
                 </span>
@@ -190,13 +190,13 @@ const SavedCollections = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Link2 className="h-3.5 w-3.5" />
+                <PiLink className="h-3.5 w-3.5" />
                 <span>{collection.totalLinks}</span>
               </div>
 
               {collection.likes > 0 && (
                 <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <Heart className="h-3.5 w-3.5" />
+                  <PiHeart className="h-3.5 w-3.5" />
                   <span>{collection.likes}</span>
                 </div>
               )}
@@ -206,7 +206,7 @@ const SavedCollections = () => {
               </Badge>
 
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Calendar className="h-3 w-3" />
+                <PiCalendar className="h-3 w-3" />
                 <span>
                   Updated {formatDate(collection.updatedAt.toString())}
                 </span>
@@ -237,7 +237,7 @@ const SavedCollections = () => {
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1 || isLoading}
       >
-        <ChevronLeft className="h-4 w-4" />
+        <PiCaretLeft className="h-4 w-4" />
       </Button>
       <span className="text-sm">
         Page {currentPage} of {totalPages}
@@ -248,7 +248,7 @@ const SavedCollections = () => {
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages || isLoading}
       >
-        <ChevronRight className="h-4 w-4" />
+        <PiCaretRight className="h-4 w-4" />
       </Button>
     </div>
   );
@@ -258,7 +258,7 @@ const SavedCollections = () => {
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-8">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <PiMagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Search saved collections..."
             value={searchQuery}
@@ -282,19 +282,19 @@ const SavedCollections = () => {
             <SelectContent>
               <SelectItem value="trending">
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4" />
+                  <PiTrendUp className="h-4 w-4" />
                   Trending
                 </div>
               </SelectItem>
               <SelectItem value="recent">
                 <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
+                  <PiClock className="h-4 w-4" />
                   Recently Updated
                 </div>
               </SelectItem>
               <SelectItem value="likes">
                 <div className="flex items-center gap-2">
-                  <Star className="h-4 w-4" />
+                  <PiStar className="h-4 w-4" />
                   Most Liked
                 </div>
               </SelectItem>
@@ -307,9 +307,9 @@ const SavedCollections = () => {
             onClick={() => setIsGridView(!isGridView)}
           >
             {isGridView ? (
-              <Grid className="h-4 w-4" />
+              <PiSquaresFour className="h-4 w-4" />
             ) : (
-              <List className="h-4 w-4" />
+              <PiList className="h-4 w-4" />
             )}
           </Button>
         </div>
@@ -354,7 +354,7 @@ const SavedCollections = () => {
             <Card className="border-dashed border-border/30">
               <CardContent className="text-center py-16">
                 <div className="p-4 rounded-full bg-muted/50 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                  <Sparkles className="h-8 w-8 text-muted-foreground" />
+                  <PiSparkle className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">
                   No Saved Collections Found

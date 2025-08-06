@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { DialogFooter } from "@/components/ui/dialog";
 import { useCollectionStore } from "@/store/collection-store";
 import { useActiveState } from "@/store/activeStateStore";
-import { Loader2 } from "lucide-react";
+import { PiSpinner } from "react-icons/pi";
 import { VALIDATION_LIMITS } from "@/types/types";
 
 interface CustomizeActionProps {
@@ -104,7 +104,7 @@ export const CustomizeAction: React.FC<CustomizeActionProps> = ({
         <Button onClick={handleUpdateCollection} disabled={isSaving}>
           {isSaving ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <PiSpinner className="mr-2 h-4 w-4 animate-spin" />
               Saving...
             </>
           ) : (

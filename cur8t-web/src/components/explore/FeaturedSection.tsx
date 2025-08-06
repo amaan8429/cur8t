@@ -1,5 +1,5 @@
 import React from "react";
-import { Clock } from "lucide-react";
+import { PiClock } from "react-icons/pi";
 import {
   Card,
   CardContent,
@@ -23,7 +23,7 @@ export const FeaturedSection: React.FC<FeaturedSectionProps> = ({
   <Card className="mb-8 border border-border/50">
     <CardHeader className="pb-4">
       <div className="flex items-center gap-2">
-        <Clock className="h-5 w-5 text-primary" />
+        <PiClock className="h-5 w-5 text-primary" />
         <CardTitle className="text-lg">Recently Updated Collections</CardTitle>
       </div>
       <CardDescription>
@@ -42,18 +42,16 @@ export const FeaturedSection: React.FC<FeaturedSectionProps> = ({
                 </div>
               </div>
             ))
-          : recentCollections
-              .slice(0, 3)
-              .map((collection) => (
-                <UnifiedCollectionCard 
-                  key={collection.id} 
-                  collection={{
-                    ...collection,
-                    visibility: "public"
-                  }} 
-                  variant="featured" 
-                />
-              ))}
+          : recentCollections.slice(0, 3).map((collection) => (
+              <UnifiedCollectionCard
+                key={collection.id}
+                collection={{
+                  ...collection,
+                  visibility: "public",
+                }}
+                variant="featured"
+              />
+            ))}
       </div>
     </CardContent>
   </Card>

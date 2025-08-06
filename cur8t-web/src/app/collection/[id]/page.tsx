@@ -4,21 +4,21 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth, SignInButton, SignUpButton } from "@clerk/nextjs";
 import {
-  Clock,
-  Eye,
-  Link2,
-  User,
-  Heart,
-  Share,
-  Lock,
-  Shield,
-  Settings,
-  Copy,
-  Download,
-  Check,
-  Bookmark,
-  ExternalLink,
-} from "lucide-react";
+  PiClock,
+  PiEye,
+  PiLink,
+  PiUser,
+  PiHeart,
+  PiShare,
+  PiLock,
+  PiShield,
+  PiGear,
+  PiCopy,
+  PiDownload,
+  PiCheck,
+  PiBookmark,
+  PiArrowSquareOut,
+} from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -206,21 +206,21 @@ export default function CollectionPage() {
     switch (collection?.visibility) {
       case "public":
         return {
-          icon: <Eye className="h-4 w-4" />,
+          icon: <PiEye className="h-4 w-4" />,
           label: "Public",
           description: "Anyone with the link can view",
           color: "bg-primary/10 text-primary border-primary/20",
         };
       case "private":
         return {
-          icon: <Lock className="h-4 w-4" />,
+          icon: <PiLock className="h-4 w-4" />,
           label: "Private",
           description: "Only you can view",
           color: "bg-destructive/10 text-destructive border-destructive/20",
         };
       case "protected":
         return {
-          icon: <Shield className="h-4 w-4" />,
+          icon: <PiShield className="h-4 w-4" />,
           label: "Protected",
           description: "Only you and invited people can view",
           color: "bg-secondary/50 text-secondary-foreground border-secondary",
@@ -497,22 +497,22 @@ export default function CollectionPage() {
         {/* Simple Navigation Header */}
         <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
           <div className="container mx-auto px-4 flex h-14 items-center justify-between">
-            <Link href="/" className="font-bold text-xl">
+            <PiLink href="/" className="font-bold text-xl">
               Cur8t
-            </Link>
+            </PiLink>
             <nav className="flex items-center space-x-6">
-              <Link
+              <PiLink
                 href="/add-extension"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Add Extension
-              </Link>
-              <Link
+              </PiLink>
+              <PiLink
                 href="/dashboard"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 Dashboard
-              </Link>
+              </PiLink>
             </nav>
           </div>
         </header>
@@ -576,22 +576,22 @@ export default function CollectionPage() {
       {/* Simple Navigation Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background">
         <div className="container mx-auto px-4 flex h-14 items-center justify-between">
-          <Link href="/" className="font-bold text-xl">
+          <PiLink href="/" className="font-bold text-xl">
             Cur8t
-          </Link>
+          </PiLink>
           <nav className="flex items-center space-x-6">
-            <Link
+            <PiLink
               href="/add-extension"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Add Extension
-            </Link>
-            <Link
+            </PiLink>
+            <PiLink
               href="/dashboard"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               Dashboard
-            </Link>
+            </PiLink>
           </nav>
         </div>
       </header>
@@ -636,7 +636,7 @@ export default function CollectionPage() {
                     ) : (
                       <div className="flex items-center gap-2">
                         <div className="p-1 rounded-full bg-muted">
-                          <User className="h-3.5 w-3.5" />
+                          <PiUser className="h-3.5 w-3.5" />
                         </div>
                         <span className="text-sm">By {collection.author}</span>
                       </div>
@@ -645,7 +645,7 @@ export default function CollectionPage() {
 
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <div className="p-1 rounded-full bg-muted">
-                      <Link2 className="h-3.5 w-3.5" />
+                      <PiLink className="h-3.5 w-3.5" />
                     </div>
                     <span className="text-sm">
                       {collection.totalLinks} links
@@ -654,14 +654,14 @@ export default function CollectionPage() {
 
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <div className="p-1 rounded-full bg-muted">
-                      <Heart className="h-3.5 w-3.5" />
+                      <PiHeart className="h-3.5 w-3.5" />
                     </div>
                     <span className="text-sm">{collection.likes} likes</span>
                   </div>
 
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <div className="p-1 rounded-full bg-muted">
-                      <Clock className="h-3.5 w-3.5" />
+                      <PiClock className="h-3.5 w-3.5" />
                     </div>
                     <span className="text-sm">
                       Updated {collection.updatedAt.toLocaleDateString()}
@@ -690,9 +690,9 @@ export default function CollectionPage() {
                   disabled={linkCopied}
                 >
                   {linkCopied ? (
-                    <Check className="h-3.5 w-3.5 text-primary" />
+                    <PiCheck className="h-3.5 w-3.5 text-primary" />
                   ) : (
-                    <Copy className="h-3.5 w-3.5" />
+                    <PiCopy className="h-3.5 w-3.5" />
                   )}
                   {linkCopied ? "Copied!" : "Copy Link"}
                 </Button>
@@ -708,7 +708,7 @@ export default function CollectionPage() {
                     disabled={isSaving}
                     className="flex items-center gap-2 transition-colors text-sm"
                   >
-                    <Bookmark
+                    <PiBookmark
                       className="h-3.5 w-3.5 transition-colors"
                       style={{
                         fill: isSaved ? "currentColor" : "none",
@@ -731,7 +731,7 @@ export default function CollectionPage() {
                         disabled={isLiking}
                         className="flex items-center gap-2 transition-colors text-sm"
                       >
-                        <Heart
+                        <PiHeart
                           className="h-3.5 w-3.5 transition-colors"
                           style={{
                             fill: isLiked ? "currentColor" : "none",
@@ -752,7 +752,7 @@ export default function CollectionPage() {
                             size="sm"
                             className="flex items-center gap-2 hover:bg-muted transition-colors text-sm"
                           >
-                            <Download className="h-3.5 w-3.5" />
+                            <PiDownload className="h-3.5 w-3.5" />
                             Duplicate
                           </Button>
                         </DialogTrigger>
@@ -793,7 +793,7 @@ export default function CollectionPage() {
                         onClick={handleDuplicate}
                         className="flex items-center gap-2 hover:bg-muted transition-colors text-sm"
                       >
-                        <Download className="h-3.5 w-3.5" />
+                        <PiDownload className="h-3.5 w-3.5" />
                         Duplicate
                       </Button>
                     )}
@@ -810,7 +810,7 @@ export default function CollectionPage() {
               <div className="flex flex-col sm:flex-row gap-4 p-4 border border-border rounded-lg bg-muted/50">
                 <div className="flex-1 space-y-1">
                   <h3 className="font-semibold text-base flex items-center gap-2">
-                    <Settings className="h-4 w-4 text-primary" />
+                    <PiGear className="h-4 w-4 text-primary" />
                     Collection Owner
                   </h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
@@ -827,9 +827,9 @@ export default function CollectionPage() {
                     href={`/dashboard?collectionId=${encodeURIComponent(collectionId)}`}
                     className="flex items-center gap-2"
                   >
-                    <Settings className="h-3.5 w-3.5" />
+                    <PiGear className="h-3.5 w-3.5" />
                     Manage in Dashboard
-                    <ExternalLink className="h-3 w-3" />
+                    <PiArrowSquareOut className="h-3 w-3" />
                   </a>
                 </Button>
               </div>

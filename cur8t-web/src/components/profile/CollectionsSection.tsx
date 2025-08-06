@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Pin, User, ChevronLeft, ChevronRight } from "lucide-react";
+import {PiPushPin, PiUser, PiCaretLeft, PiCaretRight} from "react-icons/pi";
 import { CollectionCard } from "./CollectionCard";
 import { type Collection, type SortOption } from "@/types/profile";
 
@@ -66,7 +66,7 @@ export function CollectionsSection({
       {pinnedCollections.length > 0 && (
         <section className="mb-8">
           <h2 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Pin className="h-4 w-4" />
+            <PiPushPin className="h-4 w-4" />
             Pinned
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -105,7 +105,7 @@ export function CollectionsSection({
         {sortedCollections.length === 0 ? (
           <Card className="border-dashed">
             <CardContent className="text-center py-12">
-              <User className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+              <PiUser className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
               <h3 className="text-base font-medium text-foreground mb-2">
                 No public repositories
               </h3>
@@ -134,7 +134,7 @@ export function CollectionsSection({
                   }
                   disabled={currentPage === 1}
                 >
-                  <ChevronLeft className="h-4 w-4" />
+                  <PiCaretLeft className="h-4 w-4" />
                   Previous
                 </Button>
 
@@ -163,7 +163,7 @@ export function CollectionsSection({
                   disabled={currentPage === totalPages}
                 >
                   Next
-                  <ChevronRight className="h-4 w-4" />
+                  <PiCaretRight className="h-4 w-4" />
                 </Button>
               </div>
             )}

@@ -2,13 +2,13 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LucideIcon } from "lucide-react";
+import { IconType } from "react-icons";
 
 interface DashboardStatsCardProps {
   title: string;
   value: string | number;
   subtitle: string;
-  icon: LucideIcon;
+  icon: IconType;
   trend?: "up" | "down" | "neutral";
 }
 

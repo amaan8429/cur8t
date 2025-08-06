@@ -27,22 +27,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Bookmark,
-  Plus,
-  TrendingUp,
-  Link as LinkIcon,
-  Search,
-  Filter,
-  MoreHorizontal,
-  ExternalLink,
-  Pin,
-  Globe,
-  Folder,
-  Eye,
-  ChevronLeft,
-  ChevronRight,
-  Lock,
-} from "lucide-react";
+  PiBookmark,
+  PiPlus,
+  PiTrendUp,
+  PiLink,
+  PiMagnifyingGlass,
+  PiFunnel,
+  PiArrowSquareOut,
+  PiPushPin,
+  PiGlobe,
+  PiFolder,
+  PiCaretLeft,
+  PiCaretRight,
+  PiDotsThreeThin,
+  PiEyeClosed,
+  PiLock,
+} from "react-icons/pi";
 import { useActiveState } from "@/store/activeStateStore";
 import {
   getDashboardStatsAction,
@@ -208,15 +208,15 @@ export function DashboardOverview() {
   const getVisibilityInfo = (visibility: string) => {
     switch (visibility) {
       case "public":
-        return { icon: Globe, text: "Public", variant: "default" as const };
+        return { icon: PiGlobe, text: "Public", variant: "default" as const };
       case "protected":
         return {
-          icon: Lock,
+          icon: PiLock,
           text: "Protected",
           variant: "secondary" as const,
         };
       default:
-        return { icon: Lock, text: "Private", variant: "outline" as const };
+        return { icon: PiLock, text: "Private", variant: "outline" as const };
     }
   };
 
@@ -392,7 +392,7 @@ export function DashboardOverview() {
           onClick={() => setIsCreateDialogOpen(true)}
           className="shadow-lg px-6"
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <PiPlus className="h-4 w-4 mr-2" />
           Add Collection
         </Button>
       </div>
@@ -414,7 +414,7 @@ export function DashboardOverview() {
               </p>
             </div>
             <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <Bookmark className="h-6 w-6 text-primary" />
+              <PiBookmark className="h-6 w-6 text-primary" />
             </div>
           </div>
         </div>
@@ -434,7 +434,7 @@ export function DashboardOverview() {
               </p>
             </div>
             <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <LinkIcon className="h-6 w-6 text-primary" />
+              <PiLink className="h-6 w-6 text-primary" />
             </div>
           </div>
         </div>
@@ -455,7 +455,7 @@ export function DashboardOverview() {
               </p>
             </div>
             <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <Globe className="h-6 w-6 text-primary" />
+              <PiGlobe className="h-6 w-6 text-primary" />
             </div>
           </div>
         </div>
@@ -473,7 +473,7 @@ export function DashboardOverview() {
               </p>
             </div>
             <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <TrendingUp className="h-6 w-6 text-primary" />
+              <PiTrendUp className="h-6 w-6 text-primary" />
             </div>
           </div>
         </div>
@@ -482,7 +482,7 @@ export function DashboardOverview() {
       {/* Search and Filter Bar - Filters moved to right */}
       <div className="flex items-center justify-between gap-4">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <PiMagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search by name"
             value={searchQuery}
@@ -495,7 +495,7 @@ export function DashboardOverview() {
           <DropdownMenu open={showFilters} onOpenChange={setShowFilters}>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="border-border/30">
-                <Filter className="h-4 w-4 mr-2" />
+                <PiFunnel className="h-4 w-4 mr-2" />
                 Filter
               </Button>
             </DropdownMenuTrigger>
@@ -610,7 +610,7 @@ export function DashboardOverview() {
               <TableRow>
                 <TableCell colSpan={8} className="h-32 text-center">
                   <div className="flex flex-col items-center gap-2">
-                    <Folder className="h-8 w-8 text-muted-foreground" />
+                    <PiFolder className="h-8 w-8 text-muted-foreground" />
                     <p className="text-muted-foreground font-medium">
                       {searchQuery ||
                       filters.visibility !== "all" ||
@@ -626,7 +626,6 @@ export function DashboardOverview() {
               paginatedCollections.map((collection) => {
                 const isPinned = pinnedCollectionIds.includes(collection.id);
                 const visibilityInfo = getVisibilityInfo(collection.visibility);
-                const VisibilityIcon = visibilityInfo.icon;
 
                 return (
                   <TableRow
@@ -641,14 +640,14 @@ export function DashboardOverview() {
                     <TableCell>
                       <div className="flex items-center justify-center">
                         {isPinned && (
-                          <Pin className="h-4 w-4 text-primary fill-current" />
+                          <PiPushPin className="h-4 w-4 text-primary fill-current" />
                         )}
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 group-hover:bg-primary/15 transition-colors">
-                          <Folder className="h-5 w-5 text-primary" />
+                          <PiFolder className="h-5 w-5 text-primary" />
                         </div>
                         <div>
                           <div className="font-semibold group-hover:text-primary transition-colors">
@@ -669,8 +668,8 @@ export function DashboardOverview() {
                     </TableCell>
                     <TableCell>
                       <Badge variant={visibilityInfo.variant} className="gap-1">
-                        <VisibilityIcon className="h-3 w-3" />
-                        {visibilityInfo.text}
+                        <PiEyeClosed className="h-3 w-3" />
+                        {collection.visibility}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
@@ -694,7 +693,7 @@ export function DashboardOverview() {
                             size="sm"
                             className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                           >
-                            <MoreHorizontal className="h-4 w-4" />
+                            <PiDotsThreeThin className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
@@ -709,7 +708,7 @@ export function DashboardOverview() {
                               );
                             }}
                           >
-                            <Eye className="h-4 w-4 mr-2" />
+                            <PiEyeClosed className="h-4 w-4 mr-2" />
                             View Collection
                           </DropdownMenuItem>
                           <DropdownMenuItem
@@ -721,7 +720,7 @@ export function DashboardOverview() {
                               );
                             }}
                           >
-                            <ExternalLink className="h-4 w-4 mr-2" />
+                            <PiArrowSquareOut className="h-4 w-4 mr-2" />
                             Open in new tab
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -750,7 +749,7 @@ export function DashboardOverview() {
                 disabled={currentPage === 1}
                 className="border-border/20"
               >
-                <ChevronLeft className="h-4 w-4 mr-1" />
+                <PiCaretLeft className="h-4 w-4 mr-1" />
                 Previous
               </Button>
 
@@ -789,7 +788,7 @@ export function DashboardOverview() {
                 className="border-border/20"
               >
                 Next
-                <ChevronRight className="h-4 w-4 ml-1" />
+                <PiCaretRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
           </div>

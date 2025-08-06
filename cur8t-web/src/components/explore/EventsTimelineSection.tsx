@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus } from "lucide-react";
+import { PiPlus } from "react-icons/pi";
 import {
   Card,
   CardContent,
@@ -23,7 +23,7 @@ export const EventsTimelineSection: React.FC<EventsTimelineSectionProps> = ({
   <Card className="border border-border/50">
     <CardHeader className="pb-4">
       <div className="flex items-center gap-2">
-        <Plus className="h-5 w-5 text-primary" />
+        <PiPlus className="h-5 w-5 text-primary" />
         <CardTitle className="text-lg">New Collections Timeline</CardTitle>
       </div>
       <CardDescription>
@@ -65,7 +65,7 @@ export const EventsTimelineSection: React.FC<EventsTimelineSectionProps> = ({
           ))
         ) : (
           <div className="text-center py-12">
-            <Plus className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <PiPlus className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-sm font-medium text-foreground mb-2">
               No new collections this week
             </h3>

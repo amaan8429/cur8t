@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { PiDotsThreeThin } from "react-icons/pi";
 import {
   Popover,
   PopoverContent,
@@ -182,7 +182,7 @@ const ActionItems: React.FC = () => {
             size="icon"
             className="h-10 w-10 data-[state=open]:bg-accent"
           >
-            <MoreHorizontal size={24} />
+            <PiDotsThreeThin size={24} />
           </Button>
         </PopoverTrigger>
         <PopoverContent

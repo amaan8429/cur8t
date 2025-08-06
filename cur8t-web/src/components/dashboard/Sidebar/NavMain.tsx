@@ -1,20 +1,20 @@
 "use client";
 
-import { type LucideIcon } from "lucide-react";
+import { IconType } from "react-icons";
 
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
 import { useActiveState } from "@/store/activeStateStore";
+import Link from "next/link";
 
 interface NavMainProps {
   items: {
     title: string;
     url: string;
-    icon: LucideIcon;
+    icon: IconType;
     isActive?: boolean;
   }[];
 }
