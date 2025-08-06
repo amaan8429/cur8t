@@ -65,6 +65,21 @@ const NoCollections = () => {
                 <span>No collections yet - Click to create one</span>
               </SidebarMenuButton>
             </DialogTrigger>
+            <DialogContent className="sm:max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Create New Collection</DialogTitle>
+              </DialogHeader>
+              <CreateCollectionComponent
+                onSuccess={(collectionId) => {
+                  setIsCreateDialogOpen(false);
+                  // Navigate to the new collection using Next.js router (no page reload)
+                  router.push(
+                    `?collectionId=${encodeURIComponent(collectionId)}`
+                  );
+                }}
+                isDialog={true}
+              />
+            </DialogContent>
           </Dialog>
         </SidebarMenuItem>
       </SidebarMenu>

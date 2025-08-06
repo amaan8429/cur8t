@@ -10,19 +10,20 @@ import {
 import { useRouter } from 'next/navigation';
 
 import {
-  CommandDialog,
+  Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { VisuallyHidden } from '@/components/ui/visually-hidden';
 import { useCollectionStore } from '@/store/collection-store';
 import { useActiveState } from '@/store/activeStateStore';
 import { usePinnedCollectionsStore } from '@/store/pinned-collections-store';
 import { Collection } from '@/types/types';
+import { Button } from '@/components/ui/button';
 
 interface CollectionSearchProps {
   open: boolean;
@@ -72,60 +73,71 @@ export function CollectionSearch({
   );
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <VisuallyHidden>
-        <DialogTitle>Search Collections</DialogTitle>
-      </VisuallyHidden>
-      <CommandInput placeholder="Search collections..." />
-      <CommandList>
-        <CommandEmpty>No collections found.</CommandEmpty>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="p-0 max-w-2xl">
+        <VisuallyHidden>
+          <DialogTitle>Search Collections</DialogTitle>
+        </VisuallyHidden>
+        <Command className="rounded-lg border-0 shadow-none">
+          <CommandInput
+            placeholder="Search collections..."
+            className="border-0 border-b rounded-none"
+          />
+          <CommandList className="max-h-[300px]">
+            <CommandEmpty>No collections found.</CommandEmpty>
 
-        {pinnedCollections.length > 0 && (
-          <CommandGroup heading="Pinned Collections">
-            {pinnedCollections.map((collection) => {
-              const isActive = collection.id === activeCollectionId;
-              return (
-                <CommandItem
-                  key={collection.id}
-                  onSelect={() => handleCollectionSelect(collection.id)}
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  {isActive ? (
-                    <PiFolderOpen className="h-4 w-4 shrink-0" />
-                  ) : (
-                    <PiFolder className="h-4 w-4 shrink-0" />
-                  )}
-                  <span className="flex-1 truncate">{collection.title}</span>
-                  <PiPushPin className="h-3 w-3 opacity-60" />
-                </CommandItem>
-              );
-            })}
-          </CommandGroup>
-        )}
+            {pinnedCollections.length > 0 && (
+              <CommandGroup heading="Pinned Collections">
+                {pinnedCollections.map((collection) => {
+                  const isActive = collection.id === activeCollectionId;
+                  return (
+                    <CommandItem
+                      key={collection.id}
+                      onSelect={() => handleCollectionSelect(collection.id)}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      {isActive ? (
+                        <PiFolderOpen className="h-4 w-4 shrink-0" />
+                      ) : (
+                        <PiFolder className="h-4 w-4 shrink-0" />
+                      )}
+                      <span className="flex-1 truncate">
+                        {collection.title}
+                      </span>
+                      <PiPushPin className="h-3 w-3 opacity-60" />
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+            )}
 
-        {unpinnedCollections.length > 0 && (
-          <CommandGroup heading="All Collections">
-            {unpinnedCollections.map((collection) => {
-              const isActive = collection.id === activeCollectionId;
-              return (
-                <CommandItem
-                  key={collection.id}
-                  onSelect={() => handleCollectionSelect(collection.id)}
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  {isActive ? (
-                    <PiFolderOpen className="h-4 w-4 shrink-0" />
-                  ) : (
-                    <PiFolder className="h-4 w-4 shrink-0" />
-                  )}
-                  <span className="flex-1 truncate">{collection.title}</span>
-                </CommandItem>
-              );
-            })}
-          </CommandGroup>
-        )}
-      </CommandList>
-    </CommandDialog>
+            {unpinnedCollections.length > 0 && (
+              <CommandGroup heading="All Collections">
+                {unpinnedCollections.map((collection) => {
+                  const isActive = collection.id === activeCollectionId;
+                  return (
+                    <CommandItem
+                      key={collection.id}
+                      onSelect={() => handleCollectionSelect(collection.id)}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      {isActive ? (
+                        <PiFolderOpen className="h-4 w-4 shrink-0" />
+                      ) : (
+                        <PiFolder className="h-4 w-4 shrink-0" />
+                      )}
+                      <span className="flex-1 truncate">
+                        {collection.title}
+                      </span>
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+            )}
+          </CommandList>
+        </Command>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -146,13 +158,13 @@ export function CollectionSearchButton() {
 
   return (
     <>
-      <button
+      <Button
         className="h-6 w-6 opacity-60 hover:opacity-100 transition-opacity rounded-sm hover:bg-sidebar-accent flex items-center justify-center"
         onClick={() => setOpen(true)}
         title="Search collections (⇧⌘K)"
       >
         <PiMagnifyingGlass className="h-4 w-4" />
-      </button>
+      </Button>
       <CollectionSearch open={open} onOpenChange={setOpen} />
     </>
   );

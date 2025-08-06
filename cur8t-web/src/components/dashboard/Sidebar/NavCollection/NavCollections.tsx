@@ -49,6 +49,7 @@ import { useActiveState } from '@/store/activeStateStore';
 import { usePinnedCollectionsStore } from '@/store/pinned-collections-store';
 import LoadingCollections from './Loading';
 import { CollectionSearchButton } from './CollectionSearch';
+import Link from 'next/link';
 
 const INITIAL_DISPLAY_COUNT = 10;
 
@@ -180,7 +181,7 @@ export function NavCollection() {
                   tooltip={tooltipContent}
                   className="group hover:bg-sidebar-accent/50 transition-colors"
                 >
-                  <PiLink
+                  <Link
                     href={`?collectionId=${encodeURIComponent(collection.id)}`}
                     title={collection.title}
                     className="flex items-center"
@@ -194,7 +195,7 @@ export function NavCollection() {
                     {isPinned && (
                       <PiPushPin className="h-3 w-3 ml-auto opacity-60 text-sidebar-primary" />
                     )}
-                  </PiLink>
+                  </Link>
                 </SidebarMenuButton>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
