@@ -99,7 +99,7 @@ export function useBookmarkImporter() {
       const result = await agentsApi.analyzeBookmarks({
         session_id: uploadResult.session_id,
         max_categories: 5,
-        min_bookmarks_per_category: 3,
+        min_bookmarks_per_category: 1,
         merge_similar_categories: true,
       });
       setAnalysisResult(result);

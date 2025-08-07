@@ -360,9 +360,9 @@ class BookmarkImporterService:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
-                max_tokens=4000,
+                max_tokens=4000,  # Reduced to match model limits
                 temperature=0.3, # Lower temperature for more consistent categorization
-                response_format={"type": "json"}
+                response_format={"type": "json_object"}
             )
             
             # Parse the response
@@ -370,8 +370,11 @@ class BookmarkImporterService:
             return categories
             
         except Exception as e:
+            print(f"OpenAI API failed: {e}")
+            print(f"Prompt length: {len(prompt)} characters")
+            print(f"Bookmarks count: {len(bookmark_data)}")
             # Fallback to simple categorization if AI fails
-            return self._fallback_categorization(bookmark_data, max_categories)
+            return self._fallback_categorization(bookmark_data, max_categories, min_bookmarks_per_category)
     
     def _create_categorization_prompt(
         self,
@@ -384,12 +387,9 @@ class BookmarkImporterService:
         """Create prompt for OpenAI categorization"""
         
         bookmark_summary = []
-        for i, bookmark in enumerate(bookmark_data[:50]):  # Limit to first 50 for prompt
+        # Include ALL bookmarks in the prompt for complete categorization
+        for i, bookmark in enumerate(bookmark_data):
             bookmark_summary.append(f"{i+1}. {bookmark['title']} - {bookmark['url']} (Domain: {bookmark['domain']})")
-        
-        more_bookmarks = len(bookmark_data) - 50
-        if more_bookmarks > 0:
-            bookmark_summary.append(f"... and {more_bookmarks} more bookmarks")
         
         prompt = f"""
 You are an expert at organizing and categorizing bookmarks. I have {len(bookmark_data)} bookmarks that need to be intelligently categorized.
@@ -448,6 +448,7 @@ Analyze the bookmarks and provide intelligent categorization in the exact JSON f
                 # Convert bookmark indices to actual bookmark objects
                 bookmark_items = []
                 for idx in cat_data.get("bookmark_indices", []):
+                    # Handle both prompt bookmarks and full dataset
                     if 1 <= idx <= len(bookmark_data):
                         bookmark_dict = bookmark_data[idx - 1]  # Convert to 0-based index
                         bookmark_item = BookmarkItem(
@@ -471,13 +472,16 @@ Analyze the bookmarks and provide intelligent categorization in the exact JSON f
             return categories
             
         except (json.JSONDecodeError, KeyError, ValueError) as e:
+            print(f"JSON parsing failed: {e}")
+            print(f"Response text: {response_text[:500]}...")
             # If JSON parsing fails, fall back to simple categorization
-            return self._fallback_categorization(bookmark_data, 5)
+            return self._fallback_categorization(bookmark_data, 5, 1)
     
     def _fallback_categorization(
         self, 
         bookmark_data: List[Dict[str, Any]], 
-        max_categories: int
+        max_categories: int,
+        min_bookmarks_per_category: int = 1
     ) -> List[BookmarkCategory]:
         """Fallback categorization when AI fails"""
         
@@ -492,7 +496,7 @@ Analyze the bookmarks and provide intelligent categorization in the exact JSON f
         # Create categories for domains with multiple bookmarks
         categories = []
         for domain, bookmarks in domain_groups.items():
-            if len(bookmarks) >= 3:  # Minimum threshold
+            if len(bookmarks) >= min_bookmarks_per_category:  # Use parameter instead of hardcoded 3
                 bookmark_items = [
                     BookmarkItem(
                         url=b["url"],
