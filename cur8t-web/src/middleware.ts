@@ -154,7 +154,7 @@ export default clerkMiddleware(async (auth, request) => {
       }
     }
 
-    // Proceed with Clerk authentication
+    // Proceed with Clerk authentication (no DB access here to keep Edge runtime safe)
     if (!isPublicRoute(request)) {
       await auth.protect();
     }

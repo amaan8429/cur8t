@@ -3,6 +3,8 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import NumberFlow from '@number-flow/react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useCheckout } from '@/hooks/useCheckout';
+import { useSubscriptionStatus } from '@/hooks/useSubscription';
 import {
   Card,
   CardContent,
@@ -25,21 +27,20 @@ import { motion } from 'framer-motion';
 
 const plans = [
   {
-    id: 'hobby',
-    name: 'Hobby',
+    id: 'free',
+    name: 'Free',
     icon: PiStar,
     price: {
       monthly: 'Free forever',
       yearly: 'Free forever',
     },
-    description:
-      'The perfect starting place for your web app or personal project.',
+    description: 'Great for getting started and casual use.',
     features: [
-      '50 API calls / month',
-      '60 second checks',
-      'Single-user account',
-      '5 monitors',
-      'Basic email support',
+      '5 collections',
+      '50 links per collection',
+      '250 total links',
+      '3 favorites',
+      '3 pinned collections',
     ],
     cta: 'Get started for free',
   },
@@ -48,43 +49,45 @@ const plans = [
     name: 'Pro',
     icon: PiLightning,
     price: {
-      monthly: 90,
-      yearly: 75,
+      monthly: 9,
+      yearly: 90,
     },
-    description: 'Everything you need to build and scale your business.',
+    description: 'For power users who want more scale and features.',
     features: [
-      'Unlimited API calls',
-      '30 second checks',
-      'Multi-user account',
-      '10 monitors',
-      'Priority email support',
+      '25 collections',
+      '200 links per collection',
+      '5,000 total links',
+      '50 favorites',
+      '10 pinned collections',
     ],
     cta: 'Subscribe to Pro',
     popular: true,
   },
   {
-    id: 'enterprise',
-    name: 'Enterprise',
+    id: 'business',
+    name: 'Business',
     icon: PiShield,
     price: {
-      monthly: 'Get in touch for pricing',
-      yearly: 'Get in touch for pricing',
+      monthly: 29,
+      yearly: 290,
     },
-    description: 'Critical security, performance, observability and support.',
+    description: 'For teams and heavy usage with generous limits.',
     features: [
-      'You can DDOS our API.',
-      'Nano-second checks.',
-      'Invite your extended family.',
-      'Unlimited monitors.',
-      "We'll sit on your desk.",
+      '100 collections',
+      '500 links per collection',
+      '50,000 total links',
+      '200 favorites',
+      '50 pinned collections',
     ],
-    cta: 'Contact us',
+    cta: 'Subscribe to Business',
   },
 ];
 
 export default function SimplePricing() {
   const [frequency, setFrequency] = useState<string>('monthly');
   const [mounted, setMounted] = useState(false);
+  const { startCheckout, loading } = useCheckout();
+  const { data: sub } = useSubscriptionStatus();
 
   useEffect(() => {
     setMounted(true);
@@ -290,8 +293,22 @@ export default function SimplePricing() {
                         ? 'bg-primary hover:bg-primary/90 hover:shadow-primary/20 hover:shadow-md'
                         : 'hover:border-primary/30 hover:bg-primary/5 hover:text-primary'
                     )}
+                    disabled={loading}
+                    onClick={() => {
+                      const slug =
+                        plan.id === 'pro'
+                          ? frequency === 'monthly'
+                            ? 'pro-monthly'
+                            : 'pro-yearly'
+                          : plan.id === 'business'
+                            ? frequency === 'monthly'
+                              ? 'business-monthly'
+                              : 'business-yearly'
+                            : undefined;
+                      if (slug) startCheckout(slug);
+                    }}
                   >
-                    {plan.cta}
+                    {loading ? 'Processing…' : plan.cta}
                     <PiArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </Button>
                 </CardFooter>

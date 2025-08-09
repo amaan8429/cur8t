@@ -141,6 +141,7 @@ Add to your environment:
 - Webhook receiver: `POST /api/webhooks/lemonsqueezy` with signature verification and subscription upsert ✅
 - Client hook: `useSubscriptionStatus` for consuming `/api/subscription/status` ✅
 - UI component: `<FeatureGate>` for gating sections client-side ✅
+- Settings integration: `ManageSubscription` with upgrade button and portal link ✅
 
 ### 8) Migration plan
 
