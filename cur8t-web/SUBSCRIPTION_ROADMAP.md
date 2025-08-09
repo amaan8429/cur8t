@@ -139,6 +139,8 @@ Add to your environment:
 - Checkout endpoint: `POST /api/subscription/create-checkout` (programmatic success/cancel URLs) ✅
 - Billing portal endpoint: `GET /api/billing/portal` (placeholder URL for now) ✅
 - Webhook receiver: `POST /api/webhooks/lemonsqueezy` with signature verification and subscription upsert ✅
+- Client hook: `useSubscriptionStatus` for consuming `/api/subscription/status` ✅
+- UI component: `<FeatureGate>` for gating sections client-side ✅
 
 ### 8) Migration plan
 
