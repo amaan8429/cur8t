@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Header
+from fastapi import APIRouter, HTTPException, Header, Request
 from typing import Optional, Union
 import uuid
 from datetime import datetime
@@ -30,7 +30,7 @@ from ..models.schemas import (
     CreateCollectionWithLinksResponse
 )
 from ..core.database import execute_query_one, execute_query_all, execute_insert, execute_query, clear_cache, health_check, get_pool
-from ..core.utils import extract_title_from_url, generate_fallback_title
+from ..core.utils import extract_title_from_url, generate_fallback_title, limiter
 
 router = APIRouter()
 
@@ -83,10 +83,12 @@ async def get_user_id_from_api_key(authorization: Optional[str] = Header(None)) 
         raise HTTPException(status_code=500, detail="Authentication service unavailable")
 
 @router.get("/")
+@limiter.exempt
 def root():
     return {"message": "Extension API v1.0"}
 
 @router.get("/health")
+@limiter.exempt
 async def health():
     """Health check endpoint"""
     return await health_check()
@@ -142,7 +144,8 @@ async def test_auth(authorization: Optional[str] = Header(None)):
     return response
 
 @router.get("/top-collections", response_model=Union[TopCollectionsResponse, ErrorResponse])
-async def get_top_collections(authorization: Optional[str] = Header(None)):
+@limiter.limit("60/minute")
+async def get_top_collections(request: Request, authorization: Optional[str] = Header(None)):
     """Get user's top 5 collections"""
     logger.info("🚀 TOP COLLECTIONS - Endpoint called")
     logger.info(f"🚀 TOP COLLECTIONS - Authorization header: {authorization}")
@@ -216,7 +219,9 @@ async def get_top_collections(authorization: Optional[str] = Header(None)):
         raise HTTPException(status_code=500, detail=f"Failed to fetch top collections: {str(e)}")
 
 @router.post("/collections", response_model=Union[CreateCollectionResponse, ErrorResponse])
+@limiter.limit("10/minute")
 async def create_collection(
+    request: Request,
     collection_data: CreateCollectionRequest,
     authorization: Optional[str] = Header(None)
 ):
@@ -269,7 +274,9 @@ async def create_collection(
         raise HTTPException(status_code=500, detail=f"Failed to create collection: {str(e)}")
 
 @router.post("/collections/{collection_id}/links", response_model=Union[CreateLinkResponse, ErrorResponse])
+@limiter.limit("60/minute")
 async def create_link(
+    request: Request,
     collection_id: str,
     link_data: CreateLinkRequest,
     authorization: Optional[str] = Header(None)
@@ -350,7 +357,9 @@ async def create_link(
         raise HTTPException(status_code=500, detail=f"Failed to create link: {str(e)}")
 
 @router.post("/collections/{collection_id}/links/bulk", response_model=Union[BulkCreateLinkResponse, ErrorResponse])
+@limiter.limit("120/minute")
 async def create_bulk_links(
+    request: Request,
     collection_id: str,
     bulk_data: BulkLinkRequest,
     authorization: Optional[str] = Header(None)
@@ -449,7 +458,9 @@ async def create_bulk_links(
         raise HTTPException(status_code=500, detail=f"Failed to create bulk links: {str(e)}")
 
 @router.post("/collections/with-links", response_model=Union[CreateCollectionWithLinksResponse, ErrorResponse])
+@limiter.limit("5/minute")
 async def create_collection_with_links(
+    request: Request,
     request_data: CreateCollectionWithLinksRequest,
     authorization: Optional[str] = Header(None)
 ):
@@ -568,7 +579,8 @@ async def create_collection_with_links(
 
 # Favorites endpoints
 @router.get("/favorites", response_model=Union[FavoritesResponse, ErrorResponse])
-async def get_favorites(authorization: Optional[str] = Header(None)):
+@limiter.limit("120/minute")
+async def get_favorites(request: Request, authorization: Optional[str] = Header(None)):
     """Get user's favorite links"""
     logger.info("⭐ FAVORITES - Endpoint called")
     
@@ -608,7 +620,9 @@ async def get_favorites(authorization: Optional[str] = Header(None)):
         raise HTTPException(status_code=500, detail=f"Failed to fetch favorites: {str(e)}")
 
 @router.post("/favorites", response_model=Union[CreateFavoriteResponse, ErrorResponse])
+@limiter.limit("60/minute")
 async def create_favorite(
+    request: Request,
     favorite_data: CreateFavoriteRequest,
     authorization: Optional[str] = Header(None)
 ):
@@ -665,7 +679,9 @@ async def create_favorite(
         raise HTTPException(status_code=500, detail=f"Failed to create favorite: {str(e)}")
 
 @router.put("/favorites/{favorite_id}", response_model=Union[UpdateFavoriteResponse, ErrorResponse])
+@limiter.limit("60/minute")
 async def update_favorite(
+    request: Request,
     favorite_id: str,
     favorite_data: UpdateFavoriteRequest,
     authorization: Optional[str] = Header(None)
@@ -710,7 +726,9 @@ async def update_favorite(
         raise HTTPException(status_code=500, detail=f"Failed to update favorite: {str(e)}")
 
 @router.delete("/favorites/{favorite_id}", response_model=Union[DeleteFavoriteResponse, ErrorResponse])
+@limiter.limit("60/minute")
 async def delete_favorite(
+    request: Request,
     favorite_id: str,
     authorization: Optional[str] = Header(None)
 ):

@@ -15,6 +15,12 @@ class Settings(BaseModel):
     
     # Debug mode
     debug: bool = os.getenv("DEBUG", "True").lower() == "true"
+
+    # Rate limiting
+    rate_limit_enabled: bool = os.getenv("RATE_LIMIT_ENABLED", "true").lower() in {"1", "true", "yes"}
+    rate_limit_default: str = os.getenv("RATE_LIMIT_DEFAULT", "120/minute")
+    # Use API key header as the rate limit key by default; fall back to IP
+    rate_limit_trust_forwarded: bool = os.getenv("RATE_LIMIT_TRUST_FORWARDED", "true").lower() in {"1", "true", "yes"}
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

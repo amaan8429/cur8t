@@ -5,3 +5,4 @@ asyncpg==0.29.0
 python-dotenv==1.0.0
 httpx==0.25.2
 httptools==0.6.1
+slowapi==0.1.9
