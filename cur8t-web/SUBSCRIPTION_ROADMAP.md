@@ -136,6 +136,8 @@ Add to your environment:
   - Favorites: `createFavorite` ✅
   - Pinned/Top collections: `pinnedCollections.ts` ✅
 - API endpoint: `GET /api/subscription/status` ✅
+- Checkout endpoint: `POST /api/subscription/create-checkout` (programmatic success/cancel URLs) ✅
+- Billing portal endpoint: `GET /api/billing/portal` (placeholder URL for now) ✅
 
 ### 8) Migration plan
 
