@@ -22,12 +22,21 @@ class Settings(BaseModel):
     # Use API key header as the rate limit key by default; fall back to IP
     rate_limit_trust_forwarded: bool = os.getenv("RATE_LIMIT_TRUST_FORWARDED", "true").lower() in {"1", "true", "yes"}
     
+    # API Key Security: HMAC-SHA256 pepper
+    api_key_pepper: Optional[str] = os.getenv("API_KEY_PEPPER")
+    
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # Validate that required settings are present
         if not self.database_url:
             print("⚠️  WARNING: DATABASE_URL not set!")
             print("📝 Create a .env file with: DATABASE_URL=postgresql://...")
+        
+        # Validate API key pepper is set
+        if not self.api_key_pepper:
+            print("⚠️  WARNING: API_KEY_PEPPER not set!")
+            print("📝 Create a .env file with: API_KEY_PEPPER=your-secret-pepper")
+            print("🔐 Generate with: openssl rand -hex 32")
     
     class Config:
         env_file = ".env"

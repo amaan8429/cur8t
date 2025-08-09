@@ -324,7 +324,9 @@ const TopCollectionsSettings = () => {
                   <PiFlipVertical className="h-5 w-5 text-muted-foreground" />
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium">{collection.title}</h4>
+                      <h4 className="font-medium truncate">
+                        {collection.title}
+                      </h4>
                       <Badge variant="secondary" className="text-xs">
                         {collection.totalLinks} links
                       </Badge>
@@ -333,7 +335,7 @@ const TopCollectionsSettings = () => {
                       </Badge>
                     </div>
                     {collection.description && (
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground line-clamp-2">
                         {collection.description}
                       </p>
                     )}
@@ -369,19 +371,29 @@ const TopCollectionsSettings = () => {
                     key={collection.id}
                     className="p-4 border border-border/30 rounded-lg hover:bg-muted/50 transition-colors"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-medium">{collection.title}</h4>
-                          <Badge variant="secondary" className="text-xs">
-                            {collection.totalLinks} links
-                          </Badge>
-                          <Badge variant="outline" className="text-xs">
-                            {collection.visibility}
-                          </Badge>
+                          <h4
+                            className="font-medium truncate"
+                            title={collection.title}
+                          >
+                            {collection.title}
+                          </h4>
+                          <div className="flex-shrink-0 flex gap-2">
+                            <Badge variant="secondary" className="text-xs">
+                              {collection.totalLinks} links
+                            </Badge>
+                            <Badge variant="outline" className="text-xs">
+                              {collection.visibility}
+                            </Badge>
+                          </div>
                         </div>
                         {collection.description && (
-                          <p className="text-sm text-muted-foreground">
+                          <p
+                            className="text-sm text-muted-foreground line-clamp-2"
+                            title={collection.description}
+                          >
                             {collection.description}
                           </p>
                         )}
@@ -389,7 +401,7 @@ const TopCollectionsSettings = () => {
                       <Button
                         onClick={() => handleAddCollection(collection)}
                         size="sm"
-                        className="bg-primary hover:bg-primary/90"
+                        className="bg-primary hover:bg-primary/90 flex-shrink-0"
                       >
                         <PiPlus className="h-4 w-4 mr-2" />
                         Add

@@ -10,13 +10,42 @@ import { APIKeysTable, UsersTable } from '@/schema';
 import { auth } from '@clerk/nextjs/server';
 import { eq } from 'drizzle-orm';
 
-function generateKey() {
-  const key =
+// HMAC-SHA256 hashing with pepper for enhanced security
+async function hashKeyWithPepper(key: string): Promise<string> {
+  const pepper = process.env.API_KEY_PEPPER;
+
+  if (!pepper) {
+    throw new Error('API_KEY_PEPPER environment variable is not set');
+  }
+
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(key);
+  const pepperData = encoder.encode(pepper);
+
+  // Import the pepper as a crypto key for HMAC
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    pepperData,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+
+  // Sign the API key with the pepper
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, keyData);
+
+  // Convert to hex string
+  const hashArray = Array.from(new Uint8Array(signature));
+  return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+function generateToken(): string {
+  const token =
     'cur8t_api_' +
     Array.from(crypto.getRandomValues(new Uint8Array(32)))
       .map((b) => b.toString(16).padStart(2, '0'))
       .join('');
-  return key;
+  return token;
 }
 
 export async function CreateApiKey(name: string) {
@@ -51,12 +80,17 @@ export async function CreateApiKey(name: string) {
     return { error: 'You have reached the maximum number of API keys' };
   }
 
-  const key = await db
+  // Generate a new API token (plaintext) and store only its HMAC hash in DB
+  const plaintextToken = generateToken();
+  const tokenHash = await hashKeyWithPepper(plaintextToken);
+
+  const inserted = await db
     .insert(APIKeysTable)
     .values({
-      name: name,
-      userId: userId,
-      key: generateKey(),
+      name,
+      userId,
+      // Store HMAC hash in the existing `key` column
+      key: tokenHash,
     })
     .returning();
 
@@ -67,17 +101,26 @@ export async function CreateApiKey(name: string) {
     })
     .where(eq(UsersTable.id, userId));
 
-  return { success: true, data: key[0] };
+  // Return the plaintext token ONCE to the client; do not store it
+  return {
+    success: true,
+    data: {
+      id: inserted[0].id,
+      name: inserted[0].name,
+      key: plaintextToken,
+      createdAt: inserted[0].createdAt,
+    },
+  };
 }
 
-export async function DeleteApiKey(key: string) {
+export async function DeleteApiKey(id: string) {
   const { userId } = await auth();
 
   if (!userId) {
     return { error: 'User not found' };
   }
 
-  if (!key) {
+  if (!id) {
     return { error: 'Key ID is required' };
   }
 
@@ -104,7 +147,7 @@ export async function DeleteApiKey(key: string) {
     return { error: 'You do not have any API keys' };
   }
 
-  await db.delete(APIKeysTable).where(eq(APIKeysTable.key, key)).returning();
+  await db.delete(APIKeysTable).where(eq(APIKeysTable.id, id)).returning();
   await db
     .update(UsersTable)
     .set({
@@ -138,7 +181,7 @@ export async function GetAPIKeys() {
     .select({
       id: APIKeysTable.id,
       name: APIKeysTable.name,
-      key: APIKeysTable.key,
+      // Do NOT return the stored hash or plaintext key
       createdAt: APIKeysTable.createdAt,
     })
     .from(APIKeysTable)

@@ -29,17 +29,19 @@ import { useToast } from '@/hooks/use-toast';
 
 const APIKeySettings = () => {
   const [apiKeys, setApiKeys] = useState<
-    { name: string; key: string; createdAt: string }[]
+    { id: string; name: string; createdAt: string }[]
   >([]);
   const [showNewKeyDialog, setShowNewKeyDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedKeyForDeletion, setSelectedKeyForDeletion] = useState<{
-    key: string;
+    id: string;
     name: string;
   } | null>(null);
   const [newKeyName, setNewKeyName] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showRevealKeyDialog, setShowRevealKeyDialog] = useState(false);
+  const [generatedKey, setGeneratedKey] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -55,11 +57,13 @@ const APIKeySettings = () => {
       }
       if (response.data) {
         setApiKeys(
-          response.data.map((key) => ({
-            name: key.name,
-            key: key.key,
-            createdAt: key.createdAt.toISOString(),
-          }))
+          response.data.map(
+            (key: { id: string; name: string; createdAt: Date }) => ({
+              id: key.id,
+              name: key.name,
+              createdAt: key.createdAt.toISOString(),
+            })
+          )
         );
       }
     };
@@ -98,8 +102,8 @@ const APIKeySettings = () => {
     );
   }
 
-  const confirmDelete = (key: string, name: string) => {
-    setSelectedKeyForDeletion({ key, name });
+  const confirmDelete = (id: string, name: string) => {
+    setSelectedKeyForDeletion({ id, name });
     setShowDeleteDialog(true);
   };
 
@@ -112,7 +116,7 @@ const APIKeySettings = () => {
       description: 'Please wait while we delete your API key.',
     });
 
-    const response = await DeleteApiKey(selectedKeyForDeletion.key);
+    const response = await DeleteApiKey(selectedKeyForDeletion.id);
 
     if (response.error) {
       toast({
@@ -121,7 +125,7 @@ const APIKeySettings = () => {
         className: 'bg-primary border-primary text-primary-foreground',
       });
     } else {
-      setApiKeys(apiKeys.filter((k) => k.key !== selectedKeyForDeletion.key));
+      setApiKeys(apiKeys.filter((k) => k.id !== selectedKeyForDeletion.id));
       toast({
         title: 'Success',
         description: 'API key deleted successfully',
@@ -166,11 +170,15 @@ const APIKeySettings = () => {
     setApiKeys([
       ...apiKeys,
       {
+        id: data.data.id,
         name: data.data.name,
-        key: data.data.key,
         createdAt: data.data.createdAt.toISOString(),
       },
     ]);
+
+    // Show the plaintext key ONCE in a reveal dialog
+    setGeneratedKey(data.data.key);
+    setShowRevealKeyDialog(true);
 
     toast({
       title: 'Success',
@@ -239,15 +247,7 @@ const APIKeySettings = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => copyToClipboard(apiKey.key, apiKey.name)}
-                    className="text-primary hover:bg-primary/10"
-                  >
-                    <PiCopy className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => confirmDelete(apiKey.key, apiKey.name)}
+                    onClick={() => confirmDelete(apiKey.id, apiKey.name)}
                     disabled={isDeleting}
                     className="text-destructive hover:bg-destructive/10"
                   >
@@ -255,8 +255,8 @@ const APIKeySettings = () => {
                   </Button>
                 </div>
               </div>
-              <div className="font-mono text-sm bg-muted p-2 rounded">
-                {apiKey.key}
+              <div className="text-sm text-muted-foreground bg-muted p-2 rounded">
+                Key is hidden for security. Generate a new key if needed.
               </div>
             </div>
           ))}
@@ -326,6 +326,44 @@ const APIKeySettings = () => {
                 {isDeleting ? 'Deleting...' : 'Delete'}
               </Button>
             </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Reveal Newly Generated Key Dialog (one-time) */}
+        <Dialog
+          open={showRevealKeyDialog}
+          onOpenChange={setShowRevealKeyDialog}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Your new API key</DialogTitle>
+              <DialogDescription>
+                Copy and store this key securely. You won't be able to see it
+                again.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3">
+              <div className="font-mono text-sm bg-muted p-2 rounded break-all">
+                {generatedKey}
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowRevealKeyDialog(false)}
+                  className="border-border hover:bg-muted"
+                >
+                  Close
+                </Button>
+                <Button
+                  onClick={() =>
+                    generatedKey && copyToClipboard(generatedKey, 'New Key')
+                  }
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  <PiCopy className="w-4 h-4 mr-2" /> Copy
+                </Button>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
       </CardContent>

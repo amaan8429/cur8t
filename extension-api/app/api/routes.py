@@ -3,6 +3,9 @@ from typing import Optional, Union
 import uuid
 from datetime import datetime
 import logging
+import hashlib
+import hmac
+import os
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -53,6 +56,19 @@ async def get_user_id_from_api_key(authorization: Optional[str] = Header(None)) 
     api_key = authorization[7:]  # Remove "Bearer " prefix
     logger.info(f"🔑 Extracted API key: {api_key[:8]}...{api_key[-4:] if len(api_key) > 12 else api_key}")
     
+    # Get the pepper from environment variables
+    pepper = os.getenv("API_KEY_PEPPER")
+    if not pepper:
+        logger.error("❌ API_KEY_PEPPER environment variable not set")
+        raise HTTPException(status_code=500, detail="Server configuration error")
+    
+    # Compute HMAC-SHA256 hash with pepper to compare with stored value
+    api_key_hash = hmac.new(
+        pepper.encode('utf-8'),
+        api_key.encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+    
     # Validate API key against database
     try:
         api_key_query = """
@@ -62,8 +78,8 @@ async def get_user_id_from_api_key(authorization: Optional[str] = Header(None)) 
             WHERE ak.key = $1
         """
         
-        logger.info(f"🔍 Validating API key in database...")
-        api_key_result = await execute_query_one(api_key_query, (api_key,))
+        logger.info(f"🔍 Validating API key in database (HMAC hash compare)...")
+        api_key_result = await execute_query_one(api_key_query, (api_key_hash,))
         
         if not api_key_result:
             logger.error(f"❌ Invalid API key: {api_key[:8]}...")
