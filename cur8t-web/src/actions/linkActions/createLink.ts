@@ -12,6 +12,7 @@ import {
   getClientIdFromHeaders,
   rateLimiters,
 } from '@/lib/ratelimit';
+import { getSubscriptionSnapshot } from '@/lib/subscription';
 
 export async function createLinkAction(
   linkCollectionId: string,
@@ -59,6 +60,38 @@ export async function createLinkAction(
       console.warn('Failed to extract title, using fallback:', error);
       finalTitle = generateFallbackTitle(parsedLink.data.url);
     }
+  }
+
+  // Gating: enforce per-plan link limits
+  const snapshot = await getSubscriptionSnapshot(userId);
+  const perCollectionMax = snapshot.limits.linksPerCollection;
+  const totalMax = snapshot.limits.totalLinks;
+
+  const currentCollectionLinks = await totalLinksCount({
+    userId,
+    collectionId: linkCollectionId,
+  });
+
+  if (currentCollectionLinks >= perCollectionMax) {
+    return {
+      error: `This collection already has ${currentCollectionLinks} links. Your plan allows ${perCollectionMax} per collection.`,
+      plan: snapshot.planSlug,
+    };
+  }
+
+  // Compute total links across all collections for the user
+  // Using a light query on collections sum to avoid race with stale totalLinks
+  const totalLinksForUser = await db
+    .select({ count: CollectionsTable.totalLinks })
+    .from(CollectionsTable)
+    .where(eq(CollectionsTable.userId, userId));
+  const overall = totalLinksForUser.reduce((sum, r) => sum + (r.count ?? 0), 0);
+
+  if (overall >= totalMax) {
+    return {
+      error: `You have ${overall} total links. Your plan allows up to ${totalMax}.`,
+      plan: snapshot.planSlug,
+    };
   }
 
   const link = {

@@ -4,12 +4,13 @@ import { auth } from '@clerk/nextjs/server';
 import { db } from '@/db';
 import { FavoritesTable } from '@/schema';
 import { revalidatePath } from 'next/cache';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, sql } from 'drizzle-orm';
 import {
   checkRateLimit,
   getClientIdFromHeaders,
   rateLimiters,
 } from '@/lib/ratelimit';
+import { getSubscriptionSnapshot } from '@/lib/subscription';
 
 export async function createFavorite(title: string, url: string) {
   try {
@@ -34,6 +35,21 @@ export async function createFavorite(title: string, url: string) {
     // Validate URL format
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       throw new Error('Invalid URL format');
+    }
+
+    // Gating: enforce favorites limit per plan
+    const snapshot = await getSubscriptionSnapshot(userId);
+    const maxFavorites = snapshot.limits.favorites;
+    const [{ value: favoritesCount } = { value: 0 }] = await db
+      .select({ value: sql<number>`count(*)` })
+      .from(FavoritesTable)
+      .where(eq(FavoritesTable.userId, userId));
+    const currentFavorites = favoritesCount ?? 0;
+    if (currentFavorites >= maxFavorites) {
+      return {
+        error: `You have reached your favorites limit (${maxFavorites}). Upgrade your plan to add more.`,
+        plan: snapshot.planSlug,
+      };
     }
 
     // Check if favorite already exists for this user and URL

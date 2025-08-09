@@ -102,10 +102,10 @@ Add to your environment:
 
 - Server-side checks
   - Read the user’s active subscription (join `subscriptions` → `plans`), then use `limits` JSON to enforce:
-    - `createCollectionAction` → max collections per plan
-    - `createLinkAction` → max links per collection and total links
-    - `createFavorite` → max favorites
-    - `setTopCollections`, `addPinnedCollection` → max top/pinned collections (replace hardcoded 3)
+    - `createCollectionAction` → max collections per plan ✅ Implemented
+    - `createLinkAction` → max links per collection and total links ✅ Implemented
+    - `createFavorite` → max favorites ✅ Implemented
+    - `setTopCollections`, `addPinnedCollection` → max top/pinned collections (replace hardcoded 3) ✅ Implemented
 - Middleware
   - Keep current public routes public.
   - For premium-only pages, redirect to `/pricing` if user lacks required plan.
@@ -124,6 +124,18 @@ Add to your environment:
 - Pricing page shows Free, Pro, Business (with limits above).
 - “Upgrade” buttons call a server endpoint to create an LS checkout for the chosen variant and redirect.
 - “Manage billing” links to the Lemon Squeezy Customer Portal.
+
+### Progress log
+
+- DB schema created: `plans`, `subscriptions`, `lemonsqueezy_events` ✅
+- Plans seeded on Neon (Free/Pro/Business) ✅
+- Subscription snapshot helper added: `src/lib/subscription.ts` ✅
+- Gating added:
+  - Collections: `createCollectionAction` ✅
+  - Links: `createLinkAction` ✅
+  - Favorites: `createFavorite` ✅
+  - Pinned/Top collections: `pinnedCollections.ts` ✅
+- API endpoint: `GET /api/subscription/status` ✅
 
 ### 8) Migration plan
 
