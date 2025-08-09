@@ -11,6 +11,7 @@ import {
   rateLimiters,
 } from '@/lib/ratelimit';
 import { FrontendCollectionSchema } from '@/types/types';
+import { getSubscriptionSnapshot } from '@/lib/subscription';
 
 export async function createCollectionAction(
   collectionName: string,
@@ -48,6 +49,17 @@ export async function createCollectionAction(
 
   if (!visiblity) {
     return { error: 'Visibility is required' };
+  }
+
+  // Gating: enforce max collections by plan
+  const snapshot = await getSubscriptionSnapshot(userId);
+  const planMax = snapshot.limits.collections;
+  const currentTotal = await totalCollectionsCount({ userId });
+  if (currentTotal >= planMax) {
+    return {
+      error: `Limit reached: Your plan allows up to ${planMax} collections. Upgrade to create more.`,
+      plan: snapshot.planSlug,
+    };
   }
 
   const createdCollection = await db

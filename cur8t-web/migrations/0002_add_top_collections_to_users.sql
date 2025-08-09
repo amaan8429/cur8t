@@ -1,1 +1,1 @@
-ALTER TABLE "users" ADD COLUMN "top_collections" text[] DEFAULT '{}' NOT NULL;
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "top_collections" text[] DEFAULT '{}' NOT NULL;

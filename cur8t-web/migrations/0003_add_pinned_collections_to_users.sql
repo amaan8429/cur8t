@@ -1,1 +1,1 @@
-ALTER TABLE "users" ADD COLUMN "pinned_collections" text[] DEFAULT '{}' NOT NULL;
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "pinned_collections" text[] DEFAULT '{}' NOT NULL;

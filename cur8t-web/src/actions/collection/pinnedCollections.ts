@@ -9,6 +9,7 @@ import {
   getClientIdFromHeaders,
   rateLimiters,
 } from '@/lib/ratelimit';
+import { getSubscriptionSnapshot } from '@/lib/subscription';
 
 export async function getPinnedCollections() {
   const { userId } = await auth();
@@ -113,9 +114,13 @@ export async function addPinnedCollection(collectionId: string) {
       return { error: 'Collection is already pinned' };
     }
 
-    // Check limit
-    if (currentPinned.length >= 3) {
-      return { error: 'Cannot pin more than 3 collections' };
+    // Gating: Check per-plan pinned/top collections limit
+    const snapshot = await getSubscriptionSnapshot(userId);
+    const maxPinned = snapshot.limits.topCollections;
+    if (currentPinned.length >= maxPinned) {
+      return {
+        error: `Cannot pin more than ${maxPinned} collections on your plan`,
+      };
     }
 
     // Verify collection belongs to user
@@ -212,8 +217,12 @@ export async function setPinnedCollections(collectionIds: string[]) {
     return { error: rateLimitResult.error, retryAfter };
   }
 
-  if (collectionIds.length > 3) {
-    return { error: 'Cannot pin more than 3 collections' };
+  const snapshot = await getSubscriptionSnapshot(userId);
+  const maxPinned = snapshot.limits.topCollections;
+  if (collectionIds.length > maxPinned) {
+    return {
+      error: `Cannot pin more than ${maxPinned} collections on your plan`,
+    };
   }
 
   try {

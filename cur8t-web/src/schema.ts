@@ -1,6 +1,7 @@
 import {
   boolean,
   integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
@@ -161,6 +162,62 @@ export const FavoritesTable = pgTable('favorites', {
     .$onUpdate(() => new Date()),
 });
 
+// Subscription plans table (no AI token fields yet)
+export const PlansTable = pgTable(
+  'plans',
+  {
+    id: uuid('id').defaultRandom().primaryKey().notNull(),
+    name: text('name').notNull(),
+    slug: text('slug').notNull(), // e.g., free, pro-monthly, business-yearly
+    productId: text('product_id'), // Lemon Squeezy product ID (nullable until Step 1)
+    variantId: text('variant_id'), // Lemon Squeezy variant ID (nullable until Step 1)
+    interval: text('interval').notNull(), // none | month | year
+    priceCents: integer('price_cents').notNull().default(0),
+    limits: jsonb('limits').notNull(), // { collections, linksPerCollection, totalLinks, favorites, topCollections }
+    sort: integer('sort').notNull().default(0),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at')
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => ({
+    slugUnique: unique().on(table.slug),
+  })
+);
+
+// User subscriptions (no token usage fields yet)
+export const SubscriptionsTable = pgTable('subscriptions', {
+  id: uuid('id').defaultRandom().primaryKey().notNull(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => UsersTable.id, { onDelete: 'cascade' }),
+  storeCustomerId: text('store_customer_id'), // Lemon Squeezy customer ID (nullable until Step 1)
+  subscriptionId: text('subscription_id'), // Lemon Squeezy subscription ID (nullable until Step 1)
+  productId: text('product_id'),
+  variantId: text('variant_id'),
+  status: text('status').notNull().default('none'), // trialing | active | past_due | canceled | unpaid | none
+  currentPeriodStart: timestamp('current_period_start'),
+  currentPeriodEnd: timestamp('current_period_end'),
+  cancelAtPeriodEnd: boolean('cancel_at_period_end').notNull().default(false),
+  trialEnd: timestamp('trial_end'),
+  billingAnchor: timestamp('billing_anchor'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+// Lemon Squeezy webhook events (for idempotency and auditing)
+export const LemonSqueezyEventsTable = pgTable('lemonsqueezy_events', {
+  eventId: text('event_id').primaryKey().notNull(),
+  type: text('type').notNull(),
+  payloadHash: text('payload_hash').notNull(),
+  receivedAt: timestamp('received_at').notNull().defaultNow(),
+  processedAt: timestamp('processed_at'),
+  status: text('status').notNull().default('received'), // received | processed | failed
+  error: text('error'),
+});
+
 // Infer types for users
 export type InsertUser = typeof UsersTable.$inferInsert;
 export type SelectUser = typeof UsersTable.$inferSelect;
@@ -188,3 +245,17 @@ export type SelectAccessRequest = typeof AccessRequestsTable.$inferSelect;
 // Infer types for favorites
 export type InsertFavorite = typeof FavoritesTable.$inferInsert;
 export type SelectFavorite = typeof FavoritesTable.$inferSelect;
+
+// Infer types for plans
+export type InsertPlan = typeof PlansTable.$inferInsert;
+export type SelectPlan = typeof PlansTable.$inferSelect;
+
+// Infer types for subscriptions
+export type InsertSubscription = typeof SubscriptionsTable.$inferInsert;
+export type SelectSubscription = typeof SubscriptionsTable.$inferSelect;
+
+// Infer types for Lemon Squeezy events
+export type InsertLemonSqueezyEvent =
+  typeof LemonSqueezyEventsTable.$inferInsert;
+export type SelectLemonSqueezyEvent =
+  typeof LemonSqueezyEventsTable.$inferSelect;
