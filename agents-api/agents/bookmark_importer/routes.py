@@ -2,7 +2,7 @@
 Bookmark Importer API routes
 """
 
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Request
 from fastapi.responses import JSONResponse
 from typing import Optional, Dict, Any
 import json
@@ -14,12 +14,15 @@ from .models import (
 )
 from .service import bookmark_importer_service
 from core.models import HealthResponse, AgentStatus, ErrorResponse
+from core.limiter import limiter
 
 # Create router for this agent
 router = APIRouter(prefix="/bookmark-importer", tags=["Bookmark Importer"])
 
 @router.post("/upload", response_model=BookmarkUploadResponse)
+@limiter.limit("6/minute")
 async def upload_bookmarks(
+    request: Request,
     file: UploadFile = File(..., description="Bookmark HTML file"),
     browser_type: Optional[str] = Form(None, description="Browser type (chrome, firefox, safari, edge)"),
     user_preferences: Optional[str] = Form(None, description="User preferences as JSON string")
@@ -78,7 +81,8 @@ async def upload_bookmarks(
         )
 
 @router.post("/analyze", response_model=BookmarkAnalysisResponse)
-async def analyze_bookmarks(request: BookmarkAnalysisRequest):
+@limiter.limit("3/minute")
+async def analyze_bookmarks(request: Request, body: BookmarkAnalysisRequest):
     """
     Analyze uploaded bookmarks using OpenAI for intelligent categorization.
     
@@ -90,11 +94,11 @@ async def analyze_bookmarks(request: BookmarkAnalysisRequest):
     """
     
     result, error = await bookmark_importer_service.analyze_bookmarks(
-        session_id=request.session_id,
-        max_categories=request.max_categories or 5,
-        min_bookmarks_per_category=request.min_bookmarks_per_category or 3,
-        preferred_categories=request.preferred_categories,
-        merge_similar_categories=request.merge_similar_categories
+        session_id=body.session_id,
+        max_categories=body.max_categories or 5,
+        min_bookmarks_per_category=body.min_bookmarks_per_category or 3,
+        preferred_categories=body.preferred_categories,
+        merge_similar_categories=body.merge_similar_categories
     )
     
     if error:
@@ -107,7 +111,8 @@ async def analyze_bookmarks(request: BookmarkAnalysisRequest):
     return result
 
 @router.get("/preview/{session_id}", response_model=BookmarkPreviewResponse)
-async def get_bookmark_preview(session_id: str):
+@limiter.limit("10/minute")
+async def get_bookmark_preview(request: Request, session_id: str):
     """
     Get preview of categorized bookmarks without creating collections.
     
@@ -175,7 +180,8 @@ async def get_bookmark_preview(session_id: str):
         )
 
 @router.get("/status/{session_id}", response_model=BookmarkSessionStatus)
-async def get_session_status(session_id: str):
+@limiter.limit("10/minute")
+async def get_session_status(request: Request, session_id: str):
     """
     Get current status of bookmark import session.
     
@@ -196,7 +202,8 @@ async def get_session_status(session_id: str):
     return status
 
 @router.post("/create-collections", response_model=CollectionCreationResponse)
-async def create_collections(request: CollectionCreationRequest):
+@limiter.limit("2/minute")
+async def create_collections(request: Request, body: CollectionCreationRequest):
     """
     Create collections from categorized bookmarks.
     
@@ -208,7 +215,7 @@ async def create_collections(request: CollectionCreationRequest):
     """
     
     try:
-        session = bookmark_importer_service.sessions.get(request.session_id)
+        session = bookmark_importer_service.sessions.get(body.session_id)
         if not session:
             raise HTTPException(
                 status_code=404,
@@ -242,7 +249,7 @@ async def create_collections(request: CollectionCreationRequest):
         
         for category in selected_categories:
             # Use custom name if provided
-            custom_names = request.custom_category_names or {}
+            custom_names = body.custom_category_names or {}
             collection_name = custom_names.get(category.name, category.suggested_collection_name)
             
             # Convert bookmarks to collection format
@@ -278,7 +285,7 @@ async def create_collections(request: CollectionCreationRequest):
         return CollectionCreationResponse(
             success=True,
             message=f"Successfully created {len(created_collections)} collections with {total_bookmarks_organized} bookmarks",
-            session_id=request.session_id,
+            session_id=body.session_id,
             created_collections=created_collections,
             total_collections_created=len(created_collections),
             total_bookmarks_organized=total_bookmarks_organized,
@@ -292,7 +299,8 @@ async def create_collections(request: CollectionCreationRequest):
         )
 
 @router.delete("/session/{session_id}")
-async def delete_session(session_id: str):
+@limiter.limit("10/minute")
+async def delete_session(request: Request, session_id: str):
     """
     Delete a bookmark import session and its data.
     
@@ -312,7 +320,8 @@ async def delete_session(session_id: str):
         )
 
 @router.get("/health", response_model=HealthResponse)
-async def get_health():
+@limiter.exempt
+async def get_health(request: Request):
     """Health check for the Bookmark Importer agent"""
     
     # Check if OpenAI is configured

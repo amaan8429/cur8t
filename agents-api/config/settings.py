@@ -41,5 +41,10 @@ class Settings:
     max_categories_per_analysis: int = int(os.getenv("MAX_CATEGORIES_PER_ANALYSIS", "10"))
     min_bookmarks_per_category: int = int(os.getenv("MIN_BOOKMARKS_PER_CATEGORY", "3"))
 
+    # Rate Limiting (SlowAPI)
+    rate_limit_default: str = os.getenv("RATE_LIMIT_DEFAULT", "60/minute")
+    rate_limit_enabled: bool = os.getenv("RATE_LIMIT_ENABLED", "true").lower() in {"1", "true", "yes"}
+    rate_limit_trust_forwarded: bool = os.getenv("RATE_LIMIT_TRUST_FORWARDED", "true").lower() in {"1", "true", "yes"}
+
 # Global settings instance
 settings = Settings() 

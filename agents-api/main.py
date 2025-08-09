@@ -1,8 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from config.settings import settings
 from agents import get_active_routers, get_agent_list
+from core.limiter import limiter
 
 # Create FastAPI app
 app = FastAPI(
@@ -25,8 +29,15 @@ app.add_middleware(
 for router in get_active_routers():
     app.include_router(router, prefix="/agents")
 
+# Rate limiter setup
+if settings.rate_limit_enabled:
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_middleware(SlowAPIMiddleware)
+
+
 @app.get("/")
-async def root():
+async def root(request: Request):
     """API root endpoint with information about available agents"""
     return {
         "message": settings.app_name,
@@ -38,7 +49,8 @@ async def root():
     }
 
 @app.get("/health")
-async def health_check():
+@limiter.exempt
+async def health_check(request: Request):
     """Health check endpoint"""
     return {
         "status": "healthy", 

@@ -2,17 +2,19 @@
 Article Link Extractor API routes
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 
 from .models import ArticleLinkRequest, ArticleLinkResponse
 from .service import article_extractor_service
 from core.models import HealthResponse, AgentStatus
+from core.limiter import limiter
 
 # Create router for this agent
 router = APIRouter(prefix="/article-extractor", tags=["Article Link Extractor"])
 
 @router.post("/", response_model=ArticleLinkResponse)
-async def extract_article_links(request: ArticleLinkRequest):
+@limiter.limit("30/minute")
+async def extract_article_links(request: Request, payload: ArticleLinkRequest):
     """
     Extract all links from an article and prepare them for collection creation.
     
@@ -24,8 +26,8 @@ async def extract_article_links(request: ArticleLinkRequest):
     """
     
     result, error = article_extractor_service.extract_links_from_article(
-        article_url=str(request.article_url),
-        collection_name=request.collection_name
+        article_url=str(payload.article_url),
+        collection_name=payload.collection_name
     )
     
     if error:
@@ -38,7 +40,8 @@ async def extract_article_links(request: ArticleLinkRequest):
     return result
 
 @router.get("/health", response_model=HealthResponse)
-async def get_health():
+@limiter.exempt
+async def get_health(request: Request):
     """Health check for the Article Link Extractor agent"""
     return HealthResponse(
         agent="Article Link Extractor",
