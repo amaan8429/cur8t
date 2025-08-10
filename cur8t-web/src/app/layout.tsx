@@ -39,7 +39,7 @@ export const metadata = {
       'A modern platform to share links faster and optimize your workflow with intelligent bookmark management and collaboration tools.',
     images: [
       {
-        url: '/og_image.png',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
         alt: 'Cur8t - Share Links Faster & Optimize Your Workflow',
@@ -53,7 +53,7 @@ export const metadata = {
     title: 'Cur8t - Share Links Faster & Optimize Your Workflow',
     description:
       'A modern platform to share links faster and optimize your workflow with intelligent bookmark management and collaboration tools.',
-    images: ['/og_image.png'],
+    images: ['/og-image.png'],
   },
   icons: {
     icon: [

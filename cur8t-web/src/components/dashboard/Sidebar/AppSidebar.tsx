@@ -30,7 +30,7 @@ import { Separator } from '../../ui/separator';
 // Cur8t Logo Component
 const Cur8tLogo = () => (
   <Image
-    src="/cur8tlogo.png"
+    src="/logo.png"
     alt="Cur8t Logo"
     width={20}
     height={20}

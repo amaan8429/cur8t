@@ -527,7 +527,7 @@ export default function Hero() {
 
             <div className="relative overflow-hidden rounded-xl">
               <Image
-                src="/dashboard.png"
+                src="/hero-dashboard.png"
                 alt="Cur8t Dashboard Preview"
                 width={1200}
                 height={800}

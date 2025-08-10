@@ -19,7 +19,7 @@ export function Footer() {
         <div className="flex flex-col items-center md:items-start">
           <Link href="/" className="mb-4 flex items-center gap-2">
             <Image
-              src="/cur8tlogo.png"
+              src="/logo.png"
               alt="Cur8t Logo"
               width={36}
               height={36}
