@@ -6,6 +6,12 @@ import QueryProvider from '@/components/providers/QueryProvider';
 import { ErrorBoundary } from '@/components/providers/ErrorBoundary';
 import { Oxanium, Merriweather, Fira_Code } from 'next/font/google';
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata = {
   title: 'Cur8t - Share Links Faster & Optimize Your Workflow',
   description:
@@ -64,11 +70,6 @@ export const metadata = {
     apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
   robots: {
     index: true,
     follow: true,
