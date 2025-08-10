@@ -63,6 +63,8 @@ app.add_middleware(
         "http://localhost:3000",  # Development
         "https://cur8t.com",      # Production
         "https://www.cur8t.com",  # Production with www
+        "https://agents.cur8t.com", # Your agents API
+        "https://extension.cur8t.com",    # Your extension API
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],

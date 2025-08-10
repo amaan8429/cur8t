@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings(BaseModel):
-    # Database URL with helpful default message
-    database_url: str = os.getenv("DATABASE_URL", "postgresql://neondb_owner:5AWMtSg3HBdE@ep-bitter-glade-a5blm00f.us-east-2.aws.neon.tech/neondb?sslmode=require")
+    # Database URL - MUST be set via environment variable
+    database_url: str = os.getenv("DATABASE_URL", "")
     
     # Clerk secret key (optional for now)
     clerk_secret_key: Optional[str] = os.getenv("CLERK_SECRET_KEY")
@@ -29,14 +29,17 @@ class Settings(BaseModel):
         super().__init__(**kwargs)
         # Validate that required settings are present
         if not self.database_url:
-            print("⚠️  WARNING: DATABASE_URL not set!")
-            print("📝 Create a .env file with: DATABASE_URL=postgresql://...")
+            print("🚨 CRITICAL ERROR: DATABASE_URL not set!")
+            print("📝 Set DATABASE_URL environment variable with your database connection string")
+            print("💡 Example: DATABASE_URL=postgresql://user:pass@host:port/db?sslmode=require")
+            raise ValueError("DATABASE_URL environment variable is required")
         
         # Validate API key pepper is set
         if not self.api_key_pepper:
             print("⚠️  WARNING: API_KEY_PEPPER not set!")
             print("📝 Create a .env file with: API_KEY_PEPPER=your-secret-pepper")
             print("🔐 Generate with: openssl rand -hex 32")
+            raise ValueError("API_KEY_PEPPER environment variable is required")
     
     class Config:
         env_file = ".env"
