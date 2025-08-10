@@ -23,12 +23,55 @@ import {
   PiX,
 } from 'react-icons/pi';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { getPaidPlans, formatPrice } from '@/lib/plans';
+import { useSearchParams } from 'next/navigation';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function ManageSubscription() {
   const { startCheckout, loading } = useCheckout();
-  const { data: subscription, isLoading } = useSubscriptionStatus();
+  const { data: subscription, isLoading, refetch } = useSubscriptionStatus();
+  const searchParams = useSearchParams();
+  const [showBillingMessage, setShowBillingMessage] = useState(false);
+  const [billingMessage, setBillingMessage] = useState({
+    type: 'default' as 'default' | 'destructive',
+    message: '',
+  });
+
+  // Handle billing success/canceled messages
+  useEffect(() => {
+    const billing = searchParams.get('billing');
+    if (billing === 'success') {
+      setBillingMessage({
+        type: 'default',
+        message:
+          'Payment completed successfully! Your subscription is now active.',
+      });
+      setShowBillingMessage(true);
+      // Refetch subscription data to show updated status
+      refetch();
+      // Clear the URL parameter
+      window.history.replaceState({}, '', '/settings?tab=subscription');
+    } else if (billing === 'canceled') {
+      setBillingMessage({
+        type: 'destructive',
+        message: 'Payment was canceled. Your subscription was not activated.',
+      });
+      setShowBillingMessage(true);
+      // Clear the URL parameter
+      window.history.replaceState({}, '', '/settings?tab=subscription');
+    }
+  }, [searchParams, refetch]);
+
+  // Auto-hide billing message after 5 seconds
+  useEffect(() => {
+    if (showBillingMessage) {
+      const timer = setTimeout(() => {
+        setShowBillingMessage(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showBillingMessage]);
 
   if (isLoading) {
     return (
@@ -177,6 +220,13 @@ export default function ManageSubscription() {
           )}
         </Card>
       </div>
+
+      {/* Billing Status Messages */}
+      {showBillingMessage && (
+        <Alert variant={billingMessage.type}>
+          <AlertDescription>{billingMessage.message}</AlertDescription>
+        </Alert>
+      )}
 
       {/* Upgrade Options */}
       {isFree && (

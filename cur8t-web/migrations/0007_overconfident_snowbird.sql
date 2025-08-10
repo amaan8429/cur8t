@@ -1,0 +1,1 @@
+ALTER TABLE "github_settings" ALTER COLUMN "repo_name" SET DEFAULT 'cur8tCollection';

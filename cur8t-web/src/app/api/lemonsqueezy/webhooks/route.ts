@@ -150,7 +150,7 @@ export async function POST(request: Request) {
     const rawBody = await request.text();
 
     console.log('=== LEMON SQUEEZY WEBHOOK DEBUG ===');
-    console.log('Webhook received request at /api/webhooks/lemonsqueezy');
+    console.log('Webhook received request at /api/lemonsqueezy/webhooks');
     console.log('All headers:', Object.fromEntries(request.headers.entries()));
     console.log('Raw body length:', rawBody.length);
     console.log('Raw body preview:', rawBody.substring(0, 500));
