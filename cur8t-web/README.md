@@ -4,7 +4,7 @@ Things i have to work on :
 
 helllo check
 
-1. Finish this bukmarks project --> make extension for it --> make whatsapp service for it
+1. Finish this Cur8t project --> make extension for it --> make whatsapp service for it
 2. Portfolio website
 3. Finish web3 project issue-tracker
 4. 4 projects for web3 hackathon

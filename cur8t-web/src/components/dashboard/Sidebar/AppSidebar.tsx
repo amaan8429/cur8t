@@ -13,6 +13,7 @@ import {
   PiBell,
   PiStar,
 } from 'react-icons/pi';
+import Image from 'next/image';
 
 import { NavCollection } from '@/components/dashboard/Sidebar/NavCollection/NavCollections';
 import { NavMain } from '@/components/dashboard/Sidebar/NavMain';
@@ -26,11 +27,22 @@ import {
 } from '@/components/ui/sidebar';
 import { Separator } from '../../ui/separator';
 
+// Cur8t Logo Component
+const Cur8tLogo = () => (
+  <Image
+    src="/cur8tlogo.png"
+    alt="Cur8t Logo"
+    width={20}
+    height={20}
+    className="size-5"
+  />
+);
+
 // This is sample data.
 const data = {
   LogoAndName: {
-    name: 'Bukmarks',
-    logo: PiCommand,
+    name: 'Cur8t',
+    logo: Cur8tLogo,
   },
   navMain: [
     {

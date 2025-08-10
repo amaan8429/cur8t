@@ -48,7 +48,7 @@ export const GitHubSettingsTable = pgTable('github_settings', {
   userId: text('user_id')
     .notNull()
     .references(() => UsersTable.id, { onDelete: 'cascade' }),
-  repoName: text('repo_name').default('bukmarksCollection'),
+  repoName: text('repo_name').default('cur8tCollection'),
   githubAccessToken: text('github_access_token').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at')

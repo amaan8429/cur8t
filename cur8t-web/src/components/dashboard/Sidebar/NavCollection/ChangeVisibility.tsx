@@ -48,7 +48,7 @@ const ChangeVisibility = ({
   const [emails, setEmails] = React.useState(sharedEmails);
   const [newEmail, setNewEmail] = React.useState('');
   const [collectionLink] = React.useState(
-    `https://bukmarks.vercel.app/collection/${collectionId}`
+    `https://cur8t.com/collection/${collectionId}`
   );
   const {
     toast,

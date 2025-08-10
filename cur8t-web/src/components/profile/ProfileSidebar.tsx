@@ -59,7 +59,7 @@ export function ProfileSidebar({ user, collections }: ProfileSidebarProps) {
 
   const handleSocialShare = (platform: string) => {
     const profileUrl = `${window.location.origin}/profile/${user?.username}`;
-    const text = `Check out ${user?.name}'s bookmark collections on Bukmarks!`;
+    const text = `Check out ${user?.name}'s bookmark collections on Cur8t!`;
 
     let shareUrl = '';
     switch (platform) {

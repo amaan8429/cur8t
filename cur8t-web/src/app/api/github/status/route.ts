@@ -83,7 +83,7 @@ export async function GET(request: Request) {
 
       if (gitHubSettings) {
         response.lastSync = gitHubSettings.updatedAt?.toISOString();
-        response.repositoryUrl = `https://github.com/${user.githubUsername}/${gitHubSettings.repoName || 'bukmarksCollection'}`;
+        response.repositoryUrl = `https://github.com/${user.githubUsername}/${gitHubSettings.repoName || 'cur8tCollection'}`;
       }
     }
 

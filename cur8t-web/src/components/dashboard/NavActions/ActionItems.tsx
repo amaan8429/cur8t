@@ -87,9 +87,7 @@ const ActionItems: React.FC = () => {
     }
 
     if (item.type === 'copy-link') {
-      setCopyLink(
-        `https://bukmarks.vercel.app/collection/${activeCollectionId}`
-      );
+      setCopyLink(`https://cur8t.com/collection/${activeCollectionId}`);
     }
 
     if (item.type === 'duplicate') {

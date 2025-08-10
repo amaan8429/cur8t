@@ -20,7 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 const CopyCollectionLink = ({ collectionId }: { collectionId: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-  const shareLink = `https://bukmarks.com/collection/${collectionId}`;
+  const shareLink = `https://cur8t.com/collection/${collectionId}`;
   const { toast, success: toastSuccess, error: toastError } = useToast();
 
   const handleCopyLink = async () => {
