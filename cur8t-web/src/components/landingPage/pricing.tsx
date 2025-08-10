@@ -24,6 +24,15 @@ import {
 } from 'react-icons/pi';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { extendedPlans, getPlanBySlug } from '@/lib/plans';
+
+const planIcons = {
+  free: PiStar,
+  'pro-monthly': PiLightning,
+  'pro-yearly': PiLightning,
+  'business-monthly': PiShield,
+  'business-yearly': PiShield,
+};
 
 const plans = [
   {
@@ -36,11 +45,11 @@ const plans = [
     },
     description: 'Great for getting started and casual use.',
     features: [
-      '5 collections',
+      '3 collections',
       '50 links per collection',
-      '250 total links',
-      '3 favorites',
-      '3 pinned collections',
+      '100 total links',
+      '10 favorites',
+      '1 pinned collection',
     ],
     cta: 'Get started for free',
   },
@@ -49,16 +58,16 @@ const plans = [
     name: 'Pro',
     icon: PiLightning,
     price: {
-      monthly: 9,
-      yearly: 90,
+      monthly: 4.99,
+      yearly: 49.99,
     },
     description: 'For power users who want more scale and features.',
     features: [
       '25 collections',
       '200 links per collection',
-      '5,000 total links',
-      '50 favorites',
-      '10 pinned collections',
+      '2,000 total links',
+      '100 favorites',
+      '5 pinned collections',
     ],
     cta: 'Subscribe to Pro',
     popular: true,
@@ -68,16 +77,16 @@ const plans = [
     name: 'Business',
     icon: PiShield,
     price: {
-      monthly: 29,
-      yearly: 290,
+      monthly: 9.99,
+      yearly: 99.99,
     },
     description: 'For teams and heavy usage with generous limits.',
     features: [
       '100 collections',
       '500 links per collection',
-      '50,000 total links',
-      '200 favorites',
-      '50 pinned collections',
+      '10,000 total links',
+      '500 favorites',
+      '10 pinned collections',
     ],
     cta: 'Subscribe to Business',
   },

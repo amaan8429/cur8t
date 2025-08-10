@@ -29,6 +29,7 @@
   "dependencies": {
     "@clerk/nextjs": "^6.8.0",
     "@hookform/resolvers": "^3.9.1",
+    "@lemonsqueezy/lemonsqueezy.js": "^4.0.0",
     "@neondatabase/serverless": "^0.10.4",
     "@number-flow/react": "^0.5.10",
     "@octokit/request-error": "^6.1.8",

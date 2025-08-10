@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     const { apiKey, storeId } = assertEnvOrThrow();
     const { successUrl, cancelUrl } = getReturnUrls();
 
-    // Lemon Squeezy Checkout API (JSON:API)
+    // Lemon Squeezy Checkout API
     const res = await fetch('https://api.lemonsqueezy.com/v1/checkouts', {
       method: 'POST',
       headers: {
@@ -40,15 +40,11 @@ export async function POST(req: Request) {
         data: {
           type: 'checkouts',
           attributes: {
-            checkout_data: {
-              custom: {
-                user_id: userId,
-              },
+            custom: {
+              user_id: userId,
             },
-            checkout_options: {
-              success_url: successUrl,
-              cancel_url: cancelUrl,
-            },
+            success_url: successUrl,
+            cancel_url: cancelUrl,
           },
           relationships: {
             store: {
