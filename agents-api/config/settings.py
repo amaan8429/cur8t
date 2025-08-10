@@ -24,9 +24,12 @@ class Settings:
     
     # CORS Settings
     allowed_origins: List[str] = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "https://localhost:3000"
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://localhost:3000",
+    "https://cur8t.com",
+    "https://www.cur8t.com",
+    "https://agents.cur8t.com"
     ]
     
     # Agent Settings
