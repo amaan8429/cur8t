@@ -12,10 +12,10 @@ Implement standard recurring subscriptions without AI token allowances or metere
   - Success URL: `https://your-domain.com/dashboard?billing=success`
   - Cancel URL: `https://your-domain.com/pricing?canceled=1`
 - Create subscription variants:
-  - Pro Monthly — $9/month
-  - Pro Yearly — $90/year (2 months free)
-  - Business Monthly — $29/month
-  - Business Yearly — $290/year (2 months free)
+  - Pro Monthly — $4.99/month
+  - Pro Yearly — $49.99/year (2 months free)
+  - Business Monthly — $9.99/month
+  - Business Yearly — $99.99/year (2 months free)
 - Create a webhook endpoint in Lemon Squeezy:
   - Endpoint URL: `https://your-domain.com/api/lemonsqueezy/webhooks`
   - Copy/store the Webhook Secret (used to verify requests)
