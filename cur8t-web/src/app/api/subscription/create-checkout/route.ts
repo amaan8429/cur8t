@@ -2,18 +2,20 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { assertEnvOrThrow, getPlanBySlug } from '@/lib/billing';
 
-export function getReturnUrls() {
-  const base = process.env.NEXT_PUBLIC_BASE_URL || '';
-  const successPath =
-    process.env.LS_SUCCESS_URL || '/settings?billing=success&tab=subscription';
-  const cancelPath =
-    process.env.LS_CANCEL_URL || '/settings?billing=canceled&tab=subscription';
-  const successUrl = base ? `${base}${successPath}` : successPath;
-  const cancelUrl = base ? `${base}${cancelPath}` : cancelPath;
-  return { successUrl, cancelUrl } as const;
-}
-
 export async function POST(req: Request) {
+  function getReturnUrls() {
+    const base = process.env.NEXT_PUBLIC_BASE_URL || '';
+    const successPath =
+      process.env.LS_SUCCESS_URL ||
+      '/settings?billing=success&tab=subscription';
+    const cancelPath =
+      process.env.LS_CANCEL_URL ||
+      '/settings?billing=canceled&tab=subscription';
+    const successUrl = base ? `${base}${successPath}` : successPath;
+    const cancelUrl = base ? `${base}${cancelPath}` : cancelPath;
+    return { successUrl, cancelUrl } as const;
+  }
+
   try {
     const { userId } = await auth();
     if (!userId) {
