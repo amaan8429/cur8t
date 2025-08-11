@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://cur8t.com/sitemap.xml
+
+# Important pages
+Allow: /privacy-policy
+Allow: /about
+Allow: /contact
+Allow: /dashboard
+
+# Disallow admin and API routes
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /private/

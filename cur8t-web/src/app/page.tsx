@@ -34,6 +34,7 @@ const Home = () => {
     { name: 'Integrations', link: '#integrations' },
     { name: 'About', link: '#about' },
     { name: 'Contact', link: '#contact' },
+    { name: 'Privacy Policy', link: '/privacy-policy' },
   ];
 
   const handleNavItemClick = () => {
