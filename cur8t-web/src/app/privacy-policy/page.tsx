@@ -641,7 +641,9 @@ export default function PrivacyPolicyPage() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <PiEnvelope className="h-5 w-5 text-primary" />
-                  <span className="text-foreground">support@cur8t.com</span>
+                  <span className="text-foreground">
+                    amaanrizvi73@gmail.com
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <PiGlobe className="h-5 w-5 text-primary" />
@@ -649,9 +651,7 @@ export default function PrivacyPolicyPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <PiMapPin className="h-5 w-5 text-primary" />
-                  <span className="text-foreground">
-                    123 Main St, Anytown, USA
-                  </span>
+                  <span className="text-foreground">Lucknow, India</span>
                 </div>
               </div>
             </CardContent>
