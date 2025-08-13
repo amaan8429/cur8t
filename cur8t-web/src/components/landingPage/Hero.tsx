@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { SignInButton, SignUpButton } from '@clerk/nextjs';
+import Link from 'next/link';
 import {
   PiArrowRight,
   PiArrowUpRight,
@@ -19,7 +21,7 @@ import {
 } from 'react-icons/pi';
 import Image from 'next/image';
 
-export default function Hero() {
+export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
   // State for animated counters
   const [stats, setStats] = useState({
     users: 500,
@@ -491,21 +493,62 @@ export default function Hero() {
           variants={itemVariants}
           className="mb-12 flex flex-col gap-4 sm:flex-row"
         >
-          <Button
-            className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-medium shadow-lg shadow-primary/25 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
-            size="lg"
-          >
-            Get Started
-            <PiArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </Button>
+          {isSignedIn ? (
+            <>
+              <Link href="/dashboard/?item=Overview">
+                <Button
+                  className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-medium shadow-lg shadow-primary/25 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
+                  size="lg"
+                >
+                  Dashboard
+                  <PiArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </Button>
+              </Link>
 
-          <Button
-            variant="outline"
-            className="border-2 border-border hover:border-primary bg-background/50 backdrop-blur-sm text-foreground hover:text-primary hover:bg-primary/5 px-8 py-6 text-base font-medium transition-all duration-300 hover:-translate-y-0.5"
-            size="lg"
-          >
-            Learn more
-          </Button>
+              <Button
+                onClick={() => {
+                  const featuresSection =
+                    document.getElementById('integrations');
+                  if (featuresSection) {
+                    featuresSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                variant="outline"
+                className="border-2 border-border hover:border-primary bg-background/50 backdrop-blur-sm text-foreground hover:text-primary hover:bg-primary/5 px-8 py-6 text-base font-medium transition-all duration-300 hover:-translate-y-0.5"
+                size="lg"
+              >
+                Features
+              </Button>
+            </>
+          ) : (
+            <>
+              <SignUpButton
+                mode="modal"
+                forceRedirectUrl="/dashboard/?item=Overview"
+              >
+                <Button
+                  className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-medium shadow-lg shadow-primary/25 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
+                  size="lg"
+                >
+                  Get Started
+                  <PiArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                </Button>
+              </SignUpButton>
+
+              <SignInButton
+                mode="modal"
+                forceRedirectUrl="/dashboard/?item=Overview"
+              >
+                <Button
+                  variant="outline"
+                  className="border-2 border-border hover:border-primary bg-background/50 backdrop-blur-sm text-foreground hover:text-primary hover:bg-primary/5 px-8 py-6 text-base font-medium transition-all duration-300 hover:-translate-y-0.5"
+                  size="lg"
+                >
+                  Sign In
+                </Button>
+              </SignInButton>
+            </>
+          )}
         </motion.div>
 
         {/* Dashboard Preview */}

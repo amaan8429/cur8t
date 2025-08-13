@@ -3,6 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import NumberFlow from '@number-flow/react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { SignUpButton } from '@clerk/nextjs';
 import { useCheckout } from '@/hooks/useCheckout';
 import { useSubscriptionStatus } from '@/hooks/useSubscription';
 import {
@@ -294,32 +295,52 @@ export default function SimplePricing() {
                   ))}
                 </CardContent>
                 <CardFooter>
-                  <Button
-                    variant={plan.popular ? 'default' : 'outline'}
-                    className={cn(
-                      'w-full font-medium transition-all duration-300',
-                      plan.popular
-                        ? 'bg-primary hover:bg-primary/90 hover:shadow-primary/20 hover:shadow-md'
-                        : 'hover:border-primary/30 hover:bg-primary/5 hover:text-primary'
-                    )}
-                    disabled={loading}
-                    onClick={() => {
-                      const slug =
-                        plan.id === 'pro'
-                          ? frequency === 'monthly'
-                            ? 'pro-monthly'
-                            : 'pro-yearly'
-                          : plan.id === 'business'
+                  {plan.id === 'free' ? (
+                    <SignUpButton
+                      mode="modal"
+                      forceRedirectUrl="/dashboard/?item=Overview"
+                    >
+                      <Button
+                        variant={plan.popular ? 'default' : 'outline'}
+                        className={cn(
+                          'w-full font-medium transition-all duration-300',
+                          plan.popular
+                            ? 'bg-primary hover:bg-primary/90 hover:shadow-primary/20 hover:shadow-md'
+                            : 'hover:border-primary/30 hover:bg-primary/5 hover:text-primary'
+                        )}
+                      >
+                        {plan.cta}
+                        <PiArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                      </Button>
+                    </SignUpButton>
+                  ) : (
+                    <Button
+                      variant={plan.popular ? 'default' : 'outline'}
+                      className={cn(
+                        'w-full font-medium transition-all duration-300',
+                        plan.popular
+                          ? 'bg-primary hover:bg-primary/90 hover:shadow-primary/20 hover:shadow-md'
+                          : 'hover:border-primary/30 hover:bg-primary/5 hover:text-primary'
+                      )}
+                      disabled={loading}
+                      onClick={() => {
+                        const slug =
+                          plan.id === 'pro'
                             ? frequency === 'monthly'
-                              ? 'business-monthly'
-                              : 'business-yearly'
-                            : undefined;
-                      if (slug) startCheckout(slug);
-                    }}
-                  >
-                    {loading ? 'Processing…' : plan.cta}
-                    <PiArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </Button>
+                              ? 'pro-monthly'
+                              : 'pro-yearly'
+                            : plan.id === 'business'
+                              ? frequency === 'monthly'
+                                ? 'business-monthly'
+                                : 'business-yearly'
+                              : undefined;
+                        if (slug) startCheckout(slug);
+                      }}
+                    >
+                      {loading ? 'Processing…' : plan.cta}
+                      <PiArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                    </Button>
+                  )}
                 </CardFooter>
 
                 {/* Subtle gradient effects */}
