@@ -298,7 +298,7 @@ export default function SimplePricing() {
                   {plan.id === 'free' ? (
                     <SignUpButton
                       mode="modal"
-                      forceRedirectUrl="/dashboard/?item=Overview"
+                      forceRedirectUrl="/dashboard?item=Overview"
                     >
                       <Button
                         variant={plan.popular ? 'default' : 'outline'}

@@ -513,7 +513,7 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
         >
           {isSignedIn ? (
             <>
-              <Link href="/dashboard/?item=Overview">
+              <Link href="/dashboard?item=Overview">
                 <Button
                   className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-medium shadow-lg shadow-primary/25 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
                   size="lg"
@@ -542,7 +542,7 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
             <>
               <SignUpButton
                 mode="modal"
-                forceRedirectUrl="/dashboard/?item=Overview"
+                forceRedirectUrl="/dashboard?item=Overview"
               >
                 <Button
                   className="group bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-medium shadow-lg shadow-primary/25 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
@@ -555,7 +555,7 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
 
               <SignInButton
                 mode="modal"
-                forceRedirectUrl="/dashboard/?item=Overview"
+                forceRedirectUrl="/dashboard?item=Overview"
               >
                 <Button
                   variant="outline"

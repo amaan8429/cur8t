@@ -458,24 +458,6 @@ export function DashboardOverview() {
             </div>
           </div>
         </div>
-
-        <div className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">
-                API KEYS
-              </p>
-              <p className="text-3xl font-bold mt-1">{stats.apiKeysCount}</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                <span className="text-destructive font-medium">↘ -17%</span> vs
-                last week
-              </p>
-            </div>
-            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <PiTrendUp className="h-6 w-6 text-primary" />
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Search and Filter Bar - Filters moved to right */}

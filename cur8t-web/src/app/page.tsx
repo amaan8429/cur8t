@@ -82,7 +82,7 @@ const Home = () => {
           />
           <div className="flex items-center space-x-2">
             {isSignedIn ? (
-              <Link href="/dashboard/?item=Overview">
+              <Link href="/dashboard?item=Overview">
                 <NavbarButton variant="primary" as="button">
                   Dashboard
                 </NavbarButton>
@@ -90,7 +90,7 @@ const Home = () => {
             ) : (
               <SignUpButton
                 mode="modal"
-                forceRedirectUrl="/dashboard/?item=Overview"
+                forceRedirectUrl="/dashboard?item=Overview"
               >
                 <NavbarButton variant="primary" as="button">
                   Get Started
@@ -125,7 +125,7 @@ const Home = () => {
               ))}
               <div className="flex flex-col space-y-2 pt-4 border-t border-border">
                 {isSignedIn ? (
-                  <Link href="/dashboard/?item=Overview">
+                  <Link href="/dashboard?item=Overview">
                     <NavbarButton
                       onClick={() => setIsOpen(false)}
                       variant="primary"
@@ -138,7 +138,7 @@ const Home = () => {
                 ) : (
                   <SignUpButton
                     mode="modal"
-                    forceRedirectUrl="/dashboard/?item=Overview"
+                    forceRedirectUrl="/dashboard?item=Overview"
                   >
                     <NavbarButton
                       onClick={() => setIsOpen(false)}
@@ -193,7 +193,7 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <SignUpButton
                 mode="modal"
-                forceRedirectUrl="/dashboard/?item=Overview"
+                forceRedirectUrl="/dashboard?item=Overview"
               >
                 <Button className="bg-primary hover:bg-primary/90">
                   Get Started
@@ -201,7 +201,7 @@ const Home = () => {
               </SignUpButton>
               <SignInButton
                 mode="modal"
-                forceRedirectUrl="/dashboard/?item=Overview"
+                forceRedirectUrl="/dashboard?item=Overview"
               >
                 <Button variant="outline">Sign In</Button>
               </SignInButton>

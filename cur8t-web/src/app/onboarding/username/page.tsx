@@ -99,7 +99,7 @@ export default function UsernamePage() {
         throw new Error(data.error || 'Failed to set username');
       }
 
-      router.push('/dashboard?item=Home');
+      router.push('/dashboard?item=Overview');
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Something went wrong');
     } finally {
