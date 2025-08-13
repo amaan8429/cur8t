@@ -1,6 +1,6 @@
 'use client';
 
-import { PiGithubLogo, PiEnvelope, PiTwitterLogo } from 'react-icons/pi';
+import { PiGithubLogo, PiEnvelope } from 'react-icons/pi';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -28,68 +28,61 @@ export function Footer() {
             <span className="text-xl font-semibold text-foreground">Cur8t</span>
           </Link>
           <p className="text-muted-foreground mb-6 max-w-xs text-center text-sm md:text-left">
-            Organize, discover, and share your bookmarks with smart collections.
+            Organize, discover, and share your links with smart collections.
             Never lose track of important content again.
           </p>
           <div className="mt-2 flex gap-3">
-            <Link
-              href="https://twitter.com/cur8t"
-              aria-label="Twitter"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              <PiTwitterLogo className="h-5 w-5" />
-            </Link>
-            <Link
-              href="https://github.com/cur8t"
+            <a
+              href="https://github.com/amaan8429"
+              target="_blank"
+              rel="noopener noreferrer"
               aria-label="GitHub"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               <PiGithubLogo className="h-5 w-5" />
-            </Link>
-            <Link
-              href="mailto:hello@cur8t.com"
+            </a>
+            <a
+              href="mailto:amaanrizvi73@gmail.com"
               aria-label="Email"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               <PiEnvelope className="h-5 w-5" />
-            </Link>
+            </a>
           </div>
         </div>
 
         {/* Navigation links */}
-        <nav className="flex w-full flex-col gap-9 text-center md:w-auto md:flex-row md:justify-end md:text-left">
+        <nav className="flex w-full flex-col gap-8 text-center md:w-auto md:flex-row md:justify-end md:text-left">
           <div>
             <div className="mb-3 text-xs font-semibold tracking-widest text-primary uppercase">
               Product
             </div>
             <ul className="space-y-2">
               <li>
-                <Link
-                  href="#integrations"
+                <button
+                  onClick={() => {
+                    const element = document.getElementById('integrations');
+                    if (element) element.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Features
-                </Link>
+                </button>
               </li>
               <li>
-                <Link
-                  href="#pricing"
+                <button
+                  onClick={() => {
+                    const element = document.getElementById('pricing');
+                    if (element) element.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Pricing
-                </Link>
+                </button>
               </li>
               <li>
                 <Link
-                  href="#integrations"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Integrations
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/dashboard"
+                  href="/dashboard/?item=Overview"
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Dashboard
@@ -99,72 +92,9 @@ export function Footer() {
           </div>
           <div>
             <div className="mb-3 text-xs font-semibold tracking-widest text-primary uppercase">
-              Company
+              Legal
             </div>
             <ul className="space-y-2">
-              <li>
-                <Link
-                  href="/about"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/blog"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/careers"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Careers
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <div className="mb-3 text-xs font-semibold tracking-widest text-primary uppercase">
-              Resources
-            </div>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  href="/docs"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Documentation
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/community"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Community
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/support"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Support
-                </Link>
-              </li>
               <li>
                 <Link
                   href="/privacy-policy"
@@ -173,6 +103,17 @@ export function Footer() {
                   Privacy Policy
                 </Link>
               </li>
+              <li>
+                <button
+                  onClick={() => {
+                    const element = document.getElementById('faq');
+                    if (element) element.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  FAQ
+                </button>
+              </li>
             </ul>
           </div>
         </nav>
@@ -180,10 +121,7 @@ export function Footer() {
 
       {/* Copyright */}
       <div className="relative z-10 mt-10 text-center text-xs text-muted-foreground">
-        <span>
-          &copy; 2025 Cur8t. All rights reserved. Made with ❤️ for better
-          bookmarking.
-        </span>
+        <span>&copy; 2025 Cur8t. Made with ❤️ for better link management.</span>
       </div>
     </footer>
   );

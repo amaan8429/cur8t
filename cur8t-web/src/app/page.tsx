@@ -21,7 +21,22 @@ import {
   NavbarButton,
 } from '@/components/landingPage/navbar';
 import SimplePricing from '@/components/landingPage/pricing';
-import ScrollBasedVelocityDemo from '@/components/landingPage/scollvelocity';
+import dynamic from 'next/dynamic';
+
+// Lazy load heavy scroll component for better initial performance
+const ScrollBasedVelocityDemo = dynamic(
+  () => import('@/components/landingPage/scollvelocity'),
+  {
+    ssr: false, // Disable SSR for this component to avoid hydration issues
+    loading: () => (
+      <div className="bg-background py-16 border-t border-border/50">
+        <div className="px-6 text-center text-4xl font-bold tracking-tight text-foreground/80 dark:text-foreground md:text-7xl md:leading-[5rem]">
+          Organize • Discover • Share • Cur8t
+        </div>
+      </div>
+    ),
+  }
+);
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import { PiCode, PiHeart, PiChatCircle } from 'react-icons/pi';
@@ -52,7 +67,10 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-background">
+    <div
+      className="min-h-screen w-full bg-background transform-gpu"
+      style={{ willChange: 'auto' }}
+    >
       {/* Navigation */}
       <Navbar className="fixed top-0 inset-x-0 z-50">
         {/* Desktop Navigation */}

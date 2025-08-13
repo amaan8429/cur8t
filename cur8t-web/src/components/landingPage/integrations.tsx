@@ -61,12 +61,13 @@ const itemsSample: BentoItem[] = [
   {
     title: 'Universal Access',
     description:
-      'Access your bookmarks from any device, anywhere. Seamless sync across desktop, mobile, and web platforms.',
+      'Access your bookmarks from any device, anywhere. Seamless sync across desktop, browser extension, and mobile apps.',
     icon: <PiGlobe className="text-primary h-4 w-4" />,
     status: 'Sync',
   },
   {
     title: 'Mobile Apps',
+    status: 'Coming Soon',
     description:
       'Native mobile apps for iOS and Android. Save and access your bookmarks on the go with offline support.',
     icon: <PiPhone className="text-primary h-4 w-4" />,
@@ -74,12 +75,13 @@ const itemsSample: BentoItem[] = [
     tags: ['Mobile', 'Offline'],
   },
   {
-    title: 'Advanced Search',
+    title: 'VS Code Extension',
+    status: 'Coming Soon',
     description:
-      'Find any bookmark instantly with powerful search capabilities. Search by title, content, tags, or even within saved pages.',
+      'Export and share directly from VS Code. No more copying and pasting.',
     icon: <PiMagnifyingGlass className="text-primary h-4 w-4" />,
     meta: 'Full-text',
-    tags: ['Search', 'Fast'],
+    tags: ['Export', 'Share'],
   },
   {
     title: 'Social Sharing',

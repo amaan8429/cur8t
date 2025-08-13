@@ -51,7 +51,7 @@ import {
 import { useEffect, useState } from 'react';
 import { DashboardStatsCard } from './DashboardStatsCard';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { CreateCollectionComponent } from '../TopSection/CreateCollection';
 import {
   Dialog,
@@ -86,7 +86,7 @@ export function DashboardOverview() {
   const router = useRouter();
   const setActiveUserId = useActiveState((state) => state.setActiveUserId);
   const { userId } = useAuth();
-
+  const { user } = useUser();
   // Get collections from store (already fetched in sidebar)
   const { collections, fetchCollections } = useCollectionStore();
   const {
@@ -381,11 +381,10 @@ export function DashboardOverview() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Oll&aacute;, Larry!
+            Oll&aacute;, {user?.firstName}!
           </h1>
           <p className="text-muted-foreground mt-1">
-            Here&apos;s an overview of your collections. Manage or create new
-            ones with ease!
+            Here&apos;s an overview of your collections.
           </p>
         </div>
         <Button

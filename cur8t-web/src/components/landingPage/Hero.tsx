@@ -22,6 +22,11 @@ import {
 import Image from 'next/image';
 
 export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
+  // Check for reduced motion preference
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   // State for animated counters
   const [stats, setStats] = useState({
     users: 500,
@@ -29,32 +34,35 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
     networks: 40,
   });
 
-  // Animation to count up numbers - optimized interval
+  // Optimized animation to count up numbers
   useEffect(() => {
-    const interval = setInterval(() => {
-      setStats((prev) => {
-        const newUsers = prev.users >= 20000 ? 20000 : prev.users + 500;
-        const newTransactions =
-          prev.transactions >= 1500000 ? 1500000 : prev.transactions + 37500;
-        const newNetworks = prev.networks >= 40 ? 40 : prev.networks + 1;
+    let animationId: number;
+    const startTime = Date.now();
+    const duration = 2000; // 2 seconds total
+    const targetStats = { users: 10, transactions: 20, networks: 2 };
 
-        if (
-          newUsers === 20000 &&
-          newTransactions === 1500000 &&
-          newNetworks === 40
-        ) {
-          clearInterval(interval);
-        }
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
 
-        return {
-          users: newUsers,
-          transactions: newTransactions,
-          networks: newNetworks,
-        };
+      // Use easeOut for better perceived performance
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+
+      setStats({
+        users: Math.floor(500 + (targetStats.users - 500) * easeOut),
+        transactions: Math.floor(
+          1500 + (targetStats.transactions - 1500) * easeOut
+        ),
+        networks: Math.floor(1 + (targetStats.networks - 1) * easeOut),
       });
-    }, 150); // Reduced frequency for better mobile performance
 
-    return () => clearInterval(interval);
+      if (progress < 1) {
+        animationId = requestAnimationFrame(animate);
+      }
+    };
+
+    animationId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationId);
   }, []);
 
   // Animation variants
@@ -90,7 +98,14 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
   };
 
   return (
-    <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-24 pb-16 text-foreground sm:px-6 lg:px-8">
+    <section
+      className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-24 pb-16 text-foreground sm:px-6 lg:px-8 transform-gpu"
+      style={{
+        contentVisibility: 'auto',
+        containIntrinsicSize: '100vh',
+        willChange: 'auto',
+      }}
+    >
       {/* Simplified Background for Mobile */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5"></div>
@@ -134,51 +149,61 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
           <div className="h-full w-full bg-[linear-gradient(to_right,hsl(var(--foreground))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground))_1px,transparent_1px)] bg-[size:6rem_6rem]"></div>
         </div>
 
-        {/* Modern Floating Orbs - Simplified for mobile */}
+        {/* Optimized Floating Orbs */}
         <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.4, 0.6, 0.4],
-            x: [0, 30, 0],
-            y: [0, -20, 0],
+          animate={
+            prefersReducedMotion
+              ? {}
+              : {
+                  opacity: [0.4, 0.6, 0.4],
+                  scale: [1, 1.05, 1],
+                }
+          }
+          transition={{
+            duration: 6,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: 'easeInOut',
           }}
+          style={{ willChange: 'transform, opacity' }}
+          className="absolute top-1/4 left-1/4 h-32 w-32 md:h-72 md:w-72 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 blur-3xl transform-gpu"
+        ></motion.div>
+
+        <motion.div
+          animate={
+            prefersReducedMotion
+              ? {}
+              : {
+                  opacity: [0.3, 0.5, 0.3],
+                  scale: [1, 1.03, 1],
+                }
+          }
           transition={{
             duration: 8,
             repeat: Number.POSITIVE_INFINITY,
             ease: 'easeInOut',
-          }}
-          className="absolute top-1/4 left-1/4 h-32 w-32 md:h-72 md:w-72 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 blur-3xl"
-        ></motion.div>
-
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.5, 0.3],
-            x: [0, -40, 0],
-            y: [0, 25, 0],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: 'easeInOut',
             delay: 2,
           }}
-          className="absolute bottom-1/4 right-1/4 h-48 w-48 md:h-96 md:w-96 rounded-full bg-gradient-to-l from-accent/15 to-primary/15 blur-3xl"
+          style={{ willChange: 'transform, opacity' }}
+          className="absolute bottom-1/4 right-1/4 h-48 w-48 md:h-96 md:w-96 rounded-full bg-gradient-to-l from-accent/15 to-primary/15 blur-3xl transform-gpu"
         ></motion.div>
 
-        {/* Central rotating orb - hidden on mobile */}
+        {/* Optimized Central orb - hidden on mobile */}
         <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            opacity: [0.2, 0.4, 0.2],
-            rotate: [0, 180, 360],
-          }}
+          animate={
+            prefersReducedMotion
+              ? {}
+              : {
+                  opacity: [0.2, 0.3, 0.2],
+                  rotate: [0, 360],
+                }
+          }
           transition={{
-            duration: 15,
+            duration: 20,
             repeat: Number.POSITIVE_INFINITY,
             ease: 'linear',
           }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[300px] md:h-[500px] md:w-[500px] rounded-full bg-gradient-conic from-primary/10 via-accent/5 to-primary/10 blur-2xl hidden md:block"
+          style={{ willChange: 'transform, opacity' }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[300px] w-[300px] md:h-[500px] md:w-[500px] rounded-full bg-gradient-conic from-primary/10 via-accent/5 to-primary/10 blur-2xl hidden md:block transform-gpu"
         ></motion.div>
 
         {/* Floating Icons - Hidden on mobile devices */}
@@ -321,47 +346,44 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
           </motion.div>
         </div>
 
-        {/* Particle effects - Reduced for mobile */}
-        <div className="absolute inset-0 opacity-20 hidden md:block">
-          {Array.from({ length: 10 }).map((_, i) => {
-            // Reduced from 20 to 10 particles
-            const positions = [
-              { top: 15, left: 25 },
-              { top: 75, left: 85 },
-              { top: 35, left: 70 },
-              { top: 90, left: 15 },
-              { top: 50, left: 45 },
-              { top: 20, left: 60 },
-              { top: 80, left: 30 },
-              { top: 10, left: 90 },
-              { top: 65, left: 20 },
-              { top: 40, left: 95 },
-            ];
-            const durations = [3, 4, 3.5, 4.5, 3.2, 4.8, 3.8, 4.2, 3.6, 4.4];
-            const delays = [0, 0.5, 1, 1.5, 0.2, 0.7, 1.2, 1.7, 0.4, 0.9];
+        {/* Optimized Particle effects - Fewer particles for better performance */}
+        {!prefersReducedMotion && (
+          <div className="absolute inset-0 opacity-15 hidden lg:block">
+            {Array.from({ length: 5 }).map((_, i) => {
+              const positions = [
+                { top: 20, left: 30 },
+                { top: 70, left: 80 },
+                { top: 40, left: 65 },
+                { top: 85, left: 20 },
+                { top: 55, left: 90 },
+              ];
+              const durations = [4, 5, 4.5, 5.5, 4.8];
+              const delays = [0, 1, 2, 3, 4];
 
-            return (
-              <motion.div
-                key={i}
-                className="absolute h-1 w-1 rounded-full bg-foreground"
-                style={{
-                  top: `${positions[i]?.top || 50}%`,
-                  left: `${positions[i]?.left || 50}%`,
-                }}
-                animate={{
-                  opacity: [0.2, 0.8, 0.2],
-                  scale: [1, 1.5, 1],
-                }}
-                transition={{
-                  duration: durations[i] || 3,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: 'easeInOut',
-                  delay: delays[i] || 0,
-                }}
-              />
-            );
-          })}
-        </div>
+              return (
+                <motion.div
+                  key={i}
+                  className="absolute h-1 w-1 rounded-full bg-foreground transform-gpu"
+                  style={{
+                    top: `${positions[i]?.top || 50}%`,
+                    left: `${positions[i]?.left || 50}%`,
+                    willChange: 'transform, opacity',
+                  }}
+                  animate={{
+                    opacity: [0.1, 0.4, 0.1],
+                    scale: [1, 1.2, 1],
+                  }}
+                  transition={{
+                    duration: durations[i] || 4,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: 'easeInOut',
+                    delay: delays[i] || 0,
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Main Content Area - Centered and Sequential */}
@@ -379,7 +401,7 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
           <span className="mr-2 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground">
             New
           </span>
-          Introducing Cur8t
+          Backed by Sydney Sweeney and Rajesh Traders
         </motion.div>
 
         {/* Main Heading */}
@@ -387,7 +409,7 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
           variants={itemVariants}
           className="mb-6 bg-gradient-to-r from-foreground/70 via-foreground to-muted-foreground/80 bg-clip-text text-4xl font-semibold leading-tight text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
         >
-          Curate your stuff with{' '}
+          Curate your links with{' '}
           <motion.span
             className="relative inline-block text-primary font-semibold"
             animate={{
@@ -468,11 +490,11 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
           className="mb-8 flex flex-wrap items-center justify-center gap-2"
         >
           <span className="text-sm font-medium text-muted-foreground mr-2">
-            Integrates with:
+            Integrates via:
           </span>
           <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-sm font-medium text-card-foreground backdrop-blur-sm transition-all hover:bg-accent">
             <div className="h-2 w-2 rounded-full bg-accent"></div>
-            Browser
+            Browser Extension
           </div>
           <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-sm font-medium text-card-foreground backdrop-blur-sm transition-all hover:bg-accent">
             <div className="h-2 w-2 rounded-full bg-primary"></div>
@@ -480,11 +502,7 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
           </div>
           <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-sm font-medium text-card-foreground backdrop-blur-sm transition-all hover:bg-accent">
             <div className="h-2 w-2 rounded-full bg-ring"></div>
-            VS Code
-          </div>
-          <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-sm font-medium text-card-foreground backdrop-blur-sm transition-all hover:bg-accent">
-            <div className="h-2 w-2 rounded-full bg-secondary"></div>
-            +5 more
+            VS Code Extension
           </div>
         </motion.div>
 
@@ -574,8 +592,11 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
                 alt="Cur8t Dashboard Preview"
                 width={1200}
                 height={800}
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover transform-gpu"
                 priority
+                quality={85}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+                style={{ willChange: 'auto' }}
               />
               {/* Subtle overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-background/10 via-transparent to-transparent"></div>
