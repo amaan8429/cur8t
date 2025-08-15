@@ -90,14 +90,14 @@ export default async function Page({
       />
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-14 shrink-0 items-center gap-2">
-          <div className="flex flex-1 items-center gap-2 px-3">
+        <header className="flex h-14 shrink-0 items-center gap-2 px-3 sm:px-3">
+          <div className="flex flex-1 items-center gap-2">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbLink>
                 <BreadcrumbItem>
-                  <BreadcrumbPage className="line-clamp-1">
+                  <BreadcrumbPage className="line-clamp-1 text-sm sm:text-base">
                     {activeItem || activeCollectionName || activeSecondary}
                   </BreadcrumbPage>
                 </BreadcrumbItem>

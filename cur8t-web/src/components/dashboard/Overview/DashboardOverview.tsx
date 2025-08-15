@@ -376,11 +376,11 @@ export function DashboardOverview() {
   }
 
   return (
-    <div className="space-y-8 p-6 bg-muted/30 min-h-screen">
+    <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-muted/30 min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             Oll&aacute;, {user?.firstName}!
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -389,22 +389,22 @@ export function DashboardOverview() {
         </div>
         <Button
           onClick={() => setIsCreateDialogOpen(true)}
-          className="shadow-lg px-6"
+          className="shadow-lg px-4 sm:px-6 w-full sm:w-auto"
         >
           <PiPlus className="h-4 w-4 mr-2" />
           Add Collection
         </Button>
       </div>
 
-      {/* Modern Stats Cards - Joined Layout */}
-      <div className="grid gap-0 md:grid-cols-4 rounded-2xl overflow-hidden bg-card shadow-sm border border-border/20">
-        <div className="p-6 border-r border-border/10">
+      {/* Modern Stats Cards - Responsive Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-0 sm:rounded-2xl sm:overflow-hidden bg-card shadow-sm border border-border/20">
+        <div className="p-4 sm:p-6 sm:border-r sm:border-border/10 rounded-xl sm:rounded-none">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-muted-foreground">
                 COLLECTIONS
               </p>
-              <p className="text-3xl font-bold mt-1">
+              <p className="text-2xl sm:text-3xl font-bold mt-1">
                 {stats.totalCollections.toLocaleString()}
               </p>
               <p className="text-sm text-muted-foreground mt-1">
@@ -412,19 +412,19 @@ export function DashboardOverview() {
                 last week
               </p>
             </div>
-            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <PiBookmark className="h-6 w-6 text-primary" />
+            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+              <PiBookmark className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             </div>
           </div>
         </div>
 
-        <div className="p-6 border-r border-border/10">
+        <div className="p-4 sm:p-6 sm:border-r sm:border-border/10 rounded-xl sm:rounded-none">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-muted-foreground">
                 TOTAL LINKS
               </p>
-              <p className="text-3xl font-bold mt-1">
+              <p className="text-2xl sm:text-3xl font-bold mt-1">
                 {stats.totalLinks.toLocaleString()}
               </p>
               <p className="text-sm text-muted-foreground mt-1">
@@ -432,19 +432,19 @@ export function DashboardOverview() {
                 last week
               </p>
             </div>
-            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <PiLink className="h-6 w-6 text-primary" />
+            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+              <PiLink className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             </div>
           </div>
         </div>
 
-        <div className="p-6 border-r border-border/10">
+        <div className="p-4 sm:p-6 sm:border-r sm:border-border/10 rounded-xl sm:rounded-none">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-muted-foreground">
                 PUBLIC
               </p>
-              <p className="text-3xl font-bold mt-1">
+              <p className="text-2xl sm:text-3xl font-bold mt-1">
                 {collections?.filter((c) => c.visibility === 'public').length ||
                   0}
               </p>
@@ -453,15 +453,35 @@ export function DashboardOverview() {
                 last week
               </p>
             </div>
-            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-              <PiGlobe className="h-6 w-6 text-primary" />
+            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+              <PiGlobe className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+            </div>
+          </div>
+        </div>
+
+        <div className="p-4 sm:p-6 rounded-xl sm:rounded-none">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
+                PINNED
+              </p>
+              <p className="text-2xl sm:text-3xl font-bold mt-1">
+                {pinnedCollectionIds.length}
+              </p>
+              <p className="text-sm text-muted-foreground mt-1">
+                <span className="text-primary font-medium">↗ +8%</span> vs last
+                week
+              </p>
+            </div>
+            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+              <PiPushPin className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Search and Filter Bar - Filters moved to right */}
-      <div className="flex items-center justify-between gap-4">
+      {/* Search and Filter Bar - Mobile Responsive */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="relative flex-1 max-w-sm">
           <PiMagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -475,7 +495,11 @@ export function DashboardOverview() {
         <div className="flex items-center gap-2">
           <DropdownMenu open={showFilters} onOpenChange={setShowFilters}>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="border-border/30">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-border/30 w-full sm:w-auto"
+              >
                 <PiFunnel className="h-4 w-4 mr-2" />
                 Filter
               </Button>
@@ -572,107 +596,84 @@ export function DashboardOverview() {
         </div>
       </div>
 
-      {/* Collections Table */}
-      <Card className="shadow-sm border border-border/20 bg-card">
-        <Table>
-          <TableHeader>
-            <TableRow className="border-border/10">
-              <TableHead className="w-12"></TableHead>
-              <TableHead className="font-semibold">Name</TableHead>
-              <TableHead className="font-semibold">Links</TableHead>
-              <TableHead className="font-semibold">Visibility</TableHead>
-              <TableHead className="font-semibold">Last Updated</TableHead>
-              <TableHead className="font-semibold">Created</TableHead>
-              <TableHead className="w-8"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedCollections.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={8} className="h-32 text-center">
-                  <div className="flex flex-col items-center gap-2">
-                    <PiFolder className="h-8 w-8 text-muted-foreground" />
-                    <p className="text-muted-foreground font-medium">
-                      {searchQuery ||
-                      filters.visibility !== 'all' ||
-                      filters.dateRange !== 'all' ||
-                      filters.minLinks > 0
-                        ? 'No collections found matching your filters.'
-                        : 'No collections yet. Create your first one!'}
-                    </p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ) : (
-              paginatedCollections.map((collection) => {
+      {/* Collections Table - Mobile Responsive */}
+      <Card className="shadow-sm border border-border/20 bg-card overflow-hidden">
+        {/* Mobile Card View */}
+        <div className="block sm:hidden">
+          {paginatedCollections.length === 0 ? (
+            <div className="p-6 text-center">
+              <div className="flex flex-col items-center gap-2">
+                <PiFolder className="h-8 w-8 text-muted-foreground" />
+                <p className="text-muted-foreground font-medium">
+                  {searchQuery ||
+                  filters.visibility !== 'all' ||
+                  filters.dateRange !== 'all' ||
+                  filters.minLinks > 0
+                    ? 'No collections found matching your filters.'
+                    : 'No collections yet. Create your first one!'}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="divide-y divide-border/10">
+              {paginatedCollections.map((collection) => {
                 const isPinned = pinnedCollectionIds.includes(collection.id);
                 const visibilityInfo = getVisibilityInfo(collection.visibility);
 
                 return (
-                  <TableRow
+                  <div
                     key={collection.id}
-                    className="cursor-pointer hover:bg-muted/40 group border-border/5 transition-colors"
+                    className="p-4 cursor-pointer hover:bg-muted/40 transition-colors"
                     onClick={() =>
                       router.push(
                         `?collectionId=${encodeURIComponent(collection.id)}`
                       )
                     }
                   >
-                    <TableCell>
-                      <div className="flex items-center justify-center">
-                        {isPinned && (
-                          <PiPushPin className="h-4 w-4 text-primary fill-current" />
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 group-hover:bg-primary/15 transition-colors">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3 flex-1 min-w-0">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 flex-shrink-0">
                           <PiFolder className="h-5 w-5 text-primary" />
                         </div>
-                        <div>
-                          <div className="font-semibold group-hover:text-primary transition-colors">
-                            {collection.title}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <div className="font-semibold group-hover:text-primary transition-colors truncate">
+                              {collection.title}
+                            </div>
+                            {isPinned && (
+                              <PiPushPin className="h-4 w-4 text-primary fill-current flex-shrink-0" />
+                            )}
                           </div>
                           {collection.description && (
-                            <div className="text-sm text-muted-foreground line-clamp-1 max-w-xs">
+                            <div className="text-sm text-muted-foreground line-clamp-2 mb-2">
                               {collection.description}
                             </div>
                           )}
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <PiLink className="h-3 w-3" />
+                              {collection.totalLinks} links
+                            </span>
+                            <Badge
+                              variant={visibilityInfo.variant}
+                              className="gap-1 text-xs"
+                            >
+                              <PiEyeClosed className="h-3 w-3" />
+                              {collection.visibility}
+                            </Badge>
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-1">
+                            Updated {getTimeAgo(new Date(collection.updatedAt))}
+                          </div>
                         </div>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm font-semibold">
-                        {collection.totalLinks}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={visibilityInfo.variant} className="gap-1">
-                        <PiEyeClosed className="h-3 w-3" />
-                        {collection.visibility}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {getTimeAgo(new Date(collection.updatedAt))}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {new Date(collection.createdAt).toLocaleDateString(
-                        'en-US',
-                        {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        }
-                      )}
-                    </TableCell>
-                    <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <PiDotsThreeThin className="h-4 w-4" />
                           </Button>
@@ -706,23 +707,171 @@ export function DashboardOverview() {
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
+                    </div>
+                  </div>
                 );
-              })
-            )}
-          </TableBody>
-        </Table>
+              })}
+            </div>
+          )}
+        </div>
 
-        {/* Pagination */}
+        {/* Desktop Table View */}
+        <div className="hidden sm:block">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-border/10">
+                <TableHead className="w-12"></TableHead>
+                <TableHead className="font-semibold">Name</TableHead>
+                <TableHead className="font-semibold">Links</TableHead>
+                <TableHead className="font-semibold">Visibility</TableHead>
+                <TableHead className="font-semibold">Last Updated</TableHead>
+                <TableHead className="font-semibold">Created</TableHead>
+                <TableHead className="w-8"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {paginatedCollections.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="h-32 text-center">
+                    <div className="flex flex-col items-center gap-2">
+                      <PiFolder className="h-8 w-8 text-muted-foreground" />
+                      <p className="text-muted-foreground font-medium">
+                        {searchQuery ||
+                        filters.visibility !== 'all' ||
+                        filters.dateRange !== 'all' ||
+                        filters.minLinks > 0
+                          ? 'No collections found matching your filters.'
+                          : 'No collections yet. Create your first one!'}
+                      </p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                paginatedCollections.map((collection) => {
+                  const isPinned = pinnedCollectionIds.includes(collection.id);
+                  const visibilityInfo = getVisibilityInfo(
+                    collection.visibility
+                  );
+
+                  return (
+                    <TableRow
+                      key={collection.id}
+                      className="cursor-pointer hover:bg-muted/40 group border-border/5 transition-colors"
+                      onClick={() =>
+                        router.push(
+                          `?collectionId=${encodeURIComponent(collection.id)}`
+                        )
+                      }
+                    >
+                      <TableCell>
+                        <div className="flex items-center justify-center">
+                          {isPinned && (
+                            <PiPushPin className="h-4 w-4 text-primary fill-current" />
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 group-hover:bg-primary/15 transition-colors">
+                            <PiFolder className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <div className="font-semibold group-hover:text-primary transition-colors">
+                              {collection.title}
+                            </div>
+                            {collection.description && (
+                              <div className="text-sm text-muted-foreground line-clamp-1 max-w-xs">
+                                {collection.description}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm font-semibold">
+                          {collection.totalLinks}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={visibilityInfo.variant}
+                          className="gap-1"
+                        >
+                          <PiEyeClosed className="h-3 w-3" />
+                          {collection.visibility}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {getTimeAgo(new Date(collection.updatedAt))}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {new Date(collection.createdAt).toLocaleDateString(
+                          'en-US',
+                          {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                          }
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <PiDotsThreeThin className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            align="end"
+                            className="w-48 border-border/20"
+                          >
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(
+                                  `?collectionId=${encodeURIComponent(collection.id)}`
+                                );
+                              }}
+                            >
+                              <PiEyeClosed className="h-4 w-4 mr-2" />
+                              View Collection
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(
+                                  `/collection/${collection.id}`,
+                                  '_blank'
+                                );
+                              }}
+                            >
+                              <PiArrowSquareOut className="h-4 w-4 mr-2" />
+                              Open in new tab
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* Pagination - Mobile Responsive */}
         {filteredCollections.length > 0 && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-border/10">
-            <div className="text-sm text-muted-foreground">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-4 sm:px-6 py-4 border-t border-border/10">
+            <div className="text-sm text-muted-foreground text-center sm:text-left">
               Showing {startIndex + 1} to{' '}
               {Math.min(endIndex, filteredCollections.length)} of{' '}
               {filteredCollections.length} results
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center sm:justify-end gap-2">
               <Button
                 variant="outline"
                 size="sm"
