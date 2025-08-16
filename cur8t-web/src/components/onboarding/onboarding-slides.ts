@@ -52,10 +52,17 @@ export const onboardingSlides: OnboardingSlide[] = [
   },
   {
     id: 'browser-extension',
-    title: 'Browser Extension',
+    title: 'Get the Chrome Extension',
     description:
-      'Install once, save everywhere. Organize your browsing without leaving the page.',
+      'Transform your bookmarks into intelligent collections with AI-powered organization. One-click saving from anywhere.',
     image: '/images/onboarding/cur8t-extension-install.png',
+    actionText: 'Add to Chrome',
+    onAction: () => {
+      window.open(
+        'https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb',
+        '_blank'
+      );
+    },
   },
   {
     id: 'save-tabs',

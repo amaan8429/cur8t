@@ -176,6 +176,24 @@ export function OnboardingFlow({ onComplete, username }: OnboardingFlowProps) {
                           </p>
                         </div>
 
+                        {/* Action Button - Show when slide has action */}
+                        {slide.actionText && slide.onAction && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="pt-4"
+                          >
+                            <Button
+                              onClick={slide.onAction}
+                              size="lg"
+                              className="w-full px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                            >
+                              {slide.actionText}
+                            </Button>
+                          </motion.div>
+                        )}
+
                         {/* Username Form - Only show on username slide */}
                         {isUsernameSlide && (
                           <motion.div
