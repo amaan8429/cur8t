@@ -22,7 +22,7 @@ import GitHubIntegrationComponent from './GitHubIntegration';
 const IntegrationsPage = () => {
   const handleChromeExtensionClick = () => {
     window.open(
-      'https://chrome.google.com/webstore/detail/cur8t/YOUR_ACTUAL_EXTENSION_ID_HERE',
+      'https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb',
       '_blank'
     );
   };

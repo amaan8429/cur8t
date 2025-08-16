@@ -261,8 +261,16 @@ const TopCollectionsSettings = () => {
           Top Collections
         </CardTitle>
         <CardDescription>
-          Select up to 5 collections to feature. These will be displayed in your
-          browser extension.
+          Select up to 5 collections to feature. These will be displayed in your{' '}
+          <a
+            href="https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline"
+          >
+            browser extension
+          </a>
+          .
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -305,7 +313,15 @@ const TopCollectionsSettings = () => {
                 No top collections selected
               </p>
               <p className="text-sm text-muted-foreground">
-                Add collections to feature them in your browser extension
+                Add collections to feature them in your{' '}
+                <a
+                  href="https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  browser extension
+                </a>
               </p>
             </div>
           ) : (

@@ -1,8 +1,9 @@
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { PiPlus, PiSparkle } from 'react-icons/pi';
+import { PiPlus, PiSparkle, PiArrowSquareOut } from 'react-icons/pi';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Accordion,
   AccordionContent,
@@ -38,7 +39,11 @@ const items = [
     id: '5',
     title: 'How does the browser extension work?',
     content:
-      'Our browser extension lets you save any webpage to your collections with a single click. You can organize bookmarks, add notes, and access your collections directly from your browser toolbar.',
+      'Our browser extension lets you save any webpage to your collections with a single click. You can organize bookmarks, add notes, and access your collections directly from your browser toolbar. ',
+    action: {
+      text: 'Get the Chrome Extension',
+      url: 'https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb',
+    },
   },
 ];
 
@@ -148,7 +153,18 @@ export default function Faq1() {
                     )}
                   >
                     <div className="border-border/30 border-t pt-3">
-                      {item.content}
+                      <p className="mb-4">{item.content}</p>
+                      {item.action && (
+                        <Button
+                          onClick={() => window.open(item.action.url, '_blank')}
+                          variant="outline"
+                          size="sm"
+                          className="mt-2"
+                        >
+                          {item.action.text}
+                          <PiArrowSquareOut className="ml-2 h-3 w-3" />
+                        </Button>
+                      )}
                     </div>
                   </AccordionContent>
                 </AccordionItem>

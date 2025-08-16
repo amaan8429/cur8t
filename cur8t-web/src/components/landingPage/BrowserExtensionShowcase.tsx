@@ -13,6 +13,7 @@ import Balancer from 'react-wrap-balancer';
 import { cn } from '@/lib/utils';
 import { PiBrowser } from 'react-icons/pi';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 type WrapperStyle = MotionStyle & {
   '--x': MotionValue<string>;
@@ -408,6 +409,27 @@ export default function BrowserExtensionShowcase() {
             step2img2Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 md:left-[45px] md:top-[35%] md:w-full"
             step3imgClass="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 md:left-[35px] md:top-[30%] md:w-full"
           />
+
+          {/* Download Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="text-center mt-8"
+          >
+            <Button
+              size="lg"
+              onClick={() =>
+                window.open(
+                  'https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb',
+                  '_blank'
+                )
+              }
+              className="px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              Add to Chrome
+            </Button>
+          </motion.div>
         </motion.div>
       </div>
     </section>

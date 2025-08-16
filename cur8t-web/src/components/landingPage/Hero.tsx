@@ -492,10 +492,15 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
           <span className="text-sm font-medium text-muted-foreground mr-2">
             Integrates via:
           </span>
-          <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-sm font-medium text-card-foreground backdrop-blur-sm transition-all hover:bg-accent">
+          <a
+            href="https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-sm font-medium text-card-foreground backdrop-blur-sm transition-all hover:bg-accent"
+          >
             <div className="h-2 w-2 rounded-full bg-accent"></div>
             Browser Extension
-          </div>
+          </a>
           <div className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-sm font-medium text-card-foreground backdrop-blur-sm transition-all hover:bg-accent">
             <div className="h-2 w-2 rounded-full bg-primary"></div>
             Web App

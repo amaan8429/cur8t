@@ -160,6 +160,18 @@ export default function Integrations({ items = itemsSample }: BentoGridProps) {
                   '-translate-y-1 shadow-md': item.hasPersistentHover,
                 }
               )}
+              onClick={() => {
+                if (item.title === 'Browser Extension') {
+                  window.open(
+                    'https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb',
+                    '_blank'
+                  );
+                }
+              }}
+              style={{
+                cursor:
+                  item.title === 'Browser Extension' ? 'pointer' : 'default',
+              }}
             >
               <div
                 className={cn(
