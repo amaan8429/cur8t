@@ -8,12 +8,14 @@ export function ProfileHeader() {
           Cur8t
         </Link>
         <nav className="flex items-center space-x-6">
-          <Link
-            href="/add-extension"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          <a
+            href="https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             Add Extension
-          </Link>
+          </a>
           <Link
             href="/dashboard"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
