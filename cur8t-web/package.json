@@ -66,6 +66,8 @@
     "cmdk": "^1.1.1",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.37.0",
+    "embla-carousel-autoplay": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "framer-motion": "^11.15.0",
     "lucide-react": "^0.468.0",
     "motion": "^12.23.6",

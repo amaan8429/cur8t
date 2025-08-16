@@ -112,7 +112,7 @@ export default function RootLayout({
         <body
           className={`${oxanium.variable} ${merriweather.variable} ${firaCode.variable} theme font-sans`}
         >
-          <ThemeProvider attribute="class" defaultTheme="system">
+          <ThemeProvider attribute="class" defaultTheme="light">
             <QueryProvider>
               <ErrorBoundary>
                 <main>{children}</main>
