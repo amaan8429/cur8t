@@ -12,8 +12,6 @@ import {
   PiBuildings,
   PiHeart,
   PiCube,
-  PiLightning,
-  PiGlobe,
   PiLightbulb,
   PiSparkle,
   PiBrain,
