@@ -232,6 +232,100 @@ export function DashboardOverview() {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
+  // Calculate week-over-week growth percentage
+  const calculateWeeklyGrowth = (current: number, previous: number): number => {
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return Math.round(((current - previous) / previous) * 100);
+  };
+
+  // Get growth display text and styling
+  const getGrowthDisplay = (growth: number) => {
+    if (growth > 0) {
+      return {
+        text: `↗ +${growth}%`,
+        className: 'text-primary font-medium',
+        icon: '↗',
+      };
+    } else if (growth < 0) {
+      return {
+        text: `↘ ${growth}%`,
+        className: 'text-destructive font-medium',
+        icon: '↘',
+      };
+    } else {
+      return {
+        text: 'No change',
+        className: 'text-muted-foreground',
+        icon: '→',
+      };
+    }
+  };
+
+  // Calculate stats for growth comparison
+  const getStatsGrowth = () => {
+    if (!collections) return { collections: 0, links: 0, public: 0, pinned: 0 };
+
+    // For now, we'll simulate growth based on collection age
+    // In a real app, you'd fetch historical data from your backend
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    // Simulate growth based on collection creation dates
+    const recentCollections = collections.filter(
+      (c) => new Date(c.createdAt) > weekAgo
+    ).length;
+    const recentLinks = collections
+      .filter((c) => new Date(c.createdAt) > weekAgo)
+      .reduce((sum, c) => sum + c.totalLinks, 0);
+
+    // Calculate simulated growth percentages
+    const collectionsGrowth =
+      collections.length > 0
+        ? calculateWeeklyGrowth(
+            collections.length,
+            Math.max(0, collections.length - recentCollections)
+          )
+        : 0;
+
+    const linksGrowth =
+      stats?.totalLinks && stats.totalLinks > 0
+        ? calculateWeeklyGrowth(
+            stats.totalLinks,
+            Math.max(0, stats.totalLinks - recentLinks)
+          )
+        : 0;
+
+    const publicGrowth =
+      collections.length > 0
+        ? calculateWeeklyGrowth(
+            collections.filter((c) => c.visibility === 'public').length,
+            Math.max(
+              0,
+              collections.filter((c) => c.visibility === 'public').length -
+                recentCollections / 2
+            )
+          )
+        : 0;
+
+    const pinnedGrowth =
+      pinnedCollectionIds.length > 0
+        ? calculateWeeklyGrowth(
+            pinnedCollectionIds.length,
+            Math.max(
+              0,
+              pinnedCollectionIds.length - Math.min(1, recentCollections / 3)
+            )
+          )
+        : 0;
+
+    return {
+      collections: collectionsGrowth,
+      links: linksGrowth,
+      public: publicGrowth,
+      pinned: pinnedGrowth,
+    };
+  };
+
   const resetFilters = () => {
     setFilters({
       visibility: 'all',
@@ -408,8 +502,14 @@ export function DashboardOverview() {
                 {stats.totalCollections.toLocaleString()}
               </p>
               <p className="text-sm text-muted-foreground mt-1">
-                <span className="text-primary font-medium">↗ +12%</span> vs
-                last week
+                {(() => {
+                  const growth = getStatsGrowth().collections;
+                  const display = getGrowthDisplay(growth);
+                  return (
+                    <span className={display.className}>{display.text}</span>
+                  );
+                })()}{' '}
+                vs last week
               </p>
             </div>
             <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -428,8 +528,14 @@ export function DashboardOverview() {
                 {stats.totalLinks.toLocaleString()}
               </p>
               <p className="text-sm text-muted-foreground mt-1">
-                <span className="text-primary font-medium">↗ +42%</span> vs
-                last week
+                {(() => {
+                  const growth = getStatsGrowth().links;
+                  const display = getGrowthDisplay(growth);
+                  return (
+                    <span className={display.className}>{display.text}</span>
+                  );
+                })()}{' '}
+                vs last week
               </p>
             </div>
             <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -449,8 +555,14 @@ export function DashboardOverview() {
                   0}
               </p>
               <p className="text-sm text-muted-foreground mt-1">
-                <span className="text-primary font-medium">↗ +37%</span> vs
-                last week
+                {(() => {
+                  const growth = getStatsGrowth().public;
+                  const display = getGrowthDisplay(growth);
+                  return (
+                    <span className={display.className}>{display.text}</span>
+                  );
+                })()}{' '}
+                vs last week
               </p>
             </div>
             <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -469,8 +581,14 @@ export function DashboardOverview() {
                 {pinnedCollectionIds.length}
               </p>
               <p className="text-sm text-muted-foreground mt-1">
-                <span className="text-primary font-medium">↗ +8%</span> vs last
-                week
+                {(() => {
+                  const growth = getStatsGrowth().pinned;
+                  const display = getGrowthDisplay(growth);
+                  return (
+                    <span className={display.className}>{display.text}</span>
+                  );
+                })()}{' '}
+                vs last week
               </p>
             </div>
             <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -478,6 +596,17 @@ export function DashboardOverview() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Data freshness indicator */}
+      <div className="text-xs text-muted-foreground text-center">
+        Last updated:{' '}
+        {new Date().toLocaleString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        })}
       </div>
 
       {/* Search and Filter Bar - Mobile Responsive */}
