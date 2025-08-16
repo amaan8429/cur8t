@@ -60,6 +60,16 @@
     --shadow-2xl: 0px 2px 3px 0px hsl(28 18% 25% / 0.45);
     --tracking-normal: 0em;
     --spacing: 0.25rem;
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.1) 0%,
+      hsl(var(--primary) / 0.05) 100%
+    );
+    --gradient-accent: linear-gradient(
+      135deg,
+      hsl(var(--accent) / 0.1) 0%,
+      hsl(var(--accent) / 0.05) 100%
+    );
   }
 
   .dark {
@@ -70,7 +80,6 @@
     --popover: 12 6.4935% 15.098%;
     --popover-foreground: 60 4.7619% 95.8824%;
     --primary: 24.5815 94.9791% 53.1373%;
-    --primary-foreground: 0 0% 100%;
     --secondary: 33.3333 5.4545% 32.3529%;
     --secondary-foreground: 20 5.8824% 90%;
     --muted: 12 6.4935% 15.098%;
@@ -98,20 +107,16 @@
     --font-sans: Oxanium, sans-serif;
     --font-serif: Merriweather, serif;
     --font-mono: Fira Code, monospace;
-    --radius: 0.3rem;
-    --shadow-2xs: 0px 2px 3px 0px hsl(0 0% 5% / 0.09);
-    --shadow-xs: 0px 2px 3px 0px hsl(0 0% 5% / 0.09);
-    --shadow-sm:
-      0px 2px 3px 0px hsl(0 0% 5% / 0.18), 0px 1px 2px -1px hsl(0 0% 5% / 0.18);
-    --shadow:
-      0px 2px 3px 0px hsl(0 0% 5% / 0.18), 0px 1px 2px -1px hsl(0 0% 5% / 0.18);
-    --shadow-md:
-      0px 2px 3px 0px hsl(0 0% 5% / 0.18), 0px 2px 4px -1px hsl(0 0% 5% / 0.18);
-    --shadow-lg:
-      0px 2px 3px 0px hsl(0 0% 5% / 0.18), 0px 4px 6px -1px hsl(0 0% 5% / 0.18);
-    --shadow-xl:
-      0px 2px 3px 0px hsl(0 0% 5% / 0.18), 0px 8px 10px -1px hsl(0 0% 5% / 0.18);
-    --shadow-2xl: 0px 2px 3px 0px hsl(0 0% 5% / 0.45);
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.15) 0%,
+      hsl(var(--primary) / 0.05) 100%
+    );
+    --gradient-accent: linear-gradient(
+      135deg,
+      hsl(var(--accent) / 0.15) 0%,
+      hsl(var(--accent) / 0.05) 100%
+    );
   }
 
   .theme {

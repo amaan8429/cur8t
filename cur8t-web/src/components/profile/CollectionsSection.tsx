@@ -85,7 +85,7 @@ export function CollectionsSection({
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-semibold text-foreground">
-            Repositories
+            Collections
           </h2>
 
           {/* Sort Options */}
