@@ -10,58 +10,12 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-
-interface OnboardingSlide {
-  id: string;
-  title: string;
-  description: string;
-  image: string; // Path to image
-  actionText?: string;
-  onAction?: () => void;
-}
+import { onboardingSlides, type OnboardingSlide } from './onboarding-slides';
 
 interface OnboardingFlowProps {
   onComplete: () => void;
   username?: string;
 }
-
-const onboardingSlides: OnboardingSlide[] = [
-  {
-    id: 'welcome',
-    title: 'Welcome to Cur8t! 🎉',
-    description:
-      "Organize, discover, and share your knowledge with the world. Let's get you started with a quick tour of what makes Cur8t special.",
-    image: '/images/onboarding/welcome.png',
-  },
-  {
-    id: 'collections',
-    title: 'Organize with Collections',
-    description:
-      'Create collections to group related links, articles, and resources. Keep your knowledge organized and easily accessible.',
-    image: '/images/onboarding/collections.png',
-  },
-  {
-    id: 'sharing',
-    title: 'Share & Discover',
-    description:
-      'Make your collections public to share knowledge with others, or keep them private for personal use. Discover amazing collections from the community.',
-    image: '/images/onboarding/sharing.png',
-  },
-  {
-    id: 'integrations',
-    title: 'Powerful Integrations',
-    description:
-      'Connect with GitHub, use our browser extension, and sync your data across devices. Cur8t works wherever you do.',
-    image: '/images/onboarding/integrations.png',
-  },
-  {
-    id: 'username',
-    title: 'Choose Your Username',
-    description:
-      'This will be your public profile and how others can find your collections.',
-    image: '/images/onboarding/username.png',
-  },
-];
 
 export function OnboardingFlow({ onComplete, username }: OnboardingFlowProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -300,27 +254,14 @@ export function OnboardingFlow({ onComplete, username }: OnboardingFlowProps) {
                         <div className="relative group">
                           {/* Image Container with Modern Styling */}
                           <div className="relative w-80 h-80 xl:w-96 xl:h-96 rounded-2xl overflow-hidden shadow-2xl group-hover:shadow-3xl transition-all duration-500">
-                            {/* Placeholder for now - replace with actual Image component */}
-                            <div className="w-full h-full bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5 flex items-center justify-center border border-border/20">
-                              <div className="text-center space-y-3">
-                                <div className="text-6xl">🖼️</div>
-                                <div className="text-sm text-muted-foreground font-medium">
-                                  {slide.image
-                                    .split('/')
-                                    .pop()
-                                    ?.replace('.png', '')}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Uncomment this when you have actual images */}
-                            {/* <Image
+                            <Image
                               src={slide.image}
                               alt={slide.title}
-                              fill
-                              className="object-cover"
+                              width={384}
+                              height={384}
+                              className="w-full h-full object-cover"
                               priority
-                            /> */}
+                            />
                           </div>
 
                           {/* Decorative Elements */}
