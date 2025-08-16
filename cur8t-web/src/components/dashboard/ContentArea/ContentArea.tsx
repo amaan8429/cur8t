@@ -14,7 +14,7 @@ export function ContentArea() {
   const activeSecondary = useActiveState((state) => state.activeSecondary);
 
   return (
-    <div className="p-6">
+    <div className="flex-1 overflow-auto p-4 sm:p-6">
       {activeItem === 'Overview' && <DashboardOverview />}
 
       {activeCollectionId && (
