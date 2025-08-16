@@ -23,6 +23,9 @@ export function OnboardingFlow({ onComplete, username }: OnboardingFlowProps) {
     loop: false,
     skipSnaps: false,
     dragFree: false,
+    containScroll: 'trimSnaps',
+    dragThreshold: 10,
+    startIndex: 0,
   });
 
   // Username setup state
@@ -30,6 +33,21 @@ export function OnboardingFlow({ onComplete, username }: OnboardingFlowProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+
+  // Sync embla events with our state
+  React.useEffect(() => {
+    if (!emblaApi) return;
+
+    const onSelect = () => {
+      setCurrentSlide(emblaApi.selectedScrollSnap());
+    };
+
+    emblaApi.on('select', onSelect);
+
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi]);
 
   const scrollTo = useCallback(
     (index: number) => {
@@ -159,7 +177,7 @@ export function OnboardingFlow({ onComplete, username }: OnboardingFlowProps) {
       {/* Main Content - Fits in one view */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="max-w-7xl w-full">
-          <div className="embla" ref={emblaRef}>
+          <div className="embla touch-pan-y select-none" ref={emblaRef}>
             <div className="embla__container">
               {onboardingSlides.map((slide, index) => (
                 <div key={slide.id} className="embla__slide flex-[0_0_100%]">
@@ -275,9 +293,10 @@ export function OnboardingFlow({ onComplete, username }: OnboardingFlowProps) {
                             <Image
                               src={slide.image}
                               alt={slide.title}
-                              width={384}
-                              height={384}
-                              className="w-full h-full object-cover"
+                              width={600}
+                              height={600}
+                              quality={100}
+                              className="w-full h-full object-contain"
                               priority
                             />
                           </div>
@@ -313,6 +332,15 @@ export function OnboardingFlow({ onComplete, username }: OnboardingFlowProps) {
                   }`}
                 />
               ))}
+            </div>
+          </div>
+
+          {/* Mobile Swipe Hint */}
+          <div className="flex justify-center mb-4 md:hidden">
+            <div className="text-xs text-muted-foreground flex items-center space-x-2">
+              <span>👈</span>
+              <span>Swipe to navigate</span>
+              <span>👉</span>
             </div>
           </div>
 

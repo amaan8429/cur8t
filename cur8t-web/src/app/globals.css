@@ -198,6 +198,12 @@
   .embla {
     overflow: hidden;
     width: 100%;
+    cursor: grab;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  .embla:active {
+    cursor: grabbing;
   }
 
   .embla__container {
@@ -207,12 +213,19 @@
     -khtml-user-select: none;
     -webkit-tap-highlight-color: transparent;
     margin-left: -10px;
+    touch-action: pan-y pinch-zoom;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
   }
 
   .embla__slide {
     padding-left: 10px;
     min-width: 100%;
     position: relative;
+    touch-action: manipulation;
   }
 
   .embla__slide__inner {
@@ -220,5 +233,17 @@
     position: relative;
     width: 100%;
     height: 100%;
+  }
+
+  /* Mobile-specific touch optimizations */
+  @media (hover: none) and (pointer: coarse) {
+    .embla {
+      cursor: default;
+      touch-action: pan-y;
+    }
+
+    .embla__container {
+      touch-action: pan-y;
+    }
   }
 }
