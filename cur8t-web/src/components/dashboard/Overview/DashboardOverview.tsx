@@ -376,7 +376,7 @@ export function DashboardOverview() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-muted/30 min-h-screen">
+    <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-muted/30">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
