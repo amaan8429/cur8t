@@ -183,32 +183,6 @@ const Home = () => {
           <Faq1 />
         </section>
 
-        {/* Contact Section */}
-        <section id="contact" className="py-20 bg-muted/20">
-          <div className="max-w-4xl mx-auto text-center px-4">
-            <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
-            <p className="text-muted-foreground mb-8">
-              Have questions or feedback? We&apos;d love to hear from you.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <SignUpButton
-                mode="modal"
-                forceRedirectUrl="/dashboard?item=Overview"
-              >
-                <Button className="bg-primary hover:bg-primary/90">
-                  Get Started
-                </Button>
-              </SignUpButton>
-              <SignInButton
-                mode="modal"
-                forceRedirectUrl="/dashboard?item=Overview"
-              >
-                <Button variant="outline">Sign In</Button>
-              </SignInButton>
-            </div>
-          </div>
-        </section>
-
         {/* Footer */}
         <Footer />
       </main>

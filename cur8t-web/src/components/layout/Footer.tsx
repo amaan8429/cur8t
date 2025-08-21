@@ -31,23 +31,58 @@ export function Footer() {
             Organize, discover, and share your links with smart collections.
             Never lose track of important content again.
           </p>
-          <div className="mt-2 flex gap-3">
-            <a
-              href="https://github.com/amaan8429"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              <PiGithubLogo className="h-5 w-5" />
-            </a>
-            <a
-              href="mailto:amaanrizvi73@gmail.com"
-              aria-label="Email"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              <PiEnvelope className="h-5 w-5" />
-            </a>
+          <div className="mb-4">
+            <h4 className="text-sm font-medium text-foreground mb-2">
+              What I do:
+            </h4>
+            <ul className="text-xs text-muted-foreground space-y-1">
+              <li>
+                • Building{' '}
+                <a
+                  href="https://rotreels.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  rotreels.com
+                </a>{' '}
+                - Instagram content generator with 0 editing.
+              </li>
+              <li>
+                • Instagram content (110k followers) on{' '}
+                <a
+                  href="https://instagram.com/technerdpeter"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  technerdpeter
+                </a>
+              </li>
+              <li>
+                • Posting stupid shit on{' '}
+                <a
+                  href="https://x.com/amaan8429"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  X
+                </a>
+              </li>
+              <li>
+                • Running{' '}
+                <a
+                  href="https://aurbitlabs.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  aurbitlabs.com
+                </a>{' '}
+                and helping brands grow their audience.
+              </li>
+            </ul>
           </div>
         </div>
 
@@ -87,6 +122,63 @@ export function Footer() {
                 >
                   Dashboard
                 </Link>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <div className="mb-3 text-xs font-semibold tracking-widest text-primary uppercase">
+              Company
+            </div>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="https://status.cur8t.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Status
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://x.com/amaan8429"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Personal X
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://x.com/aurbitlabs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Aurbit Labs X
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://instagram.com/technerdpeter"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Instagram
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://instagram.com/aurbitlabs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Aurbit Labs IG
+                </a>
               </li>
             </ul>
           </div>
