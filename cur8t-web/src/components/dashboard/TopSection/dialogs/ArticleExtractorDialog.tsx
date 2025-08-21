@@ -34,7 +34,7 @@ import {
   type ExtractedLink,
   type ArticleExtractionResponse,
 } from '@/lib/api/agents';
-import { saveExtractedCollectionAction } from '@/actions/collection/saveExtractedCollection';
+import { saveExtractedCollectionBypassAction } from '@/actions/collection/saveExtractedCollectionBypass';
 
 interface ArticleExtractorDialogProps {
   open: boolean;
@@ -230,7 +230,7 @@ export function ArticleExtractorDialog({
     setSavingCollection(true);
 
     try {
-      const result = await saveExtractedCollectionAction({
+      const result = await saveExtractedCollectionBypassAction({
         collection_name: extractedData.collection_name,
         extracted_links: extractedData.extracted_links.map((link) => ({
           ...link,

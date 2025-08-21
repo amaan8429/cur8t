@@ -6,8 +6,8 @@ import {
   type BookmarkUploadResponse,
   type BookmarkAnalysisResponse,
 } from '@/lib/api/agents';
-import { createCollectionAction } from '@/actions/collection/createCollection';
-import { createLinkAction } from '@/actions/linkActions/createLink';
+import { createCollectionBypassAction } from '@/actions/collection/createCollectionBypass';
+import { createLinkBypassAction } from '@/actions/linkActions/createLinkBypass';
 import {
   Step,
   BookmarkLink,
@@ -206,7 +206,7 @@ export function useBookmarkImporter() {
           customNames[category.name] ||
           category.suggested_collection_name ||
           category.name;
-        const collectionResult = await createCollectionAction(
+        const collectionResult = await createCollectionBypassAction(
           collectionName,
           category.description || '',
           'private'
@@ -234,7 +234,7 @@ export function useBookmarkImporter() {
         let successfulLinks = 0;
         for (const bookmark of category.bookmarks) {
           try {
-            const linkResult = await createLinkAction(
+            const linkResult = await createLinkBypassAction(
               collection.id,
               bookmark.title,
               bookmark.url
