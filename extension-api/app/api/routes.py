@@ -16,6 +16,7 @@ from ..models.schemas import (
     CreateLinkRequest, 
     CreateLinkResponse, 
     ErrorResponse,
+    SubscriptionErrorResponse,
     Collection,
     Link,
     Favorite,
@@ -34,6 +35,7 @@ from ..models.schemas import (
 )
 from ..core.database import execute_query_one, execute_query_all, execute_insert, execute_query, clear_cache, health_check, get_pool
 from ..core.utils import extract_title_from_url, generate_fallback_title, limiter
+from ..core.subscription import subscription_service
 
 router = APIRouter()
 
@@ -234,7 +236,7 @@ async def get_top_collections(request: Request, authorization: Optional[str] = H
         logger.error(f"❌ Exception type: {type(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to fetch top collections: {str(e)}")
 
-@router.post("/collections", response_model=Union[CreateCollectionResponse, ErrorResponse])
+@router.post("/collections", response_model=Union[CreateCollectionResponse, ErrorResponse, SubscriptionErrorResponse])
 @limiter.limit("10/minute")
 async def create_collection(
     request: Request,
@@ -247,6 +249,18 @@ async def create_collection(
     
     try:
         user_id = await get_user_id_from_api_key(authorization)
+        
+        # Check subscription limits
+        can_create, error_message, plan_slug = await subscription_service.check_collection_limit(user_id)
+        if not can_create:
+            raise HTTPException(
+                status_code=403, 
+                detail={
+                    "error": error_message,
+                    "plan": plan_slug,
+                    "upgrade_required": True
+                }
+            )
         
         # Validate visibility
         if collection_data.visibility not in ["private", "public"]:
@@ -289,7 +303,7 @@ async def create_collection(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create collection: {str(e)}")
 
-@router.post("/collections/{collection_id}/links", response_model=Union[CreateLinkResponse, ErrorResponse])
+@router.post("/collections/{collection_id}/links", response_model=Union[CreateLinkResponse, ErrorResponse, SubscriptionErrorResponse])
 @limiter.limit("60/minute")
 async def create_link(
     request: Request,
@@ -314,6 +328,18 @@ async def create_link(
         
         if not collection_result:
             raise HTTPException(status_code=404, detail="Collection not found")
+        
+        # Check subscription limits for links
+        can_add, error_message, plan_slug = await subscription_service.check_links_limit(user_id, collection_id)
+        if not can_add:
+            raise HTTPException(
+                status_code=403, 
+                detail={
+                    "error": error_message,
+                    "plan": plan_slug,
+                    "upgrade_required": True
+                }
+            )
         
         # Extract title if not provided
         final_title = link_data.title or ""
@@ -372,7 +398,7 @@ async def create_link(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create link: {str(e)}")
 
-@router.post("/collections/{collection_id}/links/bulk", response_model=Union[BulkCreateLinkResponse, ErrorResponse])
+@router.post("/collections/{collection_id}/links/bulk", response_model=Union[BulkCreateLinkResponse, ErrorResponse, SubscriptionErrorResponse])
 @limiter.limit("120/minute")
 async def create_bulk_links(
     request: Request,
@@ -400,6 +426,19 @@ async def create_bulk_links(
         
         if not collection_result:
             raise HTTPException(status_code=404, detail="Collection not found")
+        
+        # Check subscription limits for bulk links
+        links_to_add = len(bulk_data.links)
+        can_add, error_message, plan_slug = await subscription_service.check_links_limit(user_id, collection_id, links_to_add)
+        if not can_add:
+            raise HTTPException(
+                status_code=403, 
+                detail={
+                    "error": error_message,
+                    "plan": plan_slug,
+                    "upgrade_required": True
+                }
+            )
         
         current_total = collection_result['total_links']
         created_links = []
@@ -473,7 +512,7 @@ async def create_bulk_links(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create bulk links: {str(e)}")
 
-@router.post("/collections/with-links", response_model=Union[CreateCollectionWithLinksResponse, ErrorResponse])
+@router.post("/collections/with-links", response_model=Union[CreateCollectionWithLinksResponse, ErrorResponse, SubscriptionErrorResponse])
 @limiter.limit("5/minute")
 async def create_collection_with_links(
     request: Request,
@@ -487,6 +526,31 @@ async def create_collection_with_links(
     
     try:
         user_id = await get_user_id_from_api_key(authorization)
+        
+        # Check subscription limits for collection creation
+        can_create, error_message, plan_slug = await subscription_service.check_collection_limit(user_id)
+        if not can_create:
+            raise HTTPException(
+                status_code=403, 
+                detail={
+                    "error": error_message,
+                    "plan": plan_slug,
+                    "upgrade_required": True
+                }
+            )
+        
+        # Check subscription limits for links
+        links_to_add = len(request_data.links)
+        can_add_links, links_error_message, links_plan_slug = await subscription_service.check_links_limit(user_id, "new_collection", links_to_add)
+        if not can_add_links:
+            raise HTTPException(
+                status_code=403, 
+                detail={
+                    "error": links_error_message,
+                    "plan": links_plan_slug,
+                    "upgrade_required": True
+                }
+            )
         
         # Validate visibility
         if request_data.visibility not in ["private", "public"]:
@@ -593,6 +657,37 @@ async def create_collection_with_links(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create collection with links: {str(e)}")
 
+# Subscription and usage endpoints
+@router.get("/subscription/status", response_model=Dict[str, Any])
+@limiter.limit("60/minute")
+async def get_subscription_status(request: Request, authorization: Optional[str] = Header(None)):
+    """Get user's current subscription status and limits"""
+    logger.info("📊 SUBSCRIPTION STATUS - Endpoint called")
+    
+    try:
+        user_id = await get_user_id_from_api_key(authorization)
+        logger.info(f"📊 SUBSCRIPTION STATUS - User ID extracted: {user_id}")
+        
+        # Get subscription and usage data
+        subscription = await subscription_service.get_user_subscription(user_id)
+        usage = await subscription_service.get_user_usage(user_id)
+        
+        if not subscription:
+            raise HTTPException(status_code=500, detail="Unable to determine subscription status")
+        
+        return {
+            "subscription": subscription,
+            "usage": usage,
+            "limits": subscription['limits']
+        }
+        
+    except HTTPException as e:
+        logger.error(f"❌ HTTP Exception in subscription status: {e.detail}")
+        raise
+    except Exception as e:
+        logger.error(f"❌ Unexpected error in subscription status: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch subscription status: {str(e)}")
+
 # Favorites endpoints
 @router.get("/favorites", response_model=Union[FavoritesResponse, ErrorResponse])
 @limiter.limit("120/minute")
@@ -635,7 +730,7 @@ async def get_favorites(request: Request, authorization: Optional[str] = Header(
         logger.error(f"❌ Unexpected error in favorites: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to fetch favorites: {str(e)}")
 
-@router.post("/favorites", response_model=Union[CreateFavoriteResponse, ErrorResponse])
+@router.post("/favorites", response_model=Union[CreateFavoriteResponse, ErrorResponse, SubscriptionErrorResponse])
 @limiter.limit("60/minute")
 async def create_favorite(
     request: Request,
@@ -657,6 +752,18 @@ async def create_favorite(
         
         if existing_result:
             raise HTTPException(status_code=409, detail="This URL is already in your favorites")
+        
+        # Check subscription limits for favorites
+        can_add, error_message, plan_slug = await subscription_service.check_favorites_limit(user_id)
+        if not can_add:
+            raise HTTPException(
+                status_code=403, 
+                detail={
+                    "error": error_message,
+                    "plan": plan_slug,
+                    "upgrade_required": True
+                }
+            )
         
         # Insert new favorite
         favorite_id = str(uuid.uuid4())

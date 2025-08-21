@@ -64,6 +64,11 @@ class BulkCreateLinkResponse(BaseModel):
 class ErrorResponse(BaseModel):
     error: str
 
+class SubscriptionErrorResponse(BaseModel):
+    error: str
+    plan: Optional[str] = None
+    upgrade_required: Optional[bool] = None
+
 class Favorite(BaseModel):
     id: str
     title: str
