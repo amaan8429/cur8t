@@ -9,6 +9,7 @@ import {
   getClientIdFromHeaders,
   rateLimiters,
 } from '@/lib/ratelimit';
+import { getSubscriptionSnapshot } from '@/lib/subscription';
 
 export async function getTopCollections() {
   const { userId } = await auth();
@@ -132,24 +133,32 @@ export async function setTopCollections(collectionIds: string[]) {
     return { error: rateLimitResult.error, retryAfter };
   }
 
-  if (collectionIds.length > 5) {
-    return { error: 'Cannot set more than 5 top collections' };
+  // Get subscription limits to enforce proper limits
+  const snapshot = await getSubscriptionSnapshot(userId);
+  const maxTopCollections = snapshot.limits.topCollections;
+
+  if (collectionIds.length > maxTopCollections) {
+    return {
+      error: `Cannot set more than ${maxTopCollections} top collections on your current plan`,
+    };
   }
 
   try {
     // Verify that all collections belong to the user
-    const userCollections = await db
-      .select({ id: CollectionsTable.id })
-      .from(CollectionsTable)
-      .where(
-        and(
-          eq(CollectionsTable.userId, userId),
-          inArray(CollectionsTable.id, collectionIds)
-        )
-      );
+    if (collectionIds.length > 0) {
+      const userCollections = await db
+        .select({ id: CollectionsTable.id })
+        .from(CollectionsTable)
+        .where(
+          and(
+            eq(CollectionsTable.userId, userId),
+            inArray(CollectionsTable.id, collectionIds)
+          )
+        );
 
-    if (userCollections.length !== collectionIds.length) {
-      return { error: 'One or more collections do not belong to you' };
+      if (userCollections.length !== collectionIds.length) {
+        return { error: 'One or more collections do not belong to you' };
+      }
     }
 
     // Update user's top collections

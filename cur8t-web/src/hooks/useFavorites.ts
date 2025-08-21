@@ -1,23 +1,26 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { createFavorite } from '@/actions/favorites/createFavorite';
 import { getFavorites } from '@/actions/favorites/getFavorites';
 import { deleteFavorite } from '@/actions/favorites/deleteFavorite';
 import { updateFavorite } from '@/actions/favorites/updateFavorite';
+import { useSubscriptionStatus } from '@/hooks/useSubscription';
 import { VALIDATION_LIMITS } from '@/types/types';
 
 interface Favorite {
   id: string;
   title: string;
   url: string;
+  userId: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const FAVORITES_LIMIT = 10;
-
 export const useFavorites = () => {
   const { toast } = useToast();
+  const { data: subscription } = useSubscriptionStatus();
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
   const [addingFavorite, setAddingFavorite] = useState(false);
@@ -25,6 +28,9 @@ export const useFavorites = () => {
   const [newTitle, setNewTitle] = useState('');
   const [newUrl, setNewUrl] = useState('');
   const [editTitle, setEditTitle] = useState('');
+
+  // Get actual subscription limits instead of hardcoded values
+  const FAVORITES_LIMIT = subscription?.limits?.favorites || 5; // Default to 5 if no subscription data
 
   const loadFavorites = async () => {
     try {
@@ -70,7 +76,7 @@ export const useFavorites = () => {
     if (favorites.length >= FAVORITES_LIMIT) {
       toast({
         title: 'Limit Reached',
-        description: `You can only have up to ${FAVORITES_LIMIT} favorites. Please delete some before adding new ones.`,
+        description: `You can only have up to ${FAVORITES_LIMIT} favorites on your current plan. Please delete some before adding new ones or upgrade your plan.`,
         variant: 'destructive',
       });
       return false;

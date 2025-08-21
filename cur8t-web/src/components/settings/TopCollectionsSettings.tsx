@@ -26,6 +26,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { useSubscriptionStatus } from '@/hooks/useSubscription';
 import {
   getTopCollections,
   getUserCollections,
@@ -43,6 +44,7 @@ interface Collection {
 
 const TopCollectionsSettings = () => {
   const { toast } = useToast();
+  const { data: subscription } = useSubscriptionStatus();
   const [topCollections, setTopCollectionsState] = useState<Collection[]>([]);
   const [allCollections, setAllCollections] = useState<Collection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +55,9 @@ const TopCollectionsSettings = () => {
   const [initialTopCollections, setInitialTopCollections] = useState<
     Collection[]
   >([]);
+
+  // Get actual subscription limits instead of hardcoded values
+  const TOP_COLLECTIONS_LIMIT = subscription?.limits?.topCollections || 3; // Default to 3 if no subscription data
 
   useEffect(() => {
     fetchData();
@@ -161,10 +166,10 @@ const TopCollectionsSettings = () => {
   };
 
   const handleAddCollection = (collection: Collection) => {
-    if (topCollections.length >= 5) {
+    if (topCollections.length >= TOP_COLLECTIONS_LIMIT) {
       toast({
         title: 'Limit reached',
-        description: 'You can only have up to 5 top collections',
+        description: `You can only have up to ${TOP_COLLECTIONS_LIMIT} top collections`,
         className: 'bg-primary border-primary text-primary-foreground',
       });
       return;
@@ -261,7 +266,8 @@ const TopCollectionsSettings = () => {
           Top Collections
         </CardTitle>
         <CardDescription>
-          Select up to 5 collections to feature. These will be displayed in your{' '}
+          Select up to {TOP_COLLECTIONS_LIMIT} collections to feature. These
+          will be displayed in your{' '}
           <a
             href="https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb"
             target="_blank"
@@ -277,7 +283,8 @@ const TopCollectionsSettings = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              {topCollections.length}/5 collections selected
+              {topCollections.length}/{TOP_COLLECTIONS_LIMIT} collections
+              selected
             </p>
             {hasChanges && (
               <Button
@@ -294,7 +301,8 @@ const TopCollectionsSettings = () => {
           <Button
             onClick={() => setShowAddDialog(true)}
             disabled={
-              topCollections.length >= 5 || availableCollections.length === 0
+              topCollections.length >= TOP_COLLECTIONS_LIMIT ||
+              availableCollections.length === 0
             }
             size="sm"
             variant="outline"
@@ -313,7 +321,8 @@ const TopCollectionsSettings = () => {
                 No top collections selected
               </p>
               <p className="text-sm text-muted-foreground">
-                Add collections to feature them in your{' '}
+                Add up to {TOP_COLLECTIONS_LIMIT} collections to feature them in
+                your{' '}
                 <a
                   href="https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb"
                   target="_blank"

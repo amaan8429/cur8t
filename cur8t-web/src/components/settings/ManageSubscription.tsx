@@ -13,6 +13,7 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { useCheckout } from '@/hooks/useCheckout';
 import { useSubscriptionStatus } from '@/hooks/useSubscription';
+import { useUsage } from '@/hooks/useUsage';
 import {
   PiLightning,
   PiShield,
@@ -30,7 +31,12 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function ManageSubscription() {
   const { startCheckout, loading } = useCheckout();
-  const { data: subscription, isLoading, refetch } = useSubscriptionStatus();
+  const {
+    data: subscription,
+    isLoading: subscriptionLoading,
+    refetch,
+  } = useSubscriptionStatus();
+  const { data: usage, isLoading: usageLoading } = useUsage();
   const searchParams = useSearchParams();
   const [showBillingMessage, setShowBillingMessage] = useState(false);
   const [billingMessage, setBillingMessage] = useState({
@@ -73,7 +79,7 @@ export default function ManageSubscription() {
     }
   }, [showBillingMessage]);
 
-  if (isLoading) {
+  if (subscriptionLoading || usageLoading) {
     return (
       <div className="space-y-4">
         <div className="h-8 w-48 bg-muted animate-pulse rounded" />
@@ -147,6 +153,9 @@ export default function ManageSubscription() {
     })
     .filter(Boolean); // Remove any null entries
 
+  // Get all plans for comparison
+  const allPlans = getPaidPlans().filter((plan) => plan.slug !== 'free');
+
   return (
     <div className="space-y-6">
       {/* Current Plan Section */}
@@ -182,38 +191,55 @@ export default function ManageSubscription() {
             </div>
           </CardHeader>
 
-          {limits && (
+          {limits && usage && (
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">
-                    {limits.collections}
+                    {usage.collections}/{limits.collections}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     Collections
                   </div>
+                  <Progress
+                    value={(usage.collections / limits.collections) * 100}
+                    className="mt-2 h-2"
+                  />
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">
-                    {limits.totalLinks}
+                    {usage.totalLinks.toLocaleString()}/
+                    {limits.totalLinks.toLocaleString()}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     Total Links
                   </div>
+                  <Progress
+                    value={(usage.totalLinks / limits.totalLinks) * 100}
+                    className="mt-2 h-2"
+                  />
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">
-                    {limits.favorites}
+                    {usage.favorites}/{limits.favorites}
                   </div>
                   <div className="text-sm text-muted-foreground">Favorites</div>
+                  <Progress
+                    value={(usage.favorites / limits.favorites) * 100}
+                    className="mt-2 h-2"
+                  />
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">
-                    {limits.topCollections}
+                    {usage.topCollections}/{limits.topCollections}
                   </div>
                   <div className="text-sm text-muted-foreground">
                     Pinned Collections
                   </div>
+                  <Progress
+                    value={(usage.topCollections / limits.topCollections) * 100}
+                    className="mt-2 h-2"
+                  />
                 </div>
               </div>
             </CardContent>
@@ -347,38 +373,112 @@ export default function ManageSubscription() {
                     <th className="text-center p-4 font-medium">Free</th>
                     <th className="text-center p-4 font-medium">Pro</th>
                     <th className="text-center p-4 font-medium">Business</th>
+                    <th className="text-center p-4 font-medium">Your Usage</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b">
                     <td className="p-4">Collections</td>
                     <td className="text-center p-4">3</td>
+                    <td className="text-center p-4">10</td>
                     <td className="text-center p-4">25</td>
-                    <td className="text-center p-4">100</td>
+                    <td className="text-center p-4">
+                      {usage ? (
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="font-medium">
+                            {usage.collections}
+                          </span>
+                          <Progress
+                            value={
+                              (usage.collections / (limits?.collections || 3)) *
+                              100
+                            }
+                            className="w-16 h-2"
+                          />
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                    </td>
                   </tr>
                   <tr className="border-b">
                     <td className="p-4">Links per Collection</td>
                     <td className="text-center p-4">50</td>
+                    <td className="text-center p-4">100</td>
                     <td className="text-center p-4">200</td>
-                    <td className="text-center p-4">500</td>
+                    <td className="text-center p-4">
+                      <span className="text-muted-foreground">-</span>
+                    </td>
                   </tr>
                   <tr className="border-b">
                     <td className="p-4">Total Links</td>
-                    <td className="text-center p-4">100</td>
-                    <td className="text-center p-4">2,000</td>
-                    <td className="text-center p-4">10,000</td>
+                    <td className="text-center p-4">150</td>
+                    <td className="text-center p-4">1,000</td>
+                    <td className="text-center p-4">5,000</td>
+                    <td className="text-center p-4">
+                      {usage ? (
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="font-medium">
+                            {usage.totalLinks.toLocaleString()}
+                          </span>
+                          <Progress
+                            value={
+                              (usage.totalLinks / (limits?.totalLinks || 150)) *
+                              100
+                            }
+                            className="w-16 h-2"
+                          />
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                    </td>
                   </tr>
                   <tr className="border-b">
                     <td className="p-4">Favorites</td>
+                    <td className="text-center p-4">5</td>
                     <td className="text-center p-4">10</td>
-                    <td className="text-center p-4">100</td>
-                    <td className="text-center p-4">500</td>
+                    <td className="text-center p-4">20</td>
+                    <td className="text-center p-4">
+                      {usage ? (
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="font-medium">{usage.favorites}</span>
+                          <Progress
+                            value={
+                              (usage.favorites / (limits?.favorites || 5)) * 100
+                            }
+                            className="w-16 h-2"
+                          />
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                    </td>
                   </tr>
                   <tr>
                     <td className="p-4">Pinned Collections</td>
-                    <td className="text-center p-4">1</td>
+                    <td className="text-center p-4">3</td>
                     <td className="text-center p-4">5</td>
                     <td className="text-center p-4">10</td>
+                    <td className="text-center p-4">
+                      {usage ? (
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="font-medium">
+                            {usage.topCollections}
+                          </span>
+                          <Progress
+                            value={
+                              (usage.topCollections /
+                                (limits?.topCollections || 3)) *
+                              100
+                            }
+                            className="w-16 h-2"
+                          />
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">-</span>
+                      )}
+                    </td>
                   </tr>
                 </tbody>
               </table>
