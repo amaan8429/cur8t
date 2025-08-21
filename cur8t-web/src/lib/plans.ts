@@ -16,9 +16,9 @@ export const plans: PlanData[] = [
     limits: {
       collections: 3,
       linksPerCollection: 50,
-      totalLinks: 100,
-      favorites: 10,
-      topCollections: 1,
+      totalLinks: 150,
+      favorites: 5,
+      topCollections: 3,
     },
     sort: 0,
   },
@@ -30,10 +30,10 @@ export const plans: PlanData[] = [
     interval: 'month',
     priceCents: 499, // $4.99
     limits: {
-      collections: 25,
-      linksPerCollection: 200,
-      totalLinks: 2000,
-      favorites: 100,
+      collections: 10,
+      linksPerCollection: 100,
+      totalLinks: 1000,
+      favorites: 10,
       topCollections: 5,
     },
     sort: 1,
@@ -46,10 +46,10 @@ export const plans: PlanData[] = [
     interval: 'year',
     priceCents: 4999, // $49.99
     limits: {
-      collections: 25,
-      linksPerCollection: 200,
-      totalLinks: 2000,
-      favorites: 100,
+      collections: 10,
+      linksPerCollection: 100,
+      totalLinks: 1000,
+      favorites: 10,
       topCollections: 5,
     },
     sort: 2,
@@ -62,10 +62,10 @@ export const plans: PlanData[] = [
     interval: 'month',
     priceCents: 999, // $9.99
     limits: {
-      collections: 100,
-      linksPerCollection: 500,
-      totalLinks: 10000,
-      favorites: 500,
+      collections: 25,
+      linksPerCollection: 200,
+      totalLinks: 2000,
+      favorites: 20,
       topCollections: 10,
     },
     sort: 3,
@@ -78,10 +78,10 @@ export const plans: PlanData[] = [
     interval: 'year',
     priceCents: 9999, // $99.99
     limits: {
-      collections: 100,
-      linksPerCollection: 500,
-      totalLinks: 10000,
-      favorites: 500,
+      collections: 25,
+      linksPerCollection: 200,
+      totalLinks: 2000,
+      favorites: 20,
       topCollections: 10,
     },
     sort: 4,
