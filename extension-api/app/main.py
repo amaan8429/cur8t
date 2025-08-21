@@ -72,3 +72,20 @@ app.add_middleware(
 )
 
 app.include_router(routes.router, prefix="/api/v1")
+
+# Add root route for status monitoring
+@app.get("/")
+async def root():
+    """Root endpoint for status monitoring"""
+    return {
+        "status": "healthy",
+        "service": "Extension API",
+        "version": "1.0.0",
+        "timestamp": time.time()
+    }
+
+# Add health check at root level for status monitors
+@app.get("/health")
+async def root_health_check():
+    """Health check endpoint for status monitoring"""
+    return await health_check()
