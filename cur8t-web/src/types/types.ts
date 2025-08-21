@@ -32,6 +32,15 @@ const CollectionSchema = z.object({
   totalLinks: z.number(),
 });
 
+const FavoriteSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  url: z.string(),
+  userId: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
 export const FrontendLinkSchema = z.object({
   title: z
     .string()
@@ -73,3 +82,4 @@ export type Link = z.infer<typeof LinkSchema>;
 export type FrontendLink = z.infer<typeof FrontendLinkSchema>;
 export type FrontendCollection = z.infer<typeof FrontendCollectionSchema>;
 export type Collection = z.infer<typeof CollectionSchema>;
+export type Favorite = z.infer<typeof FavoriteSchema>;

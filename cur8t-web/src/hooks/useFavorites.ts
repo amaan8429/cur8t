@@ -7,16 +7,7 @@ import { getFavorites } from '@/actions/favorites/getFavorites';
 import { deleteFavorite } from '@/actions/favorites/deleteFavorite';
 import { updateFavorite } from '@/actions/favorites/updateFavorite';
 import { useSubscriptionStatus } from '@/hooks/useSubscription';
-import { VALIDATION_LIMITS } from '@/types/types';
-
-interface Favorite {
-  id: string;
-  title: string;
-  url: string;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { VALIDATION_LIMITS, Favorite } from '@/types/types';
 
 export const useFavorites = () => {
   const { toast } = useToast();

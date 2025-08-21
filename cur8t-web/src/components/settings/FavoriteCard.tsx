@@ -8,14 +8,7 @@ import {
   PiArrowSquareOut,
   PiCalendar,
 } from 'react-icons/pi';
-
-interface Favorite {
-  id: string;
-  title: string;
-  url: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { Favorite } from '@/types/types';
 
 interface FavoriteCardProps {
   favorite: Favorite;
