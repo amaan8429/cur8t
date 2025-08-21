@@ -326,8 +326,8 @@ export default function ManageSubscription() {
                 Open Billing Portal
               </Button>
               <p className="text-xs text-muted-foreground">
-                Access your Lemon Squeezy customer portal to manage billing,
-                view invoices, and update payment methods.
+                Access your billing portal to manage subscriptions, view
+                invoices, and update payment methods.
               </p>
             </CardContent>
           </Card>

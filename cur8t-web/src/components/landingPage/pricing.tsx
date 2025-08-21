@@ -96,7 +96,7 @@ const plans = [
 export default function SimplePricing() {
   const [frequency, setFrequency] = useState<string>('monthly');
   const [mounted, setMounted] = useState(false);
-  const { startCheckout, loading } = useCheckout();
+  const { startCheckout, loading, error } = useCheckout();
   const { data: sub } = useSubscriptionStatus();
 
   useEffect(() => {
@@ -112,6 +112,16 @@ export default function SimplePricing() {
         <div className="bg-primary/5 absolute -right-[10%] -bottom-[10%] h-[40%] w-[40%] rounded-full blur-3xl" />
         <div className="bg-primary/5 absolute -bottom-[10%] -left-[10%] h-[40%] w-[40%] rounded-full blur-3xl" />
       </div>
+
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-destructive/10 border-destructive/20 text-destructive mx-auto max-w-md rounded-lg border p-4 text-sm"
+        >
+          {error}
+        </motion.div>
+      )}
 
       <div className="flex flex-col items-center justify-center gap-8">
         <div className="flex flex-col items-center space-y-2">

@@ -9,7 +9,7 @@ export const plans: PlanData[] = [
   {
     name: 'Free',
     slug: 'free',
-    productId: null, // No Lemon Squeezy product for free
+    productId: null,
     variantId: null,
     interval: 'none',
     priceCents: 0,
@@ -25,8 +25,8 @@ export const plans: PlanData[] = [
   {
     name: 'Pro Monthly',
     slug: 'pro-monthly',
-    productId: '605487', // Cur8t product ID
-    variantId: '944383', // Pro Monthly variant ID
+    productId: '52976f11-6817-41cd-8c1f-129adbb42824',
+    variantId: null, // Not used in Polar
     interval: 'month',
     priceCents: 499, // $4.99
     limits: {
@@ -41,8 +41,8 @@ export const plans: PlanData[] = [
   {
     name: 'Pro Yearly',
     slug: 'pro-yearly',
-    productId: '605487', // Cur8t product ID
-    variantId: '944394', // Pro Yearly variant ID
+    productId: '10ecf5bb-c644-47f1-8454-4314e0cd3233',
+    variantId: null, // Not used in Polar
     interval: 'year',
     priceCents: 4999, // $49.99
     limits: {
@@ -57,8 +57,8 @@ export const plans: PlanData[] = [
   {
     name: 'Business Monthly',
     slug: 'business-monthly',
-    productId: '605487', // Cur8t product ID
-    variantId: '944405', // Business Monthly variant ID
+    productId: 'b83bda1d-4980-4f8b-92f9-0353ee5e28b2',
+    variantId: null, // Not used in Polar
     interval: 'month',
     priceCents: 999, // $9.99
     limits: {
@@ -73,8 +73,8 @@ export const plans: PlanData[] = [
   {
     name: 'Business Yearly',
     slug: 'business-yearly',
-    productId: '605487', // Cur8t product ID
-    variantId: '944407', // Business Yearly variant ID
+    productId: '6d17aa6c-2834-4be5-92cd-518b4e8a15e2',
+    variantId: null, // Not used in Polar
     interval: 'year',
     priceCents: 9999, // $99.99
     limits: {

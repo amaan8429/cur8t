@@ -169,8 +169,8 @@ export const PlansTable = pgTable(
     id: uuid('id').defaultRandom().primaryKey().notNull(),
     name: text('name').notNull(),
     slug: text('slug').notNull(), // e.g., free, pro-monthly, business-yearly
-    productId: text('product_id'), // Lemon Squeezy product ID (nullable until Step 1)
-    variantId: text('variant_id'), // Lemon Squeezy variant ID (nullable until Step 1)
+    productId: text('product_id'), // Payment provider product ID (nullable until new provider is configured)
+    variantId: text('variant_id'), // Payment provider variant ID (nullable until new provider is configured)
     interval: text('interval').notNull(), // none | month | year
     priceCents: integer('price_cents').notNull().default(0),
     limits: jsonb('limits').notNull(), // { collections, linksPerCollection, totalLinks, favorites, topCollections }
@@ -191,8 +191,8 @@ export const SubscriptionsTable = pgTable('subscriptions', {
   userId: text('user_id')
     .notNull()
     .references(() => UsersTable.id, { onDelete: 'cascade' }),
-  storeCustomerId: text('store_customer_id'), // Lemon Squeezy customer ID (nullable until Step 1)
-  subscriptionId: text('subscription_id'), // Lemon Squeezy subscription ID (nullable until Step 1)
+  storeCustomerId: text('store_customer_id'), // Payment provider customer ID (nullable until new provider is configured)
+  subscriptionId: text('subscription_id'), // Payment provider subscription ID (nullable until new provider is configured)
   productId: text('product_id'),
   variantId: text('variant_id'),
   status: text('status').notNull().default('none'), // trialing | active | past_due | canceled | unpaid | none
@@ -205,17 +205,6 @@ export const SubscriptionsTable = pgTable('subscriptions', {
   updatedAt: timestamp('updated_at')
     .notNull()
     .$onUpdate(() => new Date()),
-});
-
-// Lemon Squeezy webhook events (for idempotency and auditing)
-export const LemonSqueezyEventsTable = pgTable('lemonsqueezy_events', {
-  eventId: text('event_id').primaryKey().notNull(),
-  type: text('type').notNull(),
-  payloadHash: text('payload_hash').notNull(),
-  receivedAt: timestamp('received_at').notNull().defaultNow(),
-  processedAt: timestamp('processed_at'),
-  status: text('status').notNull().default('received'), // received | processed | failed
-  error: text('error'),
 });
 
 // Infer types for users
@@ -253,9 +242,3 @@ export type SelectPlan = typeof PlansTable.$inferSelect;
 // Infer types for subscriptions
 export type InsertSubscription = typeof SubscriptionsTable.$inferInsert;
 export type SelectSubscription = typeof SubscriptionsTable.$inferSelect;
-
-// Infer types for Lemon Squeezy events
-export type InsertLemonSqueezyEvent =
-  typeof LemonSqueezyEventsTable.$inferInsert;
-export type SelectLemonSqueezyEvent =
-  typeof LemonSqueezyEventsTable.$inferSelect;

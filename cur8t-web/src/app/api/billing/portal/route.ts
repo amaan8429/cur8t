@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import { assertEnvOrThrow } from '@/lib/billing';
-
-// Lemon Squeezy customer portal is typically `https://app.lemonsqueezy.com/my-orders` for purchases.
-// For subscriptions, you can link to the hosted portal URL returned on checkout or stored from customer data.
-// Placeholder: return generic portal URL for now.
+import { polarApi } from '@/lib/polar';
 
 export async function GET() {
   try {
@@ -13,13 +9,16 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    assertEnvOrThrow();
+    // For now, redirect to the main checkout page since Polar doesn't have a direct customer portal creation method
+    // In a full implementation, you'd need to:
+    // 1. Find the customer in Polar using external_customer_id
+    // 2. Create a customer portal session or redirect to Polar's customer portal
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
+    const portalUrl = `${baseUrl}/checkout?customer_portal=true`;
 
-    // TODO: Optionally look up and return a customer-specific portal URL if you store it.
-    const url = 'https://app.lemonsqueezy.com/my-orders';
-    return NextResponse.json({ url }, { status: 200 });
+    return NextResponse.json({ url: portalUrl }, { status: 200 });
   } catch (error) {
-    console.error('Error getting billing portal URL:', error);
+    console.error('Error creating billing portal:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

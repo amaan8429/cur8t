@@ -25,12 +25,9 @@ async function seedPlans() {
     }
 
     console.log('✅ Plans seeded successfully!');
-    console.log('\n✅ All Lemon Squeezy IDs have been configured:');
-    console.log('- Product ID: 605487 (Cur8t)');
-    console.log('- Pro Monthly: 944383');
-    console.log('- Pro Yearly: 944394');
-    console.log('- Business Monthly: 944405');
-    console.log('- Business Yearly: 944407');
+    console.log(
+      '\n✅ All plans have been configured (payment provider IDs to be added later)'
+    );
   } catch (error) {
     console.error('Error seeding plans:', error);
   } finally {
