@@ -7,6 +7,8 @@ export const POST = Webhooks({
   webhookSecret: process.env.POLAR_WEBHOOK_SECRET || '',
   onPayload: async (payload: any) => {
     console.log('Polar webhook received:', payload);
+    console.log('Webhook type:', payload.type);
+    console.log('Webhook timestamp:', new Date().toISOString());
   },
   onOrderCreated: async (order: any) => {
     console.log('Order created:', order);

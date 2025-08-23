@@ -79,6 +79,7 @@ const isPublicRoute = createRouteMatcher([
   '/',
   '/explore(.*)',
   '/api/webhooks(.*)',
+  '/api/webhook(.*)',
   '/api/profile(.*)',
   '/collection(.*)',
   '/profile(.*)',
@@ -89,7 +90,10 @@ const isAuthRoute = createRouteMatcher(['/sign-in(.*)', '/sign-up(.*)']);
 
 const isApiRoute = createRouteMatcher(['/api(.*)']);
 
-const isWebhookRoute = createRouteMatcher(['/api/webhooks(.*)']);
+const isWebhookRoute = createRouteMatcher([
+  '/api/webhooks(.*)',
+  '/api/webhook(.*)',
+]);
 
 export default clerkMiddleware(async (auth, request) => {
   const clientIP = getClientIP(request);
