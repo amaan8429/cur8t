@@ -62,12 +62,12 @@ async function handleSubscriptionCreated(subscription: any) {
     // Check if subscription already exists
     console.log(
       '🔍 Checking for existing subscription with customer ID:',
-      subscription.customer_id
+      subscription.customerId
     );
     const existingSubscription = await db
       .select()
       .from(SubscriptionsTable)
-      .where(eq(SubscriptionsTable.storeCustomerId, subscription.customer_id))
+      .where(eq(SubscriptionsTable.storeCustomerId, subscription.customerId))
       .limit(1);
 
     console.log(
@@ -82,18 +82,16 @@ async function handleSubscriptionCreated(subscription: any) {
         .set({
           subscriptionId: subscription.id,
           status: subscription.status === 'active' ? 'active' : 'none',
-          productId: subscription.product_id,
-          currentPeriodStart: subscription.current_period_start
-            ? new Date(subscription.current_period_start)
+          productId: subscription.productId,
+          currentPeriodStart: subscription.currentPeriodStart
+            ? new Date(subscription.currentPeriodStart)
             : null,
-          currentPeriodEnd: subscription.current_period_end
-            ? new Date(subscription.current_period_end)
+          currentPeriodEnd: subscription.currentPeriodEnd
+            ? new Date(subscription.currentPeriodEnd)
             : null,
           updatedAt: new Date(),
         })
-        .where(
-          eq(SubscriptionsTable.storeCustomerId, subscription.customer_id)
-        );
+        .where(eq(SubscriptionsTable.storeCustomerId, subscription.customerId));
 
       console.log('✅ Updated existing subscription for user:', userId);
     } else {
@@ -101,15 +99,15 @@ async function handleSubscriptionCreated(subscription: any) {
       // Create new subscription
       await db.insert(SubscriptionsTable).values({
         userId: userId,
-        storeCustomerId: subscription.customer_id,
+        storeCustomerId: subscription.customerId,
         subscriptionId: subscription.id,
-        productId: subscription.product_id,
+        productId: subscription.productId,
         status: subscription.status === 'active' ? 'active' : 'none',
-        currentPeriodStart: subscription.current_period_start
-          ? new Date(subscription.current_period_start)
+        currentPeriodStart: subscription.currentPeriodStart
+          ? new Date(subscription.currentPeriodStart)
           : null,
-        currentPeriodEnd: subscription.current_period_end
-          ? new Date(subscription.current_period_end)
+        currentPeriodEnd: subscription.currentPeriodEnd
+          ? new Date(subscription.currentPeriodEnd)
           : null,
       });
 
