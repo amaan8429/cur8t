@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/layout/ThemeProvider';
 import QueryProvider from '@/components/providers/QueryProvider';
 import { ErrorBoundary } from '@/components/providers/ErrorBoundary';
 import { Oxanium, Merriweather, Fira_Code } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 
 export const viewport = {
   width: 'device-width',
@@ -115,7 +116,10 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="light">
             <QueryProvider>
               <ErrorBoundary>
-                <main>{children}</main>
+                <main>
+                  {children}
+                  <Analytics />
+                </main>
                 <Toaster />
               </ErrorBoundary>
             </QueryProvider>
