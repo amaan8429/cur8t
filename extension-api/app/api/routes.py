@@ -312,26 +312,57 @@ async def create_link(
     authorization: Optional[str] = Header(None)
 ):
     """Add a link to a collection"""
+    logger.info(f"🔗 CREATE LINK - Endpoint called for collection: {collection_id}")
+    logger.info(f"🔗 CREATE LINK - Authorization header present: {authorization is not None}")
+    
     try:
+        logger.info(f"🔑 Extracting user ID from API key...")
         user_id = await get_user_id_from_api_key(authorization)
+        logger.info(f"✅ User ID extracted successfully: {user_id}")
         
         # Validate collection exists and belongs to user
+        logger.info(f"🔍 Validating collection ownership...")
         collection_query = """
             SELECT id, total_links 
             FROM collections 
             WHERE id = $1::uuid AND user_id = $2
         """
+        logger.info(f"🔍 Collection query: {collection_query}")
+        logger.info(f"🔍 Collection ID: {collection_id}, User ID: {user_id}")
+        
         collection_result = await execute_query_one(
             collection_query, 
             (collection_id, user_id)
         )
         
+        logger.info(f"🔍 Collection query result: {collection_result}")
+        
         if not collection_result:
+            logger.error(f"❌ Collection not found or doesn't belong to user")
             raise HTTPException(status_code=404, detail="Collection not found")
         
+        logger.info(f"✅ Collection validation successful. Current total links: {collection_result['total_links']}")
+        
         # Check subscription limits for links
-        can_add, error_message, plan_slug = await subscription_service.check_links_limit(user_id, collection_id)
+        logger.info(f"📊 About to check subscription limits for links...")
+        logger.info(f"📊 User ID: {user_id}, Collection ID: {collection_id}")
+        
+        try:
+            can_add, error_message, plan_slug = await subscription_service.check_links_limit(user_id, collection_id)
+            logger.info(f"📊 Subscription check completed:")
+            logger.info(f"   - Can add links: {can_add}")
+            logger.info(f"   - Error message: {error_message}")
+            logger.info(f"   - Plan slug: {plan_slug}")
+        except Exception as sub_error:
+            logger.error(f"❌ Exception during subscription check: {str(sub_error)}")
+            logger.error(f"❌ Exception type: {type(sub_error)}")
+            import traceback
+            logger.error(f"❌ Full traceback: {traceback.format_exc()}")
+            raise HTTPException(status_code=500, detail=f"Subscription service error: {str(sub_error)}")
+        
         if not can_add:
+            logger.error(f"❌ Subscription limit exceeded: {error_message}")
+            logger.error(f"❌ Plan: {plan_slug}, Upgrade required: True")
             raise HTTPException(
                 status_code=403, 
                 detail={
@@ -341,15 +372,23 @@ async def create_link(
                 }
             )
         
+        logger.info(f"✅ Subscription limits check passed")
+        
         # Extract title if not provided
+        logger.info(f"📝 Processing link title...")
         final_title = link_data.title or ""
         if not final_title.strip():
+            logger.info(f"📝 No title provided, extracting from URL...")
             try:
                 final_title = await extract_title_from_url(str(link_data.url))
-            except Exception:
+                logger.info(f"📝 Title extracted: {final_title}")
+            except Exception as title_error:
+                logger.warning(f"⚠️ Title extraction failed: {str(title_error)}")
                 final_title = generate_fallback_title(str(link_data.url))
+                logger.info(f"📝 Using fallback title: {final_title}")
         
         # Insert the new link
+        logger.info(f"💾 Inserting new link into database...")
         link_id = str(uuid.uuid4())
         insert_link_query = """
             INSERT INTO links (id, title, url, link_collection_id, user_id, created_at, updated_at)
@@ -358,29 +397,43 @@ async def create_link(
         """
         
         now = datetime.utcnow()
+        logger.info(f"💾 Inserting link with ID: {link_id}")
+        logger.info(f"💾 URL: {link_data.url}")
+        logger.info(f"💾 Title: {final_title}")
+        
         created_link = await execute_insert(
             insert_link_query,
             (link_id, final_title, str(link_data.url), collection_id, user_id, now, now)
         )
         
         if not created_link:
+            logger.error(f"❌ Failed to insert link into database")
             raise HTTPException(status_code=500, detail="Failed to create link")
         
+        logger.info(f"✅ Link inserted successfully: {created_link}")
+        
         # Update collection's total links count
+        logger.info(f"📊 Updating collection total links count...")
         current_total = collection_result['total_links']
+        new_total = current_total + 1
+        logger.info(f"📊 Current total: {current_total}, New total: {new_total}")
+        
         update_collection_query = """
             UPDATE collections 
             SET total_links = $1 
             WHERE id = $2::uuid AND user_id = $3
         """
-        # Update collection's total links count
+        
         await execute_query(
             update_collection_query, 
-            (current_total + 1, collection_id, user_id), 
+            (new_total, collection_id, user_id), 
             fetch_all=False
         )
         
+        logger.info(f"✅ Collection total links updated successfully")
+        
         # Create response link object
+        logger.info(f"📤 Creating response object...")
         response_link = Link(
             id=str(created_link['id']),
             title=created_link['title'],
@@ -391,11 +444,17 @@ async def create_link(
             updatedAt=created_link['updated_at']
         )
         
+        logger.info(f"🎉 CREATE LINK - Successfully completed for collection: {collection_id}")
         return CreateLinkResponse(success=True, data=response_link)
         
     except HTTPException:
+        logger.error(f"❌ HTTP Exception in create_link: {request.status_code if hasattr(request, 'status_code') else 'unknown'}")
         raise
     except Exception as e:
+        logger.error(f"❌ Unexpected error in create_link: {str(e)}")
+        logger.error(f"❌ Exception type: {type(e)}")
+        import traceback
+        logger.error(f"❌ Full traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail=f"Failed to create link: {str(e)}")
 
 @router.post("/collections/{collection_id}/links/bulk", response_model=Union[BulkCreateLinkResponse, ErrorResponse, SubscriptionErrorResponse])
@@ -879,3 +938,53 @@ async def delete_favorite(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete favorite: {str(e)}")
+
+@router.get("/test-subscription")
+async def test_subscription(authorization: Optional[str] = Header(None)):
+    """Test endpoint to debug subscription service"""
+    logger.info("🧪 TEST SUBSCRIPTION - Endpoint called")
+    
+    try:
+        user_id = await get_user_id_from_api_key(authorization)
+        logger.info(f"🧪 TEST SUBSCRIPTION - User ID extracted: {user_id}")
+        
+        # Test subscription service step by step
+        logger.info("🧪 TEST SUBSCRIPTION - Step 1: Testing get_user_subscription")
+        subscription = await subscription_service.get_user_subscription(user_id)
+        logger.info(f"🧪 TEST SUBSCRIPTION - Subscription result: {subscription}")
+        
+        logger.info("🧪 TEST SUBSCRIPTION - Step 2: Testing get_user_usage")
+        usage = await subscription_service.get_user_usage(user_id)
+        logger.info(f"🧪 TEST SUBSCRIPTION - Usage result: {usage}")
+        
+        logger.info("🧪 TEST SUBSCRIPTION - Step 3: Testing check_links_limit")
+        can_add, error_message, plan_slug = await subscription_service.check_links_limit(user_id, "test-collection", 1)
+        logger.info(f"🧪 TEST SUBSCRIPTION - Links limit check result:")
+        logger.info(f"   - Can add: {can_add}")
+        logger.info(f"   - Error message: {error_message}")
+        logger.info(f"   - Plan slug: {plan_slug}")
+        
+        response = {
+            "success": True,
+            "user_id": user_id,
+            "subscription": subscription,
+            "usage": usage,
+            "links_limit_check": {
+                "can_add": can_add,
+                "error_message": error_message,
+                "plan_slug": plan_slug
+            }
+        }
+        
+        logger.info(f"🧪 TEST SUBSCRIPTION - Response: {response}")
+        return response
+        
+    except HTTPException as e:
+        logger.error(f"❌ HTTP Exception in test subscription: {e.detail}")
+        raise
+    except Exception as e:
+        logger.error(f"❌ Unexpected error in test subscription: {str(e)}")
+        logger.error(f"❌ Exception type: {type(e)}")
+        import traceback
+        logger.error(f"❌ Full traceback: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Test subscription failed: {str(e)}")
