@@ -326,32 +326,41 @@ class SubscriptionService:
             
             logger.info(f"✅ Plan limits: {limits}")
             
-            # Check per-collection limit
-            logger.info(f"🔍 Checking per-collection limit...")
-            collection_links_query = """
-                SELECT COUNT(*) as count
-                FROM links
-                WHERE link_collection_id = $1
-            """
-            
-            logger.info(f"🔍 Collection links query: {collection_links_query}")
-            logger.info(f"🔍 Query params: collection_id={collection_id}")
-            
-            collection_links_result = await execute_query_one(collection_links_query, (collection_id,))
-            logger.info(f"🔍 Collection links query result: {collection_links_result}")
-            
-            current_collection_links = collection_links_result['count'] if collection_links_result else 0
-            logger.info(f"🔍 Current collection links: {current_collection_links}")
-            logger.info(f"🔍 Links to add: {links_to_add}")
-            logger.info(f"🔍 Per-collection limit: {limits['linksPerCollection']}")
-            logger.info(f"🔍 Will exceed limit: {current_collection_links + links_to_add > limits['linksPerCollection']}")
-            
-            if current_collection_links + links_to_add > limits['linksPerCollection']:
-                error_msg = f"Links per collection limit reached ({limits['linksPerCollection']}). Upgrade your plan to add more links."
-                logger.warning(f"⚠️ Per-collection limit exceeded: {error_msg}")
-                return False, error_msg, subscription['plan_slug']
-            
-            logger.info(f"✅ Per-collection limit check passed")
+            # Check per-collection limit (skip for new collections)
+            if collection_id != "new_collection":
+                logger.info(f"🔍 Checking per-collection limit...")
+                collection_links_query = """
+                    SELECT COUNT(*) as count
+                    FROM links
+                    WHERE link_collection_id = $1
+                """
+                
+                logger.info(f"🔍 Collection links query: {collection_links_query}")
+                logger.info(f"🔍 Query params: collection_id={collection_id}")
+                
+                collection_links_result = await execute_query_one(collection_links_query, (collection_id,))
+                logger.info(f"🔍 Collection links query result: {collection_links_result}")
+                
+                current_collection_links = collection_links_result['count'] if collection_links_result else 0
+                logger.info(f"🔍 Current collection links: {current_collection_links}")
+                logger.info(f"🔍 Links to add: {links_to_add}")
+                logger.info(f"🔍 Per-collection limit: {limits['linksPerCollection']}")
+                logger.info(f"🔍 Will exceed limit: {current_collection_links + links_to_add > limits['linksPerCollection']}")
+                
+                if current_collection_links + links_to_add > limits['linksPerCollection']:
+                    error_msg = f"Links per collection limit reached ({limits['linksPerCollection']}). Upgrade your plan to add more links."
+                    logger.warning(f"⚠️ Per-collection limit exceeded: {error_msg}")
+                    return False, error_msg, subscription['plan_slug']
+                
+                logger.info(f"✅ Per-collection limit check passed")
+            else:
+                logger.info(f"🔍 Skipping per-collection limit check for new collection")
+                # For new collections, just check if the links_to_add doesn't exceed the per-collection limit
+                if links_to_add > limits['linksPerCollection']:
+                    error_msg = f"Links per collection limit exceeded ({limits['linksPerCollection']}). Upgrade your plan to add more links."
+                    logger.warning(f"⚠️ Per-collection limit exceeded for new collection: {error_msg}")
+                    return False, error_msg, subscription['plan_slug']
+                logger.info(f"✅ New collection per-collection limit check passed")
             
             # Check total links limit
             logger.info(f"🔍 Checking total links limit...")
