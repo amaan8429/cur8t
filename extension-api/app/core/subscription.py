@@ -59,16 +59,30 @@ class SubscriptionService:
                 logger.info(f"🔍 Plan query result: {plan}")
                 
                 if plan and plan.get('limits'):
-                    logger.info(f"✅ Found plan with limits: {plan['name']} ({plan['slug']})")
-                    return {
-                        'plan_id': plan['id'],
-                        'plan_name': plan['name'],
-                        'plan_slug': plan['slug'],
-                        'interval': plan['interval'],
-                        'price_cents': plan['price_cents'],
-                        'limits': plan['limits'],
-                        'subscription_status': subscription['status']
-                    }
+                    # Ensure limits is properly parsed as JSON
+                    limits = plan['limits']
+                    if isinstance(limits, str):
+                        import json
+                        try:
+                            limits = json.loads(limits)
+                            logger.info(f"🔍 Parsed limits from JSON string: {limits}")
+                        except json.JSONDecodeError as e:
+                            logger.error(f"❌ Failed to parse limits JSON: {e}")
+                            limits = None
+                    
+                    if limits and isinstance(limits, dict):
+                        logger.info(f"✅ Found plan with valid limits: {plan['name']} ({plan['slug']})")
+                        return {
+                            'plan_id': plan['id'],
+                            'plan_name': plan['name'],
+                            'plan_slug': plan['slug'],
+                            'interval': plan['interval'],
+                            'price_cents': plan['price_cents'],
+                            'limits': limits,
+                            'subscription_status': subscription['status']
+                        }
+                    else:
+                        logger.warning(f"⚠️ Plan found but limits are invalid: {limits}")
                 else:
                     logger.warning(f"⚠️ Plan found but no limits: {plan}")
             
@@ -86,19 +100,33 @@ class SubscriptionService:
             logger.info(f"🔍 Free plan query result: {free_plan}")
             
             if free_plan and free_plan.get('limits'):
-                logger.info(f"✅ Found free plan with limits: {free_plan['name']} ({free_plan['slug']})")
-                return {
-                    'plan_id': free_plan['id'],
-                    'plan_name': free_plan['name'],
-                    'plan_slug': free_plan['slug'],
-                    'interval': 'none',
-                    'price_cents': 0,
-                    'limits': free_plan['limits'],
-                    'subscription_status': 'free'
-                }
+                # Ensure limits is properly parsed as JSON
+                limits = free_plan['limits']
+                if isinstance(limits, str):
+                    import json
+                    try:
+                        limits = json.loads(limits)
+                        logger.info(f"🔍 Parsed free plan limits from JSON string: {limits}")
+                    except json.JSONDecodeError as e:
+                        logger.error(f"❌ Failed to parse free plan limits JSON: {e}")
+                        limits = None
+                
+                if limits and isinstance(limits, dict):
+                    logger.info(f"✅ Found free plan with valid limits: {free_plan['name']} ({free_plan['slug']})")
+                    return {
+                        'plan_id': free_plan['id'],
+                        'plan_name': free_plan['name'],
+                        'plan_slug': free_plan['slug'],
+                        'interval': 'none',
+                        'price_cents': 0,
+                        'limits': limits,
+                        'subscription_status': 'free'
+                    }
+                else:
+                    logger.warning(f"⚠️ Free plan found but limits are invalid: {limits}")
             
             # Hard fallback if no plans exist
-            logger.warning(f"⚠️ No plans found in database for user {user_id}, using hardcoded defaults")
+            logger.warning(f"⚠️ No valid plans found in database for user {user_id}, using hardcoded defaults")
             hardcoded_plan = {
                 'plan_id': 'free',
                 'plan_name': 'Free',
@@ -252,6 +280,12 @@ class SubscriptionService:
             usage = await SubscriptionService.get_user_usage(user_id)
             limits = subscription['limits']
             
+            # Safety check: ensure limits is a dict
+            if not isinstance(limits, dict):
+                logger.error(f"❌ Invalid limits format. Expected dict, got: {type(limits)}")
+                logger.error(f"❌ Limits value: {limits}")
+                return False, "Invalid subscription plan configuration", subscription['plan_slug']
+            
             if usage['collections'] >= limits['collections']:
                 return False, f"Collection limit reached ({limits['collections']}). Upgrade your plan to create more.", subscription['plan_slug']
             
@@ -279,11 +313,17 @@ class SubscriptionService:
             logger.info(f"✅ Subscription found: {subscription['plan_name']} ({subscription['plan_slug']})")
             logger.info(f"✅ Subscription limits: {subscription['limits']}")
             
+            # Safety check: ensure limits is a dict
+            limits = subscription['limits']
+            if not isinstance(limits, dict):
+                logger.error(f"❌ Invalid limits format. Expected dict, got: {type(limits)}")
+                logger.error(f"❌ Limits value: {limits}")
+                return False, "Invalid subscription plan configuration", subscription['plan_slug']
+            
             logger.info(f"🔍 Getting user usage...")
             usage = await SubscriptionService.get_user_usage(user_id)
             logger.info(f"✅ User usage: {usage}")
             
-            limits = subscription['limits']
             logger.info(f"✅ Plan limits: {limits}")
             
             # Check per-collection limit
@@ -351,6 +391,12 @@ class SubscriptionService:
             usage = await SubscriptionService.get_user_usage(user_id)
             limits = subscription['limits']
             
+            # Safety check: ensure limits is a dict
+            if not isinstance(limits, dict):
+                logger.error(f"❌ Invalid limits format. Expected dict, got: {type(limits)}")
+                logger.error(f"❌ Limits value: {limits}")
+                return False, "Invalid subscription plan configuration", subscription['plan_slug']
+            
             if usage['favorites'] >= limits['favorites']:
                 return False, f"Favorites limit reached ({limits['favorites']}). Upgrade your plan to add more favorites.", subscription['plan_slug']
             
@@ -373,6 +419,12 @@ class SubscriptionService:
             
             usage = await SubscriptionService.get_user_usage(user_id)
             limits = subscription['limits']
+            
+            # Safety check: ensure limits is a dict
+            if not isinstance(limits, dict):
+                logger.error(f"❌ Invalid limits format. Expected dict, got: {type(limits)}")
+                logger.error(f"❌ Limits value: {limits}")
+                return False, "Invalid subscription plan configuration", subscription['plan_slug']
             
             if usage['topCollections'] + collections_to_add > limits['topCollections']:
                 return False, f"Top collections limit reached ({limits['topCollections']}). Upgrade your plan to add more pinned collections.", subscription['plan_slug']
