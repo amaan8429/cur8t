@@ -661,9 +661,10 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
                 height={800}
                 className="w-full h-auto object-cover transform-gpu"
                 priority
-                quality={85}
+                quality={100}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
                 style={{ willChange: 'auto' }}
+                unoptimized
               />
               {/* Subtle overlay gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-background/10 via-transparent to-transparent"></div>

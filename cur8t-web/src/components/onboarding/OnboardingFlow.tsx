@@ -298,6 +298,7 @@ export function OnboardingFlow({ onComplete, username }: OnboardingFlowProps) {
                               quality={100}
                               className="w-full h-full object-contain"
                               priority
+                              unoptimized
                             />
                           </div>
 
