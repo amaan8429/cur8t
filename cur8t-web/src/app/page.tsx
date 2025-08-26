@@ -7,6 +7,7 @@ import Hero from '@/components/landingPage/Hero';
 import Integrations from '@/components/landingPage/integrations';
 import BrowserExtensionShowcase from '@/components/landingPage/BrowserExtensionShowcase';
 import GitHubSyncAnimation from '@/components/landingPage/GitHubSyncAnimation';
+import BookmarkImporterAnimation from '@/components/landingPage/BookmarkImporterAnimation';
 import TweetCard from '@/components/landingPage/twittercard';
 import CodeBlock from '@/components/landingPage/codeblock';
 import {
@@ -169,6 +170,9 @@ const Home = () => {
 
         {/* GitHub Sync Animation */}
         <GitHubSyncAnimation />
+
+        {/* Bookmark Importer Animation */}
+        <BookmarkImporterAnimation />
 
         {/* Browser Extension Showcase */}
         <BrowserExtensionShowcase />
