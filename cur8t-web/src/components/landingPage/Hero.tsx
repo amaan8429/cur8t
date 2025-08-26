@@ -20,6 +20,7 @@ import {
   PiBrowser,
 } from 'react-icons/pi';
 import Image from 'next/image';
+import { getLandingPageStats } from '@/actions/platform/landingPageStats';
 
 export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
   // Check for reduced motion preference
@@ -27,19 +28,68 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // State for animated counters
-  const [stats, setStats] = useState({
-    users: 500,
-    transactions: 1500,
-    networks: 40,
+  // State for target values (real data)
+  const [targetStats, setTargetStats] = useState({
+    users: 0,
+    collections: 0,
+    links: 0,
   });
 
-  // Optimized animation to count up numbers
+  // State for animated display values
+  const [displayStats, setDisplayStats] = useState({
+    users: 0,
+    collections: 0,
+    links: 0,
+  });
+
+  // State for loading
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch real platform stats
   useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await getLandingPageStats();
+        if ('success' in response && response.success && response.data) {
+          const { totalUsers, totalCollections, totalLinks } = response.data;
+          setTargetStats({
+            users: totalUsers || 0,
+            collections: totalCollections || 0,
+            links: totalLinks || 0,
+          });
+        } else if ('error' in response) {
+          console.error('Failed to fetch landing page stats:', response.error);
+          // Fallback to reasonable defaults if API fails
+          setTargetStats({
+            users: 100,
+            collections: 250,
+            links: 500,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch landing page stats:', error);
+        // Fallback to reasonable defaults if API fails
+        setTargetStats({
+          users: 100,
+          collections: 250,
+          links: 500,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  // Optimized animation to count up numbers from 0 to real values
+  useEffect(() => {
+    if (isLoading) return;
+
     let animationId: number;
     const startTime = Date.now();
     const duration = 2000; // 2 seconds total
-    const targetStats = { users: 10, transactions: 20, networks: 2 };
+    const startStats = { users: 0, collections: 0, links: 0 };
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
@@ -48,12 +98,17 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
       // Use easeOut for better perceived performance
       const easeOut = 1 - Math.pow(1 - progress, 3);
 
-      setStats({
-        users: Math.floor(500 + (targetStats.users - 500) * easeOut),
-        transactions: Math.floor(
-          1500 + (targetStats.transactions - 1500) * easeOut
+      setDisplayStats({
+        users: Math.floor(
+          startStats.users + (targetStats.users - startStats.users) * easeOut
         ),
-        networks: Math.floor(1 + (targetStats.networks - 1) * easeOut),
+        collections: Math.floor(
+          startStats.collections +
+            (targetStats.collections - startStats.collections) * easeOut
+        ),
+        links: Math.floor(
+          startStats.links + (targetStats.links - startStats.links) * easeOut
+        ),
       });
 
       if (progress < 1) {
@@ -63,7 +118,12 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
 
     animationId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationId);
-  }, []);
+  }, [
+    isLoading,
+    targetStats.users,
+    targetStats.collections,
+    targetStats.links,
+  ]);
 
   // Animation variants
   const containerVariants = {
@@ -466,31 +526,33 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
         >
           <div className="rounded-lg border border-primary/20 bg-card/40 px-6 py-3 backdrop-blur-sm">
             <p className="text-2xl font-semibold text-foreground sm:text-3xl">
-              {stats.users.toLocaleString()}+
+              {isLoading ? '...' : `${displayStats.users.toLocaleString()}+`}
             </p>
             <p className="text-sm text-muted-foreground">Users</p>
           </div>
           <div className="rounded-lg border border-accent/20 bg-card/40 px-6 py-3 backdrop-blur-sm">
             <p className="text-2xl font-semibold text-foreground sm:text-3xl">
-              {stats.transactions.toLocaleString()}+
+              {isLoading
+                ? '...'
+                : `${displayStats.collections.toLocaleString()}+`}
             </p>
             <p className="text-sm text-muted-foreground">Collections</p>
           </div>
           <div className="rounded-lg border border-ring/20 bg-card/40 px-6 py-3 backdrop-blur-sm">
             <p className="text-2xl font-semibold text-foreground sm:text-3xl">
-              {stats.networks}+
+              {isLoading ? '...' : `${displayStats.links.toLocaleString()}+`}
             </p>
-            <p className="text-sm text-muted-foreground">Integrations</p>
+            <p className="text-sm text-muted-foreground">Links</p>
           </div>
         </motion.div>
 
-        {/* Integration badges */}
+        {/* Platform badges */}
         <motion.div
           variants={itemVariants}
           className="mb-8 flex flex-wrap items-center justify-center gap-2"
         >
           <span className="text-sm font-medium text-muted-foreground mr-2">
-            Integrates via:
+            Available on:
           </span>
           <a
             href="https://chromewebstore.google.com/detail/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb"
@@ -625,8 +687,10 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
             ))}
           </div>
           <span className="text-sm text-muted-foreground">
-            <span className="font-semibold text-foreground">500+</span> users
-            already curating
+            <span className="font-semibold text-foreground">
+              {displayStats.users.toLocaleString()}+
+            </span>{' '}
+            users already curating
           </span>
           <PiArrowUpRight className="h-4 w-4 text-primary" />
         </motion.div>
