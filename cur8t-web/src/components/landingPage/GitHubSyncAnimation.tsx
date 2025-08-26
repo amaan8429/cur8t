@@ -50,8 +50,7 @@ const GitHubSyncAnimation = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-muted-foreground max-w-md pt-2 text-lg mx-auto"
           >
-            Automatically sync your curated collections as awesome-lists to your
-            GitHub repositories
+            Sync your links and collections to your GitHub for better storage.
           </motion.p>
         </div>
 
