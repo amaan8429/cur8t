@@ -33,5 +33,3 @@ limiter: Limiter = Limiter(
     key_func=_forwarded_or_remote_address,
     default_limits=[settings.rate_limit_default] if settings.rate_limit_enabled else [],
 )
-
-
