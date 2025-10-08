@@ -17,7 +17,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          cache: "npm"
+          cache: "pnpm"
+
+      - name: Install pnpm 
+        run: npm install -g pnpm
+
+      - name: Setup pnpm store path
+        run: pnpm config set store-dir ~/.pnpm-store
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -27,7 +33,7 @@ jobs:
       - name: Install Frontend Dependencies
         run: |
           cd cur8t-web
-          npm install
+          pnpm install
 
       - name: Install Python Dependencies
         run: |
@@ -51,14 +57,14 @@ jobs:
       - name: Lint Frontend Code
         run: |
           cd cur8t-web
-          npm run lint
+          pnpm run lint
 
       - name: Run Frontend Tests
         run: |
           cd cur8t-web
-          npm test
+          pnpm test
 
       - name: Build Frontend
         run: |
           cd cur8t-web
-          npm run build
+          pnpm run build
