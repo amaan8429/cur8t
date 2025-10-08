@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, master, develop]
   pull_request:
-    branches: [main, master, develop, fix/gh-workflow]
+    branches: [main, master, develop]
 
 jobs:
   test-and-lint:
