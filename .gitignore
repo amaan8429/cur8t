@@ -15,6 +15,8 @@ node_modules
 .env.test.local
 .env.production.local
 
+**/*.md
+!README.md
 
 /.pnp
 .pnp.*
