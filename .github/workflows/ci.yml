@@ -45,20 +45,10 @@ jobs:
           pip install -r requirements.txt
           pip install black isort flake8 mypy
 
-      - name: Format Python Code
+      - name: Check python code formatting
         run: |
-          cd agents-api && black . && isort .
-          cd ../extension-api && black . && isort .
-      - name: Commit formatting changes (if any)
-        run: |
-          if [[ `git status --porcelain` ]]; then
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            git add .
-            git commit -m "chore: auto-format python code via CI"
-            branch_name="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-            git push origin HEAD:${branch_name}
-          fi
+          cd agents-api && black . --check && isort . --check
+          cd ../extension-api && black . --check && isort . --check
 
       - name: Lint Python Code
         run: |
