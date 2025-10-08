@@ -17,12 +17,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "18"
-          cache: "pnpm"
 
       - uses: pnpm/action-setup@v2
         with:
           version: 9
-          run_install: false
+          run_install: true
 
       - name: Setup pnpm store path
         run: pnpm config set store-dir ~/.pnpm-store --global
