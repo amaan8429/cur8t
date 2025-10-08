@@ -47,8 +47,17 @@ jobs:
 
       - name: Format Python Code
         run: |
-          cd agents-api && black . --check && isort . --check
-          cd ../extension-api && black . --check && isort . --check
+          cd agents-api && black . && isort .
+          cd ../extension-api && black . && isort .
+      - name: Commit formatting changes (if any)
+        run: |
+          if [[ `git status --porcelain` ]]; then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add .
+            git commit -m "chore: auto-format python code via CI"
+            git push
+          fi
 
       - name: Lint Python Code
         run: |
