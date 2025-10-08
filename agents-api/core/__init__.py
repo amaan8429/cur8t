@@ -1,1 +1,1 @@
-# Core shared components 
+# Core shared components

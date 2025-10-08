@@ -1,6 +1,8 @@
-from pydantic import BaseModel, HttpUrl
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel, HttpUrl
+
 
 class Collection(BaseModel):
     id: str
@@ -10,9 +12,11 @@ class Collection(BaseModel):
     totalLinks: int
     createdAt: datetime
 
+
 class CreateLinkRequest(BaseModel):
     title: Optional[str] = None
     url: HttpUrl
+
 
 class Link(BaseModel):
     id: str
@@ -23,20 +27,24 @@ class Link(BaseModel):
     createdAt: datetime
     updatedAt: datetime
 
+
 class CreateCollectionRequest(BaseModel):
     title: str
     description: Optional[str] = ""
     visibility: str = "private"
 
+
 class CreateCollectionResponse(BaseModel):
     success: bool
     data: Optional[Collection] = None
+
 
 class CreateCollectionWithLinksRequest(BaseModel):
     title: str
     description: Optional[str] = ""
     visibility: str = "private"
     links: List[CreateLinkRequest]
+
 
 class CreateCollectionWithLinksResponse(BaseModel):
     success: bool
@@ -45,15 +53,19 @@ class CreateCollectionWithLinksResponse(BaseModel):
     total_added: int
     total_requested: int
 
+
 class TopCollectionsResponse(BaseModel):
     data: List[Collection]
+
 
 class BulkLinkRequest(BaseModel):
     links: List[CreateLinkRequest]
 
+
 class CreateLinkResponse(BaseModel):
     success: bool
     data: Optional[Link] = None
+
 
 class BulkCreateLinkResponse(BaseModel):
     success: bool
@@ -61,13 +73,16 @@ class BulkCreateLinkResponse(BaseModel):
     total_added: int
     total_requested: int
 
+
 class ErrorResponse(BaseModel):
     error: str
+
 
 class SubscriptionErrorResponse(BaseModel):
     error: str
     plan: Optional[str] = None
     upgrade_required: Optional[bool] = None
+
 
 class Favorite(BaseModel):
     id: str
@@ -77,24 +92,30 @@ class Favorite(BaseModel):
     createdAt: datetime
     updatedAt: datetime
 
+
 class FavoritesResponse(BaseModel):
     data: List[Favorite]
+
 
 class CreateFavoriteRequest(BaseModel):
     title: str
     url: HttpUrl
 
+
 class CreateFavoriteResponse(BaseModel):
     success: bool
     data: Optional[Favorite] = None
 
+
 class UpdateFavoriteRequest(BaseModel):
     title: str
+
 
 class UpdateFavoriteResponse(BaseModel):
     success: bool
     data: Optional[Favorite] = None
 
+
 class DeleteFavoriteResponse(BaseModel):
     success: bool
-    message: str 
+    message: str
