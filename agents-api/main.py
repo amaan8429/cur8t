@@ -4,8 +4,8 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
-from config.settings import settings
 from agents import get_active_routers, get_agent_list
+from config.settings import settings
 from core.limiter import limiter
 
 # Create FastAPI app
@@ -13,7 +13,7 @@ app = FastAPI(
     title=settings.app_name,
     description=settings.app_description,
     version=settings.app_version,
-    debug=settings.debug
+    debug=settings.debug,
 )
 
 # Add CORS middleware
@@ -45,15 +45,16 @@ async def root(request: Request):
         "description": settings.app_description,
         "agents": get_agent_list(),
         "docs": "/docs",
-        "health": "/health"
+        "health": "/health",
     }
+
 
 @app.get("/health")
 @limiter.exempt
 async def health_check(request: Request):
     """Health check endpoint"""
     return {
-        "status": "healthy", 
+        "status": "healthy",
         "service": "cur8t-agents-api",
-        "version": settings.app_version
+        "version": settings.app_version,
     }
