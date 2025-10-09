@@ -10,6 +10,9 @@ jobs:
   test-and-lint:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: "postgresql://fake:fake@localhost:5432/fakedb"
+
     steps:
       - uses: actions/checkout@v4
 
