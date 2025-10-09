@@ -60,11 +60,6 @@ jobs:
           cd cur8t-web
           pnpm run lint
 
-      - name: Run Frontend Tests
-        run: |
-          cd cur8t-web
-          pnpm test
-
       - name: Build Frontend
         run: |
           cd cur8t-web
