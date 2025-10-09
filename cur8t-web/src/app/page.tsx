@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SignInButton, SignUpButton, useAuth } from '@clerk/nextjs';
 import Link from 'next/link';
 import Hero from '@/components/landingPage/Hero';
@@ -44,10 +44,14 @@ import { PiCode, PiHeart, PiChatCircle } from 'react-icons/pi';
 import Faq1 from '@/components/landingPage/faq';
 import Footer from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
+import { FaGithub } from 'react-icons/fa';
+import { Star } from 'lucide-react';
+import { AnimatedNumber } from '@/components/ui/animated-number';
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isSignedIn } = useAuth();
+  const [githubStars, setGithubStars] = useState(0);
 
   const navItems = [
     { name: 'Home', link: '#home' },
@@ -66,6 +70,29 @@ const Home = () => {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  useEffect(() => {
+    const githubStarsCount = async () => {
+      try {
+        const response = await fetch(
+          'https://api.github.com/repos/amaan8429/cur8t',
+          {
+            headers: {
+              Accept: 'application/vnd.github.v3+json',
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error('Failed to fetch GitHub stars');
+        }
+        const data = await response.json();
+        setGithubStars(data.stargazers_count || 0);
+      } catch (error) {
+        throw new Error('Failed to fetch GitHub stars');
+      }
+    };
+    githubStarsCount();
+  }, []);
 
   return (
     <div
@@ -89,14 +116,39 @@ const Home = () => {
                 </NavbarButton>
               </Link>
             ) : (
-              <SignUpButton
-                mode="modal"
-                forceRedirectUrl="/dashboard?item=Overview"
-              >
-                <NavbarButton variant="primary" as="button">
-                  Get Started
-                </NavbarButton>
-              </SignUpButton>
+              <>
+                <Link
+                  href={'https://github.com/amaan8429/cur8t'}
+                  target="_blank"
+                  className="cursor-pointer group"
+                >
+                  <NavbarButton
+                    variant="secondary"
+                    as="button"
+                    className="flex items-center gap-2"
+                  >
+                    <div className="flex items-center gap-1">
+                      <FaGithub className="size-4 mb-[2px]" />
+                      <span>Github</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-sm">
+                      <Star className="size-4 mb-[2px] fill-gray-400 duration-300 group-hover:fill-yellow-400 group-hover:stroke-yellow-400 group-hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
+                      <AnimatedNumber
+                        value={githubStars}
+                        className="font-medium text-white"
+                      />
+                    </div>
+                  </NavbarButton>
+                </Link>
+                <SignUpButton
+                  mode="modal"
+                  forceRedirectUrl="/dashboard?item=Overview"
+                >
+                  <NavbarButton variant="primary" as="button">
+                    Get Started
+                  </NavbarButton>
+                </SignUpButton>
+              </>
             )}
           </div>
         </NavBody>
