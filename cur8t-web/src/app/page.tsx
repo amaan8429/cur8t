@@ -88,7 +88,8 @@ const Home = () => {
         const data = await response.json();
         setGithubStars(data.stargazers_count || 0);
       } catch (error) {
-        throw new Error('Failed to fetch GitHub stars');
+        console.error('Failed to fetch GitHub stars', error);
+        setGithubStars(0);
       }
     };
     githubStarsCount();
