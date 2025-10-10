@@ -461,7 +461,7 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
           <span className="mr-2 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground">
             New
           </span>
-          Backed by Sydney Sweeney
+          Proudly Open Source
         </motion.div>
 
         {/* Main Heading */}
