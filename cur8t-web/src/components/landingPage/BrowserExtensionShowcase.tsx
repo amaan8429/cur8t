@@ -15,6 +15,11 @@ import { PiBrowser } from 'react-icons/pi';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
+import step1dark2 from '@public/images/extensions/BrowserExtensionInstall.png';
+import step2dark2 from '@public/images/extensions/BrowserExtensionSave.png';
+import step3dark from '@public/images/extensions/BrowserExtensionAccess.png';
+import step4dark from '@public/images/extensions/BrowserExtensionOrganize.png';
+
 type WrapperStyle = MotionStyle & {
   '--x': MotionValue<string>;
   '--y': MotionValue<string>;
@@ -396,11 +401,11 @@ export default function BrowserExtensionShowcase() {
             description="Seamlessly integrate Cur8t into your browsing workflow. Save any webpage to your collections with a single click."
             image={{
               step1dark1: placeholderImage,
-              step1dark2: placeholderImage,
+              step1dark2: step1dark2,
               step2dark1: placeholderImage,
-              step2dark2: placeholderImage,
-              step3dark: placeholderImage,
-              step4dark: placeholderImage,
+              step2dark2: step2dark2,
+              step3dark: step3dark,
+              step4dark: step4dark,
               alt: 'Browser Extension Walkthrough',
             }}
             step1img1Class="pointer-events-none top-1/2 w-[90%] overflow-hidden rounded-2xl border border-border transition-all duration-500 md:left-[35px] md:top-[30%] md:w-full"
