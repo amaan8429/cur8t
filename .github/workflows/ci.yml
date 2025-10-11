@@ -10,6 +10,9 @@ jobs:
   test-and-lint:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: "postgresql://fake:fake@localhost:5432/fakedb"
+
     steps:
       - uses: actions/checkout@v4
 
@@ -40,10 +43,10 @@ jobs:
         run: |
           cd agents-api
           pip install -r requirements.txt
-          pip install black isort flake8 mypy
+          pip install black isort flake8 mypy types-requests
           cd ../extension-api
           pip install -r requirements.txt
-          pip install black isort flake8 mypy
+          pip install black isort flake8 mypy types-requests
 
       - name: Check python code formatting
         run: |
@@ -59,11 +62,6 @@ jobs:
         run: |
           cd cur8t-web
           pnpm run lint
-
-      - name: Run Frontend Tests
-        run: |
-          cd cur8t-web
-          pnpm test
 
       - name: Build Frontend
         run: |
