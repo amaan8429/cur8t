@@ -620,7 +620,7 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
                 </Button>
               </SignUpButton>
 
-              <SignInButton
+              {/* <SignInButton
                 mode="modal"
                 forceRedirectUrl="/dashboard?item=Overview"
               >
@@ -631,7 +631,21 @@ export default function Hero({ isSignedIn }: { isSignedIn: boolean }) {
                 >
                   Sign In
                 </Button>
-              </SignInButton>
+              </SignInButton> */}
+
+              <a
+                href="https://chromewebstore.google.com/detail/cur8t/nmimopllfhdfejjajepepllgdpkglnnj?utm_source=item-share-cb"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button
+                  variant="outline"
+                  className="border-2 border-border hover:border-primary bg-background/50 backdrop-blur-sm text-foreground hover:text-primary hover:bg-primary/5 px-8 py-6 text-base font-medium transition-all duration-300 hover:-translate-y-0.5"
+                  size="lg"
+                >
+                  Chrome Extension
+                </Button>
+              </a>
             </>
           )}
         </motion.div>
