@@ -29,6 +29,9 @@ export default async function Page({
   // Check if user has a username set
   const userInfo = await getUserInfoAction();
 
+  // Case null was returned from the getUserInfoAction
+  if (!userInfo) redirect('/sign-in');
+
   // Check for rate limiting on getUserInfoAction
   if (userInfo && 'error' in userInfo && 'retryAfter' in userInfo) {
     console.error(
